@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# Cache directories
+.cache/
+.eslintcache
+.prettiercache
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Oclif
+oclif.manifest.json
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Debug
+.nyc_output/
+
+# Sisyphus internal
+.sisyphus/
+
+# Generated source files (not part of the initial implementation)
+src/ast/
+src/plugins/
+src/rules/
+src/cache/
+src/core/
+src/utils/

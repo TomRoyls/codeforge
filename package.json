@@ -1,0 +1,89 @@
+{
+  "name": "codeforge",
+  "description": "High-performance code analysis CLI tool for modern development workflows",
+  "version": "0.1.0",
+  "author": "CodeForge Team <team@codeforge.dev>",
+  "bin": {
+    "codeforge": "./bin/run.js"
+  },
+  "bugs": "https://github.com/codeforge-dev/codeforge/issues",
+  "dependencies": {
+    "@oclif/core": "^4",
+    "@oclif/plugin-help": "^6",
+    "@oclif/plugin-plugins": "^5",
+    "@swc/core": "^1.11.0",
+    "chalk": "^5.4.0",
+    "fast-glob": "^3.3.0",
+    "ora": "^8.2.0",
+    "p-limit": "^6.2.0",
+    "ts-morph": "^25.0.0"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1",
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^4",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9",
+    "eslint-config-oclif": "^6",
+    "eslint-config-prettier": "^10",
+    "oclif": "^4",
+    "prettier": "^3.5.0",
+    "shx": "^0.3.3",
+    "ts-node": "^10",
+    "typescript": "^5",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "./bin",
+    "./dist",
+    "./oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/codeforge-dev/codeforge",
+  "keywords": [
+    "oclif",
+    "cli",
+    "code-analysis",
+    "static-analysis",
+    "developer-tools"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "type": "module",
+  "oclif": {
+    "bin": "codeforge",
+    "dirname": "codeforge",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "hello": {
+        "description": "Say hello to the world and others"
+      }
+    }
+  },
+  "repository": "codeforge-dev/codeforge",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "oclif manifest && oclif readme",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "version": "oclif readme && git add README.md"
+  },
+  "types": "dist/index.d.ts"
+}
