@@ -97,6 +97,7 @@ vi.mock('../../../src/rules/index.js', () => ({
   allRules: {},
   getRule: vi.fn(),
   getRuleIds: vi.fn().mockReturnValue([]),
+  getRuleCategory: vi.fn().mockReturnValue('best-practices'),
 }))
 
 vi.mock('../../../src/core/rule-registry.js', () => ({
@@ -108,6 +109,7 @@ vi.mock('../../../src/core/rule-registry.js', () => ({
     }),
     getEnabledRules: vi.fn().mockReturnValue([]),
     getRule: vi.fn(),
+    disable: vi.fn(),
   })),
 }))
 
@@ -524,6 +526,107 @@ describe('Analyze Command', () => {
       expect(data?.summary.errors).toBe(2)
       expect(data?.summary.warnings).toBe(1)
       expect(data?.summary.info).toBe(3)
+    })
+  })
+
+  describe('loadConfig fallback', () => {
+    test('falls back to defaults when configPath found but getConfig returns null', async () => {
+      const { findConfigPath } = await import('../../../src/config/discovery.js')
+      const { ConfigCache } = await import('../../../src/config/cache.js')
+      const { mergeConfigs } = await import('../../../src/config/merger.js')
+
+      ;(findConfigPath as ReturnType<typeof vi.fn>).mockResolvedValueOnce('/path/to/config.json')
+      ;(ConfigCache as ReturnType<typeof vi.fn>).mockImplementationOnce(() => ({
+        getConfig: vi.fn().mockResolvedValue(null),
+      }))
+
+      mockDiscoverFiles.mockResolvedValue([])
+      const command = new Analyze([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: ['*.ts'],
+            ignore: ['node_modules'],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(mergeConfigs).toHaveBeenCalledWith({}, { files: ['*.ts'], ignore: ['node_modules'] })
+    })
+  })
+
+  describe('setupRuleRegistry with requested rules', () => {
+    test('disables rules not in requested list', async () => {
+      vi.resetModules()
+
+      const mockDisable = vi.fn()
+      const mockRegister = vi.fn()
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'rule-one': { meta: { id: 'rule-one' } },
+          'rule-two': { meta: { id: 'rule-two' } },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['rule-one', 'rule-two']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      vi.doMock('../../../src/core/rule-registry.js', () => ({
+        RuleRegistry: vi.fn().mockImplementation(() => ({
+          register: mockRegister,
+          runRules: vi.fn().mockReturnValue([]),
+          getEnabledRules: vi.fn().mockReturnValue([]),
+          getRule: vi.fn(),
+          disable: mockDisable,
+        })),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { discoverFiles } = await import('../../../src/core/file-discovery.js')
+      ;(discoverFiles as ReturnType<typeof vi.fn>).mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            rules: ['rule-one'],
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(mockDisable).toHaveBeenCalledWith('rule-two')
+      expect(mockDisable).not.toHaveBeenCalledWith('rule-one')
     })
   })
 })
