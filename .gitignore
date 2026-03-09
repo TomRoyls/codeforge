@@ -48,11 +48,3 @@ temp/
 
 # Sisyphus internal
 .sisyphus/
-
-# Generated source files (not part of the initial implementation)
-src/ast/
-src/plugins/
-src/rules/
-src/cache/
-src/core/
-src/utils/
