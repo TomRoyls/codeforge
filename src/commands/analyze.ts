@@ -409,13 +409,23 @@ export default class Analyze extends Command {
     fileCount: number,
     duration: number,
   ): AnalysisSummary {
+    let errors = 0
+    let warnings = 0
+    let info = 0
+
+    for (const v of violations) {
+      if (v.severity === 'error') errors++
+      else if (v.severity === 'warning') warnings++
+      else info++
+    }
+
     return {
       duration,
-      errors: violations.filter((v) => v.severity === 'error').length,
-      info: violations.filter((v) => v.severity === 'info').length,
+      errors,
+      info,
       totalFiles: fileCount,
       totalViolations: violations.length,
-      warnings: violations.filter((v) => v.severity === 'warning').length,
+      warnings,
     }
   }
 

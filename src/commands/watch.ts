@@ -157,8 +157,12 @@ export default class Watch extends Command {
       if (violations.length === 0) {
         this.log(chalk.green(`  ✓ ${relativePath}`))
       } else {
-        const errors = violations.filter((v) => v.severity === 'error').length
-        const warnings = violations.filter((v) => v.severity === 'warning').length
+        let errors = 0
+        let warnings = 0
+        for (const v of violations) {
+          if (v.severity === 'error') errors++
+          else if (v.severity === 'warning') warnings++
+        }
 
         this.log(chalk.yellow(`  ⚠ ${relativePath} - ${errors} error(s), ${warnings} warning(s)`))
 

@@ -112,9 +112,8 @@ describe('Watch Command', () => {
     test('resolvePatterns should handle array args', async () => {
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
-      const resolvePatterns = (
-        cmd as unknown as { resolvePatterns: typeof Watch.prototype.resolvePatterns }
-      ).resolvePatterns
+      // @ts-expect-error - accessing private method for testing
+      const resolvePatterns = cmd.resolvePatterns
 
       expect(resolvePatterns(['a.ts', 'b.ts'], ['default.ts'])).toEqual(['a.ts', 'b.ts'])
     })
@@ -122,9 +121,8 @@ describe('Watch Command', () => {
     test('resolvePatterns should handle string args', async () => {
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
-      const resolvePatterns = (
-        cmd as unknown as { resolvePatterns: typeof Watch.prototype.resolvePatterns }
-      ).resolvePatterns
+      // @ts-expect-error - accessing private method for testing
+      const resolvePatterns = cmd.resolvePatterns
 
       expect(resolvePatterns('single.ts', ['default.ts'])).toEqual(['single.ts'])
     })
@@ -132,9 +130,8 @@ describe('Watch Command', () => {
     test('resolvePatterns should fall back to config files', async () => {
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
-      const resolvePatterns = (
-        cmd as unknown as { resolvePatterns: typeof Watch.prototype.resolvePatterns }
-      ).resolvePatterns
+      // @ts-expect-error - accessing private method for testing
+      const resolvePatterns = cmd.resolvePatterns
 
       expect(resolvePatterns(undefined, ['config.ts'])).toEqual(['config.ts'])
     })
@@ -142,9 +139,8 @@ describe('Watch Command', () => {
     test('resolvePatterns should return empty array when no patterns', async () => {
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
-      const resolvePatterns = (
-        cmd as unknown as { resolvePatterns: typeof Watch.prototype.resolvePatterns }
-      ).resolvePatterns
+      // @ts-expect-error - accessing private method for testing
+      const resolvePatterns = cmd.resolvePatterns
 
       expect(resolvePatterns(undefined, undefined)).toEqual([])
     })

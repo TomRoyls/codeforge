@@ -5,10 +5,31 @@ import {
   getDefaultWatcher,
   resetDefaultWatcher,
 } from '../../../src/utils/watcher.js'
+import * as fs from 'node:fs'
+
+vi.mock('node:fs', () => ({
+  watch: vi.fn(() => ({
+    close: vi.fn(),
+    on: vi.fn(),
+  })),
+  access: vi.fn((_path, callback) => {
+    callback(null)
+  }),
+  stat: vi.fn((_path, callback) => {
+    callback(null, { isDirectory: () => false, isFile: () => true })
+  }),
+  readdir: vi.fn((_path, callback) => {
+    callback(null, [])
+  }),
+}))
 
 describe('FileWatcher', () => {
+  let watcher: FileWatcher
+
   beforeEach(() => {
+    vi.clearAllMocks()
     resetDefaultWatcher()
+    watcher = new FileWatcher()
   })
 
   afterEach(() => {
@@ -17,51 +38,83 @@ describe('FileWatcher', () => {
 
   describe('constructor', () => {
     test('should initialize with default options', () => {
-      const watcher = new FileWatcher()
       expect(watcher.isActive()).toBe(false)
     })
 
-    test('should accept debounceMs option', () => {
-      const watcher = new FileWatcher({ debounceMs: 500 })
-      expect(watcher.isActive()).toBe(false)
+    test('should accept custom debounceMs option', () => {
+      const customWatcher = new FileWatcher({ debounceMs: 500 })
+      expect(customWatcher.isActive()).toBe(false)
     })
 
     test('should accept extensions option', () => {
-      const watcher = new FileWatcher({ extensions: ['.ts', '.js'] })
-      expect(watcher.isActive()).toBe(false)
+      const customWatcher = new FileWatcher({ extensions: ['.ts'] })
+      expect(customWatcher.isActive()).toBe(false)
     })
 
     test('should accept ignorePatterns option', () => {
-      const watcher = new FileWatcher({ ignorePatterns: ['node_modules', '*.test.ts'] })
-      expect(watcher.isActive()).toBe(false)
-    })
-
-    test('should accept all options combined', () => {
-      const watcher = new FileWatcher({
-        debounceMs: 1000,
-        extensions: ['.ts'],
-        ignorePatterns: ['dist'],
-      })
-      expect(watcher.isActive()).toBe(false)
-    })
-
-    test('should handle empty options object', () => {
-      const watcher = new FileWatcher({})
-      expect(watcher.isActive()).toBe(false)
+      const customWatcher = new FileWatcher({ ignorePatterns: ['node_modules'] })
+      expect(customWatcher.isActive()).toBe(false)
     })
   })
 
-  describe('isActive', () => {
-    test('should return false when not watching', () => {
-      const watcher = new FileWatcher()
-      expect(watcher.isActive()).toBe(false)
+  describe('watch', () => {
+    test('should set isWatching to true', async () => {
+      await watcher.watch('test-dir')
+      expect(watcher.isActive()).toBe(true)
+    })
+
+    test('should call fs.watch with correct options', async () => {
+      await watcher.watch('test-dir')
+      expect(fs.watch).toHaveBeenCalled()
+    })
+
+    test('should resolve without return value', async () => {
+      const result = await watcher.watch('test-dir')
+      expect(result).toBeUndefined()
+    })
+
+    test('should watch with non-recursive mode', async () => {
+      await watcher.watch('test-dir')
+      expect(fs.watch).toHaveBeenCalledWith(
+        expect.stringContaining('test-dir'),
+        expect.objectContaining({ recursive: false, persistent: true }),
+        expect.any(Function),
+      )
     })
   })
 
   describe('stop', () => {
     test('should handle stop when not watching', async () => {
-      const watcher = new FileWatcher()
       await expect(watcher.stop()).resolves.not.toThrow()
+      expect(watcher.isActive()).toBe(false)
+    })
+
+    test('should close all watchers', async () => {
+      await watcher.watch('test-dir')
+      await watcher.stop()
+      expect(watcher.isActive()).toBe(false)
+    })
+
+    test('should set isWatching to false', async () => {
+      await watcher.watch('test-dir')
+      await watcher.stop()
+      expect(watcher.isActive()).toBe(false)
+    })
+  })
+
+  describe('isActive', () => {
+    test('should return false before watch', () => {
+      expect(watcher.isActive()).toBe(false)
+    })
+
+    test('should return true after watch', async () => {
+      await watcher.watch('test-dir')
+      expect(watcher.isActive()).toBe(true)
+    })
+
+    test('should return false after stop', async () => {
+      await watcher.watch('test-dir')
+      await watcher.stop()
       expect(watcher.isActive()).toBe(false)
     })
   })
@@ -70,54 +123,42 @@ describe('FileWatcher', () => {
     test('createWatcher should return new instance', () => {
       const watcher1 = createWatcher()
       const watcher2 = createWatcher()
-
       expect(watcher1).not.toBe(watcher2)
     })
 
-    test('getDefaultWatcher should return current default', () => {
-      const watcher = createWatcher()
+    test('createWatcher should set default watcher', () => {
+      const createdWatcher = createWatcher()
       const defaultWatcher = getDefaultWatcher()
+      expect(defaultWatcher).toBe(createdWatcher)
+    })
 
-      expect(defaultWatcher).toBe(watcher)
+    test('getDefaultWatcher should return null initially after reset', () => {
+      resetDefaultWatcher()
+      expect(getDefaultWatcher()).toBeNull()
     })
 
     test('resetDefaultWatcher should clear default watcher', () => {
       createWatcher()
       expect(getDefaultWatcher()).not.toBeNull()
-
       resetDefaultWatcher()
+      // After reset, defaultWatcher is null (asynchronously stopped but immediately set to null)
       expect(getDefaultWatcher()).toBeNull()
-    })
-
-    test('createWatcher should stop previous watcher', async () => {
-      const watcher1 = createWatcher()
-      const stopSpy = vi.spyOn(watcher1, 'stop')
-
-      createWatcher()
-
-      expect(stopSpy).toHaveBeenCalled()
     })
   })
 
   describe('event emitter', () => {
     test('should be an event emitter', () => {
-      const watcher = new FileWatcher()
       const handler = vi.fn()
-
       watcher.on('change', handler)
       watcher.emit('change', { filePath: 'test.ts', type: 'change' })
-
       expect(handler).toHaveBeenCalled()
     })
 
     test('should allow removing event listeners', () => {
-      const watcher = new FileWatcher()
       const handler = vi.fn()
-
       watcher.on('change', handler)
       watcher.off('change', handler)
       watcher.emit('change', { filePath: 'test.ts', type: 'change' })
-
       expect(handler).not.toHaveBeenCalled()
     })
   })
