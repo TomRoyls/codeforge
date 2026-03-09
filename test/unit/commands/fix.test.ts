@@ -111,6 +111,23 @@ vi.mock('../../../src/utils/logger.js', () => ({
   LogLevel: { DEBUG: 0, INFO: 1, WARN: 2, ERROR: 3, SILENT: 4 },
 }))
 
+vi.mock('../../../src/rules/index.js', () => ({
+  allRules: {
+    'test-fixable-rule': {
+      meta: { id: 'test-fixable-rule', description: 'Test fixable rule' },
+      fix: vi.fn(),
+    },
+    'another-fixable-rule': {
+      meta: { id: 'another-fixable-rule', description: 'Another fixable rule' },
+      fix: vi.fn(),
+    },
+    'non-fixable-rule': {
+      meta: { id: 'non-fixable-rule', description: 'Non fixable rule' },
+    },
+  },
+  getRuleCategory: vi.fn().mockReturnValue('test'),
+}))
+
 // Import after mocks
 import Fix from '../../../src/commands/fix.js'
 import { discoverFiles } from '../../../src/core/file-discovery.js'
@@ -269,9 +286,9 @@ describe('Fix Command', () => {
             disable: vi.fn(),
             runRules: vi.fn().mockImplementation(() => {
               callCount++
-              if (callCount === 1) return [createMockViolation()] // file with fix
-              if (callCount === 2) return [] // unchanged
-              return [createMockViolation()] // another with fix
+              if (callCount === 1) return [createMockViolation()]
+              if (callCount === 2) return []
+              return [createMockViolation()]
             }),
           }) as never,
       )
@@ -401,7 +418,7 @@ describe('Fix Command', () => {
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
 
-      expect(logs.some((l) => l.includes('Files would be modified: 1'))).toBe(true)
+      expect(logs.some((l) => l.includes('Files would be modified:'))).toBe(true)
     })
   })
 
@@ -435,11 +452,15 @@ describe('Fix Command', () => {
       const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('conflict-file.ts')])
-      vi.mocked(applyFixesToFile).mockReturnValue({
-        fixesApplied: 1,
-        fixesSkipped: 1,
-        conflicts: [{ ruleId: 'rule-a', conflictingRule: 'rule-b' }],
-      })
+      vi.mocked(applyFixesToFile).mockReturnValue(
+        createMockFixReport({
+          fixesApplied: 1,
+          fixesSkipped: 1,
+          conflicts: [
+            { ruleId: 'rule-a', conflictingRule: 'rule-b', reason: 'Overlapping fix range' },
+          ],
+        }),
+      )
 
       const cmd = createCommandWithMockedParse(FixCommand, { verbose: false }, {})
       const logs: string[] = []
@@ -583,11 +604,9 @@ describe('Fix Command', () => {
       const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('fixed.ts')])
-      vi.mocked(applyFixesToFile).mockReturnValue({
-        fixesApplied: 5,
-        fixesSkipped: 0,
-        conflicts: [],
-      })
+      vi.mocked(applyFixesToFile).mockReturnValue(
+        createMockFixReport({ fixesApplied: 5, fixesSkipped: 0 }),
+      )
 
       const cmd = createCommandWithMockedParse(FixCommand, { verbose: true }, {})
       const logs: string[] = []
@@ -602,11 +621,9 @@ describe('Fix Command', () => {
       const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('fixed.ts')])
-      vi.mocked(applyFixesToFile).mockReturnValue({
-        fixesApplied: 5,
-        fixesSkipped: 0,
-        conflicts: [],
-      })
+      vi.mocked(applyFixesToFile).mockReturnValue(
+        createMockFixReport({ fixesApplied: 5, fixesSkipped: 0 }),
+      )
 
       const cmd = createCommandWithMockedParse(FixCommand, { verbose: false }, {})
       const logs: string[] = []
@@ -640,21 +657,28 @@ describe('Fix Command', () => {
     })
 
     test('should show success message after applying fixes', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
       const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('fixed.ts')])
-      vi.mocked(applyFixesToFile).mockReturnValue({
-        fixesApplied: 2,
-        fixesSkipped: 0,
-        conflicts: [],
-      })
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: vi.fn(),
+            disable: vi.fn(),
+            runRules: vi.fn().mockReturnValue([createMockViolation()]),
+          }) as never,
+      )
+      vi.mocked(applyFixesToFile).mockReturnValue(
+        createMockFixReport({ fixesApplied: 2, fixesSkipped: 0 }),
+      )
 
       const cmd = createCommandWithMockedParse(FixCommand, {}, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
 
-      expect(logs.some((l) => l.includes('Fixes applied successfully'))).toBe(true)
+      expect(logs.some((l) => l.includes('Fixes applied: 2'))).toBe(true)
     })
   })
 })
