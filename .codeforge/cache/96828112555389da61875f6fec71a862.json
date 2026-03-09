@@ -1,0 +1,1 @@
+{"key":"config:/home/georg/code/new/.codeforgerc.json:980bf1828c96f2b0f7c3d2488cce067411cfb4ec087fe255f61a773e6cca5d91","value":{"rules":{"max-complexity":"error","no-await-in-loop":"warning"},"files":["src/**/*.ts"],"ignore":["**/test/**"]},"timestamp":1773052368425}

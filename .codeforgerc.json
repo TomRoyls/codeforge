@@ -1,0 +1,1 @@
+{"rules": {"max-complexity": "error", "no-await-in-loop": "warning"}, "files": ["src/**/*.ts", "**/*.ts", "**/*.js"], "ignore": ["**/test/**", "**/dist/**", "**/node_modules/**"]}

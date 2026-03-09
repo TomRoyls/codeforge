@@ -22,8 +22,8 @@
     "target": "ES2022",
     "verbatimModuleSyntax": true
   },
-  "include": ["./src/index.ts", "./src/commands/**/*.ts"],
-  "exclude": ["./src/rules/**/*", "./src/ast/**/*", "./src/cache/**/*", "./src/core/**/*", "./src/utils/**/*"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test"],
   "ts-node": {
     "esm": true,
     "transpileOnly": true
