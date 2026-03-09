@@ -567,6 +567,45 @@ describe('Analyze Command', () => {
 
       expect(mergeConfigs).toHaveBeenCalledWith({}, { files: ['*.ts'], ignore: ['node_modules'] })
     })
+
+    test('uses config from file when found', async () => {
+      const { findConfigPath } = await import('../../../src/config/discovery.js')
+      const { ConfigCache } = await import('../../../src/config/cache.js')
+      const { validateConfig } = await import('../../../src/config/validator.js')
+
+      const mockConfig = { rules: { 'no-console': 'error' } }
+      ;(findConfigPath as ReturnType<typeof vi.fn>).mockResolvedValueOnce('/path/to/codeforge.json')
+      ;(ConfigCache as ReturnType<typeof vi.fn>).mockImplementationOnce(() => ({
+        getConfig: vi.fn().mockResolvedValue(mockConfig),
+      }))
+
+      mockDiscoverFiles.mockResolvedValue([])
+      const command = new Analyze([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(validateConfig).toHaveBeenCalledWith(mockConfig)
+    })
   })
 
   describe('setupRuleRegistry with requested rules', () => {
