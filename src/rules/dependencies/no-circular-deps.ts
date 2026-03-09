@@ -9,72 +9,62 @@ import type {
   RuleContext,
   RuleVisitor,
   SourceLocation,
-} from '../../plugins/types.js';
-import { extractLocation } from '../../ast/location-utils.js';
+} from '../../plugins/types.js'
+import { extractLocation } from '../../ast/location-utils.js'
 
 interface ImportInfo {
-  readonly sourceFile: string;
-  readonly modulePath: string;
-  readonly location: SourceLocation;
+  readonly sourceFile: string
+  readonly modulePath: string
+  readonly location: SourceLocation
 }
 
 interface DependencyNode {
-  readonly filePath: string;
-  readonly imports: Set<string>;
-  readonly importDetails: Map<string, ImportInfo>;
+  readonly filePath: string
+  readonly imports: Set<string>
+  readonly importDetails: Map<string, ImportInfo>
 }
 
 interface DependencyGraph {
-  readonly nodes: Map<string, DependencyNode>;
+  readonly nodes: Map<string, DependencyNode>
 }
 
 interface CircularDependency {
-  readonly cycle: readonly string[];
-  readonly location: SourceLocation;
+  readonly cycle: readonly string[]
+  readonly location: SourceLocation
 }
 
 interface CircularDepsOptions {
-  readonly maxDepth?: number;
-  readonly ignoreTypeOnly?: boolean;
-  readonly exclude?: readonly string[];
+  readonly maxDepth?: number
+  readonly ignoreTypeOnly?: boolean
+  readonly exclude?: readonly string[]
 }
 
 class DependencyGraphBuilder {
-  private readonly graph: DependencyGraph = { nodes: new Map() };
+  private readonly graph: DependencyGraph = { nodes: new Map() }
 
-  addFile(
-    filePath: string,
-    imports: readonly ImportInfo[]
-  ): void {
+  addFile(filePath: string, imports: readonly ImportInfo[]): void {
     const node: DependencyNode = {
       filePath,
       imports: new Set(imports.map((i) => i.modulePath)),
       importDetails: new Map(imports.map((i) => [i.modulePath, i])),
-    };
-    this.graph.nodes.set(filePath, node);
+    }
+    this.graph.nodes.set(filePath, node)
   }
 
   getGraph(): DependencyGraph {
-    return this.graph;
+    return this.graph
   }
 
   detectCycles(maxDepth: number = 50): CircularDependency[] {
-    const cycles: CircularDependency[] = [];
-    const visited = new Set<string>();
-    const recursionStack = new Set<string>();
+    const cycles: CircularDependency[] = []
+    const visited = new Set<string>()
+    const recursionStack = new Set<string>()
 
     for (const filePath of this.graph.nodes.keys()) {
-      this.detectCyclesFromNode(
-        filePath,
-        [],
-        visited,
-        recursionStack,
-        cycles,
-        maxDepth
-      );
+      this.detectCyclesFromNode(filePath, [], visited, recursionStack, cycles, maxDepth)
     }
 
-    return this.deduplicateCycles(cycles);
+    return this.deduplicateCycles(cycles)
   }
 
   private detectCyclesFromNode(
@@ -83,17 +73,17 @@ class DependencyGraphBuilder {
     visited: Set<string>,
     recursionStack: Set<string>,
     cycles: CircularDependency[],
-    maxDepth: number
+    maxDepth: number,
   ): void {
     if (path.length > maxDepth) {
-      return;
+      return
     }
 
-    visited.add(currentPath);
-    recursionStack.add(currentPath);
-    path.push(currentPath);
+    visited.add(currentPath)
+    recursionStack.add(currentPath)
+    path.push(currentPath)
 
-    const node = this.graph.nodes.get(currentPath);
+    const node = this.graph.nodes.get(currentPath)
     if (node) {
       for (const dependency of node.imports) {
         if (!visited.has(dependency)) {
@@ -103,172 +93,164 @@ class DependencyGraphBuilder {
             visited,
             recursionStack,
             cycles,
-            maxDepth
-          );
+            maxDepth,
+          )
         } else if (recursionStack.has(dependency)) {
-          const cycleStartIndex = path.indexOf(dependency);
-          const cycle = [...path.slice(cycleStartIndex), dependency];
-          
-          const importDetail = node.importDetails.get(dependency);
+          const cycleStartIndex = path.indexOf(dependency)
+          const cycle = [...path.slice(cycleStartIndex), dependency]
+
+          const importDetail = node.importDetails.get(dependency)
           if (importDetail) {
             cycles.push({
               cycle,
               location: importDetail.location,
-            });
+            })
           }
         }
       }
     }
 
-    path.pop();
-    recursionStack.delete(currentPath);
+    path.pop()
+    recursionStack.delete(currentPath)
   }
 
   private deduplicateCycles(cycles: CircularDependency[]): CircularDependency[] {
-    const seen = new Set<string>();
-    const unique: CircularDependency[] = [];
+    const seen = new Set<string>()
+    const unique: CircularDependency[] = []
 
     for (const cycle of cycles) {
-      const normalized = this.normalizeCycle(cycle.cycle);
-      const key = normalized.join('->');
+      const normalized = this.normalizeCycle(cycle.cycle)
+      const key = normalized.join('->')
 
       if (!seen.has(key)) {
-        seen.add(key);
-        unique.push(cycle);
+        seen.add(key)
+        unique.push(cycle)
       }
     }
 
-    return unique;
+    return unique
   }
 
   private normalizeCycle(cycle: readonly string[]): string[] {
-    const withoutLast = cycle.slice(0, -1);
-    let minIndex = 0;
+    const withoutLast = cycle.slice(0, -1)
+    let minIndex = 0
 
     for (let i = 1; i < withoutLast.length; i++) {
-      const current = withoutLast[i];
-      const min = withoutLast[minIndex];
+      const current = withoutLast[i]
+      const min = withoutLast[minIndex]
       if (current !== undefined && min !== undefined && current < min) {
-        minIndex = i;
+        minIndex = i
       }
     }
 
-    const minElement = withoutLast[minIndex];
+    const minElement = withoutLast[minIndex]
     if (minElement === undefined) {
-      return [...withoutLast] as string[];
+      return [...withoutLast] as string[]
     }
 
-    const rotated = [
-      ...withoutLast.slice(minIndex),
-      ...withoutLast.slice(0, minIndex),
-      minElement,
-    ];
+    const rotated = [...withoutLast.slice(minIndex), ...withoutLast.slice(0, minIndex), minElement]
 
-    return rotated.filter((item): item is string => item !== undefined);
+    return rotated.filter((item): item is string => item !== undefined)
   }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractImports(ast: any, filePath: string): ImportInfo[] {
-  const imports: ImportInfo[] = [];
+  const imports: ImportInfo[] = []
 
   if (!ast || typeof ast !== 'object') {
-    return imports;
+    return imports
   }
 
-  const body = ast.body ?? ast.program?.body ?? [];
-  
+  const body = ast.body ?? ast.program?.body ?? []
+
   for (const node of body) {
-    const importInfo = extractImportFromNode(node, filePath);
+    const importInfo = extractImportFromNode(node, filePath)
     if (importInfo) {
-      imports.push(importInfo);
+      imports.push(importInfo)
     }
   }
 
-  return imports;
+  return imports
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractImportFromNode(node: any, filePath: string): ImportInfo | null {
   if (!node || typeof node !== 'object') {
-    return null;
+    return null
   }
 
-  const location = extractLocation(node);
+  const location = extractLocation(node)
 
   if (node.type === 'ImportDeclaration' && node.source?.value) {
     return {
       sourceFile: filePath,
       modulePath: node.source.value,
       location,
-    };
+    }
   }
 
   if (
-    (node.type === 'ExportNamedDeclaration' ||
-      node.type === 'ExportAllDeclaration') &&
+    (node.type === 'ExportNamedDeclaration' || node.type === 'ExportAllDeclaration') &&
     node.source?.value
   ) {
     return {
       sourceFile: filePath,
       modulePath: node.source.value,
       location,
-    };
+    }
   }
 
-  if (
-    node.type === 'VariableDeclaration' ||
-    node.type === 'ExpressionStatement'
-  ) {
-    const requireCall = findRequireCall(node);
+  if (node.type === 'VariableDeclaration' || node.type === 'ExpressionStatement') {
+    const requireCall = findRequireCall(node)
     if (requireCall) {
       return {
         sourceFile: filePath,
         modulePath: requireCall.argument,
         location,
-      };
+      }
     }
   }
 
   if (node.type === 'ExpressionStatement' && isDynamicImport(node.expression)) {
-    const importArg = getDynamicImportArgument(node.expression);
+    const importArg = getDynamicImportArgument(node.expression)
     if (importArg) {
       return {
         sourceFile: filePath,
         modulePath: importArg,
         location,
-      };
+      }
     }
   }
 
-  return null;
+  return null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function findRequireCall(node: any): { argument: string } | null {
   if (!node || typeof node !== 'object') {
-    return null;
+    return null
   }
 
   if (node.type === 'VariableDeclaration') {
     for (const decl of node.declarations ?? []) {
       if (decl.init && isRequireCall(decl.init)) {
-        const arg = decl.init.arguments?.[0]?.value;
+        const arg = decl.init.arguments?.[0]?.value
         if (typeof arg === 'string') {
-          return { argument: arg };
+          return { argument: arg }
         }
       }
     }
   }
 
   if (node.type === 'ExpressionStatement' && isRequireCall(node.expression)) {
-    const arg = node.expression.arguments?.[0]?.value;
+    const arg = node.expression.arguments?.[0]?.value
     if (typeof arg === 'string') {
-      return { argument: arg };
+      return { argument: arg }
     }
   }
 
-  return null;
+  return null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -277,21 +259,21 @@ function isRequireCall(node: any): boolean {
     node.type === 'CallExpression' &&
     node.callee?.type === 'Identifier' &&
     node.callee.name === 'require'
-  );
+  )
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isDynamicImport(node: any): boolean {
-  return node?.type === 'CallExpression' && node?.callee?.type === 'Import';
+  return node?.type === 'CallExpression' && node?.callee?.type === 'Import'
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getDynamicImportArgument(node: any): string | null {
   if (isDynamicImport(node) && node.arguments?.[0]?.type === 'StringLiteral') {
-    const val = node.arguments[0].value;
-    return typeof val === 'string' ? val : null;
+    const val = node.arguments[0].value
+    return typeof val === 'string' ? val : null
   }
-  return null;
+  return null
 }
 
 /**
@@ -334,48 +316,44 @@ export const noCircularDepsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options;
+    const rawOptions = context.config.options
     const options: CircularDepsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0
-        ? rawOptions[0]
-        : {}
-    ) as CircularDepsOptions;
-    const maxDepth = options.maxDepth ?? 50;
-    const filePath = context.getFilePath();
+      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
+    ) as CircularDepsOptions
+    const maxDepth = options.maxDepth ?? 50
+    const filePath = context.getFilePath()
 
-    const fileImports = new Map<string, ImportInfo[]>();
-    const builder = new DependencyGraphBuilder();
+    const fileImports = new Map<string, ImportInfo[]>()
+    const builder = new DependencyGraphBuilder()
 
     return {
       Program(node: unknown): void {
-        const ast = context.getAST() ?? node;
-        const imports = extractImports(ast, filePath);
-        fileImports.set(filePath, imports);
-        builder.addFile(filePath, imports);
+        const ast = context.getAST() ?? node
+        const imports = extractImports(ast, filePath)
+        fileImports.set(filePath, imports)
+        builder.addFile(filePath, imports)
       },
 
       ImportDeclaration(node: unknown): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const n = node as any;
+        const n = node as any
         if (n.source?.value) {
-          const imports = fileImports.get(filePath) ?? [];
-          const modulePath = n.source.value;
-          
-          const existingImports = fileImports.get(modulePath);
+          const imports = fileImports.get(filePath) ?? []
+          const modulePath = n.source.value
+
+          const existingImports = fileImports.get(modulePath)
           if (existingImports) {
-            const hasCycle = existingImports.some(
-              (imp) => imp.modulePath === filePath
-            );
-            
+            const hasCycle = existingImports.some((imp) => imp.modulePath === filePath)
+
             if (hasCycle) {
               context.report({
                 node,
                 message: `Circular dependency detected: ${filePath} -> ${modulePath} -> ${filePath}`,
                 loc: extractLocation(n),
-              });
+              })
             }
           }
-          
+
           fileImports.set(filePath, [
             ...imports,
             {
@@ -383,18 +361,18 @@ export const noCircularDepsRule: RuleDefinition = {
               modulePath,
               location: extractLocation(n),
             },
-          ]);
+          ])
         }
       },
 
       CallExpression(node: unknown): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const n = node as any;
-        
+        const n = node as any
+
         if (isRequireCall(n)) {
-          const modulePath = n.arguments?.[0]?.value;
+          const modulePath = n.arguments?.[0]?.value
           if (typeof modulePath === 'string') {
-            const imports = fileImports.get(filePath) ?? [];
+            const imports = fileImports.get(filePath) ?? []
             fileImports.set(filePath, [
               ...imports,
               {
@@ -402,24 +380,24 @@ export const noCircularDepsRule: RuleDefinition = {
                 modulePath,
                 location: extractLocation(n),
               },
-            ]);
+            ])
           }
         }
       },
 
       'Program:exit'(): void {
-        const cycles = builder.detectCycles(maxDepth);
-        
+        const cycles = builder.detectCycles(maxDepth)
+
         for (const cycle of cycles) {
-          const cyclePath = cycle.cycle.join(' -> ');
+          const cyclePath = cycle.cycle.join(' -> ')
           context.report({
             message: `Circular dependency detected: ${cyclePath}`,
             loc: cycle.location,
-          });
+          })
         }
       },
-    };
+    }
   },
-};
+}
 
-export default noCircularDepsRule;
+export default noCircularDepsRule

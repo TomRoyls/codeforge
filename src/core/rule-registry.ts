@@ -1,21 +1,21 @@
-import type { SourceFile } from "ts-morph";
-import { traverseAST, type RuleViolation } from "../ast/visitor.js";
-import type { RuleDefinition, RuleOptions } from "../rules/types.js";
+import type { SourceFile } from 'ts-morph'
+import { traverseAST, type RuleViolation } from '../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../rules/types.js'
 
-export type RuleCategory = "complexity" | "dependencies" | "performance" | "security" | "patterns";
+export type RuleCategory = 'complexity' | 'dependencies' | 'performance' | 'security' | 'patterns'
 
 export interface LoadedRule {
-  category: RuleCategory;
-  definition: RuleDefinition;
-  enabled: boolean;
-  options: RuleOptions;
+  category: RuleCategory
+  definition: RuleDefinition
+  enabled: boolean
+  options: RuleOptions
 }
 
 /**
  * Registry for managing and running code analysis rules
  */
 export class RuleRegistry {
-  private rules = new Map<string, LoadedRule>();
+  private rules = new Map<string, LoadedRule>()
 
   /**
    * Registers a new rule in the registry
@@ -26,13 +26,18 @@ export class RuleRegistry {
    * @example
    * registry.register('no-console', myRuleDefinition, 'performance');
    */
-  register(ruleId: string, definition: RuleDefinition, category: RuleCategory, options: RuleOptions = {}): void {
+  register(
+    ruleId: string,
+    definition: RuleDefinition,
+    category: RuleCategory,
+    options: RuleOptions = {},
+  ): void {
     this.rules.set(ruleId, {
       category,
       definition,
       enabled: true,
       options,
-    });
+    })
   }
 
   /**
@@ -42,9 +47,9 @@ export class RuleRegistry {
    * registry.enable('no-console');
    */
   enable(ruleId: string): void {
-    const rule = this.rules.get(ruleId);
+    const rule = this.rules.get(ruleId)
     if (rule) {
-      rule.enabled = true;
+      rule.enabled = true
     }
   }
 
@@ -55,9 +60,9 @@ export class RuleRegistry {
    * registry.disable('no-console');
    */
   disable(ruleId: string): void {
-    const rule = this.rules.get(ruleId);
+    const rule = this.rules.get(ruleId)
     if (rule) {
-      rule.enabled = false;
+      rule.enabled = false
     }
   }
 
@@ -69,7 +74,7 @@ export class RuleRegistry {
    * console.log(`Active rules: ${enabledRules.length}`);
    */
   getEnabledRules(): LoadedRule[] {
-    return Array.from(this.rules.values()).filter((r) => r.enabled);
+    return Array.from(this.rules.values()).filter((r) => r.enabled)
   }
 
   /**
@@ -83,7 +88,7 @@ export class RuleRegistry {
    * }
    */
   getRule(ruleId: string): LoadedRule | undefined {
-    return this.rules.get(ruleId);
+    return this.rules.get(ruleId)
   }
 
   /**
@@ -95,26 +100,26 @@ export class RuleRegistry {
    * violations.forEach(v => console.error(`${v.message} at ${v.location}`));
    */
   runRules(sourceFile: SourceFile): RuleViolation[] {
-    const allViolations: RuleViolation[] = [];
-    const enabledRules = this.getEnabledRules();
+    const allViolations: RuleViolation[] = []
+    const enabledRules = this.getEnabledRules()
 
     for (const loadedRule of enabledRules) {
-      const { definition, options } = loadedRule;
-      const { visitor, onComplete } = definition.create(options);
+      const { definition, options } = loadedRule
+      const { visitor, onComplete } = definition.create(options)
 
-      const violations: RuleViolation[] = [];
+      const violations: RuleViolation[] = []
 
-      traverseAST(sourceFile, visitor, violations);
+      traverseAST(sourceFile, visitor, violations)
 
       if (onComplete) {
-        const completedViolations = onComplete();
-        allViolations.push(...completedViolations);
+        const completedViolations = onComplete()
+        allViolations.push(...completedViolations)
       }
 
-      allViolations.push(...violations);
+      allViolations.push(...violations)
     }
 
-    return allViolations;
+    return allViolations
   }
 }
 
@@ -126,6 +131,6 @@ export class RuleRegistry {
  * registry.register('my-rule', myRuleDefinition, 'complexity');
  */
 export function createDefaultRegistry(): RuleRegistry {
-  const registry = new RuleRegistry();
-  return registry;
+  const registry = new RuleRegistry()
+  return registry
 }

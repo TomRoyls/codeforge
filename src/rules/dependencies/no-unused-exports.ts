@@ -9,79 +9,74 @@ import type {
   RuleContext,
   RuleVisitor,
   SourceLocation,
-} from '../../plugins/types.js';
-import { extractLocation } from '../../ast/location-utils.js';
+} from '../../plugins/types.js'
+import { extractLocation } from '../../ast/location-utils.js'
 
 interface ExportInfo {
-  readonly name: string;
-  readonly filePath: string;
-  readonly type: 'named' | 'default' | 'namespace';
-  readonly location: SourceLocation;
-  readonly isTypeOnly: boolean;
+  readonly name: string
+  readonly filePath: string
+  readonly type: 'named' | 'default' | 'namespace'
+  readonly location: SourceLocation
+  readonly isTypeOnly: boolean
 }
 
 interface ImportInfo {
-  readonly name: string;
-  readonly sourceFile: string;
-  readonly targetFile: string;
-  readonly isTypeOnly: boolean;
+  readonly name: string
+  readonly sourceFile: string
+  readonly targetFile: string
+  readonly isTypeOnly: boolean
 }
 
 interface UnusedExportsOptions {
-  readonly ignorePatterns?: readonly string[];
-  readonly ignoreTypeOnly?: boolean;
-  readonly allowEntryExports?: boolean;
-  readonly entryFiles?: readonly string[];
+  readonly ignorePatterns?: readonly string[]
+  readonly ignoreTypeOnly?: boolean
+  readonly allowEntryExports?: boolean
+  readonly entryFiles?: readonly string[]
 }
 
-const globalExports = new Map<string, ExportInfo[]>();
-const globalImports = new Map<string, ImportInfo[]>();
+const globalExports = new Map<string, ExportInfo[]>()
+const globalImports = new Map<string, ImportInfo[]>()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractExports(ast: any, filePath: string): ExportInfo[] {
-  const exports: ExportInfo[] = [];
+  const exports: ExportInfo[] = []
 
   if (!ast || typeof ast !== 'object') {
-    return exports;
+    return exports
   }
 
-  const body = ast.body ?? ast.program?.body ?? [];
+  const body = ast.body ?? ast.program?.body ?? []
 
   for (const node of body) {
-    const nodeExports = extractExportsFromNode(node, filePath);
-    exports.push(...nodeExports);
+    const nodeExports = extractExportsFromNode(node, filePath)
+    exports.push(...nodeExports)
   }
 
-  return exports;
+  return exports
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
-  const exports: ExportInfo[] = [];
+  const exports: ExportInfo[] = []
 
   if (!node || typeof node !== 'object') {
-    return exports;
+    return exports
   }
 
-  const location = extractLocation(node);
+  const location = extractLocation(node)
 
   switch (node.type) {
     case 'ExportNamedDeclaration':
       if (node.declaration) {
-        if (
-          node.declaration.type === 'FunctionDeclaration' &&
-          node.declaration.id?.name
-        ) {
+        if (node.declaration.type === 'FunctionDeclaration' && node.declaration.id?.name) {
           exports.push({
             name: node.declaration.id.name,
             filePath,
             type: 'named',
             location,
             isTypeOnly: node.exportKind === 'type',
-          });
-        } else if (
-          node.declaration.type === 'VariableDeclaration'
-        ) {
+          })
+        } else if (node.declaration.type === 'VariableDeclaration') {
           for (const decl of node.declaration.declarations ?? []) {
             if (decl.id?.type === 'Identifier' && decl.id.name) {
               exports.push({
@@ -90,20 +85,17 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
                 type: 'named',
                 location,
                 isTypeOnly: node.exportKind === 'type',
-              });
+              })
             }
           }
-        } else if (
-          node.declaration.type === 'ClassDeclaration' &&
-          node.declaration.id?.name
-        ) {
+        } else if (node.declaration.type === 'ClassDeclaration' && node.declaration.id?.name) {
           exports.push({
             name: node.declaration.id.name,
             filePath,
             type: 'named',
             location,
             isTypeOnly: node.exportKind === 'type',
-          });
+          })
         } else if (
           node.declaration.type === 'TSTypeAliasDeclaration' &&
           node.declaration.id?.name
@@ -114,7 +106,7 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
             type: 'named',
             location,
             isTypeOnly: true,
-          });
+          })
         } else if (
           node.declaration.type === 'TSInterfaceDeclaration' &&
           node.declaration.id?.name
@@ -125,7 +117,7 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
             type: 'named',
             location,
             isTypeOnly: true,
-          });
+          })
         }
       } else if (node.specifiers) {
         for (const spec of node.specifiers) {
@@ -136,11 +128,11 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
               type: 'named',
               location,
               isTypeOnly: spec.exportKind === 'type' || node.exportKind === 'type',
-            });
+            })
           }
         }
       }
-      break;
+      break
 
     case 'ExportDefaultDeclaration':
       exports.push({
@@ -149,8 +141,8 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
         type: 'default',
         location,
         isTypeOnly: false,
-      });
-      break;
+      })
+      break
 
     case 'ExportAllDeclaration':
       exports.push({
@@ -159,12 +151,12 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
         type: 'namespace',
         location,
         isTypeOnly: node.exportKind === 'type',
-      });
-      break;
+      })
+      break
 
     case 'FunctionDeclaration':
       if (node.id?.name) {
-        const hasExport = hasExportModifier(node);
+        const hasExport = hasExportModifier(node)
         if (hasExport) {
           exports.push({
             name: node.id.name,
@@ -172,14 +164,14 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
             type: 'named',
             location,
             isTypeOnly: false,
-          });
+          })
         }
       }
-      break;
+      break
 
     case 'ClassDeclaration':
       if (node.id?.name) {
-        const hasExport = hasExportModifier(node);
+        const hasExport = hasExportModifier(node)
         if (hasExport) {
           exports.push({
             name: node.id.name,
@@ -187,13 +179,13 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
             type: 'named',
             location,
             isTypeOnly: false,
-          });
+          })
         }
       }
-      break;
+      break
 
     case 'VariableDeclaration':
-      const hasExport = hasExportModifier(node);
+      const hasExport = hasExportModifier(node)
       if (hasExport) {
         for (const decl of node.declarations ?? []) {
           if (decl.id?.type === 'Identifier' && decl.id.name) {
@@ -203,69 +195,69 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
               type: 'named',
               location,
               isTypeOnly: false,
-            });
+            })
           }
         }
       }
-      break;
+      break
   }
 
-  return exports;
+  return exports
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function hasExportModifier(node: any): boolean {
-  if (!node.modifiers) return false;
+  if (!node.modifiers) return false
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return node.modifiers.some((mod: any) => mod.type === 'TSExportKeyword' || mod.kind === 'export');
+  return node.modifiers.some((mod: any) => mod.type === 'TSExportKeyword' || mod.kind === 'export')
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractImports(ast: any, filePath: string): ImportInfo[] {
-  const imports: ImportInfo[] = [];
+  const imports: ImportInfo[] = []
 
   if (!ast || typeof ast !== 'object') {
-    return imports;
+    return imports
   }
 
-  const body = ast.body ?? ast.program?.body ?? [];
+  const body = ast.body ?? ast.program?.body ?? []
 
   for (const node of body) {
-    const nodeImports = extractImportsFromNode(node, filePath);
-    imports.push(...nodeImports);
+    const nodeImports = extractImportsFromNode(node, filePath)
+    imports.push(...nodeImports)
   }
 
-  return imports;
+  return imports
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractImportsFromNode(node: any, filePath: string): ImportInfo[] {
-  const imports: ImportInfo[] = [];
+  const imports: ImportInfo[] = []
 
   if (!node || typeof node !== 'object') {
-    return imports;
+    return imports
   }
 
   switch (node.type) {
     case 'ImportDeclaration':
-      const source = node.source?.value;
+      const source = node.source?.value
       if (source) {
         if (node.specifiers) {
           for (const spec of node.specifiers) {
-            let importedName = '';
-            let isTypeOnly = node.importKind === 'type';
+            let importedName = ''
+            let isTypeOnly = node.importKind === 'type'
 
             switch (spec.type) {
               case 'ImportDefaultSpecifier':
-                importedName = 'default';
-                break;
+                importedName = 'default'
+                break
               case 'ImportNamespaceSpecifier':
-                importedName = '*';
-                break;
+                importedName = '*'
+                break
               case 'ImportSpecifier':
-                importedName = spec.imported?.name ?? '';
-                isTypeOnly = isTypeOnly || spec.importKind === 'type';
-                break;
+                importedName = spec.imported?.name ?? ''
+                isTypeOnly = isTypeOnly || spec.importKind === 'type'
+                break
             }
 
             if (importedName) {
@@ -274,12 +266,12 @@ function extractImportsFromNode(node: any, filePath: string): ImportInfo[] {
                 sourceFile: filePath,
                 targetFile: source,
                 isTypeOnly,
-              });
+              })
             }
           }
         }
       }
-      break;
+      break
 
     case 'CallExpression':
       if (
@@ -287,83 +279,72 @@ function extractImportsFromNode(node: any, filePath: string): ImportInfo[] {
         node.callee.name === 'require' &&
         node.arguments?.[0]?.type === 'StringLiteral'
       ) {
-        const source = node.arguments[0].value;
+        const source = node.arguments[0].value
         imports.push({
           name: '*',
           sourceFile: filePath,
           targetFile: source,
           isTypeOnly: false,
-        });
+        })
       } else if (node.callee?.type === 'Import') {
-        const source = node.arguments?.[0]?.value;
+        const source = node.arguments?.[0]?.value
         if (source) {
           imports.push({
             name: '*',
             sourceFile: filePath,
             targetFile: source,
             isTypeOnly: false,
-          });
+          })
         }
       }
-      break;
+      break
 
     case 'TSImportEqualsDeclaration':
-      const moduleRef = node.moduleReference;
-      if (
-        moduleRef?.type === 'TSExternalModuleReference' &&
-        moduleRef.expression?.value
-      ) {
+      const moduleRef = node.moduleReference
+      if (moduleRef?.type === 'TSExternalModuleReference' && moduleRef.expression?.value) {
         imports.push({
           name: node.id?.name ?? '*',
           sourceFile: filePath,
           targetFile: moduleRef.expression.value,
           isTypeOnly: node.isTypeOnly ?? false,
-        });
+        })
       }
-      break;
+      break
   }
 
-  return imports;
+  return imports
 }
 
-function isEntryFile(
-  filePath: string,
-  entryFiles: readonly string[]
-): boolean {
+function isEntryFile(filePath: string, entryFiles: readonly string[]): boolean {
   if (entryFiles.length === 0) {
-    const fileName = filePath.split('/').pop() ?? '';
+    const fileName = filePath.split('/').pop() ?? ''
     return (
       fileName === 'index.ts' ||
       fileName === 'index.js' ||
       fileName === 'main.ts' ||
       fileName === 'main.js'
-    );
+    )
   }
 
   return entryFiles.some((pattern) => {
     if (pattern.includes('*')) {
-      const regex = new RegExp(
-        pattern.replace(/\*/g, '.*').replace(/\?/g, '.')
-      );
-      return regex.test(filePath);
+      const regex = new RegExp(pattern.replace(/\*/g, '.*').replace(/\?/g, '.'))
+      return regex.test(filePath)
     }
-    return filePath.includes(pattern);
-  });
+    return filePath.includes(pattern)
+  })
 }
 
-function shouldIgnoreExport(
-  name: string,
-  patterns: readonly string[]
-): boolean {
-  if (patterns.length === 0) return false;
+function shouldIgnoreExport(name: string, patterns: readonly string[]): boolean {
+  if (patterns.length === 0) return false
 
   return patterns.some((pattern) => {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
-      const regex = new RegExp(pattern.slice(1, -1));
-      return regex.test(name);
+      const regex = new RegExp(pattern.slice(1, -1))
+      return regex.test(name)
     }
-    return name === pattern;
-  });
+    return name === pattern
+  })
 }
 
 /**
@@ -408,64 +389,62 @@ export const noUnusedExportsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options;
+    const rawOptions = context.config.options
     const options: UnusedExportsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0
-        ? rawOptions[0]
-        : {}
-    ) as UnusedExportsOptions;
-    const filePath = context.getFilePath();
-    const ignorePatterns = options.ignorePatterns ?? [];
-    const ignoreTypeOnly = options.ignoreTypeOnly ?? false;
-    const allowEntryExports = options.allowEntryExports ?? true;
-    const entryFiles = options.entryFiles ?? [];
+      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
+    ) as UnusedExportsOptions
+    const filePath = context.getFilePath()
+    const ignorePatterns = options.ignorePatterns ?? []
+    const ignoreTypeOnly = options.ignoreTypeOnly ?? false
+    const allowEntryExports = options.allowEntryExports ?? true
+    const entryFiles = options.entryFiles ?? []
 
     return {
       Program(node: unknown): void {
-        const ast = context.getAST() ?? node;
-        const exports = extractExports(ast, filePath);
-        const imports = extractImports(ast, filePath);
+        const ast = context.getAST() ?? node
+        const exports = extractExports(ast, filePath)
+        const imports = extractImports(ast, filePath)
 
-        globalExports.set(filePath, exports);
-        globalImports.set(filePath, imports);
+        globalExports.set(filePath, exports)
+        globalImports.set(filePath, imports)
       },
 
       'Program:exit'(): void {
         if (allowEntryExports && isEntryFile(filePath, entryFiles)) {
-          return;
+          return
         }
 
-        const fileExports = globalExports.get(filePath) ?? [];
-        const usedExports = new Set<string>();
+        const fileExports = globalExports.get(filePath) ?? []
+        const usedExports = new Set<string>()
 
         for (const [, imports] of globalImports) {
           for (const imp of imports) {
-            const resolvedTarget = imp.targetFile;
+            const resolvedTarget = imp.targetFile
             if (resolvedTarget === filePath || resolvedTarget.endsWith(filePath)) {
-              usedExports.add(imp.name);
+              usedExports.add(imp.name)
             }
           }
         }
 
         for (const exp of fileExports) {
           if (ignoreTypeOnly && exp.isTypeOnly) {
-            continue;
+            continue
           }
 
           if (shouldIgnoreExport(exp.name, ignorePatterns)) {
-            continue;
+            continue
           }
 
           if (!usedExports.has(exp.name) && !usedExports.has('*')) {
             context.report({
               message: `Export '${exp.name}' is never used in other modules`,
               loc: exp.location,
-            });
+            })
           }
         }
       },
-    };
+    }
   },
-};
+}
 
-export default noUnusedExportsRule;
+export default noUnusedExportsRule

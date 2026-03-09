@@ -8,61 +8,58 @@ import type {
   RuleContext,
   RuleVisitor,
   SourceLocation,
-} from '../../plugins/types.js';
+} from '../../plugins/types.js'
 
 interface FileInfo {
-  readonly lineCount: number;
-  readonly characterCount: number;
-  readonly filePath: string;
+  readonly lineCount: number
+  readonly characterCount: number
+  readonly filePath: string
 }
 
 interface MaxFileSizeOptions {
-  readonly maxLines?: number;
-  readonly maxCharacters?: number;
-  readonly ignoreComments?: boolean;
-  readonly ignoreBlankLines?: boolean;
-  readonly exclude?: readonly string[];
+  readonly maxLines?: number
+  readonly maxCharacters?: number
+  readonly ignoreComments?: boolean
+  readonly ignoreBlankLines?: boolean
+  readonly exclude?: readonly string[]
 }
 
 function countLines(source: string, ignoreBlankLines: boolean): number {
-  const lines = source.split('\n');
+  const lines = source.split('\n')
   if (ignoreBlankLines) {
-    return lines.filter((line) => line.trim().length > 0).length;
+    return lines.filter((line) => line.trim().length > 0).length
   }
-  return lines.length;
+  return lines.length
 }
 
 function removeComments(source: string): string {
   // Remove single-line comments
-  let result = source.replace(/\/\/.*$/gm, '');
+  let result = source.replace(/\/\/.*$/gm, '')
   // Remove multi-line comments
-  result = result.replace(/\/\*[\s\S]*?\*\//g, '');
-  return result;
+  result = result.replace(/\/\*[\s\S]*?\*\//g, '')
+  return result
 }
 
 function extractLocation(_source: string, line: number): SourceLocation {
   return {
     start: { line, column: 0 },
     end: { line, column: 1 },
-  };
+  }
 }
 
 function shouldExclude(filePath: string, excludePatterns: readonly string[]): boolean {
   for (const pattern of excludePatterns) {
     if (filePath.includes(pattern) || matchGlob(filePath, pattern)) {
-      return true;
+      return true
     }
   }
-  return false;
+  return false
 }
 
 function matchGlob(filePath: string, pattern: string): boolean {
   // Simple glob matching
-  const regex = pattern
-    .replace(/\*\*/g, '.*')
-    .replace(/\*/g, '[^/]*')
-    .replace(/\?/g, '.');
-  return new RegExp(regex).test(filePath);
+  const regex = pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*').replace(/\?/g, '.')
+  return new RegExp(regex).test(filePath)
 }
 
 /**
@@ -113,53 +110,51 @@ export const maxFileSizeRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options;
+    const rawOptions = context.config.options
     const options: MaxFileSizeOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0
-        ? rawOptions[0]
-        : {}
-    ) as MaxFileSizeOptions;
+      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
+    ) as MaxFileSizeOptions
 
-    const maxLines = options.maxLines ?? 500;
-    const maxCharacters = options.maxCharacters ?? 50000;
-    const ignoreComments = options.ignoreComments ?? false;
-    const ignoreBlankLines = options.ignoreBlankLines ?? false;
-    const exclude = options.exclude ?? [];
+    const maxLines = options.maxLines ?? 500
+    const maxCharacters = options.maxCharacters ?? 50000
+    const ignoreComments = options.ignoreComments ?? false
+    const ignoreBlankLines = options.ignoreBlankLines ?? false
+    const exclude = options.exclude ?? []
 
-    const filePath = context.getFilePath();
+    const filePath = context.getFilePath()
 
     // Check exclusion early
     if (shouldExclude(filePath, exclude)) {
-      return {};
+      return {}
     }
 
-    let source = context.getSource();
-    let fileInfo: FileInfo | null = null;
+    let source = context.getSource()
+    let fileInfo: FileInfo | null = null
 
     return {
       Program(_node: unknown): void {
         // Process source
-        let processedSource = source;
-        
+        let processedSource = source
+
         if (ignoreComments) {
-          processedSource = removeComments(source);
+          processedSource = removeComments(source)
         }
 
-        const lineCount = countLines(processedSource, ignoreBlankLines);
-        const characterCount = processedSource.length;
+        const lineCount = countLines(processedSource, ignoreBlankLines)
+        const characterCount = processedSource.length
 
         fileInfo = {
           lineCount,
           characterCount,
           filePath,
-        };
+        }
 
         // Check line limit
         if (lineCount > maxLines) {
           context.report({
             message: `File has ${lineCount} lines, which exceeds the maximum of ${maxLines} lines. Consider splitting this file into smaller modules.`,
             loc: extractLocation(source, 1),
-          });
+          })
         }
 
         // Check character limit
@@ -167,7 +162,7 @@ export const maxFileSizeRule: RuleDefinition = {
           context.report({
             message: `File has ${characterCount} characters, which exceeds the maximum of ${maxCharacters} characters. Consider splitting this file into smaller modules.`,
             loc: extractLocation(source, 1),
-          });
+          })
         }
       },
 
@@ -177,11 +172,11 @@ export const maxFileSizeRule: RuleDefinition = {
           context.report({
             message: `File is critically large (${fileInfo.lineCount} lines). This significantly impacts maintainability and should be refactored immediately.`,
             loc: extractLocation(source, 1),
-          });
+          })
         }
       },
-    };
+    }
   },
-};
+}
 
-export default maxFileSizeRule;
+export default maxFileSizeRule

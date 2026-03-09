@@ -8,60 +8,57 @@ import type {
   RuleContext,
   RuleVisitor,
   SourceLocation,
-} from '../../plugins/types.js';
+} from '../../plugins/types.js'
 
 interface CodeBlock {
-  readonly hash: string;
-  readonly startLine: number;
-  readonly endLine: number;
-  readonly filePath: string;
-  readonly content: string;
+  readonly hash: string
+  readonly startLine: number
+  readonly endLine: number
+  readonly filePath: string
+  readonly content: string
 }
 
 interface NoDuplicateCodeOptions {
-  readonly minLines?: number;
-  readonly minTokens?: number;
-  readonly ignoreComments?: boolean;
-  readonly ignoreImports?: boolean;
-  readonly threshold?: number;
+  readonly minLines?: number
+  readonly minTokens?: number
+  readonly ignoreComments?: boolean
+  readonly ignoreImports?: boolean
+  readonly threshold?: number
 }
 
 function normalizeCode(code: string): string {
-  return code
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
+  return code.replace(/\s+/g, ' ').trim().toLowerCase()
 }
 
 function hashContent(content: string): string {
-  let hash = 0;
+  let hash = 0
   for (let i = 0; i < content.length; i++) {
-    const char = content.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
+    const char = content.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash
   }
-  return hash.toString(16);
+  return hash.toString(16)
 }
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
     start: { line: 1, column: 0 },
     end: { line: 1, column: 1 },
-  };
+  }
 
   if (!node || typeof node !== 'object') {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const n = node as Record<string, unknown>;
-  const loc = n.loc as Record<string, unknown> | undefined;
+  const n = node as Record<string, unknown>
+  const loc = n.loc as Record<string, unknown> | undefined
 
   if (!loc) {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const start = loc.start as Record<string, unknown> | undefined;
-  const end = loc.end as Record<string, unknown> | undefined;
+  const start = loc.start as Record<string, unknown> | undefined
+  const end = loc.end as Record<string, unknown> | undefined
 
   return {
     start: {
@@ -72,54 +69,54 @@ function extractLocation(node: unknown): SourceLocation {
       line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
     },
-  };
+  }
 }
 
 function getBlockContent(node: unknown, source: string): string | null {
   if (!node || typeof node !== 'object') {
-    return null;
+    return null
   }
 
-  const n = node as Record<string, unknown>;
-  const loc = n.loc as Record<string, unknown> | undefined;
+  const n = node as Record<string, unknown>
+  const loc = n.loc as Record<string, unknown> | undefined
 
   if (!loc) {
-    return null;
+    return null
   }
 
-  const start = loc.start as Record<string, unknown> | undefined;
-  const end = loc.end as Record<string, unknown> | undefined;
+  const start = loc.start as Record<string, unknown> | undefined
+  const end = loc.end as Record<string, unknown> | undefined
 
   if (typeof start?.line !== 'number' || typeof end?.line !== 'number') {
-    return null;
+    return null
   }
 
-  const lines = source.split('\n');
-  const startLine = Math.max(0, start.line - 1);
-  const endLine = Math.min(lines.length, end.line);
-  
-  return lines.slice(startLine, endLine).join('\n');
+  const lines = source.split('\n')
+  const startLine = Math.max(0, start.line - 1)
+  const endLine = Math.min(lines.length, end.line)
+
+  return lines.slice(startLine, endLine).join('\n')
 }
 
 function isImportOrExport(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
-    return false;
+    return false
   }
-  const n = node as Record<string, unknown>;
+  const n = node as Record<string, unknown>
   return (
     n.type === 'ImportDeclaration' ||
     n.type === 'ExportNamedDeclaration' ||
     n.type === 'ExportDefaultDeclaration' ||
     n.type === 'ExportAllDeclaration'
-  );
+  )
 }
 
 function isComment(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
-    return false;
+    return false
   }
-  const n = node as Record<string, unknown>;
-  return n.type === 'Block' || n.type === 'Line';
+  const n = node as Record<string, unknown>
+  return n.type === 'Block' || n.type === 'Line'
 }
 
 /**
@@ -172,43 +169,41 @@ export const noDuplicateCodeRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options;
+    const rawOptions = context.config.options
     const options: NoDuplicateCodeOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0
-        ? rawOptions[0]
-        : {}
-    ) as NoDuplicateCodeOptions;
+      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
+    ) as NoDuplicateCodeOptions
 
-    const minLines = options.minLines ?? 5;
-    const ignoreComments = options.ignoreComments ?? true;
-    const ignoreImports = options.ignoreImports ?? true;
+    const minLines = options.minLines ?? 5
+    const ignoreComments = options.ignoreComments ?? true
+    const ignoreImports = options.ignoreImports ?? true
 
-    const codeBlocks: CodeBlock[] = [];
-    const filePath = context.getFilePath();
-    const source = context.getSource();
+    const codeBlocks: CodeBlock[] = []
+    const filePath = context.getFilePath()
+    const source = context.getSource()
 
     return {
       BlockStatement(node: unknown): void {
         if (ignoreImports && isImportOrExport(node)) {
-          return;
+          return
         }
         if (ignoreComments && isComment(node)) {
-          return;
+          return
         }
 
-        const content = getBlockContent(node, source);
+        const content = getBlockContent(node, source)
         if (!content) {
-          return;
+          return
         }
 
-        const lines = content.split('\n');
+        const lines = content.split('\n')
         if (lines.length < minLines) {
-          return;
+          return
         }
 
-        const location = extractLocation(node);
-        const normalized = normalizeCode(content);
-        const hash = hashContent(normalized);
+        const location = extractLocation(node)
+        const normalized = normalizeCode(content)
+        const hash = hashContent(normalized)
 
         codeBlocks.push({
           hash,
@@ -216,27 +211,27 @@ export const noDuplicateCodeRule: RuleDefinition = {
           endLine: location.end.line,
           filePath,
           content: content.slice(0, 100),
-        });
+        })
       },
 
       FunctionDeclaration(node: unknown): void {
         if (ignoreImports && isImportOrExport(node)) {
-          return;
+          return
         }
 
-        const content = getBlockContent(node, source);
+        const content = getBlockContent(node, source)
         if (!content) {
-          return;
+          return
         }
 
-        const lines = content.split('\n');
+        const lines = content.split('\n')
         if (lines.length < minLines) {
-          return;
+          return
         }
 
-        const location = extractLocation(node);
-        const normalized = normalizeCode(content);
-        const hash = hashContent(normalized);
+        const location = extractLocation(node)
+        const normalized = normalizeCode(content)
+        const hash = hashContent(normalized)
 
         codeBlocks.push({
           hash,
@@ -244,23 +239,23 @@ export const noDuplicateCodeRule: RuleDefinition = {
           endLine: location.end.line,
           filePath,
           content: content.slice(0, 100),
-        });
+        })
       },
 
       ClassDeclaration(node: unknown): void {
-        const content = getBlockContent(node, source);
+        const content = getBlockContent(node, source)
         if (!content) {
-          return;
+          return
         }
 
-        const lines = content.split('\n');
+        const lines = content.split('\n')
         if (lines.length < minLines) {
-          return;
+          return
         }
 
-        const location = extractLocation(node);
-        const normalized = normalizeCode(content);
-        const hash = hashContent(normalized);
+        const location = extractLocation(node)
+        const normalized = normalizeCode(content)
+        const hash = hashContent(normalized)
 
         codeBlocks.push({
           hash,
@@ -268,24 +263,24 @@ export const noDuplicateCodeRule: RuleDefinition = {
           endLine: location.end.line,
           filePath,
           content: content.slice(0, 100),
-        });
+        })
       },
 
       'Program:exit'(): void {
         // Group blocks by hash
-        const groups = new Map<string, CodeBlock[]>();
+        const groups = new Map<string, CodeBlock[]>()
         for (const block of codeBlocks) {
-          const existing = groups.get(block.hash) ?? [];
-          existing.push(block);
-          groups.set(block.hash, existing);
+          const existing = groups.get(block.hash) ?? []
+          existing.push(block)
+          groups.set(block.hash, existing)
         }
 
         // Report duplicates
         for (const [, blocks] of groups) {
           if (blocks.length > 1) {
-            const original = blocks[0]!;
+            const original = blocks[0]!
             for (let i = 1; i < blocks.length; i++) {
-              const duplicate = blocks[i]!;
+              const duplicate = blocks[i]!
 
               context.report({
                 message: `Duplicate code block detected (lines ${duplicate.startLine}-${duplicate.endLine}). Original block at lines ${original.startLine}-${original.endLine}. Consider extracting to a shared function.`,
@@ -293,13 +288,13 @@ export const noDuplicateCodeRule: RuleDefinition = {
                   start: { line: duplicate.startLine, column: 0 },
                   end: { line: duplicate.endLine, column: 0 },
                 },
-              });
+              })
             }
           }
         }
       },
-    };
+    }
   },
-};
+}
 
-export default noDuplicateCodeRule;
+export default noDuplicateCodeRule

@@ -203,7 +203,9 @@ let defaultWatcher: FileWatcher | null = null
 
 export function createWatcher(options?: FileWatcherOptions): FileWatcher {
   if (defaultWatcher) {
-    defaultWatcher.stop().catch(() => {})
+    defaultWatcher.stop().catch((error) => {
+      console.debug('Failed to stop previous watcher:', error)
+    })
   }
 
   defaultWatcher = new FileWatcher(options)
@@ -219,7 +221,9 @@ export function getDefaultWatcher(): FileWatcher | null {
  */
 export function resetDefaultWatcher(): void {
   if (defaultWatcher) {
-    defaultWatcher.stop().catch(() => {})
+    defaultWatcher.stop().catch((error) => {
+      console.debug('Failed to stop watcher during reset:', error)
+    })
   }
   defaultWatcher = null
 }

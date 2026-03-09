@@ -1,11 +1,11 @@
-import { SyntaxKind, Node } from "ts-morph";
-import type { RuleDefinition, RuleOptions } from "../types.js";
+import { SyntaxKind, Node } from 'ts-morph'
+import type { RuleDefinition, RuleOptions } from '../types.js'
 import {
   type FunctionLikeNode,
   type RuleViolation,
   type VisitorContext,
   getNodeRange,
-} from "../../ast/visitor.js";
+} from '../../ast/visitor.js'
 
 interface NoSyncInAsyncOptions extends RuleOptions {}
 
@@ -22,100 +22,100 @@ const SYNC_OPERATIONS = new Set([
   'execSync',
   'spawnSync',
   'execFileSync',
-]);
+])
 
 function isAsyncFunction(node: FunctionLikeNode): boolean {
   if (Node.isFunctionDeclaration(node) || Node.isFunctionExpression(node)) {
-    return node.isAsync();
+    return node.isAsync()
   }
   if (Node.isArrowFunction(node)) {
-    return node.isAsync();
+    return node.isAsync()
   }
   if (Node.isMethodDeclaration(node)) {
-    return node.isAsync();
+    return node.isAsync()
   }
-  return false;
+  return false
 }
 
 function getAsyncVersion(syncOp: string): string {
-  return syncOp.replace('Sync', '');
+  return syncOp.replace('Sync', '')
 }
 
 export const noSyncInAsyncRule: RuleDefinition<NoSyncInAsyncOptions> = {
   meta: {
-    name: "no-sync-in-async",
-    description: "Disallow synchronous operations in async functions for better performance",
-    category: "performance",
+    name: 'no-sync-in-async',
+    description: 'Disallow synchronous operations in async functions for better performance',
+    category: 'performance',
     recommended: true,
   },
   defaultOptions: {},
   create: (_options: NoSyncInAsyncOptions) => {
-    const violations: RuleViolation[] = [];
+    const violations: RuleViolation[] = []
 
     return {
       visitor: {
         visitFunction: (node: FunctionLikeNode, context: VisitorContext) => {
           if (!isAsyncFunction(node)) {
-            return;
+            return
           }
 
-          const callExpressions = node.getDescendantsOfKind(SyntaxKind.CallExpression);
+          const callExpressions = node.getDescendantsOfKind(SyntaxKind.CallExpression)
 
           for (const callExpr of callExpressions) {
-            const callText = callExpr.getText();
+            const callText = callExpr.getText()
 
             for (const syncOp of SYNC_OPERATIONS) {
               if (callText.includes(syncOp)) {
-                const asyncVersion = getAsyncVersion(syncOp);
+                const asyncVersion = getAsyncVersion(syncOp)
                 violations.push({
-                  ruleId: "no-sync-in-async",
-                  severity: "warning",
+                  ruleId: 'no-sync-in-async',
+                  severity: 'warning',
                   message: `Synchronous operation '${syncOp}' in async function blocks the event loop.`,
                   filePath: context.getFilePath(),
                   range: getNodeRange(callExpr),
                   suggestion: `Consider using the async version '${asyncVersion}()' instead.`,
-                });
-                break;
+                })
+                break
               }
             }
           }
         },
       },
       onComplete: () => violations,
-    };
+    }
   },
-};
+}
 
 export function analyzeSyncInAsync(
   node: FunctionLikeNode,
   context: VisitorContext,
 ): RuleViolation[] {
-  const violations: RuleViolation[] = [];
+  const violations: RuleViolation[] = []
 
   if (!isAsyncFunction(node)) {
-    return violations;
+    return violations
   }
 
-  const callExpressions = node.getDescendantsOfKind(SyntaxKind.CallExpression);
+  const callExpressions = node.getDescendantsOfKind(SyntaxKind.CallExpression)
 
   for (const callExpr of callExpressions) {
-    const callText = callExpr.getText();
+    const callText = callExpr.getText()
 
     for (const syncOp of SYNC_OPERATIONS) {
       if (callText.includes(syncOp)) {
-        const asyncVersion = getAsyncVersion(syncOp);
+        const asyncVersion = getAsyncVersion(syncOp)
         violations.push({
-          ruleId: "no-sync-in-async",
-          severity: "warning",
+          ruleId: 'no-sync-in-async',
+          severity: 'warning',
           message: `Synchronous operation '${syncOp}' in async function blocks the event loop.`,
           filePath: context.getFilePath(),
           range: getNodeRange(callExpr),
           suggestion: `Consider using the async version '${asyncVersion}()' instead.`,
-        });
-        break;
+        })
+        break
       }
     }
   }
 
-  return violations;
+  return violations
 }

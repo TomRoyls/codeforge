@@ -3,8 +3,8 @@
  */
 
 export interface SourceLocation {
-  start: { line: number; column: number };
-  end: { line: number; column: number };
+  start: { line: number; column: number }
+  end: { line: number; column: number }
 }
 
 /**
@@ -13,28 +13,25 @@ export interface SourceLocation {
  * @param defaultLine - Default line number if location not found (default: 1)
  * @returns SourceLocation with start and end positions
  */
-export function extractLocation(
-  node: unknown,
-  defaultLine: number = 1
-): SourceLocation {
+export function extractLocation(node: unknown, defaultLine: number = 1): SourceLocation {
   const defaultLoc: SourceLocation = {
     start: { line: defaultLine, column: 0 },
     end: { line: defaultLine, column: 1 },
-  };
+  }
 
   if (!node || typeof node !== 'object') {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const n = node as Record<string, unknown>;
-  const loc = n.loc as Record<string, unknown> | undefined;
+  const n = node as Record<string, unknown>
+  const loc = n.loc as Record<string, unknown> | undefined
 
   if (!loc) {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const start = loc.start as Record<string, unknown> | undefined;
-  const end = loc.end as Record<string, unknown> | undefined;
+  const start = loc.start as Record<string, unknown> | undefined
+  const end = loc.end as Record<string, unknown> | undefined
 
   return {
     start: {
@@ -45,7 +42,7 @@ export function extractLocation(
       line: typeof end?.line === 'number' ? end.line : defaultLine,
       column: typeof end?.column === 'number' ? end.column : 0,
     },
-  };
+  }
 }
 
 /**
@@ -55,12 +52,12 @@ export function extractLocation(
  */
 export function getASTBody(ast: unknown): unknown[] {
   if (!ast || typeof ast !== 'object') {
-    return [];
+    return []
   }
 
-  const a = ast as Record<string, unknown>;
-  const body = a.body;
-  const programBody = (a.program as Record<string, unknown> | undefined)?.body;
+  const a = ast as Record<string, unknown>
+  const body = a.body
+  const programBody = (a.program as Record<string, unknown> | undefined)?.body
 
-  return Array.isArray(body) ? body : Array.isArray(programBody) ? programBody : [];
+  return Array.isArray(body) ? body : Array.isArray(programBody) ? programBody : []
 }

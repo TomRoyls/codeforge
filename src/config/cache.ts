@@ -1,8 +1,8 @@
-import type { CodeForgeConfig } from './types.js';
+import type { CodeForgeConfig } from './types.js'
 
-import { CacheStore, hashFile } from '../cache/index.js';
-import { logger } from '../utils/logger.js';
-import { parseConfigFile } from './parser.js';
+import { CacheStore, hashFile } from '../cache/index.js'
+import { logger } from '../utils/logger.js'
+import { parseConfigFile } from './parser.js'
 
 /**
  * ConfigCache provides caching for parsed configuration files.
@@ -10,18 +10,18 @@ import { parseConfigFile } from './parser.js';
  * cached configs are invalidated when the file content changes.
  */
 export class ConfigCache {
-  private cache: CacheStore;
+  private cache: CacheStore
 
   constructor(cacheDir?: string) {
-    this.cache = new CacheStore(cacheDir ?? '.codeforge/cache');
+    this.cache = new CacheStore(cacheDir ?? '.codeforge/cache')
   }
 
   /**
    * Clears all cached configuration entries.
    */
   async clear(): Promise<void> {
-    await this.cache.clear();
-    logger.debug('Config cache cleared');
+    await this.cache.clear()
+    logger.debug('Config cache cleared')
   }
 
   /**
@@ -34,24 +34,24 @@ export class ConfigCache {
    */
   async getConfig(filePath: string): Promise<CodeForgeConfig | null> {
     try {
-      const fileHash = await hashFile(filePath);
-      const cacheKey = `config:${filePath}:${fileHash}`;
+      const fileHash = await hashFile(filePath)
+      const cacheKey = `config:${filePath}:${fileHash}`
 
-      const cached = await this.cache.get<CodeForgeConfig>(cacheKey);
+      const cached = await this.cache.get<CodeForgeConfig>(cacheKey)
       if (cached) {
-        logger.debug(`Config cache hit: ${filePath}`);
-        return cached;
+        logger.debug(`Config cache hit: ${filePath}`)
+        return cached
       }
 
-      logger.debug(`Config cache miss: ${filePath}`);
-      const config = await parseConfigFile(filePath);
+      logger.debug(`Config cache miss: ${filePath}`)
+      const config = await parseConfigFile(filePath)
 
-      await this.cache.set(cacheKey, config);
+      await this.cache.set(cacheKey, config)
 
-      return config;
+      return config
     } catch (error) {
-      logger.warn(`Failed to cache config: ${(error as Error).message}`);
-      return parseConfigFile(filePath);
+      logger.warn(`Failed to cache config: ${(error as Error).message}`)
+      return parseConfigFile(filePath)
     }
   }
 }

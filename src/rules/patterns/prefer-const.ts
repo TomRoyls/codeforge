@@ -8,41 +8,41 @@ import type {
   RuleContext,
   RuleVisitor,
   SourceLocation,
-} from '../../plugins/types.js';
+} from '../../plugins/types.js'
 
 interface VariableInfo {
-  readonly name: string;
-  readonly declaredWith: 'let' | 'var' | 'const';
-  readonly location: SourceLocation;
-  readonly reassigned: boolean;
-  readonly scope: string;
+  readonly name: string
+  readonly declaredWith: 'let' | 'var' | 'const'
+  readonly location: SourceLocation
+  readonly reassigned: boolean
+  readonly scope: string
 }
 
 interface PreferConstOptions {
-  readonly destructuring?: 'all' | 'any';
-  readonly ignoreReadBeforeAssign?: boolean;
-  readonly ignoreDestructuring?: boolean;
+  readonly destructuring?: 'all' | 'any'
+  readonly ignoreReadBeforeAssign?: boolean
+  readonly ignoreDestructuring?: boolean
 }
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
     start: { line: 1, column: 0 },
     end: { line: 1, column: 1 },
-  };
+  }
 
   if (!node || typeof node !== 'object') {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const n = node as Record<string, unknown>;
-  const loc = n.loc as Record<string, unknown> | undefined;
+  const n = node as Record<string, unknown>
+  const loc = n.loc as Record<string, unknown> | undefined
 
   if (!loc) {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const start = loc.start as Record<string, unknown> | undefined;
-  const end = loc.end as Record<string, unknown> | undefined;
+  const start = loc.start as Record<string, unknown> | undefined
+  const end = loc.end as Record<string, unknown> | undefined
 
   return {
     start: {
@@ -53,73 +53,73 @@ function extractLocation(node: unknown): SourceLocation {
       line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
     },
-  };
+  }
 }
 
 function getVariableKind(node: unknown): 'let' | 'var' | 'const' | null {
   if (!node || typeof node !== 'object') {
-    return null;
+    return null
   }
 
-  const n = node as Record<string, unknown>;
-  
+  const n = node as Record<string, unknown>
+
   if (n.type !== 'VariableDeclaration') {
-    return null;
+    return null
   }
 
-  const kind = n.kind;
+  const kind = n.kind
   if (kind === 'let' || kind === 'var' || kind === 'const') {
-    return kind;
+    return kind
   }
 
-  return null;
+  return null
 }
 
 function getDeclarationNames(node: unknown): string[] {
   if (!node || typeof node !== 'object') {
-    return [];
+    return []
   }
 
-  const n = node as Record<string, unknown>;
-  const names: string[] = [];
+  const n = node as Record<string, unknown>
+  const names: string[] = []
 
   if (n.type === 'VariableDeclaration' && Array.isArray(n.declarations)) {
     for (const decl of n.declarations) {
-      const declNode = decl as Record<string, unknown>;
+      const declNode = decl as Record<string, unknown>
       if (declNode.id) {
-        const idNode = declNode.id as Record<string, unknown>;
+        const idNode = declNode.id as Record<string, unknown>
         if (idNode.type === 'Identifier' && typeof idNode.name === 'string') {
-          names.push(idNode.name);
+          names.push(idNode.name)
         } else if (idNode.type === 'ObjectPattern' || idNode.type === 'ArrayPattern') {
           // Destructuring - extract all names
-          extractDestructuredNames(idNode, names);
+          extractDestructuredNames(idNode, names)
         }
       }
     }
   }
 
-  return names;
+  return names
 }
 
 function extractDestructuredNames(node: unknown, names: string[]): void {
   if (!node || typeof node !== 'object') {
-    return;
+    return
   }
 
-  const n = node as Record<string, unknown>;
+  const n = node as Record<string, unknown>
 
   if (n.type === 'Identifier' && typeof n.name === 'string') {
-    names.push(n.name);
-    return;
+    names.push(n.name)
+    return
   }
 
   if (n.type === 'ObjectPattern' && Array.isArray(n.properties)) {
     for (const prop of n.properties) {
-      const propNode = prop as Record<string, unknown>;
+      const propNode = prop as Record<string, unknown>
       if (propNode.type === 'Property' && propNode.value) {
-        extractDestructuredNames(propNode.value, names);
+        extractDestructuredNames(propNode.value, names)
       } else if (propNode.type === 'RestElement' && propNode.argument) {
-        extractDestructuredNames(propNode.argument, names);
+        extractDestructuredNames(propNode.argument, names)
       }
     }
   }
@@ -127,17 +127,17 @@ function extractDestructuredNames(node: unknown, names: string[]): void {
   if (n.type === 'ArrayPattern' && Array.isArray(n.elements)) {
     for (const elem of n.elements) {
       if (elem) {
-        extractDestructuredNames(elem, names);
+        extractDestructuredNames(elem, names)
       }
     }
   }
 
   if (n.type === 'AssignmentPattern' && n.left) {
-    extractDestructuredNames(n.left, names);
+    extractDestructuredNames(n.left, names)
   }
 
   if (n.type === 'RestElement' && n.argument) {
-    extractDestructuredNames(n.argument, names);
+    extractDestructuredNames(n.argument, names)
   }
 }
 
@@ -177,25 +177,23 @@ export const preferConstRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options;
+    const rawOptions = context.config.options
     const options: PreferConstOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0
-        ? rawOptions[0]
-        : {}
-    ) as PreferConstOptions;
+      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
+    ) as PreferConstOptions
 
-    const variableMap = new Map<string, VariableInfo>();
-    const reassignments = new Set<string>();
+    const variableMap = new Map<string, VariableInfo>()
+    const reassignments = new Set<string>()
 
     return {
       VariableDeclaration(node: unknown): void {
-        const kind = getVariableKind(node);
+        const kind = getVariableKind(node)
         if (!kind || kind === 'const') {
-          return;
+          return
         }
 
-        const names = getDeclarationNames(node);
-        const location = extractLocation(node);
+        const names = getDeclarationNames(node)
+        const location = extractLocation(node)
 
         for (const name of names) {
           variableMap.set(name, {
@@ -204,53 +202,56 @@ export const preferConstRule: RuleDefinition = {
             location,
             reassigned: false,
             scope: 'block',
-          });
+          })
         }
       },
 
       AssignmentExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
-          return;
+          return
         }
 
-        const n = node as Record<string, unknown>;
-        const left = n.left as Record<string, unknown> | undefined;
+        const n = node as Record<string, unknown>
+        const left = n.left as Record<string, unknown> | undefined
 
         if (left?.type === 'Identifier' && typeof left.name === 'string') {
-          reassignments.add(left.name);
+          reassignments.add(left.name)
         }
       },
 
       UpdateExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
-          return;
+          return
         }
 
-        const n = node as Record<string, unknown>;
-        const arg = n.argument as Record<string, unknown> | undefined;
+        const n = node as Record<string, unknown>
+        const arg = n.argument as Record<string, unknown> | undefined
 
         if (arg?.type === 'Identifier' && typeof arg.name === 'string') {
-          reassignments.add(arg.name);
+          reassignments.add(arg.name)
         }
       },
 
       'Program:exit'(): void {
         for (const [name, info] of variableMap) {
           if (!reassignments.has(name)) {
-            const source = context.getSource();
-            if (options.ignoreDestructuring && (source.includes(`{ ${name} }`) || source.includes(`[${name}]`))) {
-              continue;
+            const source = context.getSource()
+            if (
+              options.ignoreDestructuring &&
+              (source.includes(`{ ${name} }`) || source.includes(`[${name}]`))
+            ) {
+              continue
             }
 
             context.report({
               message: `'${name}' is never reassigned. Use 'const' instead.`,
               loc: info.location,
-            });
+            })
           }
         }
       },
-    };
+    }
   },
-};
+}
 
-export default preferConstRule;
+export default preferConstRule

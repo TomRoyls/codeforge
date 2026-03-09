@@ -22,7 +22,7 @@ export type {
   PluginManifest,
   PluginContext,
   RuleContext,
-} from './types.js';
+} from './types.js'
 
 export {
   PluginError,
@@ -30,7 +30,7 @@ export {
   RuleExecutionError,
   TransformExecutionError,
   HookExecutionError,
-} from './types.js';
+} from './types.js'
 
 export {
   createPluginContext,
@@ -40,17 +40,8 @@ export {
   type PluginContextOptions,
   type RuleContextOptions,
   type ReportCollector,
-} from './context.js';
+} from './context.js'
 
-export {
-  PluginRegistry,
-  isPluginName,
-  parsePluginName,
-  PLUGIN_PATTERNS,
-} from './registry.js';
+export { PluginRegistry, isPluginName, parsePluginName, PLUGIN_PATTERNS } from './registry.js'
 
-export {
-  PluginManager,
-  type PluginManagerOptions,
-  type PluginLoadOptions,
-} from './manager.js';
+export { PluginManager, type PluginManagerOptions, type PluginLoadOptions } from './manager.js'

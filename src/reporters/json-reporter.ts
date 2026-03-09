@@ -1,49 +1,55 @@
-import * as fs from 'node:fs';
-import path from 'node:path';
+import * as fs from 'node:fs'
+import path from 'node:path'
 
-import type { AnalysisResult, FileAnalysisResult, Reporter, ReporterOptions, Violation } from './types.js';
+import type {
+  AnalysisResult,
+  FileAnalysisResult,
+  Reporter,
+  ReporterOptions,
+  Violation,
+} from './types.js'
 
 export interface JsonOutput {
-  files: JsonFileResult[];
-  summary: AnalysisResult['summary'];
-  timestamp: string;
-  version: string;
+  files: JsonFileResult[]
+  summary: AnalysisResult['summary']
+  timestamp: string
+  version: string
 }
 
 export interface JsonFileResult {
-  filePath: string;
+  filePath: string
   stats: {
-    analysisTime: number;
-    parseTime: number;
-    totalTime: number;
-  };
-  violations: JsonViolation[];
+    analysisTime: number
+    parseTime: number
+    totalTime: number
+  }
+  violations: JsonViolation[]
 }
 
 export interface JsonViolation {
   location: {
-    column: number;
-    endColumn?: number;
-    endLine?: number;
-    file: string;
-    line: number;
-  };
-  message: string;
-  meta?: Record<string, unknown>;
-  ruleId: string;
-  severity: Violation['severity'];
-  source?: string;
-  suggestion?: string;
+    column: number
+    endColumn?: number
+    endLine?: number
+    file: string
+    line: number
+  }
+  message: string
+  meta?: Record<string, unknown>
+  ruleId: string
+  severity: Violation['severity']
+  source?: string
+  suggestion?: string
 }
 
 export class JSONReporter implements Reporter {
-  readonly name = 'json';
-  private readonly outputPath: string | undefined;
-  private readonly pretty: boolean;
+  readonly name = 'json'
+  private readonly outputPath: string | undefined
+  private readonly pretty: boolean
 
   constructor(options: ReporterOptions = {}) {
-    this.pretty = options.pretty ?? false;
-    this.outputPath = options.outputPath;
+    this.pretty = options.pretty ?? false
+    this.outputPath = options.outputPath
   }
 
   format(violation: Violation): string {
@@ -61,20 +67,18 @@ export class JSONReporter implements Reporter {
       severity: violation.severity,
       source: violation.source,
       suggestion: violation.suggestion,
-    };
-    return JSON.stringify(output);
+    }
+    return JSON.stringify(output)
   }
 
   report(results: AnalysisResult): void {
-    const output = this.transformResults(results);
-    const json = this.pretty
-      ? JSON.stringify(output, null, 2)
-      : JSON.stringify(output);
+    const output = this.transformResults(results)
+    const json = this.pretty ? JSON.stringify(output, null, 2) : JSON.stringify(output)
 
     if (this.outputPath) {
-      this.writeToFile(json);
+      this.writeToFile(json)
     } else {
-      console.log(json);
+      console.log(json)
     }
   }
 
@@ -88,7 +92,7 @@ export class JSONReporter implements Reporter {
       summary: results.summary,
       timestamp: results.timestamp,
       version: results.version ?? '1.0.0',
-    };
+    }
   }
 
   private transformViolation(violation: Violation): JsonViolation {
@@ -106,17 +110,17 @@ export class JSONReporter implements Reporter {
       severity: violation.severity,
       source: violation.source,
       suggestion: violation.suggestion,
-    };
+    }
   }
 
   private writeToFile(content: string): void {
-    if (!this.outputPath) return;
-    
-    const dir = path.dirname(this.outputPath);
+    if (!this.outputPath) return
+
+    const dir = path.dirname(this.outputPath)
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true })
     }
-    
-    fs.writeFileSync(this.outputPath, content, 'utf8');
+
+    fs.writeFileSync(this.outputPath, content, 'utf8')
   }
 }

@@ -50,12 +50,12 @@ export class CacheStore {
       const filePath = this.getCacheFilePath(key)
       const content = await readFile(filePath, 'utf-8')
       const entry: CacheEntry<T> = JSON.parse(content)
-      
+
       if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
         await this.delete(key)
         return null
       }
-      
+
       return entry.value
     } catch {
       return null
@@ -64,14 +64,14 @@ export class CacheStore {
 
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     await this.ensureCacheDir()
-    
+
     const entry: CacheEntry<T> = {
       key,
       value,
       timestamp: Date.now(),
       ttl,
     }
-    
+
     const filePath = this.getCacheFilePath(key)
     await writeFile(filePath, JSON.stringify(entry))
   }
@@ -99,9 +99,7 @@ export class CacheStore {
   async clear(): Promise<void> {
     try {
       const files = await readdir(this.cacheDir)
-      await Promise.all(
-        files.map(file => unlink(path.join(this.cacheDir, file)))
-      )
+      await Promise.all(files.map((file) => unlink(path.join(this.cacheDir, file))))
     } catch {
       // Directory doesn't exist
     }
@@ -111,12 +109,12 @@ export class CacheStore {
     try {
       const files = await readdir(this.cacheDir)
       let totalSize = 0
-      
+
       for (const file of files) {
         const stats = statSync(path.join(this.cacheDir, file))
         totalSize += stats.size
       }
-      
+
       return { entries: files.length, size: totalSize }
     } catch {
       return { entries: 0, size: 0 }
@@ -177,7 +175,7 @@ export class InvalidationManager {
   private async checkTimeBased(key: string): Promise<boolean> {
     const entry = await this.cacheStore.get<{ timestamp: number; ttl: number }>(key)
     if (!entry) return true
-    
+
     return Date.now() > entry.timestamp + entry.ttl
   }
 
@@ -199,6 +197,9 @@ export function createDefaultCache(): CacheStore {
   return new CacheStore(DEFAULT_CACHE_DIR)
 }
 
-export function createDefaultInvalidationManager(cacheStore: CacheStore, version: string): InvalidationManager {
+export function createDefaultInvalidationManager(
+  cacheStore: CacheStore,
+  version: string,
+): InvalidationManager {
   return new InvalidationManager(cacheStore, version)
 }

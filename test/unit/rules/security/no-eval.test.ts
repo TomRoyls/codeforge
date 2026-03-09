@@ -1,25 +1,25 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { noEvalRule } from '../../../../src/rules/security/no-eval.js';
-import type { RuleContext, RuleVisitor } from '../../../../src/plugins/types.js';
+import { describe, test, expect, beforeEach, vi } from 'vitest'
+import { noEvalRule } from '../../../../src/rules/security/no-eval.js'
+import type { RuleContext, RuleVisitor } from '../../../../src/plugins/types.js'
 
 interface ReportDescriptor {
-  message: string;
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } };
+  message: string
+  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
 }
 
 function createMockContext(
   options: Record<string, unknown> = {},
   filePath = '/src/file.ts',
-  source = 'const x = 1;'
+  source = 'const x = 1;',
 ): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = [];
+  const reports: ReportDescriptor[] = []
 
   const context: RuleContext = {
     report: (descriptor: ReportDescriptor) => {
       reports.push({
         message: descriptor.message,
         loc: descriptor.loc,
-      });
+      })
     },
     getFilePath: () => filePath,
     getAST: () => null,
@@ -34,9 +34,9 @@ function createMockContext(
       error: vi.fn(),
     },
     workspaceRoot: '/src',
-  } as unknown as RuleContext;
+  } as unknown as RuleContext
 
-  return { context, reports };
+  return { context, reports }
 }
 
 function createEvalCall(line = 1, column = 0): unknown {
@@ -48,7 +48,7 @@ function createEvalCall(line = 1, column = 0): unknown {
       start: { line, column },
       end: { line, column: column + 10 },
     },
-  };
+  }
 }
 
 function createFunctionCall(line = 1, column = 0): unknown {
@@ -60,7 +60,7 @@ function createFunctionCall(line = 1, column = 0): unknown {
       start: { line, column },
       end: { line, column: column + 15 },
     },
-  };
+  }
 }
 
 function createNewFunction(line = 1, column = 0): unknown {
@@ -72,7 +72,7 @@ function createNewFunction(line = 1, column = 0): unknown {
       start: { line, column },
       end: { line, column: column + 15 },
     },
-  };
+  }
 }
 
 function createMemberEvalCall(objectName = 'window', line = 1, column = 0): unknown {
@@ -88,7 +88,7 @@ function createMemberEvalCall(objectName = 'window', line = 1, column = 0): unkn
       start: { line, column },
       end: { line, column: column + 15 },
     },
-  };
+  }
 }
 
 function createWithStatement(line = 1, column = 0): unknown {
@@ -100,7 +100,7 @@ function createWithStatement(line = 1, column = 0): unknown {
       start: { line, column },
       end: { line, column: column + 10 },
     },
-  };
+  }
 }
 
 function createSafeCall(line = 1, column = 0): unknown {
@@ -113,203 +113,203 @@ function createSafeCall(line = 1, column = 0): unknown {
       start: { line, column },
       end: { line, column: column + 15 },
     },
-  };
+  }
 }
 
 describe('no-eval rule', () => {
   describe('meta', () => {
     test('should have correct rule type', () => {
-      expect(noEvalRule.meta.type).toBe('problem');
-    });
+      expect(noEvalRule.meta.type).toBe('problem')
+    })
 
     test('should have error severity', () => {
-      expect(noEvalRule.meta.severity).toBe('error');
-    });
+      expect(noEvalRule.meta.severity).toBe('error')
+    })
 
     test('should be recommended', () => {
-      expect(noEvalRule.meta.docs?.recommended).toBe(true);
-    });
+      expect(noEvalRule.meta.docs?.recommended).toBe(true)
+    })
 
     test('should have correct category', () => {
-      expect(noEvalRule.meta.docs?.category).toBe('security');
-    });
+      expect(noEvalRule.meta.docs?.category).toBe('security')
+    })
 
     test('should have schema defined', () => {
-      expect(noEvalRule.meta.schema).toBeDefined();
-    });
+      expect(noEvalRule.meta.schema).toBeDefined()
+    })
 
     test('should have correct description', () => {
-      expect(noEvalRule.meta.docs?.description).toContain('eval()');
-    });
+      expect(noEvalRule.meta.docs?.description).toContain('eval()')
+    })
 
     test('should mention security in description', () => {
-      expect(noEvalRule.meta.docs?.description.toLowerCase()).toContain('security');
-    });
-  });
+      expect(noEvalRule.meta.docs?.description.toLowerCase()).toContain('security')
+    })
+  })
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      expect(visitor).toHaveProperty('CallExpression');
-      expect(visitor).toHaveProperty('WithStatement');
-      expect(visitor).toHaveProperty('NewExpression');
-    });
+      expect(visitor).toHaveProperty('CallExpression')
+      expect(visitor).toHaveProperty('WithStatement')
+      expect(visitor).toHaveProperty('NewExpression')
+    })
 
     test('should report direct eval() call', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createEvalCall());
+      visitor.CallExpression(createEvalCall())
 
-      expect(reports.length).toBe(1);
-      expect(reports[0].message).toContain('eval');
-      expect(reports[0].message).toContain('security');
-    });
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('eval')
+      expect(reports[0].message).toContain('security')
+    })
 
     test('should report Function constructor call', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createFunctionCall());
+      visitor.CallExpression(createFunctionCall())
 
-      expect(reports.length).toBe(1);
-      expect(reports[0].message).toContain('Function');
-    });
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('Function')
+    })
 
     test('should report new Function() expression', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.NewExpression(createNewFunction());
+      visitor.NewExpression(createNewFunction())
 
-      expect(reports.length).toBe(1);
-      expect(reports[0].message).toContain('Function');
-    });
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('Function')
+    })
 
     test('should report member expression eval call', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createMemberEvalCall('window'));
+      visitor.CallExpression(createMemberEvalCall('window'))
 
-      expect(reports.length).toBe(1);
-      expect(reports[0].message).toContain('eval');
-    });
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('eval')
+    })
 
     test('should report global.eval call', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createMemberEvalCall('global'));
+      visitor.CallExpression(createMemberEvalCall('global'))
 
-      expect(reports.length).toBe(1);
-      expect(reports[0].message).toContain('eval');
-    });
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('eval')
+    })
 
     test('should report with statement by default', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.WithStatement(createWithStatement());
+      visitor.WithStatement(createWithStatement())
 
-      expect(reports.length).toBe(1);
-      expect(reports[0].message).toContain('with');
-    });
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('with')
+    })
 
     test('should not report safe calls', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createSafeCall());
+      visitor.CallExpression(createSafeCall())
 
-      expect(reports.length).toBe(0);
-    });
+      expect(reports.length).toBe(0)
+    })
 
     test('should handle null node gracefully in CallExpression', () => {
-      const { context } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      expect(() => visitor.CallExpression(null)).not.toThrow();
-    });
+      expect(() => visitor.CallExpression(null)).not.toThrow()
+    })
 
     test('should handle undefined node gracefully in CallExpression', () => {
-      const { context } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      expect(() => visitor.CallExpression(undefined)).not.toThrow();
-    });
+      expect(() => visitor.CallExpression(undefined)).not.toThrow()
+    })
 
     test('should handle null node gracefully in NewExpression', () => {
-      const { context } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      expect(() => visitor.NewExpression(null)).not.toThrow();
-    });
+      expect(() => visitor.NewExpression(null)).not.toThrow()
+    })
 
     test('should handle null node gracefully in WithStatement', () => {
-      const { context } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      expect(() => visitor.WithStatement(null)).not.toThrow();
-    });
+      expect(() => visitor.WithStatement(null)).not.toThrow()
+    })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      expect(() => visitor.CallExpression('string')).not.toThrow();
-      expect(() => visitor.CallExpression(123)).not.toThrow();
-    });
+      expect(() => visitor.CallExpression('string')).not.toThrow()
+      expect(() => visitor.CallExpression(123)).not.toThrow()
+    })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createEvalCall(5, 10));
+      visitor.CallExpression(createEvalCall(5, 10))
 
-      expect(reports[0].loc?.start.line).toBe(5);
-      expect(reports[0].loc?.start.column).toBe(10);
-    });
-  });
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(10)
+    })
+  })
 
   describe('options', () => {
     test('should respect allowIndirect option for member expression eval', () => {
-      const { context, reports } = createMockContext({ allowIndirect: true });
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext({ allowIndirect: true })
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createMemberEvalCall('window'));
+      visitor.CallExpression(createMemberEvalCall('window'))
 
-      expect(reports.length).toBe(0);
-    });
+      expect(reports.length).toBe(0)
+    })
 
     test('should still report direct eval with allowIndirect', () => {
-      const { context, reports } = createMockContext({ allowIndirect: true });
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext({ allowIndirect: true })
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createEvalCall());
+      visitor.CallExpression(createEvalCall())
 
-      expect(reports.length).toBe(1);
-    });
+      expect(reports.length).toBe(1)
+    })
 
     test('should respect allowWith option', () => {
-      const { context, reports } = createMockContext({ allowWith: true });
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext({ allowWith: true })
+      const visitor = noEvalRule.create(context)
 
-      visitor.WithStatement(createWithStatement());
+      visitor.WithStatement(createWithStatement())
 
-      expect(reports.length).toBe(0);
-    });
+      expect(reports.length).toBe(0)
+    })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({});
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext({})
+      const visitor = noEvalRule.create(context)
 
-      visitor.CallExpression(createEvalCall());
+      visitor.CallExpression(createEvalCall())
 
-      expect(reports.length).toBe(1);
-    });
+      expect(reports.length).toBe(1)
+    })
 
     test('should handle undefined options', () => {
       const context: RuleContext = {
@@ -327,42 +327,42 @@ describe('no-eval rule', () => {
           error: vi.fn(),
         },
         workspaceRoot: '/src',
-      } as unknown as RuleContext;
+      } as unknown as RuleContext
 
-      const visitor = noEvalRule.create(context);
+      const visitor = noEvalRule.create(context)
 
-      expect(() => visitor.CallExpression(createEvalCall())).not.toThrow();
-    });
-  });
+      expect(() => visitor.CallExpression(createEvalCall())).not.toThrow()
+    })
+  })
 
   describe('edge cases', () => {
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'eval' },
         arguments: [],
-      };
+      }
 
-      expect(() => visitor.CallExpression(node)).not.toThrow();
-      expect(reports.length).toBe(1);
-    });
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(1)
+    })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
-      const node = { type: 'CallExpression', arguments: [] };
+      const node = { type: 'CallExpression', arguments: [] }
 
-      expect(() => visitor.CallExpression(node)).not.toThrow();
-      expect(reports.length).toBe(0);
-    });
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
 
     test('should handle member expression without property', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
       const node = {
         type: 'CallExpression',
@@ -371,39 +371,39 @@ describe('no-eval rule', () => {
           object: { type: 'Identifier', name: 'window' },
         },
         arguments: [],
-      };
+      }
 
-      expect(() => visitor.CallExpression(node)).not.toThrow();
-      expect(reports.length).toBe(0);
-    });
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
 
     test('should not report other dangerous timer functions (setTimeout without string)', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'setTimeout' },
         arguments: [{ type: 'ArrowFunctionExpression', body: {} }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      };
+      }
 
-      expect(() => visitor.CallExpression(node)).not.toThrow();
-      expect(reports.length).toBe(0);
-    });
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
 
     test('should handle NewExpression with non-Identifier callee', () => {
-      const { context, reports } = createMockContext();
-      const visitor = noEvalRule.create(context);
+      const { context, reports } = createMockContext()
+      const visitor = noEvalRule.create(context)
 
       const node = {
         type: 'NewExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' } },
         arguments: [],
-      };
+      }
 
-      expect(() => visitor.NewExpression(node)).not.toThrow();
-      expect(reports.length).toBe(0);
-    });
-  });
-});
+      expect(() => visitor.NewExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+  })
+})

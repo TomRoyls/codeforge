@@ -1,9 +1,9 @@
-import { Project, type SourceFile } from 'ts-morph';
+import { Project, type SourceFile } from 'ts-morph'
 
 export interface ParseResult {
-  sourceFile: SourceFile;
-  filePath: string;
-  parseTime: number;
+  sourceFile: SourceFile
+  filePath: string
+  parseTime: number
 }
 
 /**
@@ -12,16 +12,16 @@ export interface ParseResult {
  * @property skipFileDependencyResolution - Whether to skip resolving file dependencies
  */
 export interface ParserOptions {
-  tsConfigFilePath?: string;
-  skipFileDependencyResolution?: boolean;
+  tsConfigFilePath?: string
+  skipFileDependencyResolution?: boolean
 }
 
 /**
  * Parser class for parsing TypeScript source files using ts-morph
  */
 export class Parser {
-  private project: Project | null = null;
-  private options: ParserOptions;
+  private project: Project | null = null
+  private options: ParserOptions
 
   /**
    * Creates a new Parser instance
@@ -30,7 +30,7 @@ export class Parser {
    * const parser = new Parser({ tsConfigFilePath: './tsconfig.json' });
    */
   constructor(options: ParserOptions = {}) {
-    this.options = options;
+    this.options = options
   }
 
   /**
@@ -48,7 +48,7 @@ export class Parser {
         allowJs: true,
         checkJs: false,
       },
-    });
+    })
   }
 
   /**
@@ -61,20 +61,20 @@ export class Parser {
    */
   async parseFile(filePath: string): Promise<ParseResult> {
     if (!this.project) {
-      await this.initialize();
+      await this.initialize()
     }
 
-    const startTime = performance.now();
+    const startTime = performance.now()
 
-    const sourceFile = this.project!.addSourceFileAtPath(filePath);
+    const sourceFile = this.project!.addSourceFileAtPath(filePath)
 
-    const parseTime = performance.now() - startTime;
+    const parseTime = performance.now() - startTime
 
     return {
       sourceFile,
       filePath,
       parseTime,
-    };
+    }
   }
 
   /**
@@ -86,18 +86,18 @@ export class Parser {
    * console.log(`Parsed ${results.length} files`);
    */
   async parseFiles(filePaths: string[]): Promise<ParseResult[]> {
-    const results: ParseResult[] = [];
+    const results: ParseResult[] = []
 
     for (const filePath of filePaths) {
       try {
-        const result = await this.parseFile(filePath);
-        results.push(result);
+        const result = await this.parseFile(filePath)
+        results.push(result)
       } catch (error) {
-        console.error(`Failed to parse ${filePath}: ${(error as Error).message}`);
+        console.error(`Failed to parse ${filePath}: ${(error as Error).message}`)
       }
     }
 
-    return results;
+    return results
   }
 
   /**
@@ -110,7 +110,7 @@ export class Parser {
    * }
    */
   getProject(): Project | null {
-    return this.project;
+    return this.project
   }
 
   /**
@@ -120,7 +120,7 @@ export class Parser {
    */
   dispose(): void {
     if (this.project) {
-      this.project = null;
+      this.project = null
     }
   }
 }

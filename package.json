@@ -13,6 +13,7 @@
     "@oclif/plugin-plugins": "^5",
     "@swc/core": "^1.11.0",
     "chalk": "^5.4.0",
+    "chokidar": "^3.6.0",
     "fast-glob": "^3.3.0",
     "ora": "^8.2.0",
     "p-limit": "^6.2.0",

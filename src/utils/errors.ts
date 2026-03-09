@@ -1,32 +1,29 @@
 export class CLIError extends Error {
-  public readonly code: string;
-  public readonly suggestions: string[];
-  public readonly context: Record<string, unknown>;
+  public readonly code: string
+  public readonly suggestions: string[]
+  public readonly context: Record<string, unknown>
 
   constructor(
     message: string,
     options: {
-      code?: string;
-      suggestions?: string[];
-      context?: Record<string, unknown>;
-    } = {}
+      code?: string
+      suggestions?: string[]
+      context?: Record<string, unknown>
+    } = {},
   ) {
-    super(message);
-    this.name = 'CLIError';
-    this.code = options.code ?? 'E000';
-    this.suggestions = options.suggestions ?? [];
-    this.context = options.context ?? {};
-    Object.setPrototypeOf(this, CLIError.prototype);
+    super(message)
+    this.name = 'CLIError'
+    this.code = options.code ?? 'E000'
+    this.suggestions = options.suggestions ?? []
+    this.context = options.context ?? {}
+    Object.setPrototypeOf(this, CLIError.prototype)
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, CLIError);
+      Error.captureStackTrace(this, CLIError)
     }
   }
 
-  public static invalidInput(
-    message: string,
-    suggestions: string[] = []
-  ): CLIError {
-    return new CLIError(message, { code: 'E001', suggestions });
+  public static invalidInput(message: string, suggestions: string[] = []): CLIError {
+    return new CLIError(message, { code: 'E001', suggestions })
   }
 
   public static fileNotFound(filePath: string): CLIError {
@@ -37,23 +34,20 @@ export class CLIError extends Error {
         'Verify the file exists',
         'Use absolute path if relative path fails',
       ],
-    });
+    })
   }
 
-  public static configError(
-    message: string,
-    suggestions: string[] = []
-  ): CLIError {
-    return new CLIError(message, { code: 'E003', suggestions });
+  public static configError(message: string, suggestions: string[] = []): CLIError {
+    return new CLIError(message, { code: 'E003', suggestions })
   }
 
   public toJSON(): {
-    name: string;
-    code: string;
-    message: string;
-    suggestions: string[];
-    context: Record<string, unknown>;
-    stack?: string;
+    name: string
+    code: string
+    message: string
+    suggestions: string[]
+    context: Record<string, unknown>
+    stack?: string
   } {
     return {
       name: this.name,
@@ -62,31 +56,31 @@ export class CLIError extends Error {
       suggestions: this.suggestions,
       context: this.context,
       stack: this.stack,
-    };
+    }
   }
 }
 
 export class SystemError extends Error {
-  public readonly code: string;
-  public readonly cause?: Error;
-  public readonly context: Record<string, unknown>;
+  public readonly code: string
+  public readonly cause?: Error
+  public readonly context: Record<string, unknown>
 
   constructor(
     message: string,
     options: {
-      code?: string;
-      cause?: Error;
-      context?: Record<string, unknown>;
-    } = {}
+      code?: string
+      cause?: Error
+      context?: Record<string, unknown>
+    } = {},
   ) {
-    super(message);
-    this.name = 'SystemError';
-    this.code = options.code ?? 'E500';
-    this.cause = options.cause;
-    this.context = options.context ?? {};
-    Object.setPrototypeOf(this, SystemError.prototype);
+    super(message)
+    this.name = 'SystemError'
+    this.code = options.code ?? 'E500'
+    this.cause = options.cause
+    this.context = options.context ?? {}
+    Object.setPrototypeOf(this, SystemError.prototype)
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, SystemError);
+      Error.captureStackTrace(this, SystemError)
     }
   }
 
@@ -95,7 +89,7 @@ export class SystemError extends Error {
       code: 'E501',
       cause,
       context: { filePath, causeMessage: cause.message },
-    });
+    })
   }
 
   public static ioError(operation: string, cause: Error): SystemError {
@@ -103,16 +97,16 @@ export class SystemError extends Error {
       code: 'E502',
       cause,
       context: { operation, causeMessage: cause.message },
-    });
+    })
   }
 
   public toJSON(): {
-    name: string;
-    code: string;
-    message: string;
-    cause?: { name: string; message: string; stack?: string };
-    context: Record<string, unknown>;
-    stack?: string;
+    name: string
+    code: string
+    message: string
+    cause?: { name: string; message: string; stack?: string }
+    context: Record<string, unknown>
+    stack?: string
   } {
     return {
       name: this.name,
@@ -123,6 +117,6 @@ export class SystemError extends Error {
         : undefined,
       context: this.context,
       stack: this.stack,
-    };
+    }
   }
 }

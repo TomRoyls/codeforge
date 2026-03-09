@@ -71,15 +71,15 @@ export class MarkdownReporter implements Reporter {
   format(violation: Violation): string {
     const badge = getSeverityBadge(violation.severity)
     let output = `${badge} **${violation.ruleId}** at ${violation.filePath}:${violation.line}:${violation.column} - ${violation.message}`
-    
+
     if (violation.source) {
       output += `\n\n${formatCodeSnippet(violation.source, violation.line, violation.column)}`
     }
-    
+
     if (violation.suggestion) {
       output += `\n\n> 💡 Suggestion: ${escapeMarkdown(violation.suggestion)}`
     }
-    
+
     return output
   }
 

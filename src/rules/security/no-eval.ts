@@ -8,16 +8,16 @@ import type {
   RuleContext,
   RuleVisitor,
   SourceLocation,
-} from '../../plugins/types.js';
+} from '../../plugins/types.js'
 
 interface EvalCallInfo {
-  readonly callee: string;
-  readonly location: SourceLocation;
+  readonly callee: string
+  readonly location: SourceLocation
 }
 
 interface NoEvalOptions {
-  readonly allowIndirect?: boolean;
-  readonly allowWith?: boolean;
+  readonly allowIndirect?: boolean
+  readonly allowWith?: boolean
 }
 
 const DANGEROUS_FUNCTIONS = new Set([
@@ -27,69 +27,69 @@ const DANGEROUS_FUNCTIONS = new Set([
   'setInterval',
   'setImmediate',
   'execScript',
-]);
+])
 
 function isEvalLike(node: unknown): { isEval: boolean; callee: string } {
   if (!node || typeof node !== 'object') {
-    return { isEval: false, callee: '' };
+    return { isEval: false, callee: '' }
   }
 
-  const n = node as Record<string, unknown>;
-  
+  const n = node as Record<string, unknown>
+
   if (n.type !== 'CallExpression') {
-    return { isEval: false, callee: '' };
+    return { isEval: false, callee: '' }
   }
 
-  const callee = n.callee as Record<string, unknown> | undefined;
-  
+  const callee = n.callee as Record<string, unknown> | undefined
+
   if (!callee) {
-    return { isEval: false, callee: '' };
+    return { isEval: false, callee: '' }
   }
 
   // Direct eval call: eval(...)
   if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    const name = callee.name;
+    const name = callee.name
     if (name === 'eval') {
-      return { isEval: true, callee: 'eval' };
+      return { isEval: true, callee: 'eval' }
     }
     if (name === 'Function') {
-      return { isEval: true, callee: 'Function' };
+      return { isEval: true, callee: 'Function' }
     }
   }
 
   // Member expression: global.eval, window.eval, etc.
   if (callee.type === 'MemberExpression') {
-    const property = callee.property as Record<string, unknown> | undefined;
+    const property = callee.property as Record<string, unknown> | undefined
     if (property && property.type === 'Identifier' && typeof property.name === 'string') {
-      const name = property.name;
+      const name = property.name
       if (DANGEROUS_FUNCTIONS.has(name)) {
-        return { isEval: true, callee: name };
+        return { isEval: true, callee: name }
       }
     }
   }
 
-  return { isEval: false, callee: '' };
+  return { isEval: false, callee: '' }
 }
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
     start: { line: 1, column: 0 },
     end: { line: 1, column: 1 },
-  };
+  }
 
   if (!node || typeof node !== 'object') {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const n = node as Record<string, unknown>;
-  const loc = n.loc as Record<string, unknown> | undefined;
+  const n = node as Record<string, unknown>
+  const loc = n.loc as Record<string, unknown> | undefined
 
   if (!loc) {
-    return defaultLoc;
+    return defaultLoc
   }
 
-  const start = loc.start as Record<string, unknown> | undefined;
-  const end = loc.end as Record<string, unknown> | undefined;
+  const start = loc.start as Record<string, unknown> | undefined
+  const end = loc.end as Record<string, unknown> | undefined
 
   return {
     start: {
@@ -100,7 +100,7 @@ function extractLocation(node: unknown): SourceLocation {
       line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
     },
-  };
+  }
 }
 
 /**
@@ -137,39 +137,37 @@ export const noEvalRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options;
+    const rawOptions = context.config.options
     const options: NoEvalOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0
-        ? rawOptions[0]
-        : {}
-    ) as NoEvalOptions;
+      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
+    ) as NoEvalOptions
 
-    const evalCalls: EvalCallInfo[] = [];
+    const evalCalls: EvalCallInfo[] = []
 
     return {
       CallExpression(node: unknown): void {
-        const result = isEvalLike(node);
-        
+        const result = isEvalLike(node)
+
         if (result.isEval) {
           // Check for indirect eval (allowIndirect option)
           if (options.allowIndirect && result.callee === 'eval') {
-            const n = node as Record<string, unknown>;
-            const callee = (n as Record<string, unknown>).callee as Record<string, unknown>;
+            const n = node as Record<string, unknown>
+            const callee = (n as Record<string, unknown>).callee as Record<string, unknown>
             if (callee?.type === 'MemberExpression') {
-              return; // Skip indirect eval if allowed
+              return // Skip indirect eval if allowed
             }
           }
 
           evalCalls.push({
             callee: result.callee,
             location: extractLocation(node),
-          });
+          })
 
           context.report({
             node,
             message: `Unexpected use of '${result.callee}'. This can lead to security vulnerabilities.`,
             loc: extractLocation(node),
-          });
+          })
         }
       },
 
@@ -177,30 +175,32 @@ export const noEvalRule: RuleDefinition = {
         if (!options.allowWith) {
           context.report({
             node,
-            message: 'Unexpected use of with statement. It is deprecated and can lead to security issues.',
+            message:
+              'Unexpected use of with statement. It is deprecated and can lead to security issues.',
             loc: extractLocation(node),
-          });
+          })
         }
       },
 
       NewExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
-          return;
+          return
         }
 
-        const n = node as Record<string, unknown>;
-        const callee = n.callee as Record<string, unknown> | undefined;
+        const n = node as Record<string, unknown>
+        const callee = n.callee as Record<string, unknown> | undefined
 
         if (callee?.type === 'Identifier' && callee.name === 'Function') {
           context.report({
             node,
-            message: "Unexpected use of 'new Function()'. This is equivalent to eval() and can lead to security vulnerabilities.",
+            message:
+              "Unexpected use of 'new Function()'. This is equivalent to eval() and can lead to security vulnerabilities.",
             loc: extractLocation(node),
-          });
+          })
         }
       },
-    };
+    }
   },
-};
+}
 
-export default noEvalRule;
+export default noEvalRule

@@ -1,36 +1,45 @@
-import * as fs from 'node:fs';
-import path from 'node:path';
+import * as fs from 'node:fs'
+import path from 'node:path'
 
-import type { AnalysisResult, FileAnalysisResult, Reporter, ReporterOptions, Severity, Violation } from './types.js';
+import type {
+  AnalysisResult,
+  FileAnalysisResult,
+  Reporter,
+  ReporterOptions,
+  Severity,
+  Violation,
+} from './types.js'
 
 const SEVERITY_COLORS: Record<Severity, string> = {
   error: '#ff6b6b',
   info: '#6bcfff',
   warning: '#ffd93d',
-};
+}
 
 const SEVERITY_ICONS: Record<Severity, string> = {
   error: '✖',
   info: 'ℹ',
   warning: '⚠',
-};
+}
 
 export class HTMLReporter implements Reporter {
-  readonly name = 'html';
-  private readonly outputPath: string;
+  readonly name = 'html'
+  private readonly outputPath: string
 
   constructor(options: ReporterOptions = {}) {
-    this.outputPath = options.outputPath ?? 'codeforge-report.html';
+    this.outputPath = options.outputPath ?? 'codeforge-report.html'
   }
 
   format(violation: Violation): string {
-    return this.escapeHtml(`${violation.filePath}:${violation.line}:${violation.column} ${violation.severity.toUpperCase()} ${violation.message}`);
+    return this.escapeHtml(
+      `${violation.filePath}:${violation.line}:${violation.column} ${violation.severity.toUpperCase()} ${violation.message}`,
+    )
   }
 
   report(results: AnalysisResult): void {
-    const html = this.generateHTML(results);
-    this.writeToFile(html);
-    console.log(`HTML report generated: ${this.outputPath}`);
+    const html = this.generateHTML(results)
+    this.writeToFile(html)
+    console.log(`HTML report generated: ${this.outputPath}`)
   }
 
   private escapeHtml(text: string): string {
@@ -40,18 +49,18 @@ export class HTMLReporter implements Reporter {
       "'": '&#039;',
       '<': '&lt;',
       '>': '&gt;',
-    };
-    return text.replaceAll(/[&<>"']/g, (char: string) => map[char] ?? char);
+    }
+    return text.replaceAll(/[&<>"']/g, (char: string) => map[char] ?? char)
   }
 
   private formatTime(ms: number): string {
-    if (ms < 1000) return `${ms}ms`;
-    return `${(ms / 1000).toFixed(2)}s`;
+    if (ms < 1000) return `${ms}ms`
+    return `${(ms / 1000).toFixed(2)}s`
   }
 
   private generateHTML(results: AnalysisResult): string {
-    const { files, summary, timestamp, version } = results;
-    const filesWithViolations = files.filter((f: FileAnalysisResult) => f.violations.length > 0);
+    const { files, summary, timestamp, version } = results
+    const filesWithViolations = files.filter((f: FileAnalysisResult) => f.violations.length > 0)
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -116,9 +125,10 @@ export class HTMLReporter implements Reporter {
     </div>
 
     <div class="results">
-      ${filesWithViolations.length === 0 
-        ? '<div class="no-results"><span class="success-icon">✓</span><h2>No problems found!</h2><p>All files passed analysis.</p></div>'
-        : filesWithViolations.map((f: FileAnalysisResult) => this.renderFileSection(f)).join('\n')
+      ${
+        filesWithViolations.length === 0
+          ? '<div class="no-results"><span class="success-icon">✓</span><h2>No problems found!</h2><p>All files passed analysis.</p></div>'
+          : filesWithViolations.map((f: FileAnalysisResult) => this.renderFileSection(f)).join('\n')
       }
     </div>
 
@@ -130,7 +140,7 @@ export class HTMLReporter implements Reporter {
 
   <script>${this.getScripts()}</script>
 </body>
-</html>`;
+</html>`
   }
 
   private getScripts(): string {
@@ -223,7 +233,7 @@ export class HTMLReporter implements Reporter {
         fileSections.forEach(function(s) { s.open = false; });
       });
     })();
-  `;
+  `
   }
 
   private getStyles(): string {
@@ -477,13 +487,17 @@ export class HTMLReporter implements Reporter {
     }
 
     .hidden { display: none !important; }
-  `;
+  `
   }
 
-  private renderFileSection(file: { filePath: string; stats: { analysisTime: number; parseTime: number; totalTime: number }; violations: Violation[]; }): string {
-    const errorCount = file.violations.filter(v => v.severity === 'error').length;
-    const warningCount = file.violations.filter(v => v.severity === 'warning').length;
-    const infoCount = file.violations.filter(v => v.severity === 'info').length;
+  private renderFileSection(file: {
+    filePath: string
+    stats: { analysisTime: number; parseTime: number; totalTime: number }
+    violations: Violation[]
+  }): string {
+    const errorCount = file.violations.filter((v) => v.severity === 'error').length
+    const warningCount = file.violations.filter((v) => v.severity === 'warning').length
+    const infoCount = file.violations.filter((v) => v.severity === 'info').length
 
     return `
     <details class="file-section" data-file="${this.escapeHtml(file.filePath)}" open>
@@ -497,9 +511,9 @@ export class HTMLReporter implements Reporter {
         </div>
       </summary>
       <div class="violations">
-        ${file.violations.map(v => this.renderViolation(v)).join('\n')}
+        ${file.violations.map((v) => this.renderViolation(v)).join('\n')}
       </div>
-    </details>`;
+    </details>`
   }
 
   private renderViolation(violation: Violation): string {
@@ -513,15 +527,15 @@ export class HTMLReporter implements Reporter {
           <div class="violation-message">${this.escapeHtml(violation.message)}</div>
           ${violation.source ? `<pre class="source-code"><code>${this.escapeHtml(violation.source)}</code></pre>` : ''}
           ${violation.suggestion ? `<div class="suggestion">💡 ${this.escapeHtml(violation.suggestion)}</div>` : ''}
-        </div>`;
+        </div>`
   }
 
   private writeToFile(content: string): void {
-    const dir = path.dirname(this.outputPath);
+    const dir = path.dirname(this.outputPath)
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true })
     }
 
-    fs.writeFileSync(this.outputPath, content, 'utf8');
+    fs.writeFileSync(this.outputPath, content, 'utf8')
   }
 }

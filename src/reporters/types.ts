@@ -1,34 +1,34 @@
 /**
  * Severity levels for violations
  */
-export type Severity = 'error' | 'info' | 'warning';
+export type Severity = 'error' | 'info' | 'warning'
 
 /**
  * Represents a single violation found during analysis
  */
 export interface Violation {
   /** Column number (1-indexed) */
-  column: number;
+  column: number
   /** End column (optional, for ranges) */
-  endColumn?: number;
+  endColumn?: number
   /** End line (optional, for ranges) */
-  endLine?: number;
+  endLine?: number
   /** Absolute or relative file path */
-  filePath: string;
+  filePath: string
   /** Line number (1-indexed) */
-  line: number;
+  line: number
   /** Human-readable violation message */
-  message: string;
+  message: string
   /** Additional metadata */
-  meta?: Record<string, unknown>;
+  meta?: Record<string, unknown>
   /** The rule ID that triggered this violation */
-  ruleId: string;
+  ruleId: string
   /** Severity level of the violation */
-  severity: Severity;
+  severity: Severity
   /** Source code snippet (optional) */
-  source?: string;
+  source?: string
   /** Suggested fix (optional) */
-  suggestion?: string;
+  suggestion?: string
 }
 
 /**
@@ -36,11 +36,11 @@ export interface Violation {
  */
 export interface AnalysisStats {
   /** Time spent analyzing (ms) */
-  analysisTime: number;
+  analysisTime: number
   /** Time spent parsing the file (ms) */
-  parseTime: number;
+  parseTime: number
   /** Total processing time (ms) */
-  totalTime: number;
+  totalTime: number
 }
 
 /**
@@ -48,11 +48,11 @@ export interface AnalysisStats {
  */
 export interface FileAnalysisResult {
   /** Path to the analyzed file */
-  filePath: string;
+  filePath: string
   /** Timing statistics */
-  stats: AnalysisStats;
+  stats: AnalysisStats
   /** List of violations found */
-  violations: Violation[];
+  violations: Violation[]
 }
 
 /**
@@ -60,26 +60,26 @@ export interface FileAnalysisResult {
  */
 export interface AnalysisResult {
   /** All file results */
-  files: FileAnalysisResult[];
+  files: FileAnalysisResult[]
   /** Aggregated statistics */
   summary: {
     /** Total errors */
-    errorCount: number;
+    errorCount: number
     /** Files with violations */
-    filesWithViolations: number;
+    filesWithViolations: number
     /** Total info messages */
-    infoCount: number;
+    infoCount: number
     /** Total files analyzed */
-    totalFiles: number;
+    totalFiles: number
     /** Total processing time (ms) */
-    totalTime: number;
+    totalTime: number
     /** Total warnings */
-    warningCount: number;
-  };
+    warningCount: number
+  }
   /** Analysis timestamp */
-  timestamp: string;
+  timestamp: string
   /** CodeForge version */
-  version?: string;
+  version?: string
 }
 
 /**
@@ -87,19 +87,19 @@ export interface AnalysisResult {
  */
 export interface ReporterOptions {
   /** Use colored output (where applicable) */
-  color?: boolean;
+  color?: boolean
   /** Show only errors (filter warnings/info) */
-  errorsOnly?: boolean;
+  errorsOnly?: boolean
   /** Include source code snippets */
-  includeSource?: boolean;
+  includeSource?: boolean
   /** Output file path (optional) */
-  outputPath?: string;
+  outputPath?: string
   /** Pretty print JSON output */
-  pretty?: boolean;
+  pretty?: boolean
   /** Quiet mode - minimal output */
-  quiet?: boolean;
+  quiet?: boolean
   /** Verbose mode - detailed output */
-  verbose?: boolean;
+  verbose?: boolean
 }
 
 /**
@@ -107,30 +107,30 @@ export interface ReporterOptions {
  */
 export interface Reporter {
   /** Clean up resources (optional) */
-  dispose?: () => Promise<void> | void;
+  dispose?: () => Promise<void> | void
   /** Format a single violation as a string */
-  format(violation: Violation): string;
+  format(violation: Violation): string
   /** Initialize the reporter (optional) */
-  init?: () => Promise<void> | void;
+  init?: () => Promise<void> | void
   /** Reporter name/identifier */
-  readonly name: string;
+  readonly name: string
   /** Report analysis results */
-  report(results: AnalysisResult): void;
+  report(results: AnalysisResult): void
 }
 
 /**
  * Factory function type for creating reporters
  */
-export type ReporterFactory = (options: ReporterOptions) => Reporter;
+export type ReporterFactory = (options: ReporterOptions) => Reporter
 
 /**
  * Registry entry for a reporter
  */
 export interface ReporterRegistryEntry {
   /** Description */
-  description?: string;
+  description?: string
   /** Factory function */
-  factory: ReporterFactory;
+  factory: ReporterFactory
   /** Reporter name */
-  name: string;
+  name: string
 }
