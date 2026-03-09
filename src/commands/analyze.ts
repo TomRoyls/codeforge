@@ -1,66 +1,66 @@
-import { Args, Command, Flags } from '@oclif/core';
-import os from 'node:os';
-import path from 'node:path';
-import ora, { type Ora } from 'ora';
-import pLimit from 'p-limit';
+import { Args, Command, Flags } from '@oclif/core'
+import os from 'node:os'
+import path from 'node:path'
+import ora, { type Ora } from 'ora'
+import pLimit from 'p-limit'
 
-import type { CodeForgeConfig } from '../config/types.js';
+import type { CodeForgeConfig } from '../config/types.js'
 
-import { type RuleViolation } from '../ast/visitor.js';
-import { ConfigCache } from '../config/cache.js';
-import { findConfigPath } from '../config/discovery.js';
-import { mergeConfigs } from '../config/merger.js';
-import { validateConfig } from '../config/validator.js';
-import { type DiscoveredFile, discoverFiles } from '../core/file-discovery.js';
-import { Parser } from '../core/parser.js';
-import { type OutputFormat, Reporter } from '../core/reporter.js';
-import { RuleRegistry } from '../core/rule-registry.js';
-import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js';
-import { allRules, getRuleCategory } from '../rules/index.js';
-import { CLIError } from '../utils/errors.js';
-import { logger, LogLevel } from '../utils/logger.js';
+import { type RuleViolation } from '../ast/visitor.js'
+import { ConfigCache } from '../config/cache.js'
+import { findConfigPath } from '../config/discovery.js'
+import { mergeConfigs } from '../config/merger.js'
+import { validateConfig } from '../config/validator.js'
+import { type DiscoveredFile, discoverFiles } from '../core/file-discovery.js'
+import { Parser } from '../core/parser.js'
+import { type OutputFormat, Reporter } from '../core/reporter.js'
+import { RuleRegistry } from '../core/rule-registry.js'
+import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
+import { allRules, getRuleCategory } from '../rules/index.js'
+import { CLIError } from '../utils/errors.js'
+import { logger, LogLevel } from '../utils/logger.js'
 
 interface FileReport {
-  filePath: string;
-  violations: RuleViolation[];
+  filePath: string
+  violations: RuleViolation[]
 }
 
 interface AnalysisSummary {
-  duration: number;
-  errors: number;
-  info: number;
-  totalFiles: number;
-  totalViolations: number;
-  warnings: number;
+  duration: number
+  errors: number
+  info: number
+  totalFiles: number
+  totalViolations: number
+  warnings: number
 }
 
 interface AnalysisResult {
-  allViolations: RuleViolation[];
-  fileReports: FileReport[];
+  allViolations: RuleViolation[]
+  fileReports: FileReport[]
 }
 
 interface FixResult {
-  fixesApplied: number;
-  fixesSkipped: number;
+  fixesApplied: number
+  fixesSkipped: number
 }
 
 interface AnalyzeFilesOptions {
-  discoveredFiles: DiscoveredFile[];
-  parseCache: Map<string, import('../core/parser.js').ParseResult>;
-  parser: Parser;
-  registry: RuleRegistry;
-  spinner: null | Ora;
-  verbose: boolean;
+  discoveredFiles: DiscoveredFile[]
+  parseCache: Map<string, import('../core/parser.js').ParseResult>
+  parser: Parser
+  registry: RuleRegistry
+  spinner: null | Ora
+  verbose: boolean
 }
 
 interface ApplyFixesOptions {
-  allViolations: RuleViolation[];
-  discoveredFiles: DiscoveredFile[];
-  dryRun: boolean;
-  parseCache: Map<string, import('../core/parser.js').ParseResult>;
-  parser: Parser;
-  rulesWithFixes: Map<string, RuleWithFix>;
-  verbose: boolean;
+  allViolations: RuleViolation[]
+  discoveredFiles: DiscoveredFile[]
+  dryRun: boolean
+  parseCache: Map<string, import('../core/parser.js').ParseResult>
+  parser: Parser
+  rulesWithFixes: Map<string, RuleWithFix>
+  verbose: boolean
 }
 
 export default class Analyze extends Command {
@@ -70,9 +70,9 @@ export default class Analyze extends Command {
       description: 'Path to analyze (file or directory)',
       required: false,
     }),
-  };
+  }
 
-  static override description = 'Analyze code for violations and issues';
+  static override description = 'Analyze code for violations and issues'
 
   static override examples = [
     {
@@ -99,7 +99,7 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --rules no-circular-deps,max-params',
       description: 'Run specific rules only',
     },
-  ];
+  ]
 
   static override flags = {
     config: Flags.string({
@@ -126,7 +126,7 @@ export default class Analyze extends Command {
     format: Flags.string({
       default: 'console',
       description: 'Output format',
-      options: ['console', 'html', 'json', 'junit'],
+      options: ['console', 'html', 'json', 'junit', 'markdown', 'sarif', 'gitlab'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -152,67 +152,67 @@ export default class Analyze extends Command {
       default: false,
       description: 'Show detailed output',
     }),
-  };
+  }
 
-  private configCache = new ConfigCache();
+  private configCache = new ConfigCache()
 
   async catch(error: Error): Promise<void> {
     if (error instanceof CLIError) {
       this.error(error.message, {
         exit: 1,
         suggestions: error.suggestions,
-      });
+      })
     }
 
-    throw error;
+    throw error
   }
 
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(Analyze);
+    const { args, flags } = await this.parse(Analyze)
 
-    const config = await this.loadConfig(flags);
-    const files = config.files ?? [];
-    const ignore = config.ignore ?? [];
-    const format = flags.format as OutputFormat;
-    const {output} = flags;
-    const {quiet} = flags;
-    const {verbose} = flags;
-    const failOnWarnings = flags['fail-on-warnings'];
-    const shouldFix = flags.fix;
-    const dryRun = flags['dry-run'];
+    const config = await this.loadConfig(flags)
+    const files = config.files ?? []
+    const ignore = config.ignore ?? []
+    const format = flags.format as OutputFormat
+    const { output } = flags
+    const { quiet } = flags
+    const { verbose } = flags
+    const failOnWarnings = flags['fail-on-warnings']
+    const shouldFix = flags.fix
+    const dryRun = flags['dry-run']
 
-    this.configureLogging(verbose, quiet);
+    this.configureLogging(verbose, quiet)
 
-    const startTime = performance.now();
+    const startTime = performance.now()
 
-    const targetPath = path.resolve(args.path as string);
+    const targetPath = path.resolve(args.path as string)
 
-    const spinner = quiet ? null : ora('Discovering files...').start();
+    const spinner = quiet ? null : ora('Discovering files...').start()
 
     const discoveredFiles = await discoverFiles({
       cwd: targetPath,
       ignore,
       patterns: files,
-    });
+    })
 
     if (discoveredFiles.length === 0) {
-      spinner?.warn('No files found to analyze');
-      this.exit(0);
-      return;
+      spinner?.warn('No files found to analyze')
+      this.exit(0)
+      return
     }
 
-    spinner?.succeed(`Found ${discoveredFiles.length} files to analyze`);
+    spinner?.succeed(`Found ${discoveredFiles.length} files to analyze`)
 
-    const requestedRules = flags.rules;
-    const registry = this.setupRuleRegistry(requestedRules);
+    const requestedRules = flags.rules
+    const registry = this.setupRuleRegistry(requestedRules)
 
-    const parser = new Parser();
-    await parser.initialize();
-    
+    const parser = new Parser()
+    await parser.initialize()
+
     // Parse cache to avoid double parsing during fix application
-    const parseCache = new Map<string, import('../core/parser.js').ParseResult>();
+    const parseCache = new Map<string, import('../core/parser.js').ParseResult>()
 
-    const analysisSpinner = quiet ? null : ora('Analyzing files...').start();
+    const analysisSpinner = quiet ? null : ora('Analyzing files...').start()
 
     const { allViolations, fileReports } = await this.analyzeFiles({
       discoveredFiles,
@@ -221,18 +221,20 @@ export default class Analyze extends Command {
       registry,
       spinner: analysisSpinner,
       verbose,
-    });
+    })
 
-    analysisSpinner?.succeed('Analysis complete');
+    analysisSpinner?.succeed('Analysis complete')
 
-    let fixesApplied = 0;
-    let fixesSkipped = 0;
+    let fixesApplied = 0
+    let fixesSkipped = 0
 
     if (shouldFix && allViolations.length > 0) {
-      const fixSpinner = quiet ? null : ora(dryRun ? 'Previewing fixes...' : 'Applying fixes...').start();
-      
-      const rulesWithFixes = this.getRulesWithFixes();
-      
+      const fixSpinner = quiet
+        ? null
+        : ora(dryRun ? 'Previewing fixes...' : 'Applying fixes...').start()
+
+      const rulesWithFixes = this.getRulesWithFixes()
+
       const fixResult = await this.applyFixes({
         allViolations,
         discoveredFiles,
@@ -241,141 +243,149 @@ export default class Analyze extends Command {
         parser,
         rulesWithFixes,
         verbose,
-      });
-      
-      fixesApplied = fixResult.fixesApplied;
-      fixesSkipped = fixResult.fixesSkipped;
+      })
+
+      fixesApplied = fixResult.fixesApplied
+      fixesSkipped = fixResult.fixesSkipped
 
       fixSpinner?.succeed(
-        dryRun 
+        dryRun
           ? `Would apply ${fixesApplied} fixes, skip ${fixesSkipped} (dry run)`
-          : `Applied ${fixesApplied} fixes, skipped ${fixesSkipped}`
-      );
+          : `Applied ${fixesApplied} fixes, skipped ${fixesSkipped}`,
+      )
     }
 
-    parser.dispose();
+    parser.dispose()
 
-    const duration = performance.now() - startTime;
+    const duration = performance.now() - startTime
 
-    const summary = this.generateSummary(allViolations, discoveredFiles.length, duration);
+    const summary = this.generateSummary(allViolations, discoveredFiles.length, duration)
 
     const reporter = new Reporter({
       format,
       outputPath: output,
       quiet,
       verbose,
-    });
+    })
 
     await reporter.writeReport({
       files: fileReports,
       summary,
-    });
+    })
 
-    const exitCode = this.determineExitCode(summary, failOnWarnings);
-    this.exit(exitCode);
+    const exitCode = this.determineExitCode(summary, failOnWarnings)
+    this.exit(exitCode)
   }
 
   private async analyzeFiles(options: AnalyzeFilesOptions): Promise<AnalysisResult> {
-    const { discoveredFiles, parseCache, parser, registry, spinner, verbose } = options;
-    const concurrency = os.cpus().length || 4;
-    const limit = pLimit(concurrency);
+    const { discoveredFiles, parseCache, parser, registry, spinner, verbose } = options
+    const concurrency = os.cpus().length || 4
+    const limit = pLimit(concurrency)
 
     const results = await Promise.all(
       discoveredFiles.map((file, index) =>
         limit(async () => {
-          if (!file) return null;
+          if (!file) return null
 
           if (spinner && verbose) {
-            spinner.text = `Analyzing ${file.path} (${index + 1}/${discoveredFiles.length})`;
+            spinner.text = `Analyzing ${file.path} (${index + 1}/${discoveredFiles.length})`
           }
 
           try {
-            const parseResult = await parser.parseFile(file.absolutePath);
-            parseCache.set(file.absolutePath, parseResult);
+            const parseResult = await parser.parseFile(file.absolutePath)
+            parseCache.set(file.absolutePath, parseResult)
 
-            const violations = registry.runRules(parseResult.sourceFile);
+            const violations = registry.runRules(parseResult.sourceFile)
 
-            const violationsWithFilePath = violations.map(v => ({
+            const violationsWithFilePath = violations.map((v) => ({
               ...v,
               filePath: file.path,
-            }));
+            }))
 
             return {
               filePath: file.path,
               violations: violationsWithFilePath,
-            };
+            }
           } catch (error) {
             if (verbose) {
-              logger.warn(`Failed to analyze ${file.path}: ${(error as Error).message}`);
+              logger.warn(`Failed to analyze ${file.path}: ${(error as Error).message}`)
             }
 
-            return null;
+            return null
           }
         }),
       ),
-    );
+    )
 
-    const allViolations: RuleViolation[] = [];
-    const fileReports: FileReport[] = [];
+    const allViolations: RuleViolation[] = []
+    const fileReports: FileReport[] = []
 
     for (const result of results) {
       if (result) {
-        fileReports.push(result);
-        allViolations.push(...result.violations);
+        fileReports.push(result)
+        allViolations.push(...result.violations)
       }
     }
 
-    return { allViolations, fileReports };
+    return { allViolations, fileReports }
   }
 
   private async applyFixes(options: ApplyFixesOptions): Promise<FixResult> {
-    const { allViolations, discoveredFiles, dryRun, parseCache, parser, rulesWithFixes, verbose } = options;
-    let fixesApplied = 0;
-    let fixesSkipped = 0;
+    const { allViolations, discoveredFiles, dryRun, parseCache, parser, rulesWithFixes, verbose } =
+      options
+    let fixesApplied = 0
+    let fixesSkipped = 0
 
     for (const file of discoveredFiles) {
-      if (!file) continue;
+      if (!file) continue
 
-      const fileViolations = allViolations.filter(v => v.filePath === file.path);
-      if (fileViolations.length === 0) continue;
+      const fileViolations = allViolations.filter((v) => v.filePath === file.path)
+      if (fileViolations.length === 0) continue
 
       try {
         // Use cached parse result if available
-        let parseResult = parseCache.get(file.absolutePath);
+        let parseResult = parseCache.get(file.absolutePath)
         if (!parseResult) {
           // eslint-disable-next-line no-await-in-loop
-          parseResult = await parser.parseFile(file.absolutePath);
+          parseResult = await parser.parseFile(file.absolutePath)
         }
 
-        const report = applyFixesToFile(parseResult.sourceFile, fileViolations, rulesWithFixes, dryRun);
-        
-        fixesApplied += report.fixesApplied;
-        fixesSkipped += report.fixesSkipped;
+        const report = applyFixesToFile(
+          parseResult.sourceFile,
+          fileViolations,
+          rulesWithFixes,
+          dryRun,
+        )
+
+        fixesApplied += report.fixesApplied
+        fixesSkipped += report.fixesSkipped
 
         if (!dryRun && report.changes.length > 0) {
-          parseResult.sourceFile.saveSync();
+          parseResult.sourceFile.saveSync()
         }
 
         if (verbose && report.conflicts.length > 0) {
           for (const conflict of report.conflicts) {
-            logger.warn(`Fix conflict in ${file.path}: ${conflict.ruleId} conflicts with ${conflict.conflictingRule}`);
+            logger.warn(
+              `Fix conflict in ${file.path}: ${conflict.ruleId} conflicts with ${conflict.conflictingRule}`,
+            )
           }
         }
       } catch (error) {
         if (verbose) {
-          logger.warn(`Failed to fix ${file.path}: ${(error as Error).message}`);
+          logger.warn(`Failed to fix ${file.path}: ${(error as Error).message}`)
         }
       }
     }
 
-    return { fixesApplied, fixesSkipped };
+    return { fixesApplied, fixesSkipped }
   }
 
   private configureLogging(verbose: boolean, quiet: boolean): void {
     if (verbose) {
-      logger.setLevel(LogLevel.DEBUG);
+      logger.setLevel(LogLevel.DEBUG)
     } else if (quiet) {
-      logger.setLevel(LogLevel.SILENT);
+      logger.setLevel(LogLevel.SILENT)
     }
   }
 
@@ -384,14 +394,14 @@ export default class Analyze extends Command {
     failOnWarnings: boolean,
   ): number {
     if (summary.errors > 0) {
-      return 1;
+      return 1
     }
 
     if (failOnWarnings && summary.warnings > 0) {
-      return 2;
+      return 2
     }
 
-    return 0;
+    return 0
   }
 
   private generateSummary(
@@ -406,56 +416,60 @@ export default class Analyze extends Command {
       totalFiles: fileCount,
       totalViolations: violations.length,
       warnings: violations.filter((v) => v.severity === 'warning').length,
-    };
+    }
   }
 
   private getRulesWithFixes(): Map<string, RuleWithFix> {
-    const rulesWithFixes = new Map<string, RuleWithFix>();
-    
+    const rulesWithFixes = new Map<string, RuleWithFix>()
+
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       if (ruleDef.fix && typeof ruleDef.fix === 'function') {
         rulesWithFixes.set(ruleId, {
           fix: ({ sourceFile, violation }) => ruleDef.fix!(sourceFile, violation),
           id: ruleId,
           priority: 10,
-        });
+        })
       }
     }
-    
-    return rulesWithFixes;
+
+    return rulesWithFixes
   }
 
-  private async loadConfig(flags: { config?: string; files?: string[]; ignore?: string[] }): Promise<CodeForgeConfig> {
-    const configPath = await findConfigPath(flags.config, process.cwd());
+  private async loadConfig(flags: {
+    config?: string
+    files?: string[]
+    ignore?: string[]
+  }): Promise<CodeForgeConfig> {
+    const configPath = await findConfigPath(flags.config, process.cwd())
 
     if (configPath) {
-      logger.info(`Loading config from: ${configPath}`);
-      const rawConfig = await this.configCache.getConfig(configPath);
+      logger.info(`Loading config from: ${configPath}`)
+      const rawConfig = await this.configCache.getConfig(configPath)
       if (rawConfig) {
-        return validateConfig(rawConfig);
+        return validateConfig(rawConfig)
       }
     }
 
-    logger.debug('No config file found, using defaults');
-    return mergeConfigs({}, { files: flags.files, ignore: flags.ignore });
+    logger.debug('No config file found, using defaults')
+    return mergeConfigs({}, { files: flags.files, ignore: flags.ignore })
   }
 
   private setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
-    const registry = new RuleRegistry();
+    const registry = new RuleRegistry()
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      const category = getRuleCategory(ruleId);
-      registry.register(ruleId, ruleDef, category);
+      const category = getRuleCategory(ruleId)
+      registry.register(ruleId, ruleDef, category)
     }
 
     if (requestedRules && requestedRules.length > 0) {
-      const requestedSet = new Set(requestedRules);
+      const requestedSet = new Set(requestedRules)
       for (const [ruleId] of Object.entries(allRules)) {
         if (!requestedSet.has(ruleId)) {
-          registry.disable(ruleId);
+          registry.disable(ruleId)
         }
       }
     }
 
-    return registry;
+    return registry
   }
 }

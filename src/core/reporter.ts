@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { RuleViolation } from '../ast/visitor.js';
 
-export type OutputFormat = 'console' | 'html' | 'json' | 'junit';
+export type OutputFormat = 'console' | 'html' | 'json' | 'junit' | 'sarif' | 'markdown' | 'gitlab';
 
 export interface ReporterOptions {
   format: OutputFormat;
@@ -52,6 +52,12 @@ export class Reporter {
         return this.formatHtml(report);
       case 'junit':
         return this.formatJunit(report);
+      case 'sarif':
+      case 'markdown':
+        return this.formatMarkdown(report);
+      case 'gitlab':
+        return this.formatGitlab(report);
+        return this.formatSarif(report);
       case 'console':
       default:
         return this.formatConsole(report);
@@ -98,6 +104,84 @@ export class Reporter {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  private formatSarif(report: AnalysisReport): string {
+    const sarifLog = {
+      $schema: 'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json',
+      version: '2.1.0',
+      runs: [{
+        tool: {
+          driver: {
+            name: 'CodeForge',
+            version: '0.1.0',
+            informationUri: 'https://github.com/codeforge-dev/codeforge',
+            rules: this.extractSarifRules(report),
+          },
+        },
+        results: this.extractSarifResults(report),
+      }],
+    };
+    return JSON.stringify(sarifLog, null, 2);
+  }
+
+  private extractSarifRules(report: AnalysisReport): unknown[] {
+    const rulesMap = new Map<string, { id: string; shortDescription: string }>();
+    
+    for (const file of report.files) {
+      for (const violation of file.violations) {
+        if (!rulesMap.has(violation.ruleId)) {
+          rulesMap.set(violation.ruleId, {
+            id: violation.ruleId,
+            shortDescription: violation.message.split('.')[0] + '.',
+          });
+        }
+      }
+    }
+    
+    return Array.from(rulesMap.values());
+  }
+
+  private extractSarifResults(report: AnalysisReport): unknown[] {
+    const results: unknown[] = [];
+    
+    for (const file of report.files) {
+      for (const violation of file.violations) {
+        results.push({
+          ruleId: violation.ruleId,
+          level: this.mapSeverityToSarifLevel(violation.severity),
+          message: {
+            text: violation.message,
+          },
+          locations: [{
+            physicalLocation: {
+              artifactLocation: {
+                uri: file.filePath,
+              },
+              region: {
+                startLine: violation.range.start.line,
+                startColumn: violation.range.start.column,
+              },
+            },
+          }],
+        });
+      }
+    }
+    
+    return results;
+  }
+
+  private mapSeverityToSarifLevel(severity: string): string {
+    switch (severity) {
+      case 'error':
+        return 'error';
+      case 'warning':
+        return 'warning';
+      case 'info':
+        return 'note';
+      default:
+        return 'none';
+    }
   }
 
   private formatJson(report: AnalysisReport): string {
