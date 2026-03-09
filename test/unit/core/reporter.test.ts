@@ -656,4 +656,1303 @@ describe('Reporter', () => {
       expect(consoleSpy).toHaveBeenCalledWith('')
     })
   })
+
+  describe('formatHtml', () => {
+    test('generates valid HTML structure', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<!DOCTYPE html>')
+      expect(output).toContain('<html lang="en">')
+      expect(output).toContain('</html>')
+    })
+
+    test('includes page title', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<title>CodeForge Analysis Report</title>')
+    })
+
+    test('includes summary section with metrics', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        summary: {
+          totalFiles: 5,
+          totalViolations: 10,
+          errors: 3,
+          warnings: 5,
+          info: 2,
+          duration: 123,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('Files: 5')
+      expect(output).toContain('Errors: 3')
+      expect(output).toContain('Warnings: 5')
+      expect(output).toContain('Info: 2')
+      expect(output).toContain('Duration:')
+    })
+
+    test('displays violations with severity classes', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          { filePath: '/test/file.ts', violations: [createViolation({ severity: 'error' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('class="error"')
+      expect(output).toContain('[ERROR]')
+    })
+
+    test('displays warning severity with correct class', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          { filePath: '/test/file.ts', violations: [createViolation({ severity: 'warning' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 1,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('class="warning"')
+      expect(output).toContain('[WARNING]')
+    })
+
+    test('displays info severity with correct class', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [{ filePath: '/test/file.ts', violations: [createViolation({ severity: 'info' })] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 0,
+          info: 1,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('class="info"')
+      expect(output).toContain('[INFO]')
+    })
+
+    test('skips files with no violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/clean.ts', violations: [] },
+          { filePath: '/src/dirty.ts', violations: [createViolation()] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).not.toContain('/src/clean.ts')
+      expect(output).toContain('/src/dirty.ts')
+    })
+
+    test('escapes HTML in file paths', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [{ filePath: '/test/<script>.ts', violations: [createViolation()] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&lt;script&gt;')
+      expect(output).not.toContain('<script>')
+    })
+
+    test('escapes HTML in violation messages', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/test/file.ts',
+            violations: [createViolation({ message: 'Use <b>bold</b> carefully' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&lt;b&gt;')
+      expect(output).toContain('&lt;/b&gt;')
+    })
+
+    test('escapes HTML in rule IDs', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          { filePath: '/test/file.ts', violations: [createViolation({ ruleId: 'rule&id' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('rule&amp;id')
+    })
+
+    test('includes violation location', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/test/file.ts',
+            violations: [
+              createViolation({
+                range: { start: { line: 10, column: 5 }, end: { line: 10, column: 15 } },
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('line 10:5')
+    })
+
+    test('includes CSS styles', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<style>')
+      expect(output).toContain('</style>')
+      expect(output).toContain('font-family')
+    })
+
+    test('handles multiple files with violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/a.ts', violations: [createViolation({ ruleId: 'rule-a' })] },
+          { filePath: '/src/b.ts', violations: [createViolation({ ruleId: 'rule-b' })] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('/src/a.ts')
+      expect(output).toContain('/src/b.ts')
+      expect(output).toContain('rule-a')
+      expect(output).toContain('rule-b')
+    })
+
+    test('formats duration with 2 decimal places', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        summary: {
+          totalFiles: 0,
+          totalViolations: 0,
+          errors: 0,
+          warnings: 0,
+          info: 0,
+          duration: 1234.567,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('1234.57ms')
+    })
+
+    test('escapes ampersand character', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/test/file.ts',
+            violations: [createViolation({ message: 'Use && operator' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&amp;&amp;')
+    })
+
+    test('escapes double quote character', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/test/file.ts',
+            violations: [createViolation({ message: 'Use "quotes" properly' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&quot;')
+    })
+
+    test('escapes single quote character', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'html' })
+      const report = createReport({
+        files: [
+          { filePath: '/test/file.ts', violations: [createViolation({ message: "It's a test" })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&#039;')
+    })
+  })
+
+  describe('formatJunit', () => {
+    test('generates valid XML structure', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<?xml version="1.0" encoding="UTF-8"?>')
+      expect(output).toContain('<testsuit')
+      expect(output).toContain('</testsuit>')
+    })
+
+    test('includes testsuite for files with violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation()] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<testsuite name="/src/file.ts"')
+      expect(output).toContain('</testsuite>')
+    })
+
+    test('skips files with no violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/clean.ts', violations: [] },
+          { filePath: '/src/dirty.ts', violations: [createViolation()] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).not.toContain('name="/src/clean.ts"')
+      expect(output).toContain('name="/src/dirty.ts"')
+    })
+
+    test('includes testcase for each violation', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [createViolation({ ruleId: 'no-console', message: 'Unexpected console' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<testcase')
+      expect(output).toContain('name="no-console:')
+      expect(output).toContain('<failure')
+    })
+
+    test('includes violation location in failure message', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                filePath: '/src/file.ts',
+                range: { start: { line: 10, column: 5 }, end: { line: 10, column: 15 } },
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('/src/file.ts:10:5')
+    })
+
+    test('escapes XML special characters in messages', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [createViolation({ message: 'Use <tag> & "quotes"' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&lt;tag&gt;')
+      expect(output).toContain('&amp;')
+      expect(output).toContain('&quot;')
+    })
+
+    test('escapes XML special characters in rule IDs', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/file.ts', violations: [createViolation({ ruleId: 'rule<id>' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&lt;id&gt;')
+    })
+
+    test('handles multiple violations per file', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({ ruleId: 'rule1' }),
+              createViolation({ ruleId: 'rule2' }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('rule1')
+      expect(output).toContain('rule2')
+      const testcaseCount = (output.match(/<testcase/g) || []).length
+      expect(testcaseCount).toBe(2)
+    })
+
+    test('escapes single quote in XML', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/file.ts', violations: [createViolation({ message: "It's broken" })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('&#039;')
+    })
+
+    test('includes properties section', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'junit' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('<properties>')
+      expect(output).toContain('files-analyzed')
+    })
+  })
+
+  describe('formatSarif', () => {
+    test('generates valid SARIF JSON structure', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.$schema).toContain('sarif-schema')
+      expect(parsed.version).toBe('2.1.0')
+      expect(parsed.runs).toHaveLength(1)
+    })
+
+    test('includes tool information', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].tool.driver.name).toBe('CodeForge')
+      expect(parsed.runs[0].tool.driver.version).toBe('0.1.0')
+      expect(parsed.runs[0].tool.driver.informationUri).toContain('github.com')
+    })
+
+    test('extracts unique rules from violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/a.ts',
+            violations: [createViolation({ ruleId: 'rule-a', message: 'First rule violation.' })],
+          },
+          {
+            filePath: '/src/b.ts',
+            violations: [createViolation({ ruleId: 'rule-b', message: 'Second rule violation.' })],
+          },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      const rules = parsed.runs[0].tool.driver.rules
+      expect(rules).toHaveLength(2)
+      expect(rules.map((r: { id: string }) => r.id)).toContain('rule-a')
+      expect(rules.map((r: { id: string }) => r.id)).toContain('rule-b')
+    })
+
+    test('deduplicates rules by ruleId', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/a.ts', violations: [createViolation({ ruleId: 'same-rule' })] },
+          { filePath: '/src/b.ts', violations: [createViolation({ ruleId: 'same-rule' })] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      const rules = parsed.runs[0].tool.driver.rules
+      expect(rules).toHaveLength(1)
+    })
+
+    test('extracts short description from message', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({ message: 'This is a long message. More details here.' }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      const rule = parsed.runs[0].tool.driver.rules[0]
+      expect(rule.shortDescription).toBe('This is a long message.')
+    })
+
+    test('includes results for violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                ruleId: 'no-console',
+                message: 'Unexpected console',
+                severity: 'error',
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      const results = parsed.runs[0].results
+      expect(results).toHaveLength(1)
+      expect(results[0].ruleId).toBe('no-console')
+      expect(results[0].level).toBe('error')
+    })
+
+    test('maps error severity to error level', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation({ severity: 'error' })] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].results[0].level).toBe('error')
+    })
+
+    test('maps warning severity to warning level', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/file.ts', violations: [createViolation({ severity: 'warning' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 1,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].results[0].level).toBe('warning')
+    })
+
+    test('maps info severity to note level', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation({ severity: 'info' })] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 0,
+          info: 1,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].results[0].level).toBe('note')
+    })
+
+    test('maps unknown severity to none level', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [createViolation({ severity: 'unknown' as 'error' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].results[0].level).toBe('none')
+    })
+
+    test('includes location information in results', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                range: { start: { line: 10, column: 5 }, end: { line: 10, column: 15 } },
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      const location = parsed.runs[0].results[0].locations[0]
+      expect(location.physicalLocation.artifactLocation.uri).toBe('/src/file.ts')
+      expect(location.physicalLocation.region.startLine).toBe(10)
+      expect(location.physicalLocation.region.startColumn).toBe(5)
+    })
+
+    test('includes message text in results', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [createViolation({ message: 'Custom error message' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].results[0].message.text).toBe('Custom error message')
+    })
+
+    test('handles empty report', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'sarif' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed.runs[0].results).toEqual([])
+      expect(parsed.runs[0].tool.driver.rules).toEqual([])
+    })
+  })
+
+  describe('formatMarkdown', () => {
+    test('generates markdown header', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('# CodeForge Analysis Report')
+    })
+
+    test('includes generation timestamp', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('Generated on')
+      expect(output).toMatch(/\d{4}-\d{2}-\d{2}T/)
+    })
+
+    test('includes summary table', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        summary: {
+          totalFiles: 5,
+          totalViolations: 10,
+          errors: 3,
+          warnings: 5,
+          info: 2,
+          duration: 123,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('## Summary')
+      expect(output).toContain('| Total Files Analyzed | 5 |')
+      expect(output).toContain('| Total Violations | 10 |')
+      expect(output).toContain('| Errors | 3 |')
+      expect(output).toContain('| Warnings | 5 |')
+      expect(output).toContain('| Info | 2 |')
+    })
+
+    test('includes files with violations count', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/a.ts', violations: [createViolation()] },
+          { filePath: '/src/b.ts', violations: [] },
+          { filePath: '/src/c.ts', violations: [createViolation()] },
+        ],
+        summary: {
+          totalFiles: 3,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('| Files with Violations | 2 |')
+    })
+
+    test('displays violations with error icon', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                severity: 'error',
+                ruleId: 'no-console',
+                message: 'Unexpected console',
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('🔴')
+      expect(output).toContain('**no-console**')
+    })
+
+    test('displays violations with warning icon', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/file.ts', violations: [createViolation({ severity: 'warning' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 1,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('🟡')
+    })
+
+    test('displays violations with info icon', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation({ severity: 'info' })] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 0,
+          info: 1,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('🔵')
+    })
+
+    test('includes file path as subheading', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [{ filePath: '/src/components/Button.tsx', violations: [createViolation()] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('### /src/components/Button.tsx')
+    })
+
+    test('includes violation location', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                range: { start: { line: 42, column: 10 }, end: { line: 42, column: 20 } },
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('line 42:10')
+    })
+
+    test('shows no violations message when clean', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('✅ No violations found!')
+    })
+
+    test('does not show no violations message when violations exist', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation()] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).not.toContain('No violations found!')
+    })
+
+    test('skips files with no violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/clean.ts', violations: [] },
+          { filePath: '/src/dirty.ts', violations: [createViolation()] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).not.toContain('### /src/clean.ts')
+      expect(output).toContain('### /src/dirty.ts')
+    })
+
+    test('includes analysis time in summary', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        summary: {
+          totalFiles: 0,
+          totalViolations: 0,
+          errors: 0,
+          warnings: 0,
+          info: 0,
+          duration: 1234.56,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('| Analysis Time | 1234.56ms |')
+    })
+
+    test('includes footer with link', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('---')
+      expect(output).toContain('[CodeForge]')
+      expect(output).toContain('github.com/codeforge-dev')
+    })
+
+    test('handles multiple files with violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'markdown' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/a.ts', violations: [createViolation({ ruleId: 'rule-a' })] },
+          { filePath: '/src/b.ts', violations: [createViolation({ ruleId: 'rule-b' })] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      expect(output).toContain('### /src/a.ts')
+      expect(output).toContain('### /src/b.ts')
+      expect(output).toContain('rule-a')
+      expect(output).toContain('rule-b')
+    })
+  })
+
+  describe('formatGitlab', () => {
+    test('generates valid JSON array', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(Array.isArray(parsed)).toBe(true)
+    })
+
+    test('returns empty array for empty report', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed).toEqual([])
+    })
+
+    test('includes violation description', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [createViolation({ message: 'Custom error message' })],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].description).toBe('Custom error message')
+    })
+
+    test('includes check name from rule ID', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/file.ts', violations: [createViolation({ ruleId: 'no-console' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].check_name).toBe('no-console')
+    })
+
+    test('generates unique fingerprint', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                ruleId: 'no-console',
+                range: { start: { line: 10, column: 1 }, end: { line: 10, column: 10 } },
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].fingerprint).toBe('/src/file.ts:no-console:10')
+    })
+
+    test('maps error severity to critical', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation({ severity: 'error' })] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].severity).toBe('critical')
+    })
+
+    test('maps warning severity to major', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/file.ts', violations: [createViolation({ severity: 'warning' })] },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 1,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].severity).toBe('major')
+    })
+
+    test('maps info severity to minor', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [{ filePath: '/src/file.ts', violations: [createViolation({ severity: 'info' })] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 0,
+          warnings: 0,
+          info: 1,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].severity).toBe('minor')
+    })
+
+    test('includes file path in location', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [{ filePath: '/src/components/Button.tsx', violations: [createViolation()] }],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].location.path).toBe('/src/components/Button.tsx')
+    })
+
+    test('includes line number in location', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [
+          {
+            filePath: '/src/file.ts',
+            violations: [
+              createViolation({
+                range: { start: { line: 42, column: 5 }, end: { line: 42, column: 15 } },
+              }),
+            ],
+          },
+        ],
+        summary: {
+          totalFiles: 1,
+          totalViolations: 1,
+          errors: 1,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed[0].location.lines.begin).toBe(42)
+    })
+
+    test('handles multiple violations', () => {
+      const reporter = new Reporter({ ...defaultOptions, format: 'gitlab' })
+      const report = createReport({
+        files: [
+          { filePath: '/src/a.ts', violations: [createViolation({ ruleId: 'rule-a' })] },
+          { filePath: '/src/b.ts', violations: [createViolation({ ruleId: 'rule-b' })] },
+        ],
+        summary: {
+          totalFiles: 2,
+          totalViolations: 2,
+          errors: 2,
+          warnings: 0,
+          info: 0,
+          duration: 50,
+        },
+      })
+      const output = reporter.formatReport(report)
+      const parsed = JSON.parse(output)
+      expect(parsed).toHaveLength(2)
+    })
+  })
+
+  describe('error handling', () => {
+    test('writeReport propagates mkdir errors', async () => {
+      const reporter = new Reporter({
+        ...defaultOptions,
+        format: 'json',
+        outputPath: '/output/report.json',
+      })
+      const report = createReport()
+      const mkdirError = new Error('Permission denied')
+      vi.mocked(fs.mkdir).mockRejectedValueOnce(mkdirError)
+
+      await expect(reporter.writeReport(report)).rejects.toThrow('Permission denied')
+    })
+
+    test('writeReport propagates writeFile errors', async () => {
+      const reporter = new Reporter({
+        ...defaultOptions,
+        format: 'json',
+        outputPath: '/output/report.json',
+      })
+      const report = createReport()
+      vi.mocked(fs.mkdir).mockResolvedValueOnce(undefined)
+      const writeError = new Error('Disk full')
+      vi.mocked(fs.writeFile).mockRejectedValueOnce(writeError)
+
+      await expect(reporter.writeReport(report)).rejects.toThrow('Disk full')
+    })
+  })
+
+  describe('formatReport default case', () => {
+    test('defaults to console format for unknown format', () => {
+      const reporter = new Reporter({
+        format: 'unknown' as 'console',
+        verbose: false,
+        quiet: false,
+      })
+      const report = createReport()
+      const output = reporter.formatReport(report)
+      expect(output).toContain('Summary')
+    })
+  })
 })
