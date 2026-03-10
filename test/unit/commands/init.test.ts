@@ -74,6 +74,7 @@ describe('Init Command', () => {
       expect(Init.flags).toBeDefined()
       expect(Init.flags.format).toBeDefined()
       expect(Init.flags.force).toBeDefined()
+      expect(Init.flags.interactive).toBeDefined()
       expect(Init.flags.minimal).toBeDefined()
       expect(Init.flags.typescript).toBeDefined()
     })
@@ -89,6 +90,14 @@ describe('Init Command', () => {
 
     test('force flag has default false', () => {
       expect(Init.flags.force.default).toBe(false)
+    })
+
+    test('interactive flag has default false', () => {
+      expect(Init.flags.interactive.default).toBe(false)
+    })
+
+    test('interactive flag has char i', () => {
+      expect(Init.flags.interactive.char).toBe('i')
     })
 
     test('minimal flag has default false', () => {
@@ -132,6 +141,7 @@ describe('Init Command', () => {
       const cmd = createCommandWithMockedParse({
         format: 'json',
         force: false,
+        interactive: false,
         minimal: true,
         typescript: true,
       })
@@ -159,6 +169,7 @@ describe('Init Command', () => {
       const cmd = createCommandWithMockedParse({
         format: 'js',
         force: false,
+        interactive: false,
         minimal: true,
         typescript: true,
       })
@@ -185,6 +196,7 @@ describe('Init Command', () => {
       const cmd = createCommandWithMockedParse({
         format: 'json',
         force: false,
+        interactive: false,
         minimal: true,
         typescript: true,
       })
@@ -205,6 +217,7 @@ describe('Init Command', () => {
       const cmd = createCommandWithMockedParse({
         format: 'json',
         force: false,
+        interactive: false,
         minimal: false,
         typescript: true,
       })
@@ -228,6 +241,7 @@ describe('Init Command', () => {
       const cmd = createCommandWithMockedParse({
         format: 'json',
         force: false,
+        interactive: false,
         minimal: true,
         typescript: true,
       })
@@ -246,6 +260,7 @@ describe('Init Command', () => {
       const cmd = createCommandWithMockedParse({
         format: 'json',
         force: false,
+        interactive: false,
         minimal: true,
         typescript: true,
       })
@@ -253,6 +268,27 @@ describe('Init Command', () => {
 
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
       expect(output).toContain('Next steps')
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('interactive flag does not prompt when minimal is true', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+      const cmd = createCommandWithMockedParse({
+        format: 'json',
+        force: false,
+        interactive: true,
+        minimal: true,
+        typescript: true,
+      })
+      await cmd.run()
+
+      const configPath = path.join(tempDir, '.codeforgerc.json')
+      const content = await fs.readFile(configPath, 'utf-8')
+      const config = JSON.parse(content)
+      expect(config.rules).toBeUndefined()
 
       vi.spyOn(process, 'cwd').mockRestore()
     })

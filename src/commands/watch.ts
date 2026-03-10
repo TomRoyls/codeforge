@@ -1,7 +1,12 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 
-import { DEFAULT_CONFIG } from '../config/types.js'
+import type { CodeForgeConfig } from '../config/types.js'
+
+import { ConfigCache } from '../config/cache.js'
+import { findConfigPath } from '../config/discovery.js'
+import { mergeConfigs } from '../config/merger.js'
+import { validateConfig } from '../config/validator.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
@@ -58,7 +63,9 @@ export default class Watch extends Command {
     }),
   }
 
+  private configCache = new ConfigCache()
   private isRunning = false
+  private parser: null | Parser = null
   private pendingAnalysis = false
   private watcher: FileWatcher | null = null
 
@@ -70,7 +77,7 @@ export default class Watch extends Command {
     }
 
     try {
-      const config = DEFAULT_CONFIG
+      const config = await this.loadConfig(flags)
       const patterns = this.resolvePatterns(args.files, config.files)
       const ignore = config.ignore ?? []
       const requestedRules = flags.rules?.split(',').map((r) => r.trim())
@@ -85,6 +92,10 @@ export default class Watch extends Command {
       // Setup signal handlers for graceful shutdown
       process.on('SIGINT', () => this.handleShutdown())
       process.on('SIGTERM', () => this.handleShutdown())
+
+      // Initialize parser once for the watch session
+      this.parser = new Parser()
+      await this.parser.initialize()
 
       // Create and configure watcher
       this.watcher = new FileWatcher({
@@ -132,7 +143,6 @@ export default class Watch extends Command {
     requestedRules: string[] | undefined,
     _verbose: boolean,
   ): Promise<void> {
-    // Prevent concurrent analysis
     if (this.isRunning) {
       this.pendingAnalysis = true
       return
@@ -142,9 +152,12 @@ export default class Watch extends Command {
 
     try {
       const registry = this.setupRuleRegistry(requestedRules)
-      const parser = new Parser()
 
-      const parseResult = await parser.parseFile(filePath)
+      if (!this.parser) {
+        return
+      }
+
+      const parseResult = await this.parser.parseFile(filePath)
 
       if (!parseResult.sourceFile) {
         return
@@ -207,7 +220,30 @@ export default class Watch extends Command {
       })
     }
 
+    if (this.parser) {
+      this.parser.dispose()
+    }
+
     this.exit(0)
+  }
+
+  private async loadConfig(flags: {
+    config?: string
+    files?: string[]
+    ignore?: string[]
+  }): Promise<CodeForgeConfig> {
+    const configPath = await findConfigPath(flags.config, process.cwd())
+
+    if (configPath) {
+      logger.info(`Loading config from: ${configPath}`)
+      const rawConfig = await this.configCache.getConfig(configPath)
+      if (rawConfig) {
+        return validateConfig(rawConfig)
+      }
+    }
+
+    logger.debug('No config file found, using defaults')
+    return mergeConfigs({}, { files: flags.files, ignore: flags.ignore })
   }
 
   private resolvePatterns(
