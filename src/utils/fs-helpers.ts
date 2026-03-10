@@ -60,7 +60,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       return false
     }
-    return false
+    throw error
   }
 }
 
@@ -74,7 +74,7 @@ export async function directoryExists(dirPath: string): Promise<boolean> {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       return false
     }
-    return false
+    throw error
   }
 }
 

@@ -22,9 +22,7 @@ describe('fs-helpers', () => {
   })
 
   afterEach(async () => {
-    try {
-      await fs.rm(tempDir, { recursive: true, force: true })
-    } catch {}
+    await fs.rm(tempDir, { recursive: true, force: true })
   })
 
   describe('readFileSafe', () => {
@@ -48,7 +46,7 @@ describe('fs-helpers', () => {
     })
 
     test('reads large file', async () => {
-      const testFile = path.join(tempDir, 'large.txt')
+      const testFile = path.join(tempDir, `large.txt`)
       const largeContent = 'x'.repeat(10000)
       await fs.writeFile(testFile, largeContent, 'utf-8')
       const content = await readFileSafe(testFile)
@@ -57,7 +55,7 @@ describe('fs-helpers', () => {
   })
 
   describe('readFileStrict', () => {
-    test('reads existing file', async () => {
+    test('writes and reads file', async () => {
       const testFile = path.join(tempDir, 'test.txt')
       await fs.writeFile(testFile, 'content', 'utf-8')
       const content = await readFileStrict(testFile)
@@ -114,6 +112,21 @@ describe('fs-helpers', () => {
       const exists = await fileExists(dirPath)
       expect(exists).toBe(false)
     })
+
+    test('throws for permission denied', async () => {
+      const readOnlyDir = path.join(tempDir, 'readonly')
+      await fs.mkdir(readOnlyDir)
+      const restrictedFile = path.join(readOnlyDir, 'secret.txt')
+      await fs.writeFile(restrictedFile, 'secret', 'utf-8')
+      await fs.chmod(readOnlyDir, 0o555)
+      try {
+        await fileExists(restrictedFile)
+      } catch (error) {
+        expect((error as NodeJS.ErrnoException).code).toBe('EACCES')
+      } finally {
+        await fs.chmod(readOnlyDir, 0o755)
+      }
+    })
   })
 
   describe('directoryExists', () => {
@@ -134,6 +147,19 @@ describe('fs-helpers', () => {
       await fs.writeFile(filePath, 'content', 'utf-8')
       const exists = await directoryExists(filePath)
       expect(exists).toBe(false)
+    })
+
+    test('throws for permission denied', async () => {
+      const readOnlyParent = path.join(tempDir, 'readonlyparent')
+      await fs.mkdir(readOnlyParent)
+      await fs.chmod(readOnlyParent, 0o555)
+      try {
+        await directoryExists(path.join(readOnlyParent, 'subdir'))
+      } catch (error) {
+        expect((error as NodeJS.ErrnoException).code).toBe('EACCES')
+      } finally {
+        await fs.chmod(readOnlyParent, 0o755)
+      }
     })
   })
 

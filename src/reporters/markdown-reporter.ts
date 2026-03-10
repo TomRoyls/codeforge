@@ -1,6 +1,3 @@
-import * as fs from 'node:fs'
-import path from 'node:path'
-
 import type {
   AnalysisResult,
   FileAnalysisResult,
@@ -8,6 +5,9 @@ import type {
   ReporterOptions,
   Violation,
 } from './types.js'
+
+import { escapeMarkdown } from '../utils/escape.js'
+import { writeToFile } from '../utils/file-writer.js'
 
 const SEVERITY_ICONS: Record<Violation['severity'], string> = {
   error: '🔴',
@@ -21,10 +21,6 @@ function getSeverityBadge(severity: Violation['severity']): string {
 
 function getSeverityLabel(severity: Violation['severity']): string {
   return severity.toUpperCase()
-}
-
-function escapeMarkdown(text: string): string {
-  return text.replaceAll(/[<>&`*_#[\]|]/g, String.raw`\$&`)
 }
 
 function formatCodeSnippet(source: string, line: number, _column: number): string {
@@ -87,7 +83,7 @@ export class MarkdownReporter implements Reporter {
     const markdown = this.generateReport(results)
 
     if (this.outputPath) {
-      this.writeToFile(markdown)
+      writeToFile(this.outputPath, markdown)
     } else {
       console.log(markdown)
     }
@@ -189,16 +185,5 @@ Generated on ${new Date().toISOString()}`
     })
 
     return `## Violations\n\n${fileSections.join('\n\n')}`
-  }
-
-  private writeToFile(content: string): void {
-    if (!this.outputPath) return
-
-    const dir = path.dirname(this.outputPath)
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
-
-    fs.writeFileSync(this.outputPath, content, 'utf8')
   }
 }

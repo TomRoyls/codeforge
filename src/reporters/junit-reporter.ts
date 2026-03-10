@@ -1,6 +1,3 @@
-import * as fs from 'node:fs'
-import path from 'node:path'
-
 import type {
   AnalysisResult,
   FileAnalysisResult,
@@ -8,6 +5,9 @@ import type {
   ReporterOptions,
   Violation,
 } from './types.js'
+
+import { escapeXml } from '../utils/escape.js'
+import { writeToFile } from '../utils/file-writer.js'
 
 export class JUnitReporter implements Reporter {
   readonly name = 'junit'
@@ -25,19 +25,10 @@ export class JUnitReporter implements Reporter {
     const xml = this.generateXML(results)
 
     if (this.outputPath) {
-      this.writeToFile(xml)
+      writeToFile(this.outputPath, xml)
     } else {
       console.log(xml)
     }
-  }
-
-  private escapeXML(str: string): string {
-    return str
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&apos;')
   }
 
   private formatTimestamp(): string {
@@ -45,8 +36,8 @@ export class JUnitReporter implements Reporter {
   }
 
   private generateTestCase(violation: Violation, filepath: string): string {
-    const className = this.escapeXML(filepath)
-    const testName = this.escapeXML(`${violation.ruleId}: ${violation.message}`)
+    const className = escapeXml(filepath)
+    const testName = escapeXml(`${violation.ruleId}: ${violation.message}`)
     const location = `${filepath}:${violation.line}:${violation.column}`
 
     let xml = '    <testcase\n'
@@ -56,32 +47,32 @@ export class JUnitReporter implements Reporter {
 
     if (violation.severity === 'error') {
       xml += '      <error\n'
-      xml += `        message="${this.escapeXML(violation.message)}"\n`
+      xml += `        message="${escapeXml(violation.message)}"\n`
       xml += `        type="${violation.ruleId}"\n`
       xml += `      >\n`
-      xml += `        Location: ${this.escapeXML(location)}\n`
+      xml += `        Location: ${escapeXml(location)}\n`
       if (violation.source) {
-        xml += `        Source:\n${this.escapeXML(violation.source)}\n`
+        xml += `        Source:\n${escapeXml(violation.source)}\n`
       }
 
       if (violation.suggestion) {
-        xml += `        Suggestion: ${this.escapeXML(violation.suggestion)}\n`
+        xml += `        Suggestion: ${escapeXml(violation.suggestion)}\n`
       }
 
       xml += '      </error>\n'
     } else {
       // warning and info are treated as failures in JUnit
       xml += '      <failure\n'
-      xml += `        message="${this.escapeXML(violation.message)}"\n`
+      xml += `        message="${escapeXml(violation.message)}"\n`
       xml += `        type="${violation.severity}"\n`
       xml += `      >\n`
-      xml += `        Location: ${this.escapeXML(location)}\n`
+      xml += `        Location: ${escapeXml(location)}\n`
       if (violation.source) {
-        xml += `        Source:\n${this.escapeXML(violation.source)}\n`
+        xml += `        Source:\n${escapeXml(violation.source)}\n`
       }
 
       if (violation.suggestion) {
-        xml += `        Suggestion: ${this.escapeXML(violation.suggestion)}\n`
+        xml += `        Suggestion: ${escapeXml(violation.suggestion)}\n`
       }
 
       xml += '      </failure>\n'
@@ -99,7 +90,7 @@ export class JUnitReporter implements Reporter {
     const timeInSeconds = (file.stats.totalTime / 1000).toFixed(3)
 
     let xml = '  <testsuite\n'
-    xml += `    name="${this.escapeXML(file.filePath)}"\n`
+    xml += `    name="${escapeXml(file.filePath)}"\n`
     xml += `    tests="${totalViolations}"\n`
     xml += `    failures="${warningCount + infoCount}"\n`
     xml += `    errors="${errorCount}"\n`
@@ -134,16 +125,5 @@ export class JUnitReporter implements Reporter {
 
     xml += '</testsuites>'
     return xml
-  }
-
-  private writeToFile(content: string): void {
-    if (!this.outputPath) return
-
-    const dir = path.dirname(this.outputPath)
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
-
-    fs.writeFileSync(this.outputPath, content, 'utf8')
   }
 }

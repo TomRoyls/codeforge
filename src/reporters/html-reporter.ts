@@ -1,6 +1,3 @@
-import * as fs from 'node:fs'
-import path from 'node:path'
-
 import type {
   AnalysisResult,
   FileAnalysisResult,
@@ -9,6 +6,9 @@ import type {
   Severity,
   Violation,
 } from './types.js'
+
+import { escapeHtml } from '../utils/escape.js'
+import { writeToFile } from '../utils/file-writer.js'
 
 const SEVERITY_COLORS: Record<Severity, string> = {
   error: '#ff6b6b',
@@ -31,26 +31,15 @@ export class HTMLReporter implements Reporter {
   }
 
   format(violation: Violation): string {
-    return this.escapeHtml(
+    return escapeHtml(
       `${violation.filePath}:${violation.line}:${violation.column} ${violation.severity.toUpperCase()} ${violation.message}`,
     )
   }
 
   report(results: AnalysisResult): void {
     const html = this.generateHTML(results)
-    this.writeToFile(html)
+    writeToFile(this.outputPath, html)
     console.log(`HTML report generated: ${this.outputPath}`)
-  }
-
-  private escapeHtml(text: string): string {
-    const map: Record<string, string> = {
-      '"': '&quot;',
-      '&': '&amp;',
-      "'": '&#039;',
-      '<': '&lt;',
-      '>': '&gt;',
-    }
-    return text.replaceAll(/[&<>"']/g, (char: string) => map[char] ?? char)
   }
 
   private formatTime(ms: number): string {
@@ -500,10 +489,10 @@ export class HTMLReporter implements Reporter {
     const infoCount = file.violations.filter((v) => v.severity === 'info').length
 
     return `
-    <details class="file-section" data-file="${this.escapeHtml(file.filePath)}" open>
+    <details class="file-section" data-file="${escapeHtml(file.filePath)}" open>
       <summary class="file-header">
         <span class="toggle-icon">▼</span>
-        <span class="file-path">${this.escapeHtml(file.filePath)}</span>
+        <span class="file-path">${escapeHtml(file.filePath)}</span>
         <div class="file-badges">
           ${errorCount > 0 ? `<span class="badge error">${errorCount}</span>` : ''}
           ${warningCount > 0 ? `<span class="badge warning">${warningCount}</span>` : ''}
@@ -518,24 +507,15 @@ export class HTMLReporter implements Reporter {
 
   private renderViolation(violation: Violation): string {
     return `
-        <div class="violation" data-severity="${violation.severity}" data-rule="${this.escapeHtml(violation.ruleId)}" data-file="${this.escapeHtml(violation.filePath)}">
+        <div class="violation" data-severity="${violation.severity}" data-rule="${escapeHtml(violation.ruleId)}" data-file="${escapeHtml(violation.filePath)}">
           <div class="violation-header">
             <span class="severity-icon ${violation.severity}">${SEVERITY_ICONS[violation.severity]}</span>
             <span class="location">Line ${violation.line}, Col ${violation.column}${violation.endLine && violation.endLine !== violation.line ? ` - Line ${violation.endLine}` : ''}</span>
-            <span class="rule-id">${this.escapeHtml(violation.ruleId)}</span>
+            <span class="rule-id">${escapeHtml(violation.ruleId)}</span>
           </div>
-          <div class="violation-message">${this.escapeHtml(violation.message)}</div>
-          ${violation.source ? `<pre class="source-code"><code>${this.escapeHtml(violation.source)}</code></pre>` : ''}
-          ${violation.suggestion ? `<div class="suggestion">💡 ${this.escapeHtml(violation.suggestion)}</div>` : ''}
+          <div class="violation-message">${escapeHtml(violation.message)}</div>
+          ${violation.source ? `<pre class="source-code"><code>${escapeHtml(violation.source)}</code></pre>` : ''}
+          ${violation.suggestion ? `<div class="suggestion">💡 ${escapeHtml(violation.suggestion)}</div>` : ''}
         </div>`
-  }
-
-  private writeToFile(content: string): void {
-    const dir = path.dirname(this.outputPath)
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
-
-    fs.writeFileSync(this.outputPath, content, 'utf8')
   }
 }

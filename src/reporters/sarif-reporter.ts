@@ -1,7 +1,6 @@
-import * as fs from 'node:fs'
-import path from 'node:path'
-
 import type { AnalysisResult, Reporter, ReporterOptions, Violation } from './types.js'
+
+import { writeToFile } from '../utils/file-writer.js'
 
 /**
  * SARIF (Static Analysis Results Interchange Format) v2.1.0
@@ -131,7 +130,7 @@ export class SARIFReporter implements Reporter {
     const json = this.pretty ? JSON.stringify(output, null, 2) : JSON.stringify(output)
 
     if (this.outputPath) {
-      this.writeToFile(json)
+      writeToFile(this.outputPath, json)
     } else {
       console.log(json)
     }
@@ -223,16 +222,5 @@ export class SARIFReporter implements Reporter {
     }
 
     return result
-  }
-
-  private writeToFile(content: string): void {
-    if (!this.outputPath) return
-
-    const dir = path.dirname(this.outputPath)
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
-
-    fs.writeFileSync(this.outputPath, content, 'utf8')
   }
 }

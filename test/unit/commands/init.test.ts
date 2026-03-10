@@ -292,5 +292,246 @@ describe('Init Command', () => {
 
       vi.spyOn(process, 'cwd').mockRestore()
     })
+
+    describe('Private methods', () => {
+      describe('getRuleInfos', () => {
+        test('returns array of rule infos', () => {
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).getRuleInfos()
+
+          expect(Array.isArray(result)).toBe(true)
+          expect(result.length).toBeGreaterThan(0)
+        })
+
+        test('each rule info has required properties', () => {
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).getRuleInfos()
+
+          result.forEach((rule: any) => {
+            expect(rule).toHaveProperty('id')
+            expect(rule).toHaveProperty('description')
+            expect(rule).toHaveProperty('category')
+            expect(rule).toHaveProperty('recommended')
+            expect(typeof rule.id).toBe('string')
+            expect(typeof rule.description).toBe('string')
+            expect(typeof rule.category).toBe('string')
+            expect(typeof rule.recommended).toBe('boolean')
+          })
+        })
+
+        test('includes all mocked rules', () => {
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).getRuleInfos()
+
+          const ruleIds = result.map((r: any) => r.id)
+          expect(ruleIds).toContain('max-complexity')
+          expect(ruleIds).toContain('max-params')
+          expect(ruleIds).toContain('no-await-in-loop')
+        })
+
+        test('correctly identifies recommended rules', () => {
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).getRuleInfos()
+
+          const maxComplexity = result.find((r: any) => r.id === 'max-complexity')
+          const maxParams = result.find((r: any) => r.id === 'max-params')
+          const noAwaitInLoop = result.find((r: any) => r.id === 'no-await-in-loop')
+
+          expect(maxComplexity?.recommended).toBe(true)
+          expect(maxParams?.recommended).toBe(true)
+          expect(noAwaitInLoop?.recommended).toBe(false)
+        })
+
+        test('correctly assigns categories', () => {
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).getRuleInfos()
+
+          const maxComplexity = result.find((r: any) => r.id === 'max-complexity')
+          const maxParams = result.find((r: any) => r.id === 'max-params')
+          const noAwaitInLoop = result.find((r: any) => r.id === 'no-await-in-loop')
+
+          expect(maxComplexity?.category).toBe('complexity')
+          expect(maxParams?.category).toBe('complexity')
+          expect(noAwaitInLoop?.category).toBe('performance')
+        })
+      })
+
+      describe('generateJsContent', () => {
+        test('generates valid JS export', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.ts'],
+            ignore: ['node_modules/**'],
+          }
+
+          const result = (cmd as any).generateJsContent(config)
+
+          expect(result).toContain('export default')
+          expect(result).toContain("/** @type {import('codeforge').CodeForgeConfig} */")
+          expect(result).toContain('**/*.ts')
+          expect(result).toContain('node_modules/**')
+        })
+
+        test('includes type definition comment', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.ts'],
+          }
+
+          const result = (cmd as any).generateJsContent(config)
+
+          expect(result).toMatch(/\/\*\* @type \{import\('codeforge'\)\.CodeForgeConfig\} \*\//)
+        })
+
+        test('formats config with proper indentation', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.ts', '**/*.tsx'],
+            ignore: ['node_modules/**', 'dist/**'],
+            rules: { 'max-complexity': 'error' },
+          }
+
+          const result = (cmd as any).generateJsContent(config)
+
+          expect(result).toContain('  "files": [')
+          expect(result).toContain('  "ignore": [')
+          expect(result).toContain('  "rules": {')
+        })
+
+        test('handles config without rules', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.js'],
+            ignore: ['node_modules/**'],
+          }
+
+          const result = (cmd as any).generateJsContent(config)
+
+          expect(result).not.toContain('"rules"')
+        })
+      })
+
+      describe('generateJsonContent', () => {
+        test('generates valid JSON', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.ts'],
+            ignore: ['node_modules/**'],
+          }
+
+          const result = (cmd as any).generateJsonContent(config)
+
+          expect(() => JSON.parse(result)).not.toThrow()
+          const parsed = JSON.parse(result)
+          expect(parsed.files).toEqual(['**/*.ts'])
+          expect(parsed.ignore).toEqual(['node_modules/**'])
+        })
+
+        test('formats JSON with 2 space indentation', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.ts'],
+          }
+
+          const result = (cmd as any).generateJsonContent(config)
+
+          expect(result).toContain('  "files"')
+        })
+
+        test('includes rules in output', () => {
+          const cmd = new Init([], {} as never)
+          const config: any = {
+            files: ['**/*.ts'],
+            ignore: ['node_modules/**'],
+            rules: { 'max-complexity': 'error' },
+          }
+
+          const result = (cmd as any).generateJsonContent(config)
+
+          const parsed = JSON.parse(result)
+          expect(parsed.rules).toBeDefined()
+          expect(parsed.rules['max-complexity']).toBe('error')
+        })
+      })
+
+      describe('detectExistingConfig', () => {
+        test('returns null when no config file exists', () => {
+          const originalCwd = process.cwd
+          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).detectExistingConfig()
+          expect(result).toBeNull()
+
+          vi.spyOn(process, 'cwd').mockRestore()
+        })
+
+        test('returns path when .codeforgerc.json exists', async () => {
+          const originalCwd = process.cwd
+          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+          await fs.writeFile(path.join(tempDir, '.codeforgerc.json'), '{}', 'utf-8')
+
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).detectExistingConfig()
+          expect(result).toBe(path.join(tempDir, '.codeforgerc.json'))
+
+          vi.spyOn(process, 'cwd').mockRestore()
+        })
+
+        test('returns path when codeforge.config.js exists', async () => {
+          const originalCwd = process.cwd
+          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+          await fs.writeFile(
+            path.join(tempDir, 'codeforge.config.js'),
+            'export default {};',
+            'utf-8',
+          )
+
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).detectExistingConfig()
+          expect(result).toBe(path.join(tempDir, 'codeforge.config.js'))
+
+          vi.spyOn(process, 'cwd').mockRestore()
+        })
+
+        test('returns path when .codeforgerc exists', async () => {
+          const originalCwd = process.cwd
+          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+          await fs.writeFile(path.join(tempDir, '.codeforgerc'), '{}', 'utf-8')
+
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).detectExistingConfig()
+          expect(result).toBe(path.join(tempDir, '.codeforgerc'))
+
+          vi.spyOn(process, 'cwd').mockRestore()
+        })
+
+        test('returns first config found when multiple exist', async () => {
+          const originalCwd = process.cwd
+          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+          await fs.writeFile(
+            path.join(tempDir, 'codeforge.config.js'),
+            'export default {};',
+            'utf-8',
+          )
+          await fs.writeFile(path.join(tempDir, '.codeforgerc.json'), '{}', 'utf-8')
+
+          const cmd = new Init([], {} as never)
+          const result = (cmd as any).detectExistingConfig()
+          expect(result).not.toBeNull()
+          expect(
+            ['.codeforgerc', '.codeforgerc.json', '.codeforge.json', 'codeforge.config.js'].some(
+              (name) => result?.endsWith(name),
+            ),
+          ).toBe(true)
+
+          vi.spyOn(process, 'cwd').mockRestore()
+        })
+      })
+    })
   })
 })
