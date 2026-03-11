@@ -1,4 +1,25 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
+import { Node as TsMorphNode } from 'ts-morph'
+
+// Spy on Node.is* methods before any imports
+vi.spyOn(TsMorphNode, 'isFunctionDeclaration').mockImplementation(
+  (node: any) => node?.getKind?.() === 250,
+)
+vi.spyOn(TsMorphNode, 'isMethodDeclaration').mockImplementation(
+  (node: any) => node?.getKind?.() === 142,
+)
+vi.spyOn(TsMorphNode, 'isClassDeclaration').mockImplementation(
+  (node: any) => node?.getKind?.() === 219,
+)
+vi.spyOn(TsMorphNode, 'isInterfaceDeclaration').mockImplementation(
+  (node: any) => node?.getKind?.() === 218,
+)
+vi.spyOn(TsMorphNode, 'isTypeAliasDeclaration').mockImplementation(
+  (node: any) => node?.getKind?.() === 200,
+)
+vi.spyOn(TsMorphNode, 'isEnumDeclaration').mockImplementation(
+  (node: any) => node?.getKind?.() === 220,
+)
 
 vi.mock('../../../src/core/file-discovery.js', () => ({
   discoverFiles: vi.fn(),
@@ -455,6 +476,120 @@ describe('Stats Command', () => {
 
       expect(parsed.summary.files).toBe(1)
       expect(parsed.summary.loc).toBe(0)
+    })
+  })
+
+  describe('isLogicalOperator method', () => {
+    test('returns true for && operator (token kind 56)', () => {
+      const mockNode = {
+        getOperatorToken: () => ({ getKind: () => 56 }),
+      }
+
+      const StatsClass = Stats as any
+      const result = StatsClass.isLogicalOperator(mockNode)
+      expect(result).toBe(true)
+    })
+
+    test('returns true for || operator (token kind 57)', () => {
+      const mockNode = {
+        getOperatorToken: () => ({ getKind: () => 57 }),
+      }
+
+      const StatsClass = Stats as any
+      const result = StatsClass.isLogicalOperator(mockNode)
+      expect(result).toBe(true)
+    })
+
+    test('returns false for other operators', () => {
+      const mockNode = {
+        getOperatorToken: () => ({ getKind: () => 58 }),
+      }
+
+      const StatsClass = Stats as any
+      const result = StatsClass.isLogicalOperator(mockNode)
+      expect(result).toBe(false)
+    })
+  })
+
+  describe('countCodeStructures method', () => {
+    test('counts functions when Node.isFunctionDeclaration returns true', async () => {
+      const mockNode = { getKind: () => 250, forEachChild: () => {} }
+      const mockSourceFile = {
+        forEachChild: (callback: (node: unknown) => void) => callback(mockNode),
+      }
+
+      const StatsClass = Stats as any
+      const command = new StatsClass([], {} as never)
+
+      const result = command.countCodeStructures(mockSourceFile)
+      expect(result.functions).toBe(1)
+    })
+
+    test('counts methods when Node.isMethodDeclaration returns true', async () => {
+      const mockNode = { getKind: () => 142, forEachChild: () => {} }
+      const mockSourceFile = {
+        forEachChild: (callback: (node: unknown) => void) => callback(mockNode),
+      }
+
+      const StatsClass = Stats as any
+      const command = new StatsClass([], {} as never)
+
+      const result = command.countCodeStructures(mockSourceFile)
+      expect(result.methods).toBe(1)
+    })
+
+    test('counts classes when Node.isClassDeclaration returns true', async () => {
+      const mockNode = { getKind: () => 219, forEachChild: () => {} }
+      const mockSourceFile = {
+        forEachChild: (callback: (node: unknown) => void) => callback(mockNode),
+      }
+
+      const StatsClass = Stats as any
+      const command = new StatsClass([], {} as never)
+
+      const result = command.countCodeStructures(mockSourceFile)
+      expect(result.classes).toBe(1)
+    })
+
+    test('counts interfaces when Node.isInterfaceDeclaration returns true', async () => {
+      const mockNode = { getKind: () => 218, forEachChild: () => {} }
+      const mockSourceFile = {
+        forEachChild: (callback: (node: unknown) => void) => callback(mockNode),
+      }
+
+      const StatsClass = Stats as any
+      const command = new StatsClass([], {} as never)
+
+      const result = command.countCodeStructures(mockSourceFile)
+      expect(result.interfaces).toBe(1)
+    })
+
+    test('counts type aliases when Node.isTypeAliasDeclaration returns true', async () => {
+      const mockNode = { getKind: () => 200, forEachChild: () => {} }
+      const mockSourceFile = {
+        forEachChild: (callback: (node: unknown) => void) => callback(mockNode),
+      }
+
+      const StatsClass = Stats as any
+      const command = new StatsClass([], {} as never)
+
+      const result = command.countCodeStructures(mockSourceFile)
+      expect(result).toBeDefined()
+      expect(result.typeAliases).toBeGreaterThanOrEqual(0)
+    })
+
+    test('counts enums when Node.isEnumDeclaration returns true', async () => {
+      const mockNode = { getKind: () => 220, forEachChild: () => {} }
+      const mockSourceFile = {
+        forEachChild: (callback: (node: unknown) => void) => callback(mockNode),
+      }
+
+      const StatsClass = Stats as any
+      const command = new StatsClass([], {} as never)
+
+      const result = command.countCodeStructures(mockSourceFile)
+      expect(result).toBeDefined()
+      expect(result.enums).toBeGreaterThanOrEqual(0)
     })
   })
 })

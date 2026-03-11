@@ -459,6 +459,136 @@ describe('Watch Command', () => {
       spyLog.mockRestore()
     })
 
+    test('should count warning severity violations', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const { Parser } = await import('../../../src/core/parser.js')
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        getFullText: () => 'fixed code',
+      }
+
+      const mockViolations = [
+        {
+          ruleId: 'test-rule-1',
+          message: 'Test warning 1',
+          severity: 'warning' as const,
+          range: { start: { line: 1, column: 1 }, end: { line: 1, column: 10 } },
+          fix: null,
+        },
+        {
+          ruleId: 'test-rule-2',
+          message: 'Test warning 2',
+          severity: 'warning' as const,
+          range: { start: { line: 2, column: 1 }, end: { line: 2, column: 10 } },
+          fix: null,
+        },
+      ]
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: vi.fn(),
+            disable: vi.fn(),
+            runRules: vi.fn().mockReturnValue(mockViolations),
+          }) as never,
+      )
+
+      vi.mocked(Parser).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            dispose: vi.fn(),
+            parseFile: vi.fn().mockResolvedValue({
+              sourceFile: mockSourceFile,
+              filePath: '/test/file.ts',
+              parseTime: 10,
+            }),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      // @ts-expect-error - accessing private method for testing
+      const analyzeFile = cmd.analyzeFile.bind(cmd)
+      // @ts-expect-error - setting private property for testing
+      cmd.parser = new Parser()
+
+      const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
+
+      await analyzeFile('/test/file.ts', undefined, false)
+
+      expect(spyLog).toHaveBeenCalledWith(expect.stringContaining('0 error(s), 2 warning(s)'))
+
+      spyLog.mockRestore()
+    })
+
+    test('should count mixed error and warning severity violations', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const { Parser } = await import('../../../src/core/parser.js')
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        getFullText: () => 'fixed code',
+      }
+
+      const mockViolations = [
+        {
+          ruleId: 'test-rule-1',
+          message: 'Test error',
+          severity: 'error' as const,
+          range: { start: { line: 1, column: 1 }, end: { line: 1, column: 10 } },
+          fix: null,
+        },
+        {
+          ruleId: 'test-rule-2',
+          message: 'Test warning',
+          severity: 'warning' as const,
+          range: { start: { line: 2, column: 1 }, end: { line: 2, column: 10 } },
+          fix: null,
+        },
+      ]
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: vi.fn(),
+            disable: vi.fn(),
+            runRules: vi.fn().mockReturnValue(mockViolations),
+          }) as never,
+      )
+
+      vi.mocked(Parser).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            dispose: vi.fn(),
+            parseFile: vi.fn().mockResolvedValue({
+              sourceFile: mockSourceFile,
+              filePath: '/test/file.ts',
+              parseTime: 10,
+            }),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      // @ts-expect-error - accessing private method for testing
+      const analyzeFile = cmd.analyzeFile.bind(cmd)
+      // @ts-expect-error - setting private property for testing
+      cmd.parser = new Parser()
+
+      const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
+
+      await analyzeFile('/test/file.ts', undefined, false)
+
+      expect(spyLog).toHaveBeenCalledWith(expect.stringContaining('1 error(s), 1 warning(s)'))
+
+      spyLog.mockRestore()
+    })
+
     test('should handle errors gracefully', async () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
@@ -501,6 +631,55 @@ describe('Watch Command', () => {
       } finally {
         global.setImmediate = originalSetImmediate
       }
+    })
+
+    test('should log debug message when scheduled analysis fails', async () => {
+      const { Parser } = await import('../../../src/core/parser.js')
+      const { logger } = await import('../../../src/utils/logger.js')
+
+      vi.mocked(Parser).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            dispose: vi.fn(),
+            parseFile: vi.fn().mockResolvedValue({
+              sourceFile: {
+                getFilePath: () => '/test/file.ts',
+                getText: () => 'test code',
+                getFullText: () => 'fixed code',
+              },
+              filePath: '/test/file.ts',
+              parseTime: 10,
+            }),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      const originalAnalyzeFile = (cmd as any).analyzeFile
+      let callCount = 0
+
+      vi.spyOn(cmd as any, 'analyzeFile').mockImplementation(async function (
+        this: any,
+        ...args: unknown[]
+      ) {
+        callCount++
+        if (callCount === 2) {
+          throw new Error('Scheduled analysis failed')
+        }
+        return originalAnalyzeFile.apply(this, args)
+      })
+
+      const analyzeFile = (cmd as any).analyzeFile.bind(cmd)
+      ;(cmd as any).parser = new Parser()
+      ;(cmd as any).pendingAnalysis = true
+
+      await analyzeFile('/test/file.ts', undefined, false)
+
+      await new Promise((resolve) => setTimeout(resolve, 20))
+
+      expect(callCount).toBe(2)
+      expect(logger.debug).toHaveBeenCalledWith('Failed to schedule analysis:', expect.any(Error))
     })
   })
 
