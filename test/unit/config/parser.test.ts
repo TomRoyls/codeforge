@@ -179,5 +179,13 @@ describe('parseConfigFile', () => {
         expect(cliError.suggestions.length).toBeGreaterThan(0)
       }
     })
+
+    test('throws CLIError for config that is an array', async () => {
+      const configPath = path.join(tempDir, 'array-config.json')
+      await fs.writeFile(configPath, JSON.stringify(['item1', 'item2']))
+
+      await expect(parseConfigFile(configPath)).rejects.toThrow(CLIError)
+      await expect(parseConfigFile(configPath)).rejects.toThrow('Config must be an object')
+    })
   })
 })
