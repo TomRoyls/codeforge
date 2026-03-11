@@ -46,10 +46,16 @@ export default class Stats extends Command {
       description: 'Patterns to ignore',
       multiple: true,
     }),
+    'sort-by': Flags.string({
+      char: 's',
+      default: 'size',
+      description: 'Sort files by metric',
+      options: ['complexity', 'loc', 'name', 'size'],
+    }),
     top: Flags.integer({
       char: 't',
       default: 10,
-      description: 'Number of top files to show by size',
+      description: 'Number of top files to show',
     }),
     verbose: Flags.boolean({
       char: 'v',
@@ -90,7 +96,7 @@ export default class Stats extends Command {
 
     let stats: StatsResult
     try {
-      stats = await this.collectStats(discoveredFiles, verbose)
+      stats = await this.collectStats(discoveredFiles, verbose, flags['sort-by'])
     } finally {
       this.parser.dispose()
       this.parser = null
@@ -140,6 +146,7 @@ export default class Stats extends Command {
   private async collectStats(
     files: Array<{ absolutePath: string; path: string }>,
     verbose: boolean,
+    sortBy: string,
   ): Promise<StatsResult> {
     const fileStats: FileStats[] = []
     let totalLoc = 0
@@ -244,7 +251,25 @@ export default class Stats extends Command {
       }
     }
 
-    fileStats.sort((a, b) => b.size - a.size)
+    fileStats.sort((a, b) => {
+      switch (sortBy) {
+        case 'complexity': {
+          return b.complexity - a.complexity
+        }
+
+        case 'loc': {
+          return b.loc - a.loc
+        }
+
+        case 'name': {
+          return a.name.localeCompare(b.name)
+        }
+
+        default: {
+          return b.size - a.size
+        }
+      }
+    })
 
     return {
       files: fileStats.slice(0, 10),
