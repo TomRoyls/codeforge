@@ -40,7 +40,6 @@ function createMockAsyncFunctionWithCalls(callExpressions: Node[] = []): Functio
     }
     return []
   })
-
   ;(funcNode as unknown as { isAsync: () => boolean }).isAsync = vi.fn(() => true)
 
   return funcNode as unknown as FunctionLikeNode
@@ -60,8 +59,45 @@ function createMockSyncFunctionWithCalls(callExpressions: Node[] = []): Function
     }
     return []
   })
-
   ;(funcNode as unknown as { isAsync: () => boolean }).isAsync = vi.fn(() => false)
+
+  return funcNode as unknown as FunctionLikeNode
+}
+
+function createMockAsyncArrowFunctionWithCalls(callExpressions: Node[] = []): FunctionLikeNode {
+  const funcNode = createMockNode({
+    kind: SyntaxKind.ArrowFunction,
+    text: 'async () => {}',
+  })
+
+  ;(
+    funcNode as unknown as { getDescendantsOfKind: (kind: number) => Node[] }
+  ).getDescendantsOfKind = vi.fn((kind: number) => {
+    if (kind === SyntaxKind.CallExpression) {
+      return callExpressions
+    }
+    return []
+  })
+  ;(funcNode as unknown as { isAsync: () => boolean }).isAsync = vi.fn(() => true)
+
+  return funcNode as unknown as FunctionLikeNode
+}
+
+function createMockAsyncMethodWithCalls(callExpressions: Node[] = []): FunctionLikeNode {
+  const funcNode = createMockNode({
+    kind: SyntaxKind.MethodDeclaration,
+    text: 'async method() {}',
+  })
+
+  ;(
+    funcNode as unknown as { getDescendantsOfKind: (kind: number) => Node[] }
+  ).getDescendantsOfKind = vi.fn((kind: number) => {
+    if (kind === SyntaxKind.CallExpression) {
+      return callExpressions
+    }
+    return []
+  })
+  ;(funcNode as unknown as { isAsync: () => boolean }).isAsync = vi.fn(() => true)
 
   return funcNode as unknown as FunctionLikeNode
 }
@@ -237,6 +273,82 @@ describe('sync operation detection', () => {
     const context = createMockVisitorContext(sourceFile)
     const ruleInstance = noSyncInAsyncRule.create({})
     ruleInstance.visitor.visitFunction!(funcNode, context)
+    const violations = ruleInstance.onComplete!()
+
+    expect(violations).toHaveLength(0)
+  })
+
+  test('detects sync operation in async arrow function', () => {
+    const callNode = createMockCallExpression({ text: "fs.readFileSync('path')" })
+    const funcNode = createMockAsyncArrowFunctionWithCalls([callNode])
+    const sourceFile = createMockSourceFile()
+    const context = createMockVisitorContext(sourceFile)
+    const ruleInstance = noSyncInAsyncRule.create({})
+    ruleInstance.visitor.visitFunction!(funcNode, context)
+    const violations = ruleInstance.onComplete!()
+
+    expect(violations).toHaveLength(1)
+    expect(violations[0].ruleId).toBe('no-sync-in-async')
+  })
+
+  test('detects sync operation in async method', () => {
+    const callNode = createMockCallExpression({ text: "fs.readFileSync('path')" })
+    const funcNode = createMockAsyncMethodWithCalls([callNode])
+    const sourceFile = createMockSourceFile()
+    const context = createMockVisitorContext(sourceFile)
+    const ruleInstance = noSyncInAsyncRule.create({})
+    ruleInstance.visitor.visitFunction!(funcNode, context)
+    const violations = ruleInstance.onComplete!()
+
+    expect(violations).toHaveLength(1)
+    expect(violations[0].ruleId).toBe('no-sync-in-async')
+  })
+
+  test('no violation in non-async arrow function', () => {
+    const callNode = createMockCallExpression({ text: "fs.readFileSync('path')" })
+    const funcNode = createMockNode({
+      kind: SyntaxKind.ArrowFunction,
+      text: '() => {}',
+    })
+    ;(
+      funcNode as unknown as { getDescendantsOfKind: (kind: number) => Node[] }
+    ).getDescendantsOfKind = vi.fn((kind: number) => {
+      if (kind === SyntaxKind.CallExpression) {
+        return [callNode]
+      }
+      return []
+    })
+    ;(funcNode as unknown as { isAsync: () => boolean }).isAsync = vi.fn(() => false)
+
+    const sourceFile = createMockSourceFile()
+    const context = createMockVisitorContext(sourceFile)
+    const ruleInstance = noSyncInAsyncRule.create({})
+    ruleInstance.visitor.visitFunction!(funcNode as unknown as FunctionLikeNode, context)
+    const violations = ruleInstance.onComplete!()
+
+    expect(violations).toHaveLength(0)
+  })
+
+  test('no violation in non-async method', () => {
+    const callNode = createMockCallExpression({ text: "fs.readFileSync('path')" })
+    const funcNode = createMockNode({
+      kind: SyntaxKind.MethodDeclaration,
+      text: 'method() {}',
+    })
+    ;(
+      funcNode as unknown as { getDescendantsOfKind: (kind: number) => Node[] }
+    ).getDescendantsOfKind = vi.fn((kind: number) => {
+      if (kind === SyntaxKind.CallExpression) {
+        return [callNode]
+      }
+      return []
+    })
+    ;(funcNode as unknown as { isAsync: () => boolean }).isAsync = vi.fn(() => false)
+
+    const sourceFile = createMockSourceFile()
+    const context = createMockVisitorContext(sourceFile)
+    const ruleInstance = noSyncInAsyncRule.create({})
+    ruleInstance.visitor.visitFunction!(funcNode as unknown as FunctionLikeNode, context)
     const violations = ruleInstance.onComplete!()
 
     expect(violations).toHaveLength(0)
