@@ -135,7 +135,7 @@ export default class Fix extends Command {
         this.log(chalk.blue(`\n🔧 Fixing ${discoveredFiles.length} file(s)...\n`))
       }
 
-      const rulesWithFixes = this.getRulesWithFixes()
+      const rulesWithFixes = this.getRulesWithFixes(flags['safe-only'])
 
       if (rulesWithFixes.size === 0) {
         if (ciMode) {
@@ -184,11 +184,15 @@ export default class Fix extends Command {
     }
   }
 
-  private getRulesWithFixes(): Map<string, RuleWithFix> {
+  private getRulesWithFixes(safeOnly = false): Map<string, RuleWithFix> {
     const rulesWithFixes = new Map<string, RuleWithFix>()
 
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       if (ruleDef.fix && typeof ruleDef.fix === 'function') {
+        if (safeOnly && !ruleDef.meta?.fixable) {
+          continue
+        }
+
         rulesWithFixes.set(ruleId, {
           fix: ({ sourceFile, violation }) => ruleDef.fix!(sourceFile, violation),
           id: ruleId,
