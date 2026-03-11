@@ -154,15 +154,19 @@ class DependencyGraphBuilder {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractImports(ast: any, filePath: string): ImportInfo[] {
+function extractImports(ast: unknown, filePath: string): ImportInfo[] {
   const imports: ImportInfo[] = []
 
   if (!ast || typeof ast !== 'object') {
     return imports
   }
 
-  const body = ast.body ?? ast.program?.body ?? []
+  const a = ast as Record<string, unknown>
+  const body = Array.isArray(a.body)
+    ? a.body
+    : Array.isArray((a.program as Record<string, unknown> | undefined)?.body)
+      ? ((a.program as Record<string, unknown>).body as unknown[])
+      : []
 
   for (const node of body) {
     const importInfo = extractImportFromNode(node, filePath)
@@ -174,35 +178,38 @@ function extractImports(ast: any, filePath: string): ImportInfo[] {
   return imports
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractImportFromNode(node: any, filePath: string): ImportInfo | null {
+function extractImportFromNode(node: unknown, filePath: string): ImportInfo | null {
   if (!node || typeof node !== 'object') {
     return null
   }
 
   const location = extractLocation(node)
+  const n = node as Record<string, unknown>
 
-  if (node.type === 'ImportDeclaration' && node.source?.value) {
-    return {
-      sourceFile: filePath,
-      modulePath: node.source.value,
-      location,
+  if (n.type === 'ImportDeclaration') {
+    const sourceNode = n.source as Record<string, unknown> | undefined
+    if (sourceNode?.value && typeof sourceNode.value === 'string') {
+      return {
+        sourceFile: filePath,
+        modulePath: sourceNode.value,
+        location,
+      }
     }
   }
 
-  if (
-    (node.type === 'ExportNamedDeclaration' || node.type === 'ExportAllDeclaration') &&
-    node.source?.value
-  ) {
-    return {
-      sourceFile: filePath,
-      modulePath: node.source.value,
-      location,
+  if (n.type === 'ExportNamedDeclaration' || n.type === 'ExportAllDeclaration') {
+    const sourceNode = n.source as Record<string, unknown> | undefined
+    if (sourceNode?.value && typeof sourceNode.value === 'string') {
+      return {
+        sourceFile: filePath,
+        modulePath: sourceNode.value,
+        location,
+      }
     }
   }
 
-  if (node.type === 'VariableDeclaration' || node.type === 'ExpressionStatement') {
-    const requireCall = findRequireCall(node)
+  if (n.type === 'VariableDeclaration' || n.type === 'ExpressionStatement') {
+    const requireCall = findRequireCall(n)
     if (requireCall) {
       return {
         sourceFile: filePath,
@@ -212,67 +219,108 @@ function extractImportFromNode(node: any, filePath: string): ImportInfo | null {
     }
   }
 
-  if (node.type === 'ExpressionStatement' && isDynamicImport(node.expression)) {
-    const importArg = getDynamicImportArgument(node.expression)
-    if (importArg) {
-      return {
-        sourceFile: filePath,
-        modulePath: importArg,
-        location,
-      }
-    }
-  }
-
-  return null
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function findRequireCall(node: any): { argument: string } | null {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  if (node.type === 'VariableDeclaration') {
-    for (const decl of node.declarations ?? []) {
-      if (decl.init && isRequireCall(decl.init)) {
-        const arg = decl.init.arguments?.[0]?.value
-        if (typeof arg === 'string') {
-          return { argument: arg }
+  if (n.type === 'ExpressionStatement') {
+    const expression = n.expression
+    if (isDynamicImport(expression)) {
+      const importArg = getDynamicImportArgument(expression)
+      if (importArg) {
+        return {
+          sourceFile: filePath,
+          modulePath: importArg,
+          location,
         }
       }
     }
   }
 
-  if (node.type === 'ExpressionStatement' && isRequireCall(node.expression)) {
-    const arg = node.expression.arguments?.[0]?.value
-    if (typeof arg === 'string') {
-      return { argument: arg }
+  return null
+}
+
+function findRequireCall(node: unknown): { argument: string } | null {
+  if (!node || typeof node !== 'object') {
+    return null
+  }
+
+  const n = node as Record<string, unknown>
+
+  if (n.type === 'VariableDeclaration') {
+    const declarations = n.declarations
+    if (Array.isArray(declarations)) {
+      for (const decl of declarations) {
+        if (!decl || typeof decl !== 'object') continue
+        const declNode = decl as Record<string, unknown>
+        const init = declNode.init
+        if (init && isRequireCall(init)) {
+          const initNode = init as Record<string, unknown>
+          const arguments_ = initNode.arguments as unknown[] | undefined
+          const arg0 =
+            Array.isArray(arguments_) && arguments_.length > 0
+              ? (arguments_[0] as Record<string, unknown> | undefined)
+              : undefined
+          if (arg0?.value && typeof arg0.value === 'string') {
+            return { argument: arg0.value }
+          }
+        }
+      }
+    }
+  }
+
+  if (n.type === 'ExpressionStatement') {
+    const expression = n.expression
+    if (expression && isRequireCall(expression)) {
+      const exprNode = expression as Record<string, unknown>
+      const arguments_ = exprNode.arguments as unknown[] | undefined
+      const arg0 =
+        Array.isArray(arguments_) && arguments_.length > 0
+          ? (arguments_[0] as Record<string, unknown> | undefined)
+          : undefined
+      if (arg0?.value && typeof arg0.value === 'string') {
+        return { argument: arg0.value }
+      }
     }
   }
 
   return null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isRequireCall(node: any): boolean {
-  return (
-    node.type === 'CallExpression' &&
-    node.callee?.type === 'Identifier' &&
-    node.callee.name === 'require'
-  )
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isDynamicImport(node: any): boolean {
-  return node?.type === 'CallExpression' && node?.callee?.type === 'Import'
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getDynamicImportArgument(node: any): string | null {
-  if (isDynamicImport(node) && node.arguments?.[0]?.type === 'StringLiteral') {
-    const val = node.arguments[0].value
-    return typeof val === 'string' ? val : null
+function isRequireCall(node: unknown): boolean {
+  if (!node || typeof node !== 'object') {
+    return false
   }
+
+  const n = node as Record<string, unknown>
+  const callee = n.callee as Record<string, unknown> | undefined
+
+  return n.type === 'CallExpression' && callee?.type === 'Identifier' && callee.name === 'require'
+}
+
+function isDynamicImport(node: unknown): boolean {
+  if (!node || typeof node !== 'object') {
+    return false
+  }
+
+  const n = node as Record<string, unknown>
+  const callee = n.callee as Record<string, unknown> | undefined
+
+  return n.type === 'CallExpression' && callee?.type === 'Import'
+}
+
+function getDynamicImportArgument(node: unknown): string | null {
+  if (!isDynamicImport(node)) {
+    return null
+  }
+
+  const n = node as Record<string, unknown>
+  const arguments_ = n.arguments as unknown[] | undefined
+  const arg0 =
+    Array.isArray(arguments_) && arguments_.length > 0
+      ? (arguments_[0] as Record<string, unknown> | undefined)
+      : undefined
+
+  if (arg0?.type === 'StringLiteral' && arg0.value && typeof arg0.value === 'string') {
+    return arg0.value
+  }
+
   return null
 }
 
@@ -335,11 +383,11 @@ export const noCircularDepsRule: RuleDefinition = {
       },
 
       ImportDeclaration(node: unknown): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const n = node as any
-        if (n.source?.value) {
+        const n = node as Record<string, unknown>
+        const sourceNode = n.source as Record<string, unknown> | undefined
+        if (sourceNode?.value && typeof sourceNode.value === 'string') {
           const imports = fileImports.get(filePath) ?? []
-          const modulePath = n.source.value
+          const modulePath = sourceNode.value
 
           const existingImports = fileImports.get(modulePath)
           if (existingImports) {
@@ -366,12 +414,16 @@ export const noCircularDepsRule: RuleDefinition = {
       },
 
       CallExpression(node: unknown): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const n = node as any
+        const n = node as Record<string, unknown>
 
         if (isRequireCall(n)) {
-          const modulePath = n.arguments?.[0]?.value
-          if (typeof modulePath === 'string') {
+          const arguments_ = n.arguments as unknown[] | undefined
+          const arg0 =
+            Array.isArray(arguments_) && arguments_.length > 0
+              ? (arguments_[0] as Record<string, unknown> | undefined)
+              : undefined
+          if (arg0?.value && typeof arg0.value === 'string') {
+            const modulePath = arg0.value
             const imports = fileImports.get(filePath) ?? []
             fileImports.set(filePath, [
               ...imports,

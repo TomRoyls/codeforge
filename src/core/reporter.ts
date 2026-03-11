@@ -8,6 +8,7 @@ export interface ReporterOptions {
   format: OutputFormat
   verbose: boolean
   quiet: boolean
+  color?: boolean
   outputPath?: string
 }
 
@@ -39,9 +40,22 @@ const COLORS = {
 
 export class Reporter {
   private options: ReporterOptions
+  private colors: typeof COLORS
 
   constructor(options: ReporterOptions) {
     this.options = options
+    this.colors = options.color === false ? this.getNoColorColors() : COLORS
+  }
+
+  private getNoColorColors(): typeof COLORS {
+    return {
+      reset: '',
+      red: '',
+      yellow: '',
+      blue: '',
+      dim: '',
+      bold: '',
+    }
   }
 
   formatReport(report: AnalysisReport): string {
@@ -337,28 +351,30 @@ export class Reporter {
 
     if (!this.options.quiet) {
       lines.push('')
-      lines.push(`${COLORS.bold}CodeForge Analysis Report${COLORS.reset}`)
+      lines.push(`${this.colors.bold}CodeForge Analysis Report${this.colors.reset}`)
       lines.push('')
     }
 
     for (const file of report.files) {
       if (file.violations.length === 0) continue
 
-      lines.push(`${COLORS.bold}${file.filePath}${COLORS.reset}`)
+      lines.push(`${this.colors.bold}${file.filePath}${this.colors.reset}`)
 
       for (const violation of file.violations) {
         const severityColor = this.getSeverityColor(violation.severity)
         const severityLabel = violation.severity.toUpperCase().padEnd(7)
 
         lines.push(
-          `  ${severityColor}${severityLabel}${COLORS.reset} ` +
+          `  ${severityColor}${severityLabel}${this.colors.reset} ` +
             `[${violation.range.start.line}:${violation.range.start.column}] ` +
             `${violation.message} ` +
-            `${COLORS.dim}${violation.ruleId}${COLORS.reset}`,
+            `${this.colors.dim}${violation.ruleId}${this.colors.reset}`,
         )
 
         if (this.options.verbose && violation.suggestion) {
-          lines.push(`    ${COLORS.dim}Suggestion: ${violation.suggestion}${COLORS.reset}`)
+          lines.push(
+            `    ${this.colors.dim}Suggestion: ${violation.suggestion}${this.colors.reset}`,
+          )
         }
       }
 
@@ -366,12 +382,12 @@ export class Reporter {
     }
 
     const { summary } = report
-    lines.push(`${COLORS.bold}Summary${COLORS.reset}`)
+    lines.push(`${this.colors.bold}Summary${this.colors.reset}`)
     lines.push(`  Files analyzed: ${summary.totalFiles}`)
     lines.push(`  Total violations: ${summary.totalViolations}`)
-    lines.push(`    ${COLORS.red}Errors: ${summary.errors}${COLORS.reset}`)
-    lines.push(`    ${COLORS.yellow}Warnings: ${summary.warnings}${COLORS.reset}`)
-    lines.push(`    ${COLORS.blue}Info: ${summary.info}${COLORS.reset}`)
+    lines.push(`    ${this.colors.red}Errors: ${summary.errors}${this.colors.reset}`)
+    lines.push(`    ${this.colors.yellow}Warnings: ${summary.warnings}${this.colors.reset}`)
+    lines.push(`    ${this.colors.blue}Info: ${summary.info}${this.colors.reset}`)
     lines.push(`  Duration: ${summary.duration.toFixed(2)}ms`)
     lines.push('')
 
@@ -381,13 +397,13 @@ export class Reporter {
   private getSeverityColor(severity: string): string {
     switch (severity) {
       case 'error':
-        return COLORS.red
+        return this.colors.red
       case 'warning':
-        return COLORS.yellow
+        return this.colors.yellow
       case 'info':
-        return COLORS.blue
+        return this.colors.blue
       default:
-        return COLORS.reset
+        return this.colors.reset
     }
   }
 

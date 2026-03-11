@@ -62,8 +62,7 @@ function isExcluded(source: string, patterns: readonly string[]): boolean {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractImportDetails(node: any): {
+function extractImportDetails(node: unknown): {
   source: string
   specifiers: string[]
   isTypeOnly: boolean
@@ -74,46 +73,62 @@ function extractImportDetails(node: any): {
   }
 
   const location = extractLocation(node)
+  const n = node as Record<string, unknown>
 
-  if (node.type === 'ImportDeclaration' && node.source?.value) {
-    const specifiers: string[] = []
-    const isTypeOnly = node.importKind === 'type'
+  if (n.type === 'ImportDeclaration') {
+    const sourceNode = n.source as Record<string, unknown> | undefined
+    if (sourceNode?.value && typeof sourceNode.value === 'string') {
+      const specifiers: string[] = []
+      const isTypeOnly = n.importKind === 'type'
 
-    if (node.specifiers) {
-      for (const spec of node.specifiers) {
-        if (spec.type === 'ImportDefaultSpecifier') {
-          specifiers.push('default')
-        } else if (spec.type === 'ImportNamespaceSpecifier') {
-          specifiers.push('*')
-        } else if (spec.type === 'ImportSpecifier' && spec.imported?.name) {
-          specifiers.push(spec.imported.name)
+      const specifierArray = n.specifiers
+      if (Array.isArray(specifierArray)) {
+        for (const spec of specifierArray) {
+          if (!spec || typeof spec !== 'object') continue
+          const specNode = spec as Record<string, unknown>
+          if (specNode.type === 'ImportDefaultSpecifier') {
+            specifiers.push('default')
+          } else if (specNode.type === 'ImportNamespaceSpecifier') {
+            specifiers.push('*')
+          } else if (specNode.type === 'ImportSpecifier') {
+            const imported = specNode.imported as Record<string, unknown> | undefined
+            if (imported?.name && typeof imported.name === 'string') {
+              specifiers.push(imported.name)
+            }
+          }
         }
       }
-    }
 
-    return {
-      source: node.source.value,
-      specifiers,
-      isTypeOnly,
-      location,
-    }
-  }
-
-  if (node.type === 'ExportNamedDeclaration' && node.source?.value) {
-    return {
-      source: node.source.value,
-      specifiers: [],
-      isTypeOnly: node.exportKind === 'type',
-      location,
+      return {
+        source: sourceNode.value,
+        specifiers,
+        isTypeOnly,
+        location,
+      }
     }
   }
 
-  if (node.type === 'ExportAllDeclaration' && node.source?.value) {
-    return {
-      source: node.source.value,
-      specifiers: ['*'],
-      isTypeOnly: node.exportKind === 'type',
-      location,
+  if (n.type === 'ExportNamedDeclaration') {
+    const sourceNode = n.source as Record<string, unknown> | undefined
+    if (sourceNode?.value && typeof sourceNode.value === 'string') {
+      return {
+        source: sourceNode.value,
+        specifiers: [],
+        isTypeOnly: n.exportKind === 'type',
+        location,
+      }
+    }
+  }
+
+  if (n.type === 'ExportAllDeclaration') {
+    const sourceNode = n.source as Record<string, unknown> | undefined
+    if (sourceNode?.value && typeof sourceNode.value === 'string') {
+      return {
+        source: sourceNode.value,
+        specifiers: ['*'],
+        isTypeOnly: n.exportKind === 'type',
+        location,
+      }
     }
   }
 
@@ -261,15 +276,23 @@ export const noBarrelImportsRule: RuleDefinition = {
       },
 
       CallExpression(node: unknown): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const n = node as any
+        const n = node as Record<string, unknown>
+
+        const callee = n.callee as Record<string, unknown> | undefined
+        const arguments_ = n.arguments as unknown[] | undefined
+        const arg0 =
+          Array.isArray(arguments_) && arguments_.length > 0
+            ? (arguments_[0] as Record<string, unknown> | undefined)
+            : undefined
 
         if (
-          n.callee?.type === 'Identifier' &&
-          n.callee.name === 'require' &&
-          n.arguments?.[0]?.type === 'StringLiteral'
+          callee?.type === 'Identifier' &&
+          callee.name === 'require' &&
+          arg0?.type === 'StringLiteral' &&
+          arg0.value &&
+          typeof arg0.value === 'string'
         ) {
-          const source = n.arguments[0].value
+          const source = arg0.value
 
           if (isExcluded(source, exclude)) {
             return

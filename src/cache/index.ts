@@ -49,6 +49,7 @@ export class CacheStore {
     try {
       const filePath = this.getCacheFilePath(key)
       const content = await readFile(filePath, 'utf-8')
+      // JSON.parse may throw for corrupted cache data - returning null is expected for cache misses
       const entry: CacheEntry<T> = JSON.parse(content)
 
       if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
@@ -58,6 +59,7 @@ export class CacheStore {
 
       return entry.value
     } catch {
+      // Cache miss or invalid data - this is expected behavior, return null to indicate no value
       return null
     }
   }
@@ -82,6 +84,7 @@ export class CacheStore {
       const stats = statSync(filePath)
       return stats.isFile()
     } catch {
+      // File doesn't exist or is not accessible - returning false is correct for cache check
       return false
     }
   }
@@ -92,6 +95,7 @@ export class CacheStore {
       await unlink(filePath)
       return true
     } catch {
+      // File doesn't exist or cannot be deleted - returning false is acceptable
       return false
     }
   }
@@ -101,7 +105,7 @@ export class CacheStore {
       const files = await readdir(this.cacheDir)
       await Promise.all(files.map((file) => unlink(path.join(this.cacheDir, file))))
     } catch {
-      // Directory doesn't exist
+      // Cache directory doesn't exist or cannot be read - this is expected during first run or when cache is empty
     }
   }
 
@@ -117,6 +121,7 @@ export class CacheStore {
 
       return { entries: files.length, size: totalSize }
     } catch {
+      // Cache directory doesn't exist or cannot be read - returning empty stats is correct
       return { entries: 0, size: 0 }
     }
   }
@@ -130,7 +135,7 @@ export class CacheStore {
     try {
       await mkdir(this.cacheDir, { recursive: true })
     } catch {
-      // Directory exists
+      // Directory already exists or cannot be created - this is acceptable, just ensure directory exists
     }
   }
 }

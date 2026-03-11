@@ -118,7 +118,7 @@ export default class GeneratePlugin extends Command {
   }
 
   private isValidPluginName(name: string): boolean {
-    return /^[a-z0-9]+$/.test(name)
+    return /^[a-z0-9-]+$/.test(name)
   }
 
   private async createDirectoryStructure(outputDir: string): Promise<void> {

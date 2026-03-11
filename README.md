@@ -55,16 +55,16 @@ npm run build
 
 ### Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run build` | Compile TypeScript to JavaScript |
-| `npm run test` | Run tests with Vitest |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint issues |
-| `npm run format` | Format code with Prettier |
-| `npm run format:check` | Check code formatting |
+| Script                  | Description                      |
+| ----------------------- | -------------------------------- |
+| `npm run build`         | Compile TypeScript to JavaScript |
+| `npm run test`          | Run tests with Vitest            |
+| `npm run test:watch`    | Run tests in watch mode          |
+| `npm run test:coverage` | Run tests with coverage report   |
+| `npm run lint`          | Run ESLint                       |
+| `npm run lint:fix`      | Fix ESLint issues                |
+| `npm run format`        | Format code with Prettier        |
+| `npm run format:check`  | Check code formatting            |
 
 ### Project Structure
 
@@ -95,11 +95,15 @@ npm run test:coverage
 ```
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g codeforge
 $ codeforge COMMAND
@@ -111,22 +115,52 @@ USAGE
   $ codeforge COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
+## Exit Codes
+
+CodeForge uses standard exit codes for CI/CD integration:
+
+| Exit Code | Description                                                  |
+| --------- | ------------------------------------------------------------ |
+| `0`       | Success - No errors found                                    |
+| `1`       | Errors found - Analysis detected error-level violations      |
+| `2`       | Warnings treated as errors (when using `--fail-on-warnings`) |
+
+### Example CI Usage
+
+```bash
+# Fail on any errors
+codeforge analyze src/
+
+# Fail on errors or warnings
+codeforge analyze src/ --fail-on-warnings
+
+# CI mode (JSON output, no colors, no progress)
+codeforge analyze src/ --ci
+
+# Combine CI mode with fail-on-warnings
+codeforge analyze src/ --ci --fail-on-warnings
+```
+
 # Commands
+
 <!-- commands -->
-* [`codeforge hello PERSON`](#codeforge-hello-person)
-* [`codeforge hello world`](#codeforge-hello-world)
-* [`codeforge help [COMMAND]`](#codeforge-help-command)
-* [`codeforge plugins`](#codeforge-plugins)
-* [`codeforge plugins add PLUGIN`](#codeforge-plugins-add-plugin)
-* [`codeforge plugins:inspect PLUGIN...`](#codeforge-pluginsinspect-plugin)
-* [`codeforge plugins install PLUGIN`](#codeforge-plugins-install-plugin)
-* [`codeforge plugins link PATH`](#codeforge-plugins-link-path)
-* [`codeforge plugins remove [PLUGIN]`](#codeforge-plugins-remove-plugin)
-* [`codeforge plugins reset`](#codeforge-plugins-reset)
-* [`codeforge plugins uninstall [PLUGIN]`](#codeforge-plugins-uninstall-plugin)
-* [`codeforge plugins unlink [PLUGIN]`](#codeforge-plugins-unlink-plugin)
-* [`codeforge plugins update`](#codeforge-plugins-update)
+
+- [`codeforge hello PERSON`](#codeforge-hello-person)
+- [`codeforge hello world`](#codeforge-hello-world)
+- [`codeforge help [COMMAND]`](#codeforge-help-command)
+- [`codeforge plugins`](#codeforge-plugins)
+- [`codeforge plugins add PLUGIN`](#codeforge-plugins-add-plugin)
+- [`codeforge plugins:inspect PLUGIN...`](#codeforge-pluginsinspect-plugin)
+- [`codeforge plugins install PLUGIN`](#codeforge-plugins-install-plugin)
+- [`codeforge plugins link PATH`](#codeforge-plugins-link-path)
+- [`codeforge plugins remove [PLUGIN]`](#codeforge-plugins-remove-plugin)
+- [`codeforge plugins reset`](#codeforge-plugins-reset)
+- [`codeforge plugins uninstall [PLUGIN]`](#codeforge-plugins-uninstall-plugin)
+- [`codeforge plugins unlink [PLUGIN]`](#codeforge-plugins-unlink-plugin)
+- [`codeforge plugins update`](#codeforge-plugins-update)
 
 ## `codeforge hello PERSON`
 
@@ -479,6 +513,7 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/update.ts)_
+
 <!-- commandsstop -->
 
 ## Contributing

@@ -32,9 +32,17 @@ export class PluginManager {
       return existingPlugin
     }
 
-    const plugin = this.registry.get(name)
+    let plugin = this.registry.get(name)
     if (!plugin) {
-      throw new PluginLoadError(name, `Plugin "${name}" not found in registry`)
+      try {
+        plugin = await this.registry.loadFromNodeModules(name, this.workspaceRoot)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error'
+        throw new PluginLoadError(
+          name,
+          `Plugin "${name}" not found in registry and could not be loaded from node_modules: ${message}`,
+        )
+      }
     }
 
     this.validatePlugin(plugin)

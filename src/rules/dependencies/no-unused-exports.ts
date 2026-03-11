@@ -37,15 +37,19 @@ interface UnusedExportsOptions {
 const globalExports = new Map<string, ExportInfo[]>()
 const globalImports = new Map<string, ImportInfo[]>()
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractExports(ast: any, filePath: string): ExportInfo[] {
+function extractExports(ast: unknown, filePath: string): ExportInfo[] {
   const exports: ExportInfo[] = []
 
   if (!ast || typeof ast !== 'object') {
     return exports
   }
 
-  const body = ast.body ?? ast.program?.body ?? []
+  const a = ast as Record<string, unknown>
+  const body = Array.isArray(a.body)
+    ? a.body
+    : Array.isArray((a.program as Record<string, unknown> | undefined)?.body)
+      ? ((a.program as Record<string, unknown>).body as unknown[])
+      : []
 
   for (const node of body) {
     const nodeExports = extractExportsFromNode(node, filePath)
@@ -55,8 +59,7 @@ function extractExports(ast: any, filePath: string): ExportInfo[] {
   return exports
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
+function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   const exports: ExportInfo[] = []
 
   if (!node || typeof node !== 'object') {
@@ -64,71 +67,93 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
   }
 
   const location = extractLocation(node)
+  const n = node as Record<string, unknown>
 
-  switch (node.type) {
+  switch (n.type) {
     case 'ExportNamedDeclaration':
-      if (node.declaration) {
-        if (node.declaration.type === 'FunctionDeclaration' && node.declaration.id?.name) {
-          exports.push({
-            name: node.declaration.id.name,
-            filePath,
-            type: 'named',
-            location,
-            isTypeOnly: node.exportKind === 'type',
-          })
-        } else if (node.declaration.type === 'VariableDeclaration') {
-          for (const decl of node.declaration.declarations ?? []) {
-            if (decl.id?.type === 'Identifier' && decl.id.name) {
-              exports.push({
-                name: decl.id.name,
-                filePath,
-                type: 'named',
-                location,
-                isTypeOnly: node.exportKind === 'type',
-              })
-            }
-          }
-        } else if (node.declaration.type === 'ClassDeclaration' && node.declaration.id?.name) {
-          exports.push({
-            name: node.declaration.id.name,
-            filePath,
-            type: 'named',
-            location,
-            isTypeOnly: node.exportKind === 'type',
-          })
-        } else if (
-          node.declaration.type === 'TSTypeAliasDeclaration' &&
-          node.declaration.id?.name
-        ) {
-          exports.push({
-            name: node.declaration.id.name,
-            filePath,
-            type: 'named',
-            location,
-            isTypeOnly: true,
-          })
-        } else if (
-          node.declaration.type === 'TSInterfaceDeclaration' &&
-          node.declaration.id?.name
-        ) {
-          exports.push({
-            name: node.declaration.id.name,
-            filePath,
-            type: 'named',
-            location,
-            isTypeOnly: true,
-          })
-        }
-      } else if (node.specifiers) {
-        for (const spec of node.specifiers) {
-          if (spec.type === 'ExportSpecifier' && spec.exported?.name) {
+      const declaration = n.declaration as Record<string, unknown> | undefined
+      if (declaration) {
+        if (declaration.type === 'FunctionDeclaration') {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
             exports.push({
-              name: spec.exported.name,
+              name: id.name,
               filePath,
               type: 'named',
               location,
-              isTypeOnly: spec.exportKind === 'type' || node.exportKind === 'type',
+              isTypeOnly: n.exportKind === 'type',
             })
+          }
+        } else if (declaration.type === 'VariableDeclaration') {
+          const declarations = declaration.declarations
+          if (Array.isArray(declarations)) {
+            for (const decl of declarations) {
+              if (!decl || typeof decl !== 'object') continue
+              const declNode = decl as Record<string, unknown>
+              const id = declNode.id as Record<string, unknown> | undefined
+              if (id?.type === 'Identifier' && typeof id.name === 'string') {
+                exports.push({
+                  name: id.name,
+                  filePath,
+                  type: 'named',
+                  location,
+                  isTypeOnly: n.exportKind === 'type',
+                })
+              }
+            }
+          }
+        } else if (declaration.type === 'ClassDeclaration') {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
+            exports.push({
+              name: id.name,
+              filePath,
+              type: 'named',
+              location,
+              isTypeOnly: n.exportKind === 'type',
+            })
+          }
+        } else if (declaration.type === 'TSTypeAliasDeclaration') {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
+            exports.push({
+              name: id.name,
+              filePath,
+              type: 'named',
+              location,
+              isTypeOnly: true,
+            })
+          }
+        } else if (declaration.type === 'TSInterfaceDeclaration') {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
+            exports.push({
+              name: id.name,
+              filePath,
+              type: 'named',
+              location,
+              isTypeOnly: true,
+            })
+          }
+        }
+      } else {
+        const specifiers = n.specifiers
+        if (Array.isArray(specifiers)) {
+          for (const spec of specifiers) {
+            if (!spec || typeof spec !== 'object') continue
+            const specNode = spec as Record<string, unknown>
+            if (specNode.type === 'ExportSpecifier') {
+              const exported = specNode.exported as Record<string, unknown> | undefined
+              if (exported?.name && typeof exported.name === 'string') {
+                exports.push({
+                  name: exported.name,
+                  filePath,
+                  type: 'named',
+                  location,
+                  isTypeOnly: specNode.exportKind === 'type' || n.exportKind === 'type',
+                })
+              }
+            }
           }
         }
       }
@@ -150,16 +175,17 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
         filePath,
         type: 'namespace',
         location,
-        isTypeOnly: node.exportKind === 'type',
+        isTypeOnly: n.exportKind === 'type',
       })
       break
 
     case 'FunctionDeclaration':
-      if (node.id?.name) {
-        const hasExport = hasExportModifier(node)
+      const funcId = n.id as Record<string, unknown> | undefined
+      if (funcId?.name && typeof funcId.name === 'string') {
+        const hasExport = hasExportModifier(n)
         if (hasExport) {
           exports.push({
-            name: node.id.name,
+            name: funcId.name,
             filePath,
             type: 'named',
             location,
@@ -170,11 +196,12 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
       break
 
     case 'ClassDeclaration':
-      if (node.id?.name) {
-        const hasExport = hasExportModifier(node)
+      const classId = n.id as Record<string, unknown> | undefined
+      if (classId?.name && typeof classId.name === 'string') {
+        const hasExport = hasExportModifier(n)
         if (hasExport) {
           exports.push({
-            name: node.id.name,
+            name: classId.name,
             filePath,
             type: 'named',
             location,
@@ -185,17 +212,23 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
       break
 
     case 'VariableDeclaration':
-      const hasExport = hasExportModifier(node)
-      if (hasExport) {
-        for (const decl of node.declarations ?? []) {
-          if (decl.id?.type === 'Identifier' && decl.id.name) {
-            exports.push({
-              name: decl.id.name,
-              filePath,
-              type: 'named',
-              location,
-              isTypeOnly: false,
-            })
+      const varHasExport = hasExportModifier(n)
+      if (varHasExport) {
+        const declarations = n.declarations
+        if (Array.isArray(declarations)) {
+          for (const decl of declarations) {
+            if (!decl || typeof decl !== 'object') continue
+            const declNode = decl as Record<string, unknown>
+            const id = declNode.id as Record<string, unknown> | undefined
+            if (id?.type === 'Identifier' && typeof id.name === 'string') {
+              exports.push({
+                name: id.name,
+                filePath,
+                type: 'named',
+                location,
+                isTypeOnly: false,
+              })
+            }
           }
         }
       }
@@ -205,22 +238,32 @@ function extractExportsFromNode(node: any, filePath: string): ExportInfo[] {
   return exports
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function hasExportModifier(node: any): boolean {
-  if (!node.modifiers) return false
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return node.modifiers.some((mod: any) => mod.type === 'TSExportKeyword' || mod.kind === 'export')
+function hasExportModifier(node: unknown): boolean {
+  if (!node || typeof node !== 'object') return false
+  const n = node as Record<string, unknown>
+  const modifiers = n.modifiers
+  if (!Array.isArray(modifiers)) return false
+
+  return modifiers.some((mod) => {
+    if (!mod || typeof mod !== 'object') return false
+    const modNode = mod as Record<string, unknown>
+    return modNode.type === 'TSExportKeyword' || modNode.kind === 'export'
+  })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractImports(ast: any, filePath: string): ImportInfo[] {
+function extractImports(ast: unknown, filePath: string): ImportInfo[] {
   const imports: ImportInfo[] = []
 
   if (!ast || typeof ast !== 'object') {
     return imports
   }
 
-  const body = ast.body ?? ast.program?.body ?? []
+  const a = ast as Record<string, unknown>
+  const body = Array.isArray(a.body)
+    ? a.body
+    : Array.isArray((a.program as Record<string, unknown> | undefined)?.body)
+      ? ((a.program as Record<string, unknown>).body as unknown[])
+      : []
 
   for (const node of body) {
     const nodeImports = extractImportsFromNode(node, filePath)
@@ -230,34 +273,41 @@ function extractImports(ast: any, filePath: string): ImportInfo[] {
   return imports
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractImportsFromNode(node: any, filePath: string): ImportInfo[] {
+function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
   const imports: ImportInfo[] = []
 
   if (!node || typeof node !== 'object') {
     return imports
   }
 
-  switch (node.type) {
-    case 'ImportDeclaration':
-      const source = node.source?.value
-      if (source) {
-        if (node.specifiers) {
-          for (const spec of node.specifiers) {
-            let importedName = ''
-            let isTypeOnly = node.importKind === 'type'
+  const n = node as Record<string, unknown>
 
-            switch (spec.type) {
+  switch (n.type) {
+    case 'ImportDeclaration': {
+      const sourceNode = n.source as Record<string, unknown> | undefined
+      const source = sourceNode?.value
+      if (typeof source === 'string') {
+        const specifiers = n.specifiers
+        if (Array.isArray(specifiers)) {
+          for (const spec of specifiers) {
+            if (!spec || typeof spec !== 'object') continue
+            const specNode = spec as Record<string, unknown>
+            let importedName = ''
+            let isTypeOnly = n.importKind === 'type'
+
+            switch (specNode.type) {
               case 'ImportDefaultSpecifier':
                 importedName = 'default'
                 break
               case 'ImportNamespaceSpecifier':
                 importedName = '*'
                 break
-              case 'ImportSpecifier':
-                importedName = spec.imported?.name ?? ''
-                isTypeOnly = isTypeOnly || spec.importKind === 'type'
+              case 'ImportSpecifier': {
+                const imported = specNode.imported as Record<string, unknown> | undefined
+                importedName = imported?.name ? (imported.name as string) : ''
+                isTypeOnly = isTypeOnly || specNode.importKind === 'type'
                 break
+              }
             }
 
             if (importedName) {
@@ -272,44 +322,56 @@ function extractImportsFromNode(node: any, filePath: string): ImportInfo[] {
         }
       }
       break
+    }
 
-    case 'CallExpression':
+    case 'CallExpression': {
+      const callee = n.callee as Record<string, unknown> | undefined
+      const arguments_ = n.arguments as unknown[] | undefined
       if (
-        node.callee?.type === 'Identifier' &&
-        node.callee.name === 'require' &&
-        node.arguments?.[0]?.type === 'StringLiteral'
+        callee?.type === 'Identifier' &&
+        callee.name === 'require' &&
+        Array.isArray(arguments_) &&
+        arguments_.length > 0
       ) {
-        const source = node.arguments[0].value
-        imports.push({
-          name: '*',
-          sourceFile: filePath,
-          targetFile: source,
-          isTypeOnly: false,
-        })
-      } else if (node.callee?.type === 'Import') {
-        const source = node.arguments?.[0]?.value
-        if (source) {
+        const arg0 = arguments_[0] as Record<string, unknown> | undefined
+        if (arg0?.type === 'StringLiteral' && typeof arg0.value === 'string') {
           imports.push({
             name: '*',
             sourceFile: filePath,
-            targetFile: source,
+            targetFile: arg0.value,
+            isTypeOnly: false,
+          })
+        }
+      } else if (callee?.type === 'Import' && Array.isArray(arguments_) && arguments_.length > 0) {
+        const arg0 = arguments_[0] as Record<string, unknown> | undefined
+        if (arg0?.value && typeof arg0.value === 'string') {
+          imports.push({
+            name: '*',
+            sourceFile: filePath,
+            targetFile: arg0.value,
             isTypeOnly: false,
           })
         }
       }
       break
+    }
 
-    case 'TSImportEqualsDeclaration':
-      const moduleRef = node.moduleReference
-      if (moduleRef?.type === 'TSExternalModuleReference' && moduleRef.expression?.value) {
-        imports.push({
-          name: node.id?.name ?? '*',
-          sourceFile: filePath,
-          targetFile: moduleRef.expression.value,
-          isTypeOnly: node.isTypeOnly ?? false,
-        })
+    case 'TSImportEqualsDeclaration': {
+      const moduleRef = n.moduleReference as Record<string, unknown> | undefined
+      if (moduleRef?.type === 'TSExternalModuleReference') {
+        const expression = moduleRef.expression as Record<string, unknown> | undefined
+        if (expression?.value && typeof expression.value === 'string') {
+          const id = n.id as Record<string, unknown> | undefined
+          imports.push({
+            name: id?.name ? (id.name as string) : '*',
+            sourceFile: filePath,
+            targetFile: expression.value,
+            isTypeOnly: n.isTypeOnly === true,
+          })
+        }
       }
       break
+    }
   }
 
   return imports

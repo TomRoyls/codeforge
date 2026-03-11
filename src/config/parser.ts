@@ -80,7 +80,9 @@ async function parseJsonConfig(filePath: string): Promise<CodeForgeConfig> {
     }
 
     if (error instanceof SyntaxError) {
-      throw CLIError.configError(`Invalid JSON in config file: ${filePath}\n  ${error.message}`, [
+      const message = `Invalid JSON in config file: ${filePath}\n  ${error.message}`
+      logger.warn(message)
+      throw CLIError.configError(message, [
         'Validate your JSON syntax at jsonlint.com',
         'Ensure all strings are properly quoted',
         'Check for trailing commas or missing brackets',

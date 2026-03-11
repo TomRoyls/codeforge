@@ -78,6 +78,11 @@ vi.mock('../../../src/config/validator.js', () => ({
 
 vi.mock('../../../src/config/merger.js', () => ({
   mergeConfigs: vi.fn((base, override) => ({ ...base, ...override })),
+  mergeEnvConfig: vi.fn((fileConfig, envConfig) => ({ ...fileConfig, ...envConfig })),
+}))
+
+vi.mock('../../../src/config/env-parser.js', () => ({
+  parseEnvVars: vi.fn(() => ({})),
 }))
 
 vi.mock('../../../src/utils/logger.js', () => ({
@@ -358,16 +363,99 @@ describe('Watch Command', () => {
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
-      // @ts-expect-error - accessing private method for testing
       const analyzeFile = cmd.analyzeFile.bind(cmd)
-      // @ts-expect-error - setting private property for testing
-      cmd.parser = new Parser()
+      ;(cmd as { parser: Parser }).parser = new Parser()
 
       const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
 
       await analyzeFile('/test/file.ts', undefined, false)
 
       expect(spyLog).toHaveBeenCalledWith(expect.stringContaining('⚠'))
+
+      spyLog.mockRestore()
+    })
+
+    test('should log more than 3 violations message', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const { Parser } = await import('../../../src/core/parser.js')
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        getFullText: () => 'fixed code',
+      }
+
+      const mockViolations = [
+        {
+          ruleId: 'rule-1',
+          message: 'Violation 1',
+          severity: 'error' as const,
+          range: { start: { line: 1, column: 1 }, end: { line: 1, column: 5 } },
+          fix: null,
+        },
+        {
+          ruleId: 'rule-2',
+          message: 'Violation 2',
+          severity: 'error' as const,
+          range: { start: { line: 2, column: 1 }, end: { line: 2, column: 5 } },
+          fix: null,
+        },
+        {
+          ruleId: 'rule-3',
+          message: 'Violation 3',
+          severity: 'error' as const,
+          range: { start: { line: 3, column: 1 }, end: { line: 3, column: 5 } },
+          fix: null,
+        },
+        {
+          ruleId: 'rule-4',
+          message: 'Violation 4',
+          severity: 'error' as const,
+          range: { start: { line: 4, column: 1 }, end: { line: 4, column: 5 } },
+          fix: null,
+        },
+        {
+          ruleId: 'rule-5',
+          message: 'Violation 5',
+          severity: 'error' as const,
+          range: { start: { line: 5, column: 1 }, end: { line: 5, column: 5 } },
+          fix: null,
+        },
+      ]
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: vi.fn(),
+            disable: vi.fn(),
+            runRules: vi.fn().mockReturnValue(mockViolations),
+          }) as never,
+      )
+
+      vi.mocked(Parser).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            dispose: vi.fn(),
+            parseFile: vi.fn().mockResolvedValue({
+              sourceFile: mockSourceFile,
+              filePath: '/test/file.ts',
+              parseTime: 10,
+            }),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      const analyzeFile = cmd.analyzeFile.bind(cmd)
+      ;(cmd as { parser: Parser }).parser = new Parser()
+
+      const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
+
+      await analyzeFile('/test/file.ts', undefined, false)
+
+      expect(spyLog).toHaveBeenCalledWith(expect.stringContaining('... and 2 more'))
+
       spyLog.mockRestore()
     })
 
@@ -479,6 +567,50 @@ describe('Watch Command', () => {
       spyExit.mockRestore()
     })
 
+    test('should handle errors when stopping watcher', async () => {
+      const { FileWatcher } = await import('../../../src/utils/watcher.js')
+      const { logger } = await import('../../../src/utils/logger.js')
+
+      const mockStop = vi.fn().mockRejectedValue(new Error('Stop failed'))
+      vi.mocked(FileWatcher).mockImplementation(
+        () =>
+          ({
+            on: vi.fn().mockReturnThis(),
+            watch: vi.fn().mockResolvedValue(undefined),
+            stop: mockStop,
+            isActive: vi.fn().mockReturnValue(false),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      // @ts-expect-error - accessing private method for testing
+      const handleShutdown = cmd.handleShutdown.bind(cmd)
+      const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
+      const spyExit = vi.spyOn(cmd, 'exit').mockImplementation(() => {
+        throw new Error('exit called')
+      })
+      // @ts-expect-error - setting private property for testing
+      cmd.watcher = new FileWatcher({})
+
+      try {
+        handleShutdown()
+      } catch (e) {
+        if ((e as Error).message !== 'exit called') throw e
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 10))
+
+      expect(mockStop).toHaveBeenCalled()
+      expect(logger.debug).toHaveBeenCalledWith(
+        'Failed to stop watcher during shutdown:',
+        expect.any(Error),
+      )
+
+      spyLog.mockRestore()
+      spyExit.mockRestore()
+    })
+
     test('should dispose parser if it exists', async () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
@@ -521,6 +653,110 @@ describe('Watch Command', () => {
 
       spyLog.mockRestore()
       spyExit.mockRestore()
+    })
+  })
+
+  describe('setupRuleRegistry', () => {
+    test('should register all rules when no requestedRules provided', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+
+      const mockRegister = vi.fn()
+      const mockDisable = vi.fn()
+      const mockRunRules = vi.fn().mockReturnValue([])
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: mockRegister,
+            disable: mockDisable,
+            runRules: mockRunRules,
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      const setupRuleRegistry = cmd.setupRuleRegistry.bind(cmd)
+      const registry = setupRuleRegistry(undefined)
+
+      expect(mockRegister).toHaveBeenCalled()
+      expect(mockDisable).not.toHaveBeenCalled()
+      expect(registry).toBeDefined()
+    })
+
+    test('should disable rules not in requestedRules', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const { allRules } = await import('../../../src/rules/index.js')
+
+      const mockRegister = vi.fn()
+      const mockDisable = vi.fn()
+      const mockRunRules = vi.fn().mockReturnValue([])
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: mockRegister,
+            disable: mockDisable,
+            runRules: mockRunRules,
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      const setupRuleRegistry = cmd.setupRuleRegistry.bind(cmd)
+      const ruleIds = Object.keys(allRules)
+
+      if (ruleIds.length > 0) {
+        const requestedRuleId = ruleIds[0]
+        const registry = setupRuleRegistry([requestedRuleId])
+
+        expect(mockRegister).toHaveBeenCalled()
+        expect(mockDisable).toHaveBeenCalled()
+
+        const disableCalls = mockDisable.mock.calls.length
+        expect(disableCalls).toBe(ruleIds.length - 1)
+
+        const disabledRuleIds = mockDisable.mock.calls.flat()
+        expect(disabledRuleIds).not.toContain(requestedRuleId)
+
+        expect(registry).toBeDefined()
+      }
+    })
+
+    test('should enable only requested rules', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const { allRules } = await import('../../../src/rules/index.js')
+
+      const mockRegister = vi.fn()
+      const mockDisable = vi.fn()
+      const mockRunRules = vi.fn().mockReturnValue([])
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: mockRegister,
+            disable: mockDisable,
+            runRules: mockRunRules,
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
+
+      const setupRuleRegistry = cmd.setupRuleRegistry.bind(cmd)
+      const ruleIds = Object.keys(allRules)
+
+      if (ruleIds.length >= 2) {
+        const requestedRuleIds = [ruleIds[0], ruleIds[1]]
+        const registry = setupRuleRegistry(requestedRuleIds)
+
+        expect(mockRegister).toHaveBeenCalled()
+        expect(mockDisable).toHaveBeenCalled()
+
+        const disabledRuleIds = mockDisable.mock.calls.flat()
+        expect(disabledRuleIds).not.toContain(requestedRuleIds[0])
+        expect(disabledRuleIds).not.toContain(requestedRuleIds[1])
+
+        expect(registry).toBeDefined()
+      }
     })
   })
 })

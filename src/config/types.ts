@@ -3,6 +3,7 @@ import type { RuleOptions, RuleSeverity } from '../rules/types.js'
 export interface CodeForgeConfig {
   files?: string[]
   ignore?: string[]
+  plugins?: string[]
   rules?: RuleEnvConfig
 }
 

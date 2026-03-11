@@ -2,6 +2,20 @@ import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import * as os from 'node:os'
+import * as readline from 'node:readline'
+
+let mockReadlineAnswer: string = ''
+
+vi.mock('node:readline', () => ({
+  default: {
+    createInterface: vi.fn(() => ({
+      question: (_prompt: string, callback: (answer: string) => void) => {
+        callback(mockReadlineAnswer)
+      },
+      close: vi.fn(),
+    })),
+  },
+}))
 
 vi.mock('../../../src/rules/index.js', () => ({
   allRules: {
@@ -293,6 +307,55 @@ describe('Init Command', () => {
       vi.spyOn(process, 'cwd').mockRestore()
     })
 
+    test('overwrites existing config when force is true', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+      const configPath = path.join(tempDir, '.codeforgerc.json')
+      await fs.writeFile(configPath, '{"old": true}', 'utf-8')
+
+      const cmd = createCommandWithMockedParse({
+        format: 'json',
+        force: true,
+        interactive: false,
+        minimal: true,
+        typescript: true,
+      })
+      await cmd.run()
+
+      const content = await fs.readFile(configPath, 'utf-8')
+      const config = JSON.parse(content)
+      expect(config.old).toBeUndefined()
+      expect(config.files).toBeDefined()
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('prompts user when config exists and force is false', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+
+      const configPath = path.join(tempDir, '.codeforgerc.json')
+      await fs.writeFile(configPath, '{"old": true}', 'utf-8')
+
+      mockReadlineAnswer = 'n'
+
+      const cmd = createCommandWithMockedParse({
+        format: 'json',
+        force: false,
+        interactive: false,
+        minimal: true,
+        typescript: true,
+      })
+      await cmd.run()
+
+      const content = await fs.readFile(configPath, 'utf-8')
+      const config = JSON.parse(content)
+      expect(config.old).toBe(true)
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
     describe('Private methods', () => {
       describe('getRuleInfos', () => {
         test('returns array of rule infos', () => {
@@ -530,6 +593,199 @@ describe('Init Command', () => {
           ).toBe(true)
 
           vi.spyOn(process, 'cwd').mockRestore()
+        })
+      })
+
+      describe('generateConfig', () => {
+        test('includes JS file patterns when typescript is false', () => {
+          const cmd = new Init([], {} as never)
+          const options: any = {
+            force: false,
+            format: 'json',
+            interactive: false,
+            minimal: true,
+            typescript: false,
+          }
+
+          const config = (cmd as any).generateConfig(options)
+
+          expect(config.files).toContain('**/*.js')
+          expect(config.files).toContain('**/*.jsx')
+          expect(config.files).toContain('**/*.ts')
+          expect(config.files).toContain('**/*.tsx')
+        })
+
+        test('only includes TS file patterns when typescript is true', () => {
+          const cmd = new Init([], {} as never)
+          const options: any = {
+            force: false,
+            format: 'json',
+            interactive: false,
+            minimal: true,
+            typescript: true,
+          }
+
+          const config = (cmd as any).generateConfig(options)
+
+          expect(config.files).toContain('**/*.ts')
+          expect(config.files).toContain('**/*.tsx')
+          expect(config.files).not.toContain('**/*.js')
+          expect(config.files).not.toContain('**/*.jsx')
+        })
+
+        test('includes only selected rules when provided', () => {
+          const cmd = new Init([], {} as never)
+          const options: any = {
+            force: false,
+            format: 'json',
+            interactive: false,
+            minimal: false,
+            typescript: true,
+          }
+
+          const config = (cmd as any).generateConfig(options, [
+            'max-complexity',
+            'no-await-in-loop',
+          ])
+
+          expect(config.rules).toBeDefined()
+          expect(config.rules['max-complexity']).toBe('error')
+          expect(config.rules['no-await-in-loop']).toBe('error')
+          expect(config.rules['max-params']).toBeUndefined()
+        })
+
+        test('includes recommended rules when selectedRules is undefined', () => {
+          const cmd = new Init([], {} as never)
+          const options: any = {
+            force: false,
+            format: 'json',
+            interactive: false,
+            minimal: false,
+            typescript: true,
+          }
+
+          const config = (cmd as any).generateConfig(options)
+
+          expect(config.rules).toBeDefined()
+          expect(config.rules['max-complexity']).toBe('error')
+          expect(config.rules['max-params']).toBe('error')
+          expect(config.rules['no-await-in-loop']).toBeUndefined()
+        })
+
+        test('has no rules when selectedRules is empty array', () => {
+          const cmd = new Init([], {} as never)
+          const options: any = {
+            force: false,
+            format: 'json',
+            interactive: false,
+            minimal: false,
+            typescript: true,
+          }
+
+          const config = (cmd as any).generateConfig(options, [])
+
+          expect(config.rules).toBeUndefined()
+        })
+
+        test('returns minimal config when minimal is true', () => {
+          const cmd = new Init([], {} as never)
+          const options: any = {
+            force: false,
+            format: 'json',
+            interactive: false,
+            minimal: true,
+            typescript: true,
+          }
+
+          const config = (cmd as any).generateConfig(options)
+
+          expect(config.rules).toBeUndefined()
+          expect(config.files).toBeDefined()
+          expect(config.ignore).toBeDefined()
+        })
+      })
+
+      describe('confirmOverwrite', () => {
+        test('returns true when user answers "y"', async () => {
+          mockReadlineAnswer = 'y'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).confirmOverwrite('/some/path')
+          expect(result).toBe(true)
+        })
+
+        test('returns false when user answers "n"', async () => {
+          mockReadlineAnswer = 'n'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).confirmOverwrite('/some/path')
+          expect(result).toBe(false)
+        })
+
+        test('returns true when user answers "yes"', async () => {
+          mockReadlineAnswer = 'yes'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).confirmOverwrite('/some/path')
+          expect(result).toBe(true)
+        })
+
+        test('returns false when user answers with empty string', async () => {
+          mockReadlineAnswer = ''
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).confirmOverwrite('/some/path')
+          expect(result).toBe(false)
+        })
+      })
+
+      describe('promptForRules', () => {
+        test('returns recommended rules when user enters "all"', async () => {
+          mockReadlineAnswer = 'all'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).promptForRules()
+          expect(result).toContain('max-complexity')
+          expect(result).toContain('max-params')
+          expect(result).not.toContain('no-await-in-loop')
+        })
+
+        test('returns empty array when user enters "none"', async () => {
+          mockReadlineAnswer = 'none'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).promptForRules()
+          expect(result).toEqual([])
+        })
+
+        test('returns empty array when user enters empty string', async () => {
+          mockReadlineAnswer = ''
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).promptForRules()
+          expect(result).toEqual([])
+        })
+
+        test('returns valid rule IDs when user enters valid rules', async () => {
+          mockReadlineAnswer = 'max-complexity, max-params'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).promptForRules()
+          expect(result).toContain('max-complexity')
+          expect(result).toContain('max-params')
+          expect(result.length).toBe(2)
+        })
+
+        test('logs warning and returns only valid rules when user enters invalid IDs', async () => {
+          mockReadlineAnswer = 'max-complexity, invalid-rule'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).promptForRules()
+          expect(result).toContain('max-complexity')
+          expect(result).not.toContain('invalid-rule')
+          expect(result.length).toBe(1)
+        })
+
+        test('returns only valid rules when user enters mix of valid and invalid IDs', async () => {
+          mockReadlineAnswer = 'max-complexity, max-params, invalid-1, invalid-2'
+          const cmd = new Init([], {} as never)
+          const result = await (cmd as any).promptForRules()
+          expect(result).toContain('max-complexity')
+          expect(result).toContain('max-params')
+          expect(result).not.toContain('invalid-1')
+          expect(result).not.toContain('invalid-2')
+          expect(result.length).toBe(2)
         })
       })
     })

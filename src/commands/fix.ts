@@ -1,6 +1,8 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'
+import os from 'node:os'
+import pLimit from 'p-limit'
 
 import { DEFAULT_CONFIG } from '../config/types.js'
 import { discoverFiles } from '../core/file-discovery.js'
@@ -23,6 +25,7 @@ interface FileFixResult {
 interface FixFlags {
   config: string | undefined
   'dry-run': boolean
+  ignore?: string[]
   rules: string | undefined
   'safe-only': boolean
   verbose: boolean
@@ -75,6 +78,11 @@ export default class Fix extends Command {
       default: false,
       description: 'Preview fixes without modifying files',
     }),
+    ignore: Flags.string({
+      char: 'i',
+      description: 'Patterns to ignore',
+      multiple: true,
+    }),
     rules: Flags.string({
       char: 'r',
       description: 'Only fix violations from these rules (comma-separated)',
@@ -101,7 +109,7 @@ export default class Fix extends Command {
     try {
       const config = DEFAULT_CONFIG
       const patterns = this.resolvePatterns(args.files, config.files)
-      const ignore = config.ignore ?? []
+      const ignore = flags.ignore ?? config.ignore ?? []
       const requestedRules = flags.rules?.split(',').map((r) => r.trim())
 
       const cwd = process.cwd()
@@ -267,16 +275,19 @@ export default class Fix extends Command {
     totalFixesApplied: number
     totalFixesSkipped: number
   }> {
+    const concurrency = os.cpus().length || 4
+    const limit = pLimit(concurrency)
+
+    const results = await Promise.all(
+      discoveredFiles.map((file) => limit(async () => this.processFile(file, context))),
+    )
+
     let totalFixesApplied = 0
     let totalFixesSkipped = 0
     const filesModified: string[] = []
     const filesUnchanged: string[] = []
 
-    // Process files sequentially to avoid race conditions
-    for (const file of discoveredFiles) {
-      // eslint-disable-next-line no-await-in-loop
-      const result = await this.processFile(file, context)
-
+    for (const result of results) {
       if (result.status === 'error') {
         this.log(chalk.red(`  ✗ Error processing ${result.file}: ${result.error}`))
       } else if (result.status === 'processed') {

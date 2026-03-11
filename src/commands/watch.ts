@@ -5,7 +5,8 @@ import type { CodeForgeConfig } from '../config/types.js'
 
 import { ConfigCache } from '../config/cache.js'
 import { findConfigPath } from '../config/discovery.js'
-import { mergeConfigs } from '../config/merger.js'
+import { parseEnvVars } from '../config/env-parser.js'
+import { mergeConfigs, mergeEnvConfig } from '../config/merger.js'
 import { validateConfig } from '../config/validator.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
@@ -50,6 +51,11 @@ export default class Watch extends Command {
       char: 'd',
       default: 300,
       description: 'Debounce time in milliseconds',
+    }),
+    ignore: Flags.string({
+      char: 'i',
+      description: 'Patterns to ignore',
+      multiple: true,
     }),
     rules: Flags.string({
       char: 'r',
@@ -232,18 +238,31 @@ export default class Watch extends Command {
     files?: string[]
     ignore?: string[]
   }): Promise<CodeForgeConfig> {
+    const envConfig = parseEnvVars()
+    const cliFlagsConfig: Partial<CodeForgeConfig> = {}
+    if (flags.files !== undefined) {
+      cliFlagsConfig.files = flags.files
+    }
+
+    if (flags.ignore !== undefined) {
+      cliFlagsConfig.ignore = flags.ignore
+    }
+
     const configPath = await findConfigPath(flags.config, process.cwd())
 
     if (configPath) {
       logger.info(`Loading config from: ${configPath}`)
       const rawConfig = await this.configCache.getConfig(configPath)
       if (rawConfig) {
-        return validateConfig(rawConfig)
+        const fileConfig = validateConfig(rawConfig)
+        const mergedWithEnv = mergeEnvConfig(fileConfig, envConfig)
+        return mergeConfigs(mergedWithEnv, cliFlagsConfig)
       }
     }
 
-    logger.debug('No config file found, using defaults')
-    return mergeConfigs({}, { files: flags.files, ignore: flags.ignore })
+    logger.debug('No config file found, using defaults with env vars')
+    const mergedWithEnv = mergeEnvConfig({}, envConfig)
+    return mergeConfigs(mergedWithEnv, cliFlagsConfig)
   }
 
   private resolvePatterns(

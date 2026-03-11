@@ -102,6 +102,10 @@ export default class Analyze extends Command {
   ]
 
   static override flags = {
+    ci: Flags.boolean({
+      default: false,
+      description: 'Run in CI mode (disables colors, progress, sets JSON output)',
+    }),
     config: Flags.string({
       char: 'c',
       description: 'Path to config file',
@@ -173,10 +177,12 @@ export default class Analyze extends Command {
     const config = await this.loadConfig(flags)
     const files = config.files ?? []
     const ignore = config.ignore ?? []
-    const format = flags.format as OutputFormat
-    const { output } = flags
-    const { quiet } = flags
-    const { verbose } = flags
+
+    const ciMode = flags.ci
+    const format = ciMode && flags.format === 'console' ? 'json' : (flags.format as OutputFormat)
+    const {output} = flags
+    const quiet = ciMode || flags.quiet
+    const verbose = flags.verbose && !ciMode
     const failOnWarnings = flags['fail-on-warnings']
     const shouldFix = flags.fix
     const dryRun = flags['dry-run']
@@ -262,6 +268,7 @@ export default class Analyze extends Command {
     const summary = this.generateSummary(allViolations, discoveredFiles.length, duration)
 
     const reporter = new Reporter({
+      color: !ciMode,
       format,
       outputPath: output,
       quiet,

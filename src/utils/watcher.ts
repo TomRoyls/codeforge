@@ -194,7 +194,8 @@ export class FileWatcher extends EventEmitter {
         }),
       )
     } catch {
-      // Directory might not exist or be accessible
+      // Directory might not exist, be inaccessible, or watching may have been stopped
+      // This is expected behavior - not all directories are watchable
     }
   }
 }

@@ -2,6 +2,12 @@ import { readdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { Plugin } from './types.js'
 import { PluginLoadError } from './types.js'
+import { logger } from '../utils/logger.js'
+
+interface ImportedModule {
+  default?: Plugin
+  plugin?: Plugin
+}
 
 const PLUGIN_PREFIX = 'codeforge-plugin-'
 const SCOPED_PLUGIN_PATTERN = /^@[^/]+\/codeforge-plugin-/
@@ -125,8 +131,17 @@ export class PluginRegistry {
 
     try {
       const content = await readFile(packagePath, 'utf-8')
-      return JSON.parse(content) as Record<string, unknown>
+      try {
+        return JSON.parse(content) as Record<string, unknown>
+      } catch (jsonError) {
+        const message = jsonError instanceof Error ? jsonError.message : 'Unknown error'
+        logger.error(`Failed to parse package.json for plugin "${pluginName}": ${message}`)
+        throw new PluginLoadError(pluginName, `Invalid JSON in package.json: ${message}`)
+      }
     } catch (error) {
+      if (error instanceof PluginLoadError) {
+        throw error
+      }
       throw new PluginLoadError(
         pluginName,
         `Failed to read package.json: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -148,6 +163,112 @@ export class PluginRegistry {
     }
 
     return true
+  }
+
+  /**
+   * Dynamically imports and loads a plugin from node_modules
+   * @param pluginName - The full name of the plugin (e.g., 'codeforge-plugin-foo' or '@scope/codeforge-plugin-foo')
+   * @param workspaceRoot - The workspace root directory containing node_modules
+   * @returns The loaded and registered Plugin
+   * @throws PluginLoadError if the plugin cannot be loaded or is invalid
+   */
+  async loadFromNodeModules(pluginName: string, workspaceRoot: string): Promise<Plugin> {
+    const existing = this.plugins.get(pluginName)
+    if (existing) {
+      return existing
+    }
+
+    const pluginPath = join(workspaceRoot, 'node_modules', pluginName)
+
+    try {
+      const module = (await import(pluginPath)) as ImportedModule
+      const plugin = this.extractPluginFromModule(module, pluginName)
+      this.validateImportedPlugin(plugin, pluginName)
+      this.plugins.set(plugin.name, plugin)
+
+      return plugin
+    } catch (error) {
+      if (error instanceof PluginLoadError) {
+        throw error
+      }
+
+      const message = error instanceof Error ? error.message : 'Unknown error during import'
+      throw new PluginLoadError(
+        pluginName,
+        `Failed to load plugin: ${message}`,
+        error instanceof Error ? error : undefined,
+      )
+    }
+  }
+
+  private extractPluginFromModule(module: ImportedModule, pluginName: string): Plugin {
+    const plugin = module.default ?? module.plugin
+
+    if (!plugin) {
+      throw new PluginLoadError(
+        pluginName,
+        'Plugin module must export a Plugin object as default or as named export "plugin"',
+      )
+    }
+
+    return plugin
+  }
+
+  private validateImportedPlugin(plugin: unknown, pluginName: string): asserts plugin is Plugin {
+    if (!plugin || typeof plugin !== 'object') {
+      throw new PluginLoadError(pluginName, 'Plugin must be a valid object')
+    }
+
+    const p = plugin as Partial<Plugin>
+
+    if (!p.name || typeof p.name !== 'string') {
+      throw new PluginLoadError(pluginName, 'Plugin must have a valid "name" property')
+    }
+
+    if (!p.version || typeof p.version !== 'string') {
+      throw new PluginLoadError(pluginName, 'Plugin must have a valid "version" property')
+    }
+
+    // Validate rules if present
+    if (p.rules) {
+      if (typeof p.rules !== 'object') {
+        throw new PluginLoadError(pluginName, 'Plugin "rules" must be an object')
+      }
+
+      for (const [ruleName, ruleDef] of Object.entries(p.rules)) {
+        if (!ruleDef || typeof ruleDef !== 'object') {
+          throw new PluginLoadError(pluginName, `Rule "${ruleName}" must be a valid object`)
+        }
+        if (!ruleDef.meta) {
+          throw new PluginLoadError(pluginName, `Rule "${ruleName}" must have a "meta" property`)
+        }
+        if (!ruleDef.create || typeof ruleDef.create !== 'function') {
+          throw new PluginLoadError(pluginName, `Rule "${ruleName}" must have a "create" function`)
+        }
+      }
+    }
+
+    // Validate transforms if present
+    if (p.transforms) {
+      if (typeof p.transforms !== 'object') {
+        throw new PluginLoadError(pluginName, 'Plugin "transforms" must be an object')
+      }
+
+      for (const [transformName, transformDef] of Object.entries(p.transforms)) {
+        if (!transformDef || typeof transformDef !== 'object') {
+          throw new PluginLoadError(
+            pluginName,
+            `Transform "${transformName}" must be a valid object`,
+          )
+        }
+        if (!transformDef.transform || typeof transformDef.transform !== 'function') {
+          throw new PluginLoadError(
+            pluginName,
+            `Transform "${transformName}" must have a "transform" function`,
+          )
+        }
+      }
+    }
   }
 }
 

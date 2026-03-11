@@ -28,24 +28,33 @@ interface ConsistentImportsOptions {
   readonly exclude?: readonly string[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function analyzeImport(node: any): ImportStatement | null {
+function analyzeImport(node: unknown): ImportStatement | null {
   if (!node || typeof node !== 'object') {
     return null
   }
 
-  if (node.type !== 'ImportDeclaration' || !node.source?.value) {
+  const n = node as Record<string, unknown>
+  if (n.type !== 'ImportDeclaration' || !n.source) {
     return null
   }
 
+  const sourceNode = n.source as Record<string, unknown> | undefined
+  if (!sourceNode?.value || typeof sourceNode.value !== 'string') {
+    return null
+  }
+
+  const loc = n.loc as Record<string, unknown> | undefined
+  const start = loc?.start as Record<string, unknown> | undefined
+  const end = loc?.end as Record<string, unknown> | undefined
+
   const location: SourceLocation = {
     start: {
-      line: node.loc?.start?.line ?? 1,
-      column: node.loc?.start?.column ?? 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
+      column: typeof start?.column === 'number' ? start.column : 0,
     },
     end: {
-      line: node.loc?.end?.line ?? 1,
-      column: node.loc?.end?.column ?? 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+      column: typeof end?.column === 'number' ? end.column : 0,
     },
   }
 
@@ -53,9 +62,12 @@ function analyzeImport(node: any): ImportStatement | null {
   let hasNamespace = false
   let namedCount = 0
 
-  if (node.specifiers) {
-    for (const spec of node.specifiers) {
-      switch (spec.type) {
+  const specifiers = n.specifiers
+  if (Array.isArray(specifiers)) {
+    for (const spec of specifiers) {
+      if (!spec || typeof spec !== 'object') continue
+      const specNode = spec as Record<string, unknown>
+      switch (specNode.type) {
         case 'ImportDefaultSpecifier':
           hasDefault = true
           break
@@ -82,7 +94,7 @@ function analyzeImport(node: any): ImportStatement | null {
 
   return {
     kind,
-    source: node.source.value,
+    source: sourceNode.value,
     location,
     namedCount,
     hasDefault,
@@ -231,32 +243,44 @@ export const consistentImportsRule: RuleDefinition = {
       },
 
       CallExpression(node: unknown): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const n = node as any
+        const n = node as Record<string, unknown>
+
+        const callee = n.callee as Record<string, unknown> | undefined
+        const arguments_ = n.arguments as unknown[] | undefined
+        const arg0 =
+          Array.isArray(arguments_) && arguments_.length > 0
+            ? (arguments_[0] as Record<string, unknown> | undefined)
+            : undefined
 
         if (
-          n.callee?.type === 'Identifier' &&
-          n.callee.name === 'require' &&
-          n.arguments?.[0]?.type === 'StringLiteral'
+          callee?.type === 'Identifier' &&
+          callee.name === 'require' &&
+          arg0?.type === 'StringLiteral' &&
+          arg0.value &&
+          typeof arg0.value === 'string'
         ) {
-          const source = n.arguments[0].value
+          const source = arg0.value
 
           if (isExcluded(source, exclude)) {
             return
           }
 
           if (prefer === 'named' || prefer === 'default') {
+            const loc = n.loc as Record<string, unknown> | undefined
+            const start = loc?.start as Record<string, unknown> | undefined
+            const end = loc?.end as Record<string, unknown> | undefined
+
             context.report({
               node,
               message: `Use ES module ${prefer} imports instead of require()`,
               loc: {
                 start: {
-                  line: n.loc?.start?.line ?? 1,
-                  column: n.loc?.start?.column ?? 0,
+                  line: typeof start?.line === 'number' ? start.line : 1,
+                  column: typeof start?.column === 'number' ? start.column : 0,
                 },
                 end: {
-                  line: n.loc?.end?.line ?? 1,
-                  column: n.loc?.end?.column ?? 0,
+                  line: typeof end?.line === 'number' ? end.line : 1,
+                  column: typeof end?.column === 'number' ? end.column : 0,
                 },
               },
             })

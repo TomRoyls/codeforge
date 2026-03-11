@@ -622,6 +622,484 @@ describe('PluginRegistry', () => {
       expect(registry.size).toBe(0)
     })
   })
+
+  describe('loadFromNodeModules', () => {
+    describe('returns existing plugin', () => {
+      test('returns already registered plugin without reloading', async () => {
+        const mockPlugin = createMockPlugin({ name: 'cached-plugin' })
+        registry.register(mockPlugin)
+
+        const loaded = await registry.loadFromNodeModules('cached-plugin', '/workspace')
+
+        expect(loaded).toBe(mockPlugin)
+      })
+    })
+  })
+
+  describe('extractPluginFromModule (private)', () => {
+    describe('extracts from default export', () => {
+      test('returns plugin from default export', () => {
+        const mockPlugin = createMockPlugin()
+        const module = { default: mockPlugin }
+
+        const extracted = (registry as any).extractPluginFromModule(module, 'test-plugin')
+
+        expect(extracted).toBe(mockPlugin)
+      })
+    })
+
+    describe('extracts from named export', () => {
+      test('returns plugin from named plugin export', () => {
+        const mockPlugin = createMockPlugin()
+        const module = { plugin: mockPlugin }
+
+        const extracted = (registry as any).extractPluginFromModule(module, 'test-plugin')
+
+        expect(extracted).toBe(mockPlugin)
+      })
+    })
+
+    describe('prefers default over named', () => {
+      test('prioritizes default export when both exist', () => {
+        const defaultPlugin = createMockPlugin({ name: 'default' })
+        const namedPlugin = createMockPlugin({ name: 'named' })
+        const module = { default: defaultPlugin, plugin: namedPlugin }
+
+        const extracted = (registry as any).extractPluginFromModule(module, 'test-plugin')
+
+        expect(extracted).toBe(defaultPlugin)
+      })
+    })
+
+    describe('throws on missing exports', () => {
+      test('throws when no exports exist', () => {
+        const module = {}
+
+        expect(() => (registry as any).extractPluginFromModule(module, 'test-plugin')).toThrow(
+          PluginLoadError,
+        )
+      })
+
+      test('error message includes plugin name', () => {
+        const module = {}
+
+        expect(() => (registry as any).extractPluginFromModule(module, 'missing-export')).toThrow(
+          /missing-export/,
+        )
+      })
+
+      test('error message indicates export requirement', () => {
+        const module = {}
+
+        expect(() => (registry as any).extractPluginFromModule(module, 'test-plugin')).toThrow(
+          /must export.*Plugin object/,
+        )
+      })
+    })
+  })
+
+  describe('validateImportedPlugin (private)', () => {
+    describe('accepts valid plugins', () => {
+      test('passes validation for valid minimal plugin', () => {
+        const validPlugin = createMockPlugin()
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(validPlugin, 'test-plugin'),
+        ).not.toThrow()
+      })
+
+      test('passes validation for full plugin', () => {
+        const fullPlugin: Plugin = {
+          name: 'full-plugin',
+          version: '2.0.0',
+          description: 'A full plugin',
+          rules: {},
+          transforms: {},
+          hooks: { onLoad: vi.fn() },
+          dependencies: ['dep1'],
+          engines: { codeforge: '^1.0.0' },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(fullPlugin, 'full-plugin'),
+        ).not.toThrow()
+      })
+
+      test('passes validation with valid rules structure', () => {
+        const pluginWithRules: Plugin = {
+          name: 'plugin-with-rules',
+          version: '1.0.0',
+          rules: {
+            'test-rule': {
+              meta: { type: 'problem', severity: 'error' },
+              create: () => ({ Identifier: vi.fn() }),
+            },
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithRules, 'plugin-with-rules'),
+        ).not.toThrow()
+      })
+
+      test('passes validation with valid transforms structure', () => {
+        const pluginWithTransforms: Plugin = {
+          name: 'plugin-with-transforms',
+          version: '1.0.0',
+          transforms: {
+            'test-transform': {
+              name: 'test-transform',
+              transform: () => 'transformed',
+            },
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithTransforms, 'plugin-with-transforms'),
+        ).not.toThrow()
+      })
+    })
+
+    describe('rejects invalid types', () => {
+      test('throws when plugin is null', () => {
+        expect(() => (registry as any).validateImportedPlugin(null, 'test-plugin')).toThrow(
+          PluginLoadError,
+        )
+      })
+
+      test('throws when plugin is undefined', () => {
+        expect(() => (registry as any).validateImportedPlugin(undefined, 'test-plugin')).toThrow(
+          PluginLoadError,
+        )
+      })
+
+      test('throws when plugin is not an object', () => {
+        expect(() => (registry as any).validateImportedPlugin('string', 'test-plugin')).toThrow(
+          PluginLoadError,
+        )
+      })
+
+      test('throws when plugin is an array', () => {
+        expect(() => (registry as any).validateImportedPlugin([], 'test-plugin')).toThrow(
+          PluginLoadError,
+        )
+      })
+
+      test('throws when plugin is a number', () => {
+        expect(() => (registry as any).validateImportedPlugin(123, 'test-plugin')).toThrow(
+          PluginLoadError,
+        )
+      })
+
+      test('error message indicates plugin must be an object', () => {
+        expect(() => (registry as any).validateImportedPlugin(null, 'test-plugin')).toThrow(
+          /must be a valid object/,
+        )
+      })
+    })
+
+    describe('rejects missing required properties', () => {
+      test('throws when name is missing', () => {
+        const pluginWithoutName = { version: '1.0.0' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutName, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when name is empty string', () => {
+        const pluginWithEmptyName = { name: '', version: '1.0.0' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithEmptyName, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when name is not a string', () => {
+        const pluginWithInvalidName = { name: 123, version: '1.0.0' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidName, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('error message includes name property requirement', () => {
+        const pluginWithoutName = { version: '1.0.0' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutName, 'test-plugin'),
+        ).toThrow(/valid "name" property/)
+      })
+
+      test('throws when version is missing', () => {
+        const pluginWithoutVersion = { name: 'test-plugin' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutVersion, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when version is empty string', () => {
+        const pluginWithEmptyVersion = { name: 'test-plugin', version: '' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithEmptyVersion, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when version is not a string', () => {
+        const pluginWithInvalidVersion = { name: 'test-plugin', version: 123 }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidVersion, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('error message includes version property requirement', () => {
+        const pluginWithoutVersion = { name: 'test-plugin' }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutVersion, 'test-plugin'),
+        ).toThrow(/valid "version" property/)
+      })
+    })
+
+    describe('rejects invalid rules structure', () => {
+      test('throws when rules is not an object', () => {
+        const pluginWithInvalidRules = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: 'not-an-object',
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidRules, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when rule definition is not an object', () => {
+        const pluginWithInvalidRule = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'invalid-rule': 'not-an-object',
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidRule, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when rule is null', () => {
+        const pluginWithNullRule = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'null-rule': null,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithNullRule, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when rule missing meta property', () => {
+        const pluginWithoutRuleMeta = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'no-meta-rule': {
+              create: () => ({}),
+            } as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutRuleMeta, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('error message includes rule name for missing meta', () => {
+        const pluginWithoutRuleMeta = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'test-rule': {
+              create: () => ({}),
+            } as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutRuleMeta, 'test-plugin'),
+        ).toThrow(/"test-rule".*"meta"/)
+      })
+
+      test('throws when rule missing create function', () => {
+        const pluginWithoutRuleCreate = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'no-create-rule': {
+              meta: { type: 'problem' },
+            } as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutRuleCreate, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when create is not a function', () => {
+        const pluginWithInvalidCreate = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'invalid-create-rule': {
+              meta: { type: 'problem' },
+              create: 'not-a-function',
+            } as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidCreate, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('error message includes rule name for missing create', () => {
+        const pluginWithoutRuleCreate = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: {
+            'test-rule': {
+              meta: { type: 'problem' },
+            } as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutRuleCreate, 'test-plugin'),
+        ).toThrow(/"test-rule".*"create"/)
+      })
+
+      test('error message indicates rules must be an object', () => {
+        const pluginWithInvalidRules = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          rules: 'invalid',
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidRules, 'test-plugin'),
+        ).toThrow(/"rules" must be an object/)
+      })
+    })
+
+    describe('rejects invalid transforms structure', () => {
+      test('throws when transforms is not an object', () => {
+        const pluginWithInvalidTransforms = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: 'not-an-object',
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidTransforms, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when transform definition is not an object', () => {
+        const pluginWithInvalidTransform = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: {
+            'invalid-transform': 'not-an-object',
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidTransform, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when transform is null', () => {
+        const pluginWithNullTransform = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: {
+            'null-transform': null,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithNullTransform, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when transform missing transform function', () => {
+        const pluginWithoutTransformFunction = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: {
+            'no-func-transform': {} as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutTransformFunction, 'test-plugin'),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('throws when transform is not a function', () => {
+        const pluginWithInvalidTransformFunction = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: {
+            'invalid-func-transform': {
+              transform: 'not-a-function',
+            } as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(
+            pluginWithInvalidTransformFunction,
+            'test-plugin',
+          ),
+        ).toThrow(PluginLoadError)
+      })
+
+      test('error message includes transform name for missing function', () => {
+        const pluginWithoutTransformFunction = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: {
+            'test-transform': {} as any,
+          },
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithoutTransformFunction, 'test-plugin'),
+        ).toThrow(/"test-transform".*"transform"/)
+      })
+
+      test('error message indicates transforms must be an object', () => {
+        const pluginWithInvalidTransforms = {
+          name: 'test-plugin',
+          version: '1.0.0',
+          transforms: 'invalid',
+        }
+
+        expect(() =>
+          (registry as any).validateImportedPlugin(pluginWithInvalidTransforms, 'test-plugin'),
+        ).toThrow(/"transforms" must be an object/)
+      })
+    })
+  })
 })
 
 describe('isPluginName', () => {

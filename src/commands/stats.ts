@@ -41,6 +41,11 @@ export default class Stats extends Command {
       description: 'Output format',
       options: ['json', 'table'],
     }),
+    ignore: Flags.string({
+      char: 'i',
+      description: 'Patterns to ignore',
+      multiple: true,
+    }),
     top: Flags.integer({
       char: 't',
       default: 10,
@@ -69,9 +74,12 @@ export default class Stats extends Command {
 
     const spinner = ora('Discovering files...').start()
 
+    const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
+    const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
+
     const discoveredFiles = await discoverFiles({
       cwd: targetPath,
-      ignore: ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**'],
+      ignore,
       patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     })
 
