@@ -104,6 +104,23 @@ describe('Logger', () => {
     expect(spies[0]).toHaveBeenCalled()
   })
 
+  test('handles objects that cannot be stringified', () => {
+    const unstringifiable = {
+      get toJSON() {
+        throw new Error('Cannot stringify')
+      },
+    }
+    testLogger.info('message', unstringifiable)
+    expect(spies[0]).toHaveBeenCalled()
+  })
+
+  test('handles deeply nested circular references', () => {
+    const obj: Record<string, unknown> = { level1: { level2: {} } }
+    ;(obj.level1 as Record<string, unknown>).level2 = obj
+    testLogger.info('message', obj)
+    expect(spies[0]).toHaveBeenCalled()
+  })
+
   test('handles primitive values in args', () => {
     testLogger.info('message', 123, true, null, undefined)
     expect(spies[0]).toHaveBeenCalled()
