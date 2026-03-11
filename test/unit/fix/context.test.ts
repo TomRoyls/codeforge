@@ -208,6 +208,44 @@ describe('Fix Context', () => {
       expect(foundNode).toBeUndefined()
     })
 
+    it('finds node when range exactly matches node bounds', () => {
+      const childNode = createMockNode({ start: 4, end: 14, text: 'child' })
+      const sourceFile = createSourceFileWithChildren([childNode])
+      sourceFile.getFullText = vi.fn(() => '01234567890123456789')
+      const violation = createMockViolation()
+
+      const context = createFixContext(sourceFile, violation)
+      const foundNode = context.getNodeByRange({
+        start: { line: 1, column: 5 },
+        end: { line: 1, column: 15 },
+      })
+
+      expect(foundNode).toBeDefined()
+      expect(foundNode?.getText()).toBe('child')
+    })
+
+    it('finds nested node when range matches exactly', () => {
+      const grandchildNode = createMockNode({ start: 6, end: 11, text: 'grandchild' })
+      const childNode = createMockNode({
+        start: 4,
+        end: 14,
+        text: 'child',
+        children: [grandchildNode],
+      })
+      const sourceFile = createSourceFileWithChildren([childNode])
+      sourceFile.getFullText = vi.fn(() => '01234567890123456789')
+      const violation = createMockViolation()
+
+      const context = createFixContext(sourceFile, violation)
+      const foundNode = context.getNodeByRange({
+        start: { line: 1, column: 7 },
+        end: { line: 1, column: 12 },
+      })
+
+      expect(foundNode).toBeDefined()
+      expect(foundNode?.getText()).toBe('grandchild')
+    })
+
     it('handles source file with no children', () => {
       const sourceFile = createMockSourceFile()
       const violation = createMockViolation()
