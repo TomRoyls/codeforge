@@ -668,4 +668,890 @@ describe('Analyze Command', () => {
       expect(mockDisable).not.toHaveBeenCalledWith('rule-one')
     })
   })
+
+  describe('getRulesWithFixes', () => {
+    test('returns empty map when no rules have fixes', async () => {
+      vi.resetModules()
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'no-fix': { meta: { id: 'no-fix' }, fix: undefined },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['no-fix']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const rules = cmdWithMethod.getRulesWithFixes()
+
+      expect(rules).toBeInstanceOf(Map)
+      expect(rules.size).toBe(0)
+    })
+
+    test('returns map with rules that have fix functions', async () => {
+      vi.resetModules()
+
+      const mockFixFunction = vi.fn()
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'fixable-rule': {
+            meta: { id: 'fixable-rule' },
+            fix: mockFixFunction,
+          },
+          'no-fix': { meta: { id: 'no-fix' }, fix: undefined },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['fixable-rule', 'no-fix']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const rules = cmdWithMethod.getRulesWithFixes()
+
+      expect(rules.size).toBe(1)
+      expect(rules.has('fixable-rule')).toBe(true)
+      expect(rules.has('no-fix')).toBe(false)
+
+      const ruleWithFix = rules.get('fixable-rule')
+      expect(ruleWithFix).toBeDefined()
+      expect(ruleWithFix).toHaveProperty('id', 'fixable-rule')
+      expect(ruleWithFix).toHaveProperty('fix')
+      expect(ruleWithFix).toHaveProperty('priority', 10)
+    })
+
+    test('filters out non-function fix properties', async () => {
+      vi.resetModules()
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'string-fix': { meta: { id: 'string-fix' }, fix: 'not-a-function' },
+          'object-fix': { meta: { id: 'object-fix' }, fix: {} },
+          'valid-fix': {
+            meta: { id: 'valid-fix' },
+            fix: vi.fn(),
+          },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['string-fix', 'object-fix', 'valid-fix']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const rules = cmdWithMethod.getRulesWithFixes()
+
+      expect(rules.size).toBe(1)
+      expect(rules.has('valid-fix')).toBe(true)
+      expect(rules.has('string-fix')).toBe(false)
+      expect(rules.has('object-fix')).toBe(false)
+    })
+  })
+
+  describe('configureLogging', () => {
+    test('sets DEBUG level when verbose is true', async () => {
+      const { logger, LogLevel } = await import('../../../src/utils/logger.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as {
+        configureLogging: (v: boolean, q: boolean) => void
+      }
+
+      cmdWithMethod.configureLogging(true, false)
+
+      expect(logger.setLevel).toHaveBeenCalledWith(LogLevel.DEBUG)
+    })
+
+    test('sets SILENT level when quiet is true', async () => {
+      const { logger, LogLevel } = await import('../../../src/utils/logger.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as {
+        configureLogging: (v: boolean, q: boolean) => void
+      }
+
+      cmdWithMethod.configureLogging(false, true)
+
+      expect(logger.setLevel).toHaveBeenCalledWith(LogLevel.SILENT)
+    })
+
+    test('sets DEBUG level when both verbose and quiet are true', async () => {
+      const { logger, LogLevel } = await import('../../../src/utils/logger.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as {
+        configureLogging: (v: boolean, q: boolean) => void
+      }
+
+      cmdWithMethod.configureLogging(true, true)
+
+      expect(logger.setLevel).toHaveBeenCalledWith(LogLevel.DEBUG)
+    })
+
+    test('does not set level when both verbose and quiet are false', async () => {
+      const { logger } = await import('../../../src/utils/logger.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const command = new AnalyzeCmd([], {} as never)
+      const cmdWithMethod = command as unknown as {
+        configureLogging: (v: boolean, q: boolean) => void
+      }
+
+      cmdWithMethod.configureLogging(false, false)
+
+      expect(logger.setLevel).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('--fix flag integration', () => {
+    test('applies fixes when --fix flag is set', async () => {
+      vi.resetModules()
+
+      const mockSaveSync = vi.fn()
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'fixable-rule': {
+            meta: { id: 'fixable-rule' },
+            fix: vi.fn().mockReturnValue({ applied: true, changes: [] }),
+          },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['fixable-rule']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        saveSync: mockSaveSync,
+      }
+
+      const mockParser = {
+        initialize: vi.fn().mockResolvedValue(undefined),
+        dispose: vi.fn(),
+        parseFile: vi.fn().mockResolvedValue({
+          sourceFile: mockSourceFile,
+          filePath: '/test/file.ts',
+          parseTime: 10,
+        }),
+      }
+
+      vi.doMock('../../../src/core/parser.js', () => ({
+        Parser: vi.fn().mockImplementation(() => mockParser),
+      }))
+
+      vi.doMock('../../../src/fix/fixer.js', () => ({
+        applyFixesToFile: vi.fn().mockReturnValue({
+          changes: [
+            {
+              start: 0,
+              end: 10,
+              newText: 'fixed code',
+              oldText: 'old code',
+            },
+          ],
+          conflicts: [],
+          filePath: '/test/file.ts',
+          fixesApplied: 1,
+          fixesSkipped: 0,
+        }),
+      }))
+
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi.fn().mockReturnValue([createMockViolation({ ruleId: 'fixable-rule' })]),
+        getEnabledRules: vi.fn().mockReturnValue([]),
+        getRule: vi.fn(),
+        disable: vi.fn(),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
+
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            fix: true,
+            'dry-run': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(applyFixesToFile).toHaveBeenCalled()
+      expect(mockSaveSync).toHaveBeenCalled()
+    })
+
+    test('does not save file in dry-run mode', async () => {
+      vi.resetModules()
+
+      const mockSaveSync = vi.fn()
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'fixable-rule': {
+            meta: { id: 'fixable-rule' },
+            fix: vi.fn().mockReturnValue({ applied: true, changes: [] }),
+          },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['fixable-rule']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        saveSync: mockSaveSync,
+      }
+
+      vi.doMock('../../../src/core/parser.js', () => ({
+        Parser: vi.fn().mockImplementation(() => ({
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        })),
+      }))
+
+      vi.doMock('../../../src/fix/fixer.js', () => ({
+        applyFixesToFile: vi.fn().mockReturnValue({
+          changes: [],
+          conflicts: [],
+          filePath: '/test/file.ts',
+          fixesApplied: 1,
+          fixesSkipped: 0,
+        }),
+      }))
+
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi.fn().mockReturnValue([createMockViolation({ ruleId: 'fixable-rule' })]),
+        getEnabledRules: vi.fn().mockReturnValue([]),
+        getRule: vi.fn(),
+        disable: vi.fn(),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
+
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            fix: true,
+            'dry-run': true,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(applyFixesToFile).toHaveBeenCalled()
+      expect(mockSaveSync).not.toHaveBeenCalled()
+    })
+
+    test('skips files with no violations', async () => {
+      vi.resetModules()
+
+      const mockSaveSync = vi.fn()
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {
+          'fixable-rule': {
+            meta: { id: 'fixable-rule' },
+            fix: vi.fn().mockReturnValue({ applied: true, changes: [] }),
+          },
+        },
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue(['fixable-rule']),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        saveSync: mockSaveSync,
+      }
+
+      vi.doMock('../../../src/core/parser.js', () => ({
+        Parser: vi.fn().mockImplementation(() => ({
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        })),
+      }))
+
+      vi.doMock('../../../src/fix/fixer.js', () => ({
+        applyFixesToFile: vi.fn().mockReturnValue({
+          changes: [
+            {
+              start: 0,
+              end: 10,
+              newText: 'fixed code',
+              oldText: 'old code',
+            },
+          ],
+          conflicts: [],
+          filePath: '/test/file.ts',
+          fixesApplied: 1,
+          fixesSkipped: 0,
+        }),
+      }))
+
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi.fn().mockReturnValue([]),
+        getEnabledRules: vi.fn().mockReturnValue([]),
+        getRule: vi.fn(),
+        disable: vi.fn(),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
+
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            fix: true,
+            'dry-run': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(applyFixesToFile).not.toHaveBeenCalled()
+      expect(mockSaveSync).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('applyFixes with conflicts', () => {
+    test('logs conflicts when verbose is true', async () => {
+      vi.resetModules()
+
+      const { logger } = await import('../../../src/utils/logger.js')
+
+      vi.doMock('../../../src/fix/fixer.js', () => {
+        const actual = vi.importActual('../../../src/fix/fixer.js')
+        return {
+          ...actual,
+          applyFixesToFile: vi.fn().mockReturnValue({
+            changes: [],
+            conflicts: [
+              {
+                conflictingRule: 'rule-1',
+                reason: 'Overlapping fix range',
+                ruleId: 'rule-2',
+              },
+            ],
+            filePath: '/test/file.ts',
+            fixesApplied: 1,
+            fixesSkipped: 1,
+          }),
+        }
+      })
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        saveSync: vi.fn(),
+      }
+
+      vi.doMock('../../../src/core/parser.js', () => ({
+        Parser: vi.fn().mockImplementation(() => ({
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        })),
+      }))
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {},
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue([]),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+
+      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi
+          .fn()
+          .mockReturnValue([
+            createMockViolation({ ruleId: 'rule-1' }),
+            createMockViolation({ ruleId: 'rule-2' }),
+          ]),
+        getEnabledRules: vi.fn().mockReturnValue([]),
+        getRule: vi.fn(),
+        disable: vi.fn(),
+      }))
+
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: true,
+            'fail-on-warnings': false,
+            fix: true,
+            'dry-run': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('Fix conflict in'))
+    })
+
+    test('does not log conflicts when verbose is false', async () => {
+      vi.resetModules()
+
+      const { logger } = await import('../../../src/utils/logger.js')
+
+      vi.doMock('../../../src/fix/fixer.js', () => {
+        const actual = vi.importActual('../../../src/fix/fixer.js')
+        return {
+          ...actual,
+          applyFixesToFile: vi.fn().mockReturnValue({
+            changes: [],
+            conflicts: [
+              {
+                conflictingRule: 'rule-1',
+                reason: 'Overlapping fix range',
+                ruleId: 'rule-2',
+              },
+            ],
+            filePath: '/test/file.ts',
+            fixesApplied: 1,
+            fixesSkipped: 1,
+          }),
+        }
+      })
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        saveSync: vi.fn(),
+      }
+
+      vi.doMock('../../../src/core/parser.js', () => ({
+        Parser: vi.fn().mockImplementation(() => ({
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        })),
+      }))
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {},
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue([]),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+
+      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi
+          .fn()
+          .mockReturnValue([
+            createMockViolation({ ruleId: 'rule-1' }),
+            createMockViolation({ ruleId: 'rule-2' }),
+          ]),
+        getEnabledRules: vi.fn().mockReturnValue([]),
+        getRule: vi.fn(),
+        disable: vi.fn(),
+      }))
+
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            fix: true,
+            'dry-run': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('Fix conflict in'))
+    })
+
+    test('continues on fix error', async () => {
+      vi.resetModules()
+
+      const { logger } = await import('../../../src/utils/logger.js')
+
+      vi.doMock('../../../src/fix/fixer.js', () => {
+        const actual = vi.importActual('../../../src/fix/fixer.js')
+        return {
+          ...actual,
+          applyFixesToFile: vi.fn().mockImplementation(() => {
+            throw new Error('Fix error')
+          }),
+        }
+      })
+
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'test code',
+        saveSync: vi.fn(),
+      }
+
+      vi.doMock('../../../src/core/parser.js', () => ({
+        Parser: vi.fn().mockImplementation(() => ({
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        })),
+      }))
+
+      vi.doMock('../../../src/rules/index.js', () => ({
+        allRules: {},
+        getRule: vi.fn(),
+        getRuleIds: vi.fn().mockReturnValue([]),
+        getRuleCategory: vi.fn().mockReturnValue('style'),
+      }))
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+
+      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi.fn().mockReturnValue([createMockViolation({ ruleId: 'rule-1' })]),
+        getEnabledRules: vi.fn().mockReturnValue([]),
+        getRule: vi.fn(),
+        disable: vi.fn(),
+      }))
+
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts'), createMockFile('test2.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: true,
+            'fail-on-warnings': false,
+            fix: true,
+            'dry-run': false,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('Failed to fix'))
+    })
+  })
+
+  describe('--ci flag integration', () => {
+    test('sets json format when ci is true and format is console', async () => {
+      const { Reporter } = await import('../../../src/core/reporter.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            ci: true,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ format: 'json' }))
+    })
+
+    test('keeps specified format when ci is true and format is not console', async () => {
+      const { Reporter } = await import('../../../src/core/reporter.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'sarif',
+            quiet: true,
+            verbose: false,
+            'fail-on-warnings': false,
+            ci: true,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ format: 'sarif' }))
+    })
+
+    test('sets quiet mode when ci is true', async () => {
+      const { Reporter } = await import('../../../src/core/reporter.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: false,
+            verbose: false,
+            'fail-on-warnings': false,
+            ci: true,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ quiet: true }))
+    })
+
+    test('sets color false when ci is true', async () => {
+      const { Reporter } = await import('../../../src/core/reporter.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: false,
+            verbose: false,
+            'fail-on-warnings': false,
+            ci: true,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ color: false }))
+    })
+
+    test('sets verbose false when ci is true regardless of flag', async () => {
+      const { logger, LogLevel } = await import('../../../src/utils/logger.js')
+
+      vi.resetModules()
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
+      mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      const command = new AnalyzeCmd([], {} as never)
+      ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
+        .fn()
+        .mockResolvedValue({
+          args: { path: '.' },
+          flags: {
+            files: [],
+            ignore: [],
+            format: 'console',
+            quiet: false,
+            verbose: true,
+            'fail-on-warnings': false,
+            ci: true,
+          },
+        })
+      ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
+        throw new ExitCodeError(code)
+      }
+
+      try {
+        await command.run()
+      } catch {
+        /* empty */
+      }
+
+      expect(logger.setLevel).toHaveBeenCalledWith(LogLevel.SILENT)
+    })
+  })
 })
