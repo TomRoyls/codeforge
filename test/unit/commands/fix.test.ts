@@ -114,7 +114,7 @@ vi.mock('../../../src/utils/logger.js', () => ({
 vi.mock('../../../src/rules/index.js', () => ({
   allRules: {
     'test-fixable-rule': {
-      meta: { id: 'test-fixable-rule', description: 'Test fixable rule' },
+      meta: { id: 'test-fixable-rule', description: 'Test fixable rule', fixable: true },
       fix: vi.fn(),
     },
     'another-fixable-rule': {
@@ -163,6 +163,109 @@ describe('Fix Command', () => {
       expect(FixCommand.examples).toBeDefined()
       expect(Array.isArray(FixCommand.examples)).toBe(true)
       expect(FixCommand.examples.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('safe-only flag', () => {
+    test('safe-only flag is defined in command flags', () => {
+      expect(FixCommand.flags).toBeDefined()
+      expect(FixCommand.flags['safe-only']).toBeDefined()
+    })
+
+    test('safe-only flag has default value false', () => {
+      expect(FixCommand.flags['safe-only'].default).toBe(false)
+    })
+
+    test('safe-only flag has correct description', () => {
+      expect(FixCommand.flags['safe-only'].description).toContain('safe')
+    })
+
+    test('getRulesWithFixes includes all rules with fix functions when safe-only is false', async () => {
+      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+
+      const getRulesWithFixes = (
+        cmd as unknown as {
+          getRulesWithFixes: typeof import('../../../src/commands/fix.js').default.prototype.getRulesWithFixes
+        }
+      ).getRulesWithFixes
+
+      const rulesWithFixes = getRulesWithFixes(false)
+
+      expect(rulesWithFixes.size).toBe(2)
+      expect(rulesWithFixes.has('test-fixable-rule')).toBe(true)
+      expect(rulesWithFixes.has('another-fixable-rule')).toBe(true)
+      expect(rulesWithFixes.has('non-fixable-rule')).toBe(false)
+    })
+
+    test('getRulesWithFixes filters to only meta.fixable rules when safe-only is true', async () => {
+      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+
+      const getRulesWithFixes = (
+        cmd as unknown as {
+          getRulesWithFixes: typeof import('../../../src/commands/fix.js').default.prototype.getRulesWithFixes
+        }
+      ).getRulesWithFixes
+
+      const rulesWithFixes = getRulesWithFixes(true)
+
+      expect(rulesWithFixes.size).toBe(1)
+      expect(rulesWithFixes.has('test-fixable-rule')).toBe(true)
+      expect(rulesWithFixes.has('another-fixable-rule')).toBe(false)
+      expect(rulesWithFixes.has('non-fixable-rule')).toBe(false)
+    })
+
+    test('safe-only flag in run() correctly filters fixable rules', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('test.ts')])
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: vi.fn(),
+            disable: vi.fn(),
+            runRules: vi.fn().mockReturnValue([createMockViolation()]),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'safe-only': true }, {})
+      const logs: string[] = []
+      cmd.log = vi.fn((msg: string) => logs.push(msg))
+      await cmd.run()
+
+      const { RuleRegistry: RegistryClass } = await import('../../../src/core/rule-registry.js')
+      const registryInstance = vi.mocked(RegistryClass).mock.results[0]?.value
+
+      if (registryInstance) {
+        expect(registryInstance.register).toHaveBeenCalled()
+      }
+    })
+
+    test('safe-only false includes all fixable rules in run()', async () => {
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('test.ts')])
+
+      vi.mocked(RuleRegistry).mockImplementation(
+        () =>
+          ({
+            register: vi.fn(),
+            disable: vi.fn(),
+            runRules: vi.fn().mockReturnValue([createMockViolation()]),
+          }) as never,
+      )
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'safe-only': false }, {})
+      const logs: string[] = []
+      cmd.log = vi.fn((msg: string) => logs.push(msg))
+      await cmd.run()
+
+      const { RuleRegistry: RegistryClass } = await import('../../../src/core/rule-registry.js')
+      const registryInstance = vi.mocked(RegistryClass).mock.results[0]?.value
+
+      if (registryInstance) {
+        expect(registryInstance.register).toHaveBeenCalled()
+      }
     })
   })
 

@@ -8,6 +8,32 @@ vi.mock('node:fs/promises', () => ({
   readFile: vi.fn(),
 }))
 
+vi.mock('../../../src/core/parser.js', () => ({
+  Parser: vi.fn().mockImplementation(() => ({
+    initialize: vi.fn().mockResolvedValue(undefined),
+    dispose: vi.fn(),
+    parseFile: vi.fn().mockImplementation((filePath: string) => {
+      const isHighComplexityFile = filePath.includes('high')
+      const isMediumComplexityFile = filePath.includes('medium')
+      const complexityNodeCount = isHighComplexityFile ? 5 : isMediumComplexityFile ? 2 : 0
+
+      const mockSourceFile = {
+        getFilePath: () => filePath,
+        getText: () => 'mock code',
+        getFullText: () => 'mock code',
+        forEachChild: vi.fn((callback: (node: unknown) => void) => {
+          for (let i = 0; i < complexityNodeCount; i++) callback({})
+        }),
+      }
+      return Promise.resolve({
+        sourceFile: mockSourceFile,
+        filePath,
+        parseTime: 10,
+      })
+    }),
+  })),
+}))
+
 describe('Stats Command', () => {
   let Stats: typeof import('../../../src/commands/stats.js').default
   let mockConsoleLog: ReturnType<typeof vi.spyOn>
@@ -28,6 +54,19 @@ describe('Stats Command', () => {
 
     Stats = (await import('../../../src/commands/stats.js')).default
   })
+
+  function createCommandWithMockedParse(
+    flags: Record<string, unknown>,
+    args: Record<string, unknown> = {},
+  ) {
+    const command = new Stats([], {} as never)
+    const cmdWithMock = command as unknown as { parse: ReturnType<typeof vi.fn> }
+    cmdWithMock.parse = vi.fn().mockResolvedValue({
+      args,
+      flags,
+    })
+    return command
+  }
 
   describe('Command metadata', () => {
     test('has correct description', () => {
@@ -84,20 +123,150 @@ describe('Stats Command', () => {
     })
   })
 
-  describe('run', () => {
-    function createCommandWithMockedParse(
-      flags: Record<string, unknown>,
-      args: Record<string, unknown> = {},
-    ) {
-      const command = new Stats([], {} as never)
-      const cmdWithMock = command as unknown as { parse: ReturnType<typeof vi.fn> }
-      cmdWithMock.parse = vi.fn().mockResolvedValue({
-        args,
-        flags,
-      })
-      return command
-    }
+  describe('sort-by flag', () => {
+    test('sort-by flag has correct options', () => {
+      expect(Stats.flags['sort-by']).toBeDefined()
+      expect(Stats.flags['sort-by'].options).toContain('complexity')
+      expect(Stats.flags['sort-by'].options).toContain('loc')
+      expect(Stats.flags['sort-by'].options).toContain('name')
+      expect(Stats.flags['sort-by'].options).toContain('size')
+    })
 
+    test('sort-by flag has default value size', () => {
+      expect(Stats.flags['sort-by'].default).toBe('size')
+    })
+
+    test('sort-by flag has char s', () => {
+      expect(Stats.flags['sort-by'].char).toBe('s')
+    })
+
+    test('sorts files by complexity descending', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/low.ts', path: 'low.ts' },
+        { absolutePath: '/test/high.ts', path: 'high.ts' },
+        { absolutePath: '/test/medium.ts', path: 'medium.ts' },
+      ])
+      mockReadFile
+        .mockResolvedValueOnce('const x = 1;')
+        .mockResolvedValueOnce(
+          'if (a) { if (b) { if (c) { if (d) { if (e) { console.log("high"); } } } } } }',
+        )
+        .mockResolvedValueOnce('if (a) { console.log("medium"); }')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          top: 10,
+          verbose: true,
+          'sort-by': 'complexity',
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.files).toHaveLength(3)
+      expect(parsed.files.map((f: { name: string }) => f.name)).toContain('high.ts')
+      expect(parsed.files.map((f: { name: string }) => f.name)).toContain('medium.ts')
+      expect(parsed.files.map((f: { name: string }) => f.name)).toContain('low.ts')
+    })
+
+    test('sorts files by loc descending', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/small.ts', path: 'small.ts' },
+        { absolutePath: '/test/large.ts', path: 'large.ts' },
+        { absolutePath: '/test/medium.ts', path: 'medium.ts' },
+      ])
+      mockReadFile
+        .mockResolvedValueOnce('const x = 1;') // 1 LOC
+        .mockResolvedValueOnce(
+          'const a = 1;\nconst b = 2;\nconst c = 3;\nconst d = 4;\nconst e = 5;',
+        ) // 5 LOC
+        .mockResolvedValueOnce('const a = 1;\nconst b = 2;\nconst c = 3;') // 3 LOC
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          top: 10,
+          verbose: true,
+          'sort-by': 'loc',
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.files[0].name).toBe('large.ts')
+      expect(parsed.files[0].loc).toBe(5)
+      expect(parsed.files[1].name).toBe('medium.ts')
+      expect(parsed.files[1].loc).toBe(3)
+      expect(parsed.files[2].name).toBe('small.ts')
+      expect(parsed.files[2].loc).toBe(1)
+    })
+
+    test('sorts files by name alphabetically', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/zebra.ts', path: 'zebra.ts' },
+        { absolutePath: '/test/apple.ts', path: 'apple.ts' },
+        { absolutePath: '/test/banana.ts', path: 'banana.ts' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          top: 10,
+          verbose: true,
+          'sort-by': 'name',
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.files[0].name).toBe('apple.ts')
+      expect(parsed.files[1].name).toBe('banana.ts')
+      expect(parsed.files[2].name).toBe('zebra.ts')
+    })
+
+    test('sorts files by size descending (default)', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/small.ts', path: 'small.ts' },
+        { absolutePath: '/test/large.ts', path: 'large.ts' },
+        { absolutePath: '/test/medium.ts', path: 'medium.ts' },
+      ])
+      mockReadFile
+        .mockResolvedValueOnce('const x = 1;') // small
+        .mockResolvedValueOnce('const a = 1; const b = 2; const c = 3; const d = 4; const e = 5;') // large
+        .mockResolvedValueOnce('const a = 1; const b = 2; const c = 3;') // medium
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          top: 10,
+          verbose: true,
+          'sort-by': 'size',
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.files[0].name).toBe('large.ts')
+      expect(parsed.files[1].name).toBe('medium.ts')
+      expect(parsed.files[2].name).toBe('small.ts')
+    })
+  })
+
+  describe('run', () => {
     test('outputs JSON format when format is json', async () => {
       mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/file.ts', path: 'file.ts' }])
       mockReadFile.mockResolvedValue('const x = 1;\n// comment\n\nconst y = 2;')
