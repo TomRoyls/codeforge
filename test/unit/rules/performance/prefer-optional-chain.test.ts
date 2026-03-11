@@ -1508,4 +1508,172 @@ describe('prefer-optional-chain rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('nodesMatch null/undefined handling', () => {
+    test('should handle null left node in nested MemberExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'MemberExpression',
+          object: null,
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle null right node in nested MemberExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: null,
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle null property in MemberExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: null,
+          computed: false,
+        },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('nodesMatch fallback to type comparison', () => {
+    test('should match MemberExpressions by recursive comparison without text', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'nested' },
+          computed: false,
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'MemberExpression',
+            object: { type: 'Identifier', name: 'obj' },
+            property: { type: 'Identifier', name: 'nested' },
+            computed: false,
+          },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not match when nested MemberExpression objects differ', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj1' },
+          property: { type: 'Identifier', name: 'nested' },
+          computed: false,
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'MemberExpression',
+            object: { type: 'Identifier', name: 'obj2' },
+            property: { type: 'Identifier', name: 'nested' },
+            computed: false,
+          },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should return false for non-Identifier non-MemberExpression types', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'CallExpression',
+          callee: { type: 'Identifier', name: 'fn' },
+          arguments: [],
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'CallExpression',
+            callee: { type: 'Identifier', name: 'fn' },
+            arguments: [],
+          },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
 })
