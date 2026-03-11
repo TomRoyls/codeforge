@@ -578,5 +578,62 @@ describe('no-unused-exports rule', () => {
       const visitor = noUnusedExportsRule.create(context)
       expect(visitor).toBeDefined()
     })
+
+    test('should not report type-only exports when ignoreTypeOnly is true', () => {
+      const ast = {
+        body: [
+          {
+            type: 'ExportNamedDeclaration',
+            exportKind: 'type',
+            specifiers: [
+              {
+                type: 'ExportSpecifier',
+                exported: { name: 'MyType' },
+                exportKind: 'type',
+              },
+            ],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+          },
+        ],
+      }
+      const mockReport = vi.fn()
+      const context = {
+        ...createMockContext({ ignoreTypeOnly: true }),
+        getAST: () => ast,
+        report: mockReport,
+      } as unknown as RuleContext
+
+      const visitor = noUnusedExportsRule.create(context)
+      visitor.Program(ast)
+      const exitHandler = visitor['Program:exit'] as (node: unknown) => void
+      exitHandler(ast)
+
+      expect(mockReport).not.toHaveBeenCalled()
+    })
+
+    test('should not report exports matching ignorePatterns', () => {
+      const ast = {
+        body: [
+          {
+            type: 'ExportNamedDeclaration',
+            specifiers: [{ type: 'ExportSpecifier', exported: { name: '_internalHelper' } }],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+          },
+        ],
+      }
+      const mockReport = vi.fn()
+      const context = {
+        ...createMockContext({ ignorePatterns: ['/^_/', /^_/] }),
+        getAST: () => ast,
+        report: mockReport,
+      } as unknown as RuleContext
+
+      const visitor = noUnusedExportsRule.create(context)
+      visitor.Program(ast)
+      const exitHandler = visitor['Program:exit'] as (node: unknown) => void
+      exitHandler(ast)
+
+      expect(mockReport).not.toHaveBeenCalled()
+    })
   })
 })
