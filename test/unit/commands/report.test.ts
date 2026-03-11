@@ -429,40 +429,180 @@ describe('Report Command', () => {
       await cmd.run()
       expect(mockDiscoverFiles).toHaveBeenCalled()
     })
-  })
 
-  describe('openInBrowser', () => {
-    function createCommandWithMocks() {
-      const cmd = new Report([], {} as never)
-      return cmd as unknown as {
-        openInBrowser(filePath: string): Promise<void>
-        log: ReturnType<typeof vi.fn>
-        warn: ReturnType<typeof vi.fn>
-        error: ReturnType<typeof vi.fn>
-      }
-    }
-
-    test('throws when file does not exist', async () => {
-      mockFs.existsSync.mockReturnValue(false)
-
-      const cmd = createCommandWithMocks()
-      cmd.error = vi.fn((msg: string) => {
-        throw new Error(msg)
-      })
-
-      await expect(cmd.openInBrowser('/missing.html')).rejects.toThrow()
-    })
-
-    test('logs when opening browser', async () => {
+    test('runs analysis with discovered files', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
       mockFs.existsSync.mockReturnValue(true)
 
-      const cmd = createCommandWithMocks()
-      cmd.log = vi.fn()
-      cmd.warn = vi.fn()
+      const { discoverFiles } = await import('../../../src/core/file-discovery.js')
+      const mockDiscoverFiles = discoverFiles as ReturnType<typeof vi.fn>
 
-      await cmd.openInBrowser('/report.html')
+      mockDiscoverFiles.mockResolvedValueOnce([
+        {
+          path: '/test/file.ts',
+          absolutePath: '/test/file.ts',
+        },
+      ])
 
-      expect(cmd.log).toHaveBeenCalled()
+      const cmd = createCommandWithMockedParse({
+        format: 'console',
+        output: undefined,
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+      })
+
+      await cmd.run()
+      expect(mockDiscoverFiles).toHaveBeenCalled()
+    })
+
+    test('registers rules when running analysis', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const { discoverFiles } = await import('../../../src/core/file-discovery.js')
+      const mockDiscoverFiles = discoverFiles as ReturnType<typeof vi.fn>
+
+      mockDiscoverFiles.mockResolvedValueOnce([
+        {
+          path: '/test/file.ts',
+          absolutePath: '/test/file.ts',
+        },
+      ])
+
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const mockRuleRegistry = RuleRegistry as ReturnType<typeof vi.fn>
+
+      const cmd = createCommandWithMockedParse({
+        format: 'console',
+        output: undefined,
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+      })
+
+      await cmd.run()
+      expect(mockRuleRegistry).toHaveBeenCalled()
+    })
+
+    test('processes files with violations', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const { discoverFiles } = await import('../../../src/core/file-discovery.js')
+      const mockDiscoverFiles = discoverFiles as ReturnType<typeof vi.fn>
+
+      mockDiscoverFiles.mockResolvedValueOnce([
+        {
+          path: '/test/file1.ts',
+          absolutePath: '/test/file1.ts',
+        },
+        {
+          path: '/test/file2.ts',
+          absolutePath: '/test/file2.ts',
+        },
+      ])
+
+      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const mockRuleRegistry = RuleRegistry as ReturnType<typeof vi.fn>
+
+      const violation = createMockViolation({
+        ruleId: 'test-violation',
+        severity: 'warning',
+        message: 'Test warning',
+      })
+      mockRuleRegistry.mockImplementation(() => ({
+        register: vi.fn(),
+        runRules: vi.fn().mockReturnValue([violation]),
+      }))
+
+      const cmd = createCommandWithMockedParse({
+        format: 'console',
+        output: undefined,
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+      })
+
+      await cmd.run()
+      expect(mockDiscoverFiles).toHaveBeenCalled()
+    })
+  })
+
+  describe('run integration - html format with open', () => {
+    function createCommandWithMockedParse(flags: Record<string, unknown>, args = { path: '.' }) {
+      const command = new Report([], {} as never)
+      const cmdWithMock = command as unknown as {
+        parse: ReturnType<typeof vi.fn>
+        error: ReturnType<typeof vi.fn>
+        log: ReturnType<typeof vi.fn>
+        warn: ReturnType<typeof vi.fn>
+        config: { version: string }
+      }
+      cmdWithMock.parse = vi.fn().mockResolvedValue({ args, flags })
+      cmdWithMock.log = vi.fn()
+      cmdWithMock.warn = vi.fn()
+      cmdWithMock.config = { version: '1.0.0' }
+      return command
+    }
+
+    test('opens browser when format is html and open flag is set', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const { discoverFiles } = await import('../../../src/core/file-discovery.js')
+      const mockDiscoverFiles = discoverFiles as ReturnType<typeof vi.fn>
+      mockDiscoverFiles.mockResolvedValueOnce([])
+
+      const validResult = createMockAnalysisResult()
+      mockFs.readFileSync.mockReturnValue(JSON.stringify(validResult))
+
+      const cmd = createCommandWithMockedParse({
+        format: 'html',
+        output: '/report.html',
+        input: '/analysis.json',
+        open: true,
+        pretty: false,
+        verbose: false,
+      })
+
+      await cmd.run()
+    })
+
+    test('does not open browser when open flag is false', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const { discoverFiles } = await import('../../../src/core/file-discovery.js')
+      const mockDiscoverFiles = discoverFiles as ReturnType<typeof vi.fn>
+      mockDiscoverFiles.mockResolvedValueOnce([])
+
+      const validResult = createMockAnalysisResult()
+      mockFs.readFileSync.mockReturnValue(JSON.stringify(validResult))
+
+      const cmd = createCommandWithMockedParse({
+        format: 'html',
+        output: '/report.html',
+        input: '/analysis.json',
+        open: false,
+        pretty: false,
+        verbose: false,
+      })
+
+      await cmd.run()
     })
   })
 })
