@@ -104,6 +104,16 @@ describe('Logger', () => {
     expect(spies[0]).toHaveBeenCalled()
   })
 
+  test('handles primitive values in args', () => {
+    testLogger.info('message', 123, true, null, undefined)
+    expect(spies[0]).toHaveBeenCalled()
+  })
+
+  test('handles string arguments', () => {
+    testLogger.info('message', 'string arg')
+    expect(spies[0]).toHaveBeenCalled()
+  })
+
   test('setLevel changes level', () => {
     testLogger.setLevel(LogLevel.WARN)
     expect(testLogger.getLevel()).toBe(LogLevel.WARN)
