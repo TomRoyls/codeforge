@@ -1121,4 +1121,159 @@ describe('prefer-optional-chain rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('getNodeText with start/end properties', () => {
+    test('should handle node with start and end instead of range', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'obj')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj', start: 0, end: 3 },
+        right: { type: 'Identifier', name: 'prop' },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('nodesMatch with MemberExpression recursion', () => {
+    test('should handle nested MemberExpression matching', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'a.b.c && x.y.c')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const leftObj = {
+        type: 'MemberExpression',
+        object: { type: 'Identifier', name: 'a', range: [0, 1] },
+        property: { type: 'Identifier', name: 'b', range: [2, 3] },
+        computed: false,
+        range: [0, 3],
+      }
+
+      const rightObj = {
+        type: 'MemberExpression',
+        object: { type: 'Identifier', name: 'x', range: [8, 9] },
+        property: { type: 'Identifier', name: 'y', range: [10, 11] },
+        computed: false,
+        range: [8, 11],
+      }
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: leftObj,
+        right: {
+          type: 'MemberExpression',
+          object: rightObj,
+          property: { type: 'Identifier', name: 'c', range: [12, 13] },
+          computed: false,
+          range: [8, 13],
+        },
+        range: [0, 13],
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('edge cases for getNodeText', () => {
+    test('should handle node without range or start/end', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node with empty range array', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj', range: [] },
+        right: { type: 'Identifier', name: 'prop' },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('extractLocation edge cases', () => {
+    test('should handle node with partial loc structure', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj',
+          loc: {
+            start: { line: 1, column: 0 },
+          },
+        },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node with malformed loc values', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj',
+          loc: {
+            start: {},
+            end: {},
+          },
+        },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
 })
