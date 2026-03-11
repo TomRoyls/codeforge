@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import * as fs from 'fs'
+import * as path from 'path'
 import { MarkdownReporter } from '../../../src/reporters/markdown-reporter.js'
 import type { AnalysisResult, FileAnalysisResult, Violation } from '../../../src/reporters/types.js'
+
+vi.mock('fs')
+vi.mock('path')
 
 function createMockViolation(overrides: Partial<Violation> = {}): Violation {
   return {
@@ -156,6 +161,290 @@ describe('MarkdownReporter', () => {
       reporter.report(results)
       const output = consoleSpy.mock.calls[0][0] as string
       expect(output).toContain('✅ No violations found!')
+    })
+  })
+
+  describe('format with source', () => {
+    test('should include code snippet when source is provided', () => {
+      const reporter = new MarkdownReporter()
+      const violation = createMockViolation({
+        source: 'line1\nline2\nline3\nline4\nline5\nline6\nline7',
+        line: 4,
+      })
+      const output = reporter.format(violation)
+      expect(output).toContain('```')
+      expect(output).toContain('>')
+    })
+
+    test('should handle source at beginning of file', () => {
+      const reporter = new MarkdownReporter()
+      const violation = createMockViolation({
+        source: 'first line\nsecond line',
+        line: 1,
+      })
+      const output = reporter.format(violation)
+      expect(output).toContain('```')
+    })
+
+    test('should handle source at end of file', () => {
+      const reporter = new MarkdownReporter()
+      const violation = createMockViolation({
+        source: 'line1\nline2\nline3',
+        line: 3,
+      })
+      const output = reporter.format(violation)
+      expect(output).toContain('```')
+    })
+  })
+
+  describe('format with suggestion', () => {
+    test('should include suggestion when provided', () => {
+      const reporter = new MarkdownReporter()
+      const violation = createMockViolation({
+        suggestion: 'Consider using const instead',
+      })
+      const output = reporter.format(violation)
+      expect(output).toContain('💡 Suggestion:')
+      expect(output).toContain('Consider using const instead')
+    })
+
+    test('should escape markdown in suggestion', () => {
+      const reporter = new MarkdownReporter()
+      const violation = createMockViolation({
+        suggestion: 'Use `code` and **bold**',
+      })
+      const output = reporter.format(violation)
+      expect(output).toContain('\\`code\\`')
+      expect(output).toContain('\\*\\*bold\\*\\*')
+    })
+  })
+
+  describe('includeSource option', () => {
+    test('should include source snippets section when includeSource is true', () => {
+      const reporter = new MarkdownReporter({ includeSource: true })
+      const results = createMockAnalysisResult({
+        files: [
+          createMockFileResult('test.ts', [
+            createMockViolation({
+              source: 'const x = 1;\nconst y = 2;',
+              line: 1,
+            }),
+          ]),
+        ],
+        summary: {
+          errorCount: 1,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('## Code Snippets')
+      expect(output).toContain('#### test.ts:1')
+    })
+
+    test('should not include source snippets section when includeSource is false', () => {
+      const reporter = new MarkdownReporter({ includeSource: false })
+      const results = createMockAnalysisResult({
+        files: [
+          createMockFileResult('test.ts', [
+            createMockViolation({
+              source: 'const x = 1;',
+              line: 1,
+            }),
+          ]),
+        ],
+        summary: {
+          errorCount: 1,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).not.toContain('## Code Snippets')
+    })
+
+    test('should return empty string when no files have source', () => {
+      const reporter = new MarkdownReporter({ includeSource: true })
+      const results = createMockAnalysisResult({
+        files: [createMockFileResult('test.ts', [createMockViolation()])],
+        summary: {
+          errorCount: 1,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).not.toContain('## Code Snippets')
+    })
+
+    test('should handle multiple violations with source', () => {
+      const reporter = new MarkdownReporter({ includeSource: true })
+      const results = createMockAnalysisResult({
+        files: [
+          createMockFileResult('test.ts', [
+            createMockViolation({ source: 'line1', line: 1 }),
+            createMockViolation({ source: 'line5', line: 5 }),
+          ]),
+        ],
+        summary: {
+          errorCount: 2,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('#### test.ts:1')
+      expect(output).toContain('#### test.ts:5')
+    })
+  })
+
+  describe('violations with suggestions', () => {
+    test('should include suggestions in violations table', () => {
+      const reporter = new MarkdownReporter()
+      const results = createMockAnalysisResult({
+        files: [
+          createMockFileResult('test.ts', [
+            createMockViolation({
+              ruleId: 'prefer-const',
+              suggestion: 'Use const instead of let',
+            }),
+          ]),
+        ],
+        summary: {
+          errorCount: 1,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('💡 **prefer-const**:')
+      expect(output).toContain('Use const instead of let')
+    })
+
+    test('should handle multiple suggestions', () => {
+      const reporter = new MarkdownReporter()
+      const results = createMockAnalysisResult({
+        files: [
+          createMockFileResult('test.ts', [
+            createMockViolation({ ruleId: 'rule1', suggestion: 'Suggestion 1' }),
+            createMockViolation({ ruleId: 'rule2', suggestion: 'Suggestion 2' }),
+          ]),
+        ],
+        summary: {
+          errorCount: 2,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('💡 **rule1**:')
+      expect(output).toContain('💡 **rule2**:')
+    })
+
+    test('should escape markdown in violation suggestions', () => {
+      const reporter = new MarkdownReporter()
+      const results = createMockAnalysisResult({
+        files: [
+          createMockFileResult('test.ts', [
+            createMockViolation({
+              suggestion: 'Use `<script>` carefully',
+            }),
+          ]),
+        ],
+        summary: {
+          errorCount: 1,
+          filesWithViolations: 1,
+          infoCount: 0,
+          totalFiles: 1,
+          totalTime: 50,
+          warningCount: 0,
+        },
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('\\<script\\>')
+    })
+  })
+
+  describe('footer', () => {
+    test('should include version in footer', () => {
+      const reporter = new MarkdownReporter()
+      const results = createMockAnalysisResult({
+        files: [],
+        summary: {
+          errorCount: 0,
+          filesWithViolations: 0,
+          infoCount: 0,
+          totalFiles: 0,
+          totalTime: 50,
+          warningCount: 0,
+        },
+        version: '1.2.3',
+      })
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('v1.2.3')
+    })
+
+    test('should use default version when not provided', () => {
+      const reporter = new MarkdownReporter()
+      const results = createMockAnalysisResult()
+      reporter.report(results)
+      const output = consoleSpy.mock.calls[0][0] as string
+      expect(output).toContain('v0.1.0')
+    })
+  })
+
+  describe('report to file', () => {
+    let fsExistsSyncMock: ReturnType<typeof vi.fn>
+    let fsMkdirSyncMock: ReturnType<typeof vi.fn>
+    let fsWriteFileSyncMock: ReturnType<typeof vi.fn>
+
+    beforeEach(() => {
+      fsExistsSyncMock = vi.mocked(fs.existsSync)
+      fsMkdirSyncMock = vi.mocked(fs.mkdirSync)
+      fsWriteFileSyncMock = vi.mocked(fs.writeFileSync)
+    })
+
+    test('should write to file when outputPath is provided', () => {
+      const reporter = new MarkdownReporter({ outputPath: './report.md' })
+      const results = createMockAnalysisResult()
+      fsExistsSyncMock.mockReturnValue(true)
+      reporter.report(results)
+      expect(fsWriteFileSyncMock).toHaveBeenCalled()
+    })
+
+    test('should create directory if it does not exist', () => {
+      const reporter = new MarkdownReporter({ outputPath: './reports/nested/report.md' })
+      const results = createMockAnalysisResult()
+      fsExistsSyncMock.mockReturnValue(false)
+      vi.mocked(path.dirname).mockReturnValue('./reports/nested')
+      reporter.report(results)
+      expect(fsMkdirSyncMock).toHaveBeenCalledWith('./reports/nested', { recursive: true })
     })
   })
 })
