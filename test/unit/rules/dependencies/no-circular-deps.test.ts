@@ -202,6 +202,32 @@ describe('no-circular-deps rule', () => {
       expect(() => visitor.CallExpression(node)).not.toThrow()
     })
 
+    test('should handle require() with empty arguments array', () => {
+      const context = createMockContext()
+      const visitor = noCircularDepsRule.create(context)
+
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'require' },
+        arguments: [],
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+    })
+
+    test('should handle require() with non-array arguments', () => {
+      const context = createMockContext()
+      const visitor = noCircularDepsRule.create(context)
+
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'require' },
+        arguments: 'not-an-array' as unknown as never[],
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+    })
+
     test('should handle Program:exit without errors', () => {
       const context = createMockContext()
       const visitor = noCircularDepsRule.create(context)

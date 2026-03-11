@@ -452,5 +452,70 @@ describe('prefer-object-spread rule', () => {
 
       expect(reports.length).toBe(0)
     })
+
+    test('should not report for CallExpression with non-MemberExpression callee', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'assign({}, obj)')
+      const visitor = preferObjectSpreadRule.create(context)
+
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'Identifier',
+          name: 'assign',
+        },
+        arguments: [
+          {
+            type: 'ObjectExpression',
+            properties: [],
+            range: [7, 9],
+          },
+          {
+            type: 'Identifier',
+            name: 'obj',
+            range: [11, 14],
+          },
+        ],
+        range: [0, 15],
+      }
+
+      visitor.CallExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report when spread arguments have no extractable text', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'Object.assign({}, obj)')
+      const visitor = preferObjectSpreadRule.create(context)
+
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Identifier',
+            name: 'Object',
+          },
+          property: {
+            type: 'Identifier',
+            name: 'assign',
+          },
+          computed: false,
+        },
+        arguments: [
+          {
+            type: 'ObjectExpression',
+            properties: [],
+          },
+          {
+            type: 'Identifier',
+            name: 'obj',
+          },
+        ],
+      }
+
+      visitor.CallExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
   })
 })
