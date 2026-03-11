@@ -138,5 +138,17 @@ describe('Environment Variable Config', () => {
       const config = parseEnvVars()
       expect(config.files).toEqual(['**/*.ts'])
     })
+
+    it('should warn and skip invalid severity values', () => {
+      process.env.CODEFORGE_RULES_MAX_COMPLEXITY = 'invalid'
+      const config = parseEnvVars()
+      expect(config.rules).toBeUndefined()
+    })
+
+    it('should warn and skip empty severity values', () => {
+      process.env.CODEFORGE_RULES_MAX_COMPLEXITY = ''
+      const config = parseEnvVars()
+      expect(config.rules).toBeUndefined()
+    })
   })
 })
