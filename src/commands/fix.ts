@@ -69,6 +69,10 @@ export default class Fix extends Command {
   ]
 
   static override flags = {
+    ci: Flags.boolean({
+      default: false,
+      description: 'Run in CI mode (disables colors and progress)',
+    }),
     config: Flags.string({
       char: 'c',
       description: 'Path to config file',
@@ -102,7 +106,9 @@ export default class Fix extends Command {
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Fix)
 
-    if (flags.verbose) {
+    const ciMode = flags.ci
+
+    if (flags.verbose || ciMode) {
       logger.setLevel(LogLevel.DEBUG)
     }
 
@@ -116,16 +122,28 @@ export default class Fix extends Command {
       const discoveredFiles = await discoverFiles({ cwd, ignore, patterns })
 
       if (discoveredFiles.length === 0) {
-        this.log(chalk.yellow('No files found to fix.'))
+        if (ciMode) {
+          this.outputJson({ error: 'No files found to fix', files: [] })
+        } else {
+          this.log(chalk.yellow('No files found to fix.'))
+        }
+
         return
       }
 
-      this.log(chalk.blue(`\n🔧 Fixing ${discoveredFiles.length} file(s)...\n`))
+      if (!ciMode) {
+        this.log(chalk.blue(`\n🔧 Fixing ${discoveredFiles.length} file(s)...\n`))
+      }
 
       const rulesWithFixes = this.getRulesWithFixes()
 
       if (rulesWithFixes.size === 0) {
-        this.log(chalk.yellow('No fixable rules available.'))
+        if (ciMode) {
+          this.outputJson({ error: 'No fixable rules available', files: [] })
+        } else {
+          this.log(chalk.yellow('No fixable rules available.'))
+        }
+
         return
       }
 
@@ -141,9 +159,24 @@ export default class Fix extends Command {
 
       const results = await this.processFiles(discoveredFiles, context, flags)
 
-      this.printSummary(results, flags)
+      if (ciMode) {
+        this.outputJson({
+          dryRun: flags['dry-run'],
+          filesModified: results.filesModified,
+          filesUnchanged: results.filesUnchanged,
+          summary: {
+            fixesApplied: results.totalFixesApplied,
+            fixesSkipped: results.totalFixesSkipped,
+          },
+        })
+      } else {
+        this.printSummary(results, flags)
+      }
     } catch (error) {
-      if (error instanceof CLIError) {
+      if (ciMode) {
+        this.outputJson({ error: error instanceof Error ? error.message : String(error) })
+        this.exit(1)
+      } else if (error instanceof CLIError) {
         this.error(error.message)
       } else {
         this.error(`Fix failed: ${error instanceof Error ? error.message : String(error)}`)
@@ -165,6 +198,10 @@ export default class Fix extends Command {
     }
 
     return rulesWithFixes
+  }
+
+  private outputJson(data: unknown): void {
+    this.log(JSON.stringify(data, null, 2))
   }
 
   private printSummary(
