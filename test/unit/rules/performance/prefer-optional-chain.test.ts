@@ -455,4 +455,293 @@ describe('prefer-optional-chain rule', () => {
       expect(reports[0].suggest?.[0]?.fix?.text).toBe('obj?.prop')
     })
   })
+
+  describe('BinaryExpression visitor', () => {
+    test('should detect obj && obj.prop pattern in BinaryExpression', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'obj && obj.prop')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj',
+          range: [0, 3],
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Identifier',
+            name: 'obj',
+            range: [0, 3],
+          },
+          property: {
+            type: 'Identifier',
+            name: 'prop',
+          },
+          computed: false,
+          range: [8, 16],
+        },
+        loc: {
+          start: { line: 1, column: 0 },
+          end: { line: 1, column: 16 },
+        },
+        range: [0, 16],
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('obj')
+      expect(reports[0].message).toContain('?.')
+    })
+
+    test('should detect obj && obj.method() pattern in BinaryExpression', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'obj && obj.method()')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj',
+          range: [0, 3],
+        },
+        right: {
+          type: 'CallExpression',
+          callee: {
+            type: 'MemberExpression',
+            object: {
+              type: 'Identifier',
+              name: 'obj',
+              range: [0, 3],
+            },
+            property: {
+              type: 'Identifier',
+              name: 'method',
+            },
+            computed: false,
+          },
+          arguments: [],
+          range: [8, 20],
+        },
+        loc: {
+          start: { line: 1, column: 0 },
+          end: { line: 1, column: 20 },
+        },
+        range: [0, 20],
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('obj')
+      expect(reports[0].message).toContain('?.method()')
+    })
+
+    test('should suggest correct optional chain syntax for BinaryExpression', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'obj && obj.prop')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj',
+          range: [0, 3],
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Identifier',
+            name: 'obj',
+            range: [0, 3],
+          },
+          property: {
+            type: 'Identifier',
+            name: 'prop',
+          },
+          computed: false,
+          range: [8, 16],
+        },
+        loc: {
+          start: { line: 1, column: 0 },
+          end: { line: 1, column: 16 },
+        },
+        range: [0, 16],
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].suggest).toBeDefined()
+      expect(reports[0].suggest?.[0]?.desc).toContain('obj?.prop')
+    })
+
+    test('should not report for BinaryExpression with unrelated && checks', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'isValid && processData()')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'isValid',
+          range: [0, 7],
+        },
+        right: {
+          type: 'CallExpression',
+          callee: {
+            type: 'Identifier',
+            name: 'processData',
+          },
+          arguments: [],
+          range: [12, 25],
+        },
+        loc: {
+          start: { line: 1, column: 0 },
+          end: { line: 1, column: 25 },
+        },
+        range: [0, 25],
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report for BinaryExpression with mismatched objects', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'obj1 && obj2.prop')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj1',
+          range: [0, 4],
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Identifier',
+            name: 'obj2',
+            range: [9, 13],
+          },
+          property: {
+            type: 'Identifier',
+            name: 'prop',
+          },
+          computed: false,
+          range: [9, 18],
+        },
+        loc: {
+          start: { line: 1, column: 0 },
+          end: { line: 1, column: 18 },
+        },
+        range: [0, 18],
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('missing left/right edge cases', () => {
+    test('should handle LogicalExpression with null left', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: null,
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle LogicalExpression with undefined right', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: undefined,
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle LogicalExpression with both null left and right', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: null,
+        right: null,
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle BinaryExpression with null left', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: null,
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle BinaryExpression with undefined right', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: undefined,
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
 })
