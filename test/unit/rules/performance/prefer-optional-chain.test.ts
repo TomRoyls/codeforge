@@ -927,4 +927,198 @@ describe('prefer-optional-chain rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('CallExpression edge cases', () => {
+    test('should not report for CallExpression with non-MemberExpression callee', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'isValid' },
+        right: {
+          type: 'CallExpression',
+          callee: { type: 'Identifier', name: 'processData' },
+          arguments: [],
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report for BinaryExpression with CallExpression non-MemberExpression callee', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'isValid' },
+        right: {
+          type: 'CallExpression',
+          callee: { type: 'Identifier', name: 'processData' },
+          arguments: [],
+        },
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('MemberExpression edge cases', () => {
+    test('should not report for MemberExpression with non-Identifier property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Literal', value: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report for BinaryExpression with MemberExpression non-Identifier property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Literal', value: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('nodesMatch function edge cases', () => {
+    test('should handle nodes with mismatched types', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj1',
+          range: [0, 4],
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Identifier',
+            name: 'obj2',
+            range: [9, 13],
+          },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+          range: [9, 18],
+        },
+        range: [0, 18],
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle nodes with same type but different names', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: {
+          type: 'Identifier',
+          name: 'obj1',
+          range: [0, 4],
+        },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Identifier',
+            name: 'obj1',
+            range: [0, 4],
+          },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+          range: [9, 18],
+        },
+        range: [0, 18],
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('nodes without range or loc', () => {
+    test('should handle LogicalExpression without range', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle BinaryExpression without range', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+      }
+
+      visitor.BinaryExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
 })
