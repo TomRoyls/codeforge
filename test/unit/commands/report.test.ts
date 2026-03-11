@@ -538,6 +538,41 @@ describe('Report Command', () => {
     })
   })
 
+  describe('openInBrowser', () => {
+    function createCommandWithMocks() {
+      const cmd = new Report([], {} as never)
+      return cmd as unknown as {
+        openInBrowser(filePath: string): Promise<void>
+        log: ReturnType<typeof vi.fn>
+        warn: ReturnType<typeof vi.fn>
+        error: ReturnType<typeof vi.fn>
+      }
+    }
+
+    test('throws when file does not exist', async () => {
+      mockFs.existsSync.mockReturnValue(false)
+
+      const cmd = createCommandWithMocks()
+      cmd.error = vi.fn((msg: string) => {
+        throw new Error(msg)
+      })
+
+      await expect(cmd.openInBrowser('/missing.html')).rejects.toThrow()
+    })
+
+    test('logs when opening browser', async () => {
+      mockFs.existsSync.mockReturnValue(true)
+
+      const cmd = createCommandWithMocks()
+      cmd.log = vi.fn()
+      cmd.warn = vi.fn()
+
+      await cmd.openInBrowser('/report.html')
+
+      expect(cmd.log).toHaveBeenCalled()
+    })
+  })
+
   describe('run integration - html format with open', () => {
     function createCommandWithMockedParse(flags: Record<string, unknown>, args = { path: '.' }) {
       const command = new Report([], {} as never)
