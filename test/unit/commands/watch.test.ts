@@ -938,4 +938,62 @@ describe('Watch Command', () => {
       }
     })
   })
+
+  describe('run error handling', () => {
+    test('should handle CLIError from loadConfig', async () => {
+      const { CLIError } = await import('../../../src/utils/errors.js')
+      const { findConfigPath } = await import('../../../src/config/discovery.js')
+
+      const cliError = new CLIError('Config error', { suggestions: ['Check config'] })
+      vi.mocked(findConfigPath).mockRejectedValue(cliError)
+
+      const cmd = createCommandWithMockedParse(
+        WatchCommand,
+        { verbose: false },
+        { files: undefined },
+      )
+      const errorSpy = vi.fn()
+      ;(cmd as unknown as { error: typeof errorSpy }).error = errorSpy
+
+      await cmd.run()
+
+      expect(errorSpy).toHaveBeenCalledWith('Config error')
+    })
+
+    test('should handle generic error from loadConfig', async () => {
+      const { findConfigPath } = await import('../../../src/config/discovery.js')
+
+      vi.mocked(findConfigPath).mockRejectedValue(new Error('Generic error'))
+
+      const cmd = createCommandWithMockedParse(
+        WatchCommand,
+        { verbose: false },
+        { files: undefined },
+      )
+      const errorSpy = vi.fn()
+      ;(cmd as unknown as { error: typeof errorSpy }).error = errorSpy
+
+      await cmd.run()
+
+      expect(errorSpy).toHaveBeenCalledWith('Watch failed: Generic error')
+    })
+
+    test('should handle non-Error thrown from loadConfig', async () => {
+      const { findConfigPath } = await import('../../../src/config/discovery.js')
+
+      vi.mocked(findConfigPath).mockRejectedValue('string error')
+
+      const cmd = createCommandWithMockedParse(
+        WatchCommand,
+        { verbose: false },
+        { files: undefined },
+      )
+      const errorSpy = vi.fn()
+      ;(cmd as unknown as { error: typeof errorSpy }).error = errorSpy
+
+      await cmd.run()
+
+      expect(errorSpy).toHaveBeenCalledWith('Watch failed: string error')
+    })
+  })
 })
