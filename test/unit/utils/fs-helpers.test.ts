@@ -183,6 +183,19 @@ describe('fs-helpers', () => {
       const exists = await directoryExists(nestedPath)
       expect(exists).toBe(true)
     })
+
+    test('throws for permission denied', async () => {
+      const readOnlyDir = path.join(tempDir, 'readonly')
+      await fs.mkdir(readOnlyDir)
+      await fs.chmod(readOnlyDir, 0o555)
+      try {
+        await ensureDirectory(path.join(readOnlyDir, 'nested', 'dir'))
+      } catch (error) {
+        expect((error as Error).message).toContain('Failed to ensure directory')
+      } finally {
+        await fs.chmod(readOnlyDir, 0o755)
+      }
+    })
   })
 
   describe('deleteFile', () => {
@@ -198,6 +211,21 @@ describe('fs-helpers', () => {
     test('returns false for non-existing file', async () => {
       const deleted = await deleteFile(path.join(tempDir, 'nonexistent.txt'))
       expect(deleted).toBe(false)
+    })
+
+    test('throws for permission denied', async () => {
+      const readOnlyDir = path.join(tempDir, 'readonly')
+      await fs.mkdir(readOnlyDir)
+      const restrictedFile = path.join(readOnlyDir, 'secret.txt')
+      await fs.writeFile(restrictedFile, 'secret', 'utf-8')
+      await fs.chmod(readOnlyDir, 0o555)
+      try {
+        await deleteFile(restrictedFile)
+      } catch (error) {
+        expect((error as Error).message).toContain('Failed to delete file')
+      } finally {
+        await fs.chmod(readOnlyDir, 0o755)
+      }
     })
   })
 
@@ -226,6 +254,19 @@ describe('fs-helpers', () => {
       await fs.writeFile(path.join(tempDir, 'file.txt'), 'c', 'utf-8')
       const files = await listFiles(tempDir)
       expect(files).toHaveLength(1)
+    })
+
+    test('throws for permission denied', async () => {
+      const readOnlyDir = path.join(tempDir, 'readonly')
+      await fs.mkdir(readOnlyDir)
+      await fs.chmod(readOnlyDir, 0o000)
+      try {
+        await listFiles(readOnlyDir)
+      } catch (error) {
+        expect((error as Error).message).toContain('Failed to list files')
+      } finally {
+        await fs.chmod(readOnlyDir, 0o755)
+      }
     })
   })
 
