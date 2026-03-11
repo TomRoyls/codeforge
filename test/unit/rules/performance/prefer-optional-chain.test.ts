@@ -1397,4 +1397,115 @@ describe('prefer-optional-chain rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('nodesMatch edge cases with same text', () => {
+    test('should handle nodes with same text but different internal structure', () => {
+      const { context, reports } = createMockContext({}, '/src/file.ts', 'obj && obj.prop')
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj', range: [0, 3] },
+        right: {
+          type: 'MemberExpression',
+          object: {
+            type: 'Literal',
+            value: 'obj',
+            range: [8, 11],
+          },
+          property: { type: 'Identifier', name: 'prop' },
+          computed: false,
+        },
+        range: [0, 16],
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('additional utility function tests', () => {
+    test('should handle getPropertyAccessObject with non-MemberExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'CallExpression',
+          callee: {
+            type: 'Identifier',
+            name: 'process',
+          },
+          arguments: [],
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle getCallExpressionCallee with non-CallExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'method' },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle isCallExpression with non-object', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: null,
+        right: { type: 'Identifier', name: 'prop' },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle getPropertyName with property name as number', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferOptionalChainRule.create(context)
+
+      const node = {
+        type: 'LogicalExpression',
+        operator: '&&',
+        left: { type: 'Identifier', name: 'obj' },
+        right: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 123 as any },
+          computed: false,
+        },
+      }
+
+      visitor.LogicalExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+  })
 })
