@@ -680,4 +680,110 @@ describe('prefer-const rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('edge cases for null/undefined nodes', () => {
+    test('should handle VariableDeclaration with null node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferConstRule.create(context)
+
+      visitor.VariableDeclaration(null)
+      visitor['Program:exit']?.(undefined)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle VariableDeclaration with undefined node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferConstRule.create(context)
+
+      visitor.VariableDeclaration(undefined)
+      visitor['Program:exit']?.(undefined)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle VariableDeclaration with non-object node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferConstRule.create(context)
+
+      visitor.VariableDeclaration('string')
+      visitor['Program:exit']?.(undefined)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle VariableDeclaration with null declarations', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferConstRule.create(context)
+
+      const node = {
+        type: 'VariableDeclaration',
+        kind: 'let',
+        declarations: null,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+      }
+
+      visitor.VariableDeclaration(node)
+      visitor['Program:exit']?.(undefined)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle destructuring with null property value', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferConstRule.create(context)
+
+      const node = {
+        type: 'VariableDeclaration',
+        kind: 'let',
+        declarations: [
+          {
+            type: 'VariableDeclarator',
+            id: {
+              type: 'ObjectPattern',
+              properties: [
+                {
+                  type: 'Property',
+                  value: null,
+                },
+              ],
+            },
+            init: { type: 'Identifier', name: 'obj' },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+
+      visitor.VariableDeclaration(node)
+      visitor['Program:exit']?.(undefined)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle ArrayPattern with null elements', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferConstRule.create(context)
+
+      const node = {
+        type: 'VariableDeclaration',
+        kind: 'let',
+        declarations: [
+          {
+            type: 'VariableDeclarator',
+            id: {
+              type: 'ArrayPattern',
+              elements: null,
+            },
+            init: { type: 'Identifier', name: 'arr' },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+
+      visitor.VariableDeclaration(node)
+      visitor['Program:exit']?.(undefined)
+
+      expect(reports.length).toBe(0)
+    })
+  })
 })
