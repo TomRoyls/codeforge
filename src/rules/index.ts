@@ -28,6 +28,7 @@ import {
   noDuplicateCodeRule,
   noExplicitAnyRule,
   noFloatingPromisesRule,
+  noReturnAwaitRule,
   noThrowSyncRule,
   noVarRequiresRule,
   preferAsyncAwaitRule,
@@ -65,6 +66,7 @@ const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readon
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 const adaptedNoExplicitAny = adaptPluginRule(noExplicitAnyRule, 'no-explicit-any')
 const adaptedNoFloatingPromises = adaptPluginRule(noFloatingPromisesRule, 'no-floating-promises')
+const adaptedNoReturnAwait = adaptPluginRule(noReturnAwaitRule, 'no-return-await')
 const adaptedNoVarRequires = adaptPluginRule(noVarRequiresRule, 'no-var-requires')
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
 
@@ -97,6 +99,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-duplicate-code': adaptedNoDuplicateCode,
   'no-explicit-any': adaptedNoExplicitAny,
   'no-floating-promises': adaptedNoFloatingPromises,
+  'no-return-await': adaptedNoReturnAwait,
   'no-throw-sync': adaptedNoThrowSync,
   'no-var-requires': adaptedNoVarRequires,
   'prefer-async-await': adaptedPreferAsyncAwait,
@@ -144,6 +147,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-duplicate-code': 'patterns',
   'no-explicit-any': 'patterns',
   'no-floating-promises': 'patterns',
+  'no-return-await': 'patterns',
   'no-throw-sync': 'patterns',
   'no-var-requires': 'patterns',
   'prefer-async-await': 'patterns',
@@ -179,6 +183,7 @@ export {
   noDuplicateCodeRule,
   noExplicitAnyRule,
   noFloatingPromisesRule,
+  noReturnAwaitRule,
   noThrowSyncRule,
   noVarRequiresRule,
   preferAsyncAwaitRule,
