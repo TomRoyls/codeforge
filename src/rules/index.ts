@@ -28,6 +28,7 @@ import {
   noThrowSyncRule,
   preferConstRule,
   preferNullishCoalescingRule,
+  preferReadonlyRule,
   requireReturnTypeRule,
 } from './patterns/index.js'
 
@@ -54,6 +55,7 @@ const adaptedPreferNullishCoalescing = adaptPluginRule(
 )
 const adaptedNoConsoleLog = adaptPluginRule(noConsoleLogRule, 'no-console-log')
 const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
+const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readonly')
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 
 export const allRules: Record<string, RuleDefinition> = {
@@ -85,6 +87,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-throw-sync': adaptedNoThrowSync,
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
+  'prefer-readonly': adaptedPreferReadonly,
   'require-return-type': adaptedRequireReturnType,
 }
 
@@ -126,6 +129,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-throw-sync': 'patterns',
   'prefer-const': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
+  'prefer-readonly': 'patterns',
   'require-return-type': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
@@ -155,5 +159,6 @@ export {
   noThrowSyncRule,
   preferConstRule,
   preferNullishCoalescingRule,
+  preferReadonlyRule,
   requireReturnTypeRule,
 } from './patterns/index.js'
