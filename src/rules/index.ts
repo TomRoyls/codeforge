@@ -28,6 +28,7 @@ import {
   noDuplicateCodeRule,
   noExplicitAnyRule,
   noFloatingPromisesRule,
+  noInferrableTypesRule,
   noReturnAwaitRule,
   noThrowSyncRule,
   noVarRequiresRule,
@@ -71,6 +72,7 @@ const adaptedNoReturnAwait = adaptPluginRule(noReturnAwaitRule, 'no-return-await
 const adaptedNoVarRequires = adaptPluginRule(noVarRequiresRule, 'no-var-requires')
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
 const adaptedPreferIncludes = adaptPluginRule(preferIncludesRule, 'prefer-includes')
+const adaptedNoInferrableTypes = adaptPluginRule(noInferrableTypesRule, 'no-inferrable-types')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -101,6 +103,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-duplicate-code': adaptedNoDuplicateCode,
   'no-explicit-any': adaptedNoExplicitAny,
   'no-floating-promises': adaptedNoFloatingPromises,
+  'no-inferrable-types': adaptedNoInferrableTypes,
   'no-return-await': adaptedNoReturnAwait,
   'no-throw-sync': adaptedNoThrowSync,
   'no-var-requires': adaptedNoVarRequires,
@@ -108,6 +111,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
   'prefer-readonly': adaptedPreferReadonly,
+  'prefer-includes': adaptedPreferIncludes,
   'require-return-type': adaptedRequireReturnType,
 }
 
@@ -149,6 +153,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-duplicate-code': 'patterns',
   'no-explicit-any': 'patterns',
   'no-floating-promises': 'patterns',
+  'no-inferrable-types': 'patterns',
   'no-return-await': 'patterns',
   'no-throw-sync': 'patterns',
   'no-var-requires': 'patterns',
@@ -186,6 +191,7 @@ export {
   noDuplicateCodeRule,
   noExplicitAnyRule,
   noFloatingPromisesRule,
+  noInferrableTypesRule,
   noReturnAwaitRule,
   noThrowSyncRule,
   noVarRequiresRule,
