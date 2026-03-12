@@ -33,6 +33,7 @@ import {
   noVarRequiresRule,
   preferAsyncAwaitRule,
   preferConstRule,
+  preferIncludesRule,
   preferNullishCoalescingRule,
   preferReadonlyRule,
   requireReturnTypeRule,
@@ -69,6 +70,7 @@ const adaptedNoFloatingPromises = adaptPluginRule(noFloatingPromisesRule, 'no-fl
 const adaptedNoReturnAwait = adaptPluginRule(noReturnAwaitRule, 'no-return-await')
 const adaptedNoVarRequires = adaptPluginRule(noVarRequiresRule, 'no-var-requires')
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
+const adaptedPreferIncludes = adaptPluginRule(preferIncludesRule, 'prefer-includes')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -152,6 +154,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-var-requires': 'patterns',
   'prefer-async-await': 'patterns',
   'prefer-const': 'patterns',
+  'prefer-includes': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
   'prefer-readonly': 'patterns',
   'require-return-type': 'patterns',
