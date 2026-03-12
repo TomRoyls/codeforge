@@ -32,6 +32,7 @@ import {
   noInferrableTypesRule,
   noReturnAwaitRule,
   noThrowSyncRule,
+  noUnnecessaryConditionRule,
   noVarRequiresRule,
   preferAsyncAwaitRule,
   preferConstRule,
@@ -78,6 +79,10 @@ const adaptedConsistentTypeExports = adaptPluginRule(
   consistentTypeExportsRule,
   'consistent-type-exports',
 )
+const adaptedNoUnnecessaryCondition = adaptPluginRule(
+  noUnnecessaryConditionRule,
+  'no-unnecessary-condition',
+)
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -112,6 +117,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-inferrable-types': adaptedNoInferrableTypes,
   'no-return-await': adaptedNoReturnAwait,
   'no-throw-sync': adaptedNoThrowSync,
+  'no-unnecessary-condition': adaptedNoUnnecessaryCondition,
   'no-var-requires': adaptedNoVarRequires,
   'prefer-async-await': adaptedPreferAsyncAwait,
   'prefer-const': adaptedPreferConst,
@@ -163,6 +169,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-inferrable-types': 'patterns',
   'no-return-await': 'patterns',
   'no-throw-sync': 'patterns',
+  'no-unnecessary-condition': 'patterns',
   'no-var-requires': 'patterns',
   'prefer-async-await': 'patterns',
   'prefer-const': 'patterns',
@@ -202,6 +209,7 @@ export {
   noInferrableTypesRule,
   noReturnAwaitRule,
   noThrowSyncRule,
+  noUnnecessaryConditionRule,
   noVarRequiresRule,
   preferAsyncAwaitRule,
   preferConstRule,
