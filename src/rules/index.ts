@@ -25,6 +25,7 @@ import {
   maxFileSizeRule,
   noConsoleLogRule,
   noDuplicateCodeRule,
+  noExplicitAnyRule,
   noThrowSyncRule,
   preferConstRule,
   preferNullishCoalescingRule,
@@ -57,6 +58,7 @@ const adaptedNoConsoleLog = adaptPluginRule(noConsoleLogRule, 'no-console-log')
 const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
 const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readonly')
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
+const adaptedNoExplicitAny = adaptPluginRule(noExplicitAnyRule, 'no-explicit-any')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -84,6 +86,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'max-file-size': adaptedMaxFileSize,
   'no-console-log': adaptedNoConsoleLog,
   'no-duplicate-code': adaptedNoDuplicateCode,
+  'no-explicit-any': adaptedNoExplicitAny,
   'no-throw-sync': adaptedNoThrowSync,
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
@@ -126,6 +129,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'max-file-size': 'patterns',
   'no-console-log': 'patterns',
   'no-duplicate-code': 'patterns',
+  'no-explicit-any': 'patterns',
   'no-throw-sync': 'patterns',
   'prefer-const': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
@@ -156,6 +160,7 @@ export {
   maxFileSizeRule,
   noConsoleLogRule,
   noDuplicateCodeRule,
+  noExplicitAnyRule,
   noThrowSyncRule,
   preferConstRule,
   preferNullishCoalescingRule,
