@@ -23,6 +23,7 @@ import {
 import { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 import {
   maxFileSizeRule,
+  noConsoleLogRule,
   noDuplicateCodeRule,
   preferConstRule,
   preferNullishCoalescingRule,
@@ -49,6 +50,7 @@ const adaptedPreferNullishCoalescing = adaptPluginRule(
   preferNullishCoalescingRule,
   'prefer-nullish-coalescing',
 )
+const adaptedNoConsoleLog = adaptPluginRule(noConsoleLogRule, 'no-console-log')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -74,6 +76,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unsafe-type-assertion': adaptedNoUnsafeTypeAssertion,
   // Patterns
   'max-file-size': adaptedMaxFileSize,
+  'no-console-log': adaptedNoConsoleLog,
   'no-duplicate-code': adaptedNoDuplicateCode,
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
@@ -112,6 +115,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unsafe-type-assertion': 'security',
   // Patterns
   'max-file-size': 'patterns',
+  'no-console-log': 'patterns',
   'no-duplicate-code': 'patterns',
   'prefer-const': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
@@ -138,6 +142,7 @@ export {
 export { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 export {
   maxFileSizeRule,
+  noConsoleLogRule,
   noDuplicateCodeRule,
   preferConstRule,
   preferNullishCoalescingRule,
