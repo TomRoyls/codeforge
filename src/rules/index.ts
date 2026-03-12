@@ -29,6 +29,7 @@ import {
   noExplicitAnyRule,
   noFloatingPromisesRule,
   noThrowSyncRule,
+  noVarRequiresRule,
   preferAsyncAwaitRule,
   preferConstRule,
   preferNullishCoalescingRule,
@@ -64,6 +65,7 @@ const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readon
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 const adaptedNoExplicitAny = adaptPluginRule(noExplicitAnyRule, 'no-explicit-any')
 const adaptedNoFloatingPromises = adaptPluginRule(noFloatingPromisesRule, 'no-floating-promises')
+const adaptedNoVarRequires = adaptPluginRule(noVarRequiresRule, 'no-var-requires')
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
 
 export const allRules: Record<string, RuleDefinition> = {
@@ -96,6 +98,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-explicit-any': adaptedNoExplicitAny,
   'no-floating-promises': adaptedNoFloatingPromises,
   'no-throw-sync': adaptedNoThrowSync,
+  'no-var-requires': adaptedNoVarRequires,
   'prefer-async-await': adaptedPreferAsyncAwait,
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
@@ -142,6 +145,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-explicit-any': 'patterns',
   'no-floating-promises': 'patterns',
   'no-throw-sync': 'patterns',
+  'no-var-requires': 'patterns',
   'prefer-async-await': 'patterns',
   'prefer-const': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
@@ -176,6 +180,7 @@ export {
   noExplicitAnyRule,
   noFloatingPromisesRule,
   noThrowSyncRule,
+  noVarRequiresRule,
   preferAsyncAwaitRule,
   preferConstRule,
   preferNullishCoalescingRule,
