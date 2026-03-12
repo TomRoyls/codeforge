@@ -27,6 +27,7 @@ import {
   noConsoleLogRule,
   noDuplicateCodeRule,
   noExplicitAnyRule,
+  noFloatingPromisesRule,
   noThrowSyncRule,
   preferAsyncAwaitRule,
   preferConstRule,
@@ -62,6 +63,7 @@ const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
 const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readonly')
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 const adaptedNoExplicitAny = adaptPluginRule(noExplicitAnyRule, 'no-explicit-any')
+const adaptedNoFloatingPromises = adaptPluginRule(noFloatingPromisesRule, 'no-floating-promises')
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
 
 export const allRules: Record<string, RuleDefinition> = {
@@ -92,6 +94,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-console-log': adaptedNoConsoleLog,
   'no-duplicate-code': adaptedNoDuplicateCode,
   'no-explicit-any': adaptedNoExplicitAny,
+  'no-floating-promises': adaptedNoFloatingPromises,
   'no-throw-sync': adaptedNoThrowSync,
   'prefer-async-await': adaptedPreferAsyncAwait,
   'prefer-const': adaptedPreferConst,
@@ -137,6 +140,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-console-log': 'patterns',
   'no-duplicate-code': 'patterns',
   'no-explicit-any': 'patterns',
+  'no-floating-promises': 'patterns',
   'no-throw-sync': 'patterns',
   'prefer-async-await': 'patterns',
   'prefer-const': 'patterns',
@@ -170,6 +174,7 @@ export {
   noConsoleLogRule,
   noDuplicateCodeRule,
   noExplicitAnyRule,
+  noFloatingPromisesRule,
   noThrowSyncRule,
   preferAsyncAwaitRule,
   preferConstRule,
