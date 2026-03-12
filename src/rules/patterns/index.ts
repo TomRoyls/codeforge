@@ -1,3 +1,4 @@
+export { consistentTypeExportsRule } from './consistent-type-exports.js'
 export { maxFileSizeRule } from './max-file-size.js'
 export { maxUnionSizeRule } from './max-union-size.js'
 export { noConsoleLogRule } from './no-console-log.js'

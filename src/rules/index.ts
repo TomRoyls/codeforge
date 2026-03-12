@@ -22,6 +22,7 @@ import {
 } from './dependencies/index.js'
 import { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 import {
+  consistentTypeExportsRule,
   maxFileSizeRule,
   maxUnionSizeRule,
   noConsoleLogRule,
@@ -73,6 +74,10 @@ const adaptedNoVarRequires = adaptPluginRule(noVarRequiresRule, 'no-var-requires
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
 const adaptedPreferIncludes = adaptPluginRule(preferIncludesRule, 'prefer-includes')
 const adaptedNoInferrableTypes = adaptPluginRule(noInferrableTypesRule, 'no-inferrable-types')
+const adaptedConsistentTypeExports = adaptPluginRule(
+  consistentTypeExportsRule,
+  'consistent-type-exports',
+)
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -97,6 +102,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-eval': adaptedNoEval,
   'no-unsafe-type-assertion': adaptedNoUnsafeTypeAssertion,
   // Patterns
+  'consistent-type-exports': adaptedConsistentTypeExports,
   'max-file-size': adaptedMaxFileSize,
   'max-union-size': adaptedMaxUnionSize,
   'no-console-log': adaptedNoConsoleLog,
@@ -147,6 +153,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-eval': 'security',
   'no-unsafe-type-assertion': 'security',
   // Patterns
+  'consistent-type-exports': 'patterns',
   'max-file-size': 'patterns',
   'max-union-size': 'patterns',
   'no-console-log': 'patterns',
@@ -185,6 +192,7 @@ export {
 } from './dependencies/index.js'
 export { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 export {
+  consistentTypeExportsRule,
   maxFileSizeRule,
   maxUnionSizeRule,
   noConsoleLogRule,
