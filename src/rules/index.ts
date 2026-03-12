@@ -28,6 +28,7 @@ import {
   noThrowSyncRule,
   preferConstRule,
   preferNullishCoalescingRule,
+  requireReturnTypeRule,
 } from './patterns/index.js'
 
 import { adaptPluginRule } from './adapter.js'
@@ -53,6 +54,7 @@ const adaptedPreferNullishCoalescing = adaptPluginRule(
 )
 const adaptedNoConsoleLog = adaptPluginRule(noConsoleLogRule, 'no-console-log')
 const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
+const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -83,6 +85,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-throw-sync': adaptedNoThrowSync,
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
+  'require-return-type': adaptedRequireReturnType,
 }
 
 export type RuleCategory = 'complexity' | 'dependencies' | 'performance' | 'security' | 'patterns'
@@ -123,6 +126,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-throw-sync': 'patterns',
   'prefer-const': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
+  'require-return-type': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
@@ -151,4 +155,5 @@ export {
   noThrowSyncRule,
   preferConstRule,
   preferNullishCoalescingRule,
+  requireReturnTypeRule,
 } from './patterns/index.js'
