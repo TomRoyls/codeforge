@@ -27,6 +27,7 @@ import {
   noDuplicateCodeRule,
   noExplicitAnyRule,
   noThrowSyncRule,
+  preferAsyncAwaitRule,
   preferConstRule,
   preferNullishCoalescingRule,
   preferReadonlyRule,
@@ -59,6 +60,7 @@ const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
 const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readonly')
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 const adaptedNoExplicitAny = adaptPluginRule(noExplicitAnyRule, 'no-explicit-any')
+const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -88,6 +90,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-duplicate-code': adaptedNoDuplicateCode,
   'no-explicit-any': adaptedNoExplicitAny,
   'no-throw-sync': adaptedNoThrowSync,
+  'prefer-async-await': adaptedPreferAsyncAwait,
   'prefer-const': adaptedPreferConst,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
   'prefer-readonly': adaptedPreferReadonly,
@@ -131,6 +134,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-duplicate-code': 'patterns',
   'no-explicit-any': 'patterns',
   'no-throw-sync': 'patterns',
+  'prefer-async-await': 'patterns',
   'prefer-const': 'patterns',
   'prefer-nullish-coalescing': 'patterns',
   'prefer-readonly': 'patterns',
@@ -162,6 +166,7 @@ export {
   noDuplicateCodeRule,
   noExplicitAnyRule,
   noThrowSyncRule,
+  preferAsyncAwaitRule,
   preferConstRule,
   preferNullishCoalescingRule,
   preferReadonlyRule,
