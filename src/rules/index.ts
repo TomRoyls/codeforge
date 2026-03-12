@@ -20,12 +20,11 @@ import {
   consistentImportsRule,
   noBarrelImportsRule,
 } from './dependencies/index.js'
-import { noDeprecatedApiRule, noEvalRule } from './security/index.js'
+import { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 import { maxFileSizeRule, noDuplicateCodeRule, preferConstRule } from './patterns/index.js'
 
 import { adaptPluginRule } from './adapter.js'
 
-// Adapt plugin-style rules to core interface
 const adaptedPreferObjectSpread = adaptPluginRule(preferObjectSpreadRule, 'prefer-object-spread')
 const adaptedPreferOptionalChain = adaptPluginRule(preferOptionalChainRule, 'prefer-optional-chain')
 const adaptedNoCircularDeps = adaptPluginRule(noCircularDepsRule, 'no-circular-deps')
@@ -34,6 +33,10 @@ const adaptedConsistentImports = adaptPluginRule(consistentImportsRule, 'consist
 const adaptedNoBarrelImports = adaptPluginRule(noBarrelImportsRule, 'no-barrel-imports')
 const adaptedNoDeprecatedApi = adaptPluginRule(noDeprecatedApiRule, 'no-deprecated-api')
 const adaptedNoEval = adaptPluginRule(noEvalRule, 'no-eval')
+const adaptedNoUnsafeTypeAssertion = adaptPluginRule(
+  noUnsafeTypeAssertionRule,
+  'no-unsafe-type-assertion',
+)
 const adaptedMaxFileSize = adaptPluginRule(maxFileSizeRule, 'max-file-size')
 const adaptedNoDuplicateCode = adaptPluginRule(noDuplicateCodeRule, 'no-duplicate-code')
 const adaptedPreferConst = adaptPluginRule(preferConstRule, 'prefer-const')
@@ -59,6 +62,7 @@ export const allRules: Record<string, RuleDefinition> = {
   // Security
   'no-deprecated-api': adaptedNoDeprecatedApi,
   'no-eval': adaptedNoEval,
+  'no-unsafe-type-assertion': adaptedNoUnsafeTypeAssertion,
   // Patterns
   'max-file-size': adaptedMaxFileSize,
   'no-duplicate-code': adaptedNoDuplicateCode,
@@ -66,11 +70,9 @@ export const allRules: Record<string, RuleDefinition> = {
 }
 
 export type RuleCategory = 'complexity' | 'dependencies' | 'performance' | 'security' | 'patterns'
-
 export function getRule(ruleId: string): RuleDefinition | undefined {
   return allRules[ruleId]
 }
-
 export function getRuleIds(): string[] {
   return Object.keys(allRules)
 }
@@ -97,16 +99,15 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Security
   'no-deprecated-api': 'security',
   'no-eval': 'security',
+  'no-unsafe-type-assertion': 'security',
   // Patterns
   'max-file-size': 'patterns',
   'no-duplicate-code': 'patterns',
   'prefer-const': 'patterns',
 }
-
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
 }
-
 // Re-exports
 export {
   maxComplexityRule,
@@ -123,5 +124,5 @@ export {
   consistentImportsRule,
   noBarrelImportsRule,
 } from './dependencies/index.js'
-export { noDeprecatedApiRule, noEvalRule } from './security/index.js'
+export { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 export { maxFileSizeRule, noDuplicateCodeRule, preferConstRule } from './patterns/index.js'
