@@ -23,6 +23,7 @@ import {
 import { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 import {
   maxFileSizeRule,
+  maxUnionSizeRule,
   noConsoleLogRule,
   noDuplicateCodeRule,
   noExplicitAnyRule,
@@ -49,6 +50,7 @@ const adaptedNoUnsafeTypeAssertion = adaptPluginRule(
   'no-unsafe-type-assertion',
 )
 const adaptedMaxFileSize = adaptPluginRule(maxFileSizeRule, 'max-file-size')
+const adaptedMaxUnionSize = adaptPluginRule(maxUnionSizeRule, 'max-union-size')
 const adaptedNoDuplicateCode = adaptPluginRule(noDuplicateCodeRule, 'no-duplicate-code')
 const adaptedPreferConst = adaptPluginRule(preferConstRule, 'prefer-const')
 const adaptedPreferNullishCoalescing = adaptPluginRule(
@@ -86,6 +88,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unsafe-type-assertion': adaptedNoUnsafeTypeAssertion,
   // Patterns
   'max-file-size': adaptedMaxFileSize,
+  'max-union-size': adaptedMaxUnionSize,
   'no-console-log': adaptedNoConsoleLog,
   'no-duplicate-code': adaptedNoDuplicateCode,
   'no-explicit-any': adaptedNoExplicitAny,
@@ -130,6 +133,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unsafe-type-assertion': 'security',
   // Patterns
   'max-file-size': 'patterns',
+  'max-union-size': 'patterns',
   'no-console-log': 'patterns',
   'no-duplicate-code': 'patterns',
   'no-explicit-any': 'patterns',
@@ -162,6 +166,7 @@ export {
 export { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
 export {
   maxFileSizeRule,
+  maxUnionSizeRule,
   noConsoleLogRule,
   noDuplicateCodeRule,
   noExplicitAnyRule,

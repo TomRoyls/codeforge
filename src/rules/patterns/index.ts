@@ -1,4 +1,5 @@
 export { maxFileSizeRule } from './max-file-size.js'
+export { maxUnionSizeRule } from './max-union-size.js'
 export { noConsoleLogRule } from './no-console-log.js'
 export { noDuplicateCodeRule } from './no-duplicate-code.js'
 export { noExplicitAnyRule } from './no-explicit-any.js'
