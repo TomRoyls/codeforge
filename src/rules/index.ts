@@ -21,7 +21,12 @@ import {
   noBarrelImportsRule,
 } from './dependencies/index.js'
 import { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
-import { maxFileSizeRule, noDuplicateCodeRule, preferConstRule } from './patterns/index.js'
+import {
+  maxFileSizeRule,
+  noDuplicateCodeRule,
+  preferConstRule,
+  preferNullishCoalescingRule,
+} from './patterns/index.js'
 
 import { adaptPluginRule } from './adapter.js'
 
@@ -40,6 +45,10 @@ const adaptedNoUnsafeTypeAssertion = adaptPluginRule(
 const adaptedMaxFileSize = adaptPluginRule(maxFileSizeRule, 'max-file-size')
 const adaptedNoDuplicateCode = adaptPluginRule(noDuplicateCodeRule, 'no-duplicate-code')
 const adaptedPreferConst = adaptPluginRule(preferConstRule, 'prefer-const')
+const adaptedPreferNullishCoalescing = adaptPluginRule(
+  preferNullishCoalescingRule,
+  'prefer-nullish-coalescing',
+)
 
 export const allRules: Record<string, RuleDefinition> = {
   // Complexity
@@ -67,6 +76,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'max-file-size': adaptedMaxFileSize,
   'no-duplicate-code': adaptedNoDuplicateCode,
   'prefer-const': adaptedPreferConst,
+  'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
 }
 
 export type RuleCategory = 'complexity' | 'dependencies' | 'performance' | 'security' | 'patterns'
@@ -104,6 +114,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'max-file-size': 'patterns',
   'no-duplicate-code': 'patterns',
   'prefer-const': 'patterns',
+  'prefer-nullish-coalescing': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
@@ -125,4 +136,9 @@ export {
   noBarrelImportsRule,
 } from './dependencies/index.js'
 export { noDeprecatedApiRule, noEvalRule, noUnsafeTypeAssertionRule } from './security/index.js'
-export { maxFileSizeRule, noDuplicateCodeRule, preferConstRule } from './patterns/index.js'
+export {
+  maxFileSizeRule,
+  noDuplicateCodeRule,
+  preferConstRule,
+  preferNullishCoalescingRule,
+} from './patterns/index.js'
