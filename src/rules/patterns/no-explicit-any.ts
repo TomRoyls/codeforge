@@ -1,45 +1,9 @@
-import type {
-  RuleDefinition,
-  RuleContext,
-  RuleVisitor,
-  SourceLocation,
-} from '../../plugins/types.js'
+import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import { extractLocation, getRange } from '../../utils/ast-helpers.js'
 
 interface NoExplicitAnyOptions {
   readonly allowInGenericArrays?: boolean
   readonly allowAsTypeAssertion?: boolean
-}
-
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
-    end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
-      column: typeof end?.column === 'number' ? end.column : 0,
-    },
-  }
 }
 
 function isAnyKeyword(node: unknown): boolean {
@@ -99,7 +63,7 @@ export const noExplicitAnyRule: RuleDefinition = {
         additionalProperties: false,
       },
     ],
-    fixable: undefined,
+    fixable: 'code',
   },
 
   create(context: RuleContext): RuleVisitor {
@@ -114,10 +78,17 @@ export const noExplicitAnyRule: RuleDefinition = {
           return
         }
         const location = extractLocation(node)
+        const range = getRange(node)
         context.report({
           message:
             "Unexpected use of the 'any' type. Use a more specific type for better type safety.",
           loc: location,
+          fix: range
+            ? {
+                range,
+                text: 'unknown',
+              }
+            : undefined,
         })
       },
 

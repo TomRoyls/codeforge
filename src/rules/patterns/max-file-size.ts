@@ -10,6 +10,8 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 
+import { DEFAULT_MAX_FILE_SIZE_LINES } from '../../utils/constants.js'
+
 interface FileInfo {
   readonly lineCount: number
   readonly characterCount: number
@@ -84,7 +86,7 @@ export const maxFileSizeRule: RuleDefinition = {
           maxLines: {
             type: 'number',
             minimum: 1,
-            default: 500,
+            default: DEFAULT_MAX_FILE_SIZE_LINES,
           },
           maxCharacters: {
             type: 'number',
@@ -115,7 +117,7 @@ export const maxFileSizeRule: RuleDefinition = {
       Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
     ) as MaxFileSizeOptions
 
-    const maxLines = options.maxLines ?? 500
+    const maxLines = options.maxLines ?? DEFAULT_MAX_FILE_SIZE_LINES
     const maxCharacters = options.maxCharacters ?? 50000
     const ignoreComments = options.ignoreComments ?? false
     const ignoreBlankLines = options.ignoreBlankLines ?? false

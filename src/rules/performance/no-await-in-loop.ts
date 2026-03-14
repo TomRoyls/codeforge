@@ -23,6 +23,7 @@ export const noAwaitInLoopRule: RuleDefinition<NoAwaitInLoopOptions> = {
     description: 'Disallow await inside of loops for better performance',
     category: 'performance',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {},
   create: (_options: NoAwaitInLoopOptions) => {

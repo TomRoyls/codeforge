@@ -9,6 +9,8 @@ import {
 } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
 
+import { DEFAULT_MAX_LINES } from '../../utils/constants.js'
+
 interface MaxLinesOptions extends RuleOptions {
   max?: number
   skipBlankLines?: boolean
@@ -126,15 +128,16 @@ export const maxLinesRule: RuleDefinition<MaxLinesOptions> = {
     description: 'Enforce a maximum number of lines per file',
     category: 'complexity',
     recommended: false,
+    fixable: 'code',
   },
   defaultOptions: {
-    max: 300,
+    max: DEFAULT_MAX_LINES,
     skipBlankLines: true,
     skipComments: true,
   },
   create: (options: MaxLinesOptions) => {
     const violations: RuleViolation[] = []
-    const maxLines = options.max ?? 300
+    const maxLines = options.max ?? DEFAULT_MAX_LINES
 
     return {
       visitor: {
@@ -168,6 +171,7 @@ export const maxLinesPerFunctionRule: RuleDefinition<MaxLinesPerFunctionOptions>
     description: 'Enforce a maximum number of lines per function',
     category: 'complexity',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {
     max: 50,
@@ -208,7 +212,7 @@ export const maxLinesPerFunctionRule: RuleDefinition<MaxLinesPerFunctionOptions>
 
 export function analyzeMaxLines(
   sourceFile: SourceFile,
-  maxLines: number = 300,
+  maxLines: number = DEFAULT_MAX_LINES,
   options: { skipBlankLines?: boolean; skipComments?: boolean } = {},
 ): RuleViolation[] {
   const violations: RuleViolation[] = []

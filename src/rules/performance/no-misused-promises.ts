@@ -81,6 +81,7 @@ export const noMisusedPromisesRule: RuleDefinition<NoMisusedPromisesOptions> = {
     description: 'Disallow promises in fire-and-forget contexts like forEach with async callbacks',
     category: 'performance',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {},
   create: (_options: NoMisusedPromisesOptions) => {

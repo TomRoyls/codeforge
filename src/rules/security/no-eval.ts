@@ -134,6 +134,7 @@ export const noEvalRule: RuleDefinition = {
         additionalProperties: false,
       },
     ],
+    fixable: 'code',
   },
 
   create(context: RuleContext): RuleVisitor {

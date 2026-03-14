@@ -228,7 +228,6 @@ export const noUnsafeTypeAssertionRule: RuleDefinition = {
         additionalProperties: false,
       },
     ],
-    fixable: undefined,
   },
 
   create(context: RuleContext): RuleVisitor {

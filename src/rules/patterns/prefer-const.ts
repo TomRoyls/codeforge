@@ -9,6 +9,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractLocation, getRange } from '../../utils/ast-helpers.js'
 
 interface VariableInfo {
   readonly name: string
@@ -16,44 +17,13 @@ interface VariableInfo {
   readonly location: SourceLocation
   readonly reassigned: boolean
   readonly scope: string
+  readonly declarationNode: unknown
 }
 
 interface PreferConstOptions {
   readonly destructuring?: 'all' | 'any'
   readonly ignoreReadBeforeAssign?: boolean
   readonly ignoreDestructuring?: boolean
-}
-
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
-    end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
-      column: typeof end?.column === 'number' ? end.column : 0,
-    },
-  }
 }
 
 function getVariableKind(node: unknown): 'let' | 'var' | 'const' | null {
@@ -202,6 +172,7 @@ export const preferConstRule: RuleDefinition = {
             location,
             reassigned: false,
             scope: 'block',
+            declarationNode: node,
           })
         }
       },
@@ -243,9 +214,19 @@ export const preferConstRule: RuleDefinition = {
               continue
             }
 
+            const range = getRange(info.declarationNode)
+            const fix =
+              range !== null
+                ? {
+                    range: [range[0], range[0] + info.declaredWith.length] as [number, number],
+                    text: 'const',
+                  }
+                : undefined
+
             context.report({
               message: `'${name}' is never reassigned. Use 'const' instead.`,
               loc: info.location,
+              fix,
             })
           }
         }

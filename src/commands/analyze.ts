@@ -180,7 +180,7 @@ export default class Analyze extends Command {
 
     const ciMode = flags.ci
     const format = ciMode && flags.format === 'console' ? 'json' : (flags.format as OutputFormat)
-    const {output} = flags
+    const { output } = flags
     const quiet = ciMode || flags.quiet
     const verbose = flags.verbose && !ciMode
     const failOnWarnings = flags['fail-on-warnings']
@@ -340,49 +340,71 @@ export default class Analyze extends Command {
   private async applyFixes(options: ApplyFixesOptions): Promise<FixResult> {
     const { allViolations, discoveredFiles, dryRun, parseCache, parser, rulesWithFixes, verbose } =
       options
+
+    const violationsByFile = new Map<string, RuleViolation[]>()
+    for (const violation of allViolations) {
+      const existing = violationsByFile.get(violation.filePath)
+      if (existing) {
+        existing.push(violation)
+      } else {
+        violationsByFile.set(violation.filePath, [violation])
+      }
+    }
+
+    const concurrency = os.cpus().length || 4
+    const limit = pLimit(concurrency)
+
+    const results = await Promise.all(
+      discoveredFiles.map((file) =>
+        limit(async () => {
+          if (!file) return { fixesApplied: 0, fixesSkipped: 0 }
+
+          const fileViolations = violationsByFile.get(file.path) ?? []
+          if (fileViolations.length === 0) return { fixesApplied: 0, fixesSkipped: 0 }
+
+          try {
+            // Use cached parse result if available
+            let parseResult = parseCache.get(file.absolutePath)
+            if (!parseResult) {
+              parseResult = await parser.parseFile(file.absolutePath)
+            }
+
+            const report = applyFixesToFile(
+              parseResult.sourceFile,
+              fileViolations,
+              rulesWithFixes,
+              dryRun,
+            )
+
+            if (!dryRun && report.changes.length > 0) {
+              parseResult.sourceFile.saveSync()
+            }
+
+            if (verbose && report.conflicts.length > 0) {
+              for (const conflict of report.conflicts) {
+                logger.warn(
+                  `Fix conflict in ${file.path}: ${conflict.ruleId} conflicts with ${conflict.conflictingRule}`,
+                )
+              }
+            }
+
+            return { fixesApplied: report.fixesApplied, fixesSkipped: report.fixesSkipped }
+          } catch (error) {
+            if (verbose) {
+              logger.warn(`Failed to fix ${file.path}: ${(error as Error).message}`)
+            }
+
+            return { fixesApplied: 0, fixesSkipped: 0 }
+          }
+        }),
+      ),
+    )
+
     let fixesApplied = 0
     let fixesSkipped = 0
-
-    for (const file of discoveredFiles) {
-      if (!file) continue
-
-      const fileViolations = allViolations.filter((v) => v.filePath === file.path)
-      if (fileViolations.length === 0) continue
-
-      try {
-        // Use cached parse result if available
-        let parseResult = parseCache.get(file.absolutePath)
-        if (!parseResult) {
-          // eslint-disable-next-line no-await-in-loop
-          parseResult = await parser.parseFile(file.absolutePath)
-        }
-
-        const report = applyFixesToFile(
-          parseResult.sourceFile,
-          fileViolations,
-          rulesWithFixes,
-          dryRun,
-        )
-
-        fixesApplied += report.fixesApplied
-        fixesSkipped += report.fixesSkipped
-
-        if (!dryRun && report.changes.length > 0) {
-          parseResult.sourceFile.saveSync()
-        }
-
-        if (verbose && report.conflicts.length > 0) {
-          for (const conflict of report.conflicts) {
-            logger.warn(
-              `Fix conflict in ${file.path}: ${conflict.ruleId} conflicts with ${conflict.conflictingRule}`,
-            )
-          }
-        }
-      } catch (error) {
-        if (verbose) {
-          logger.warn(`Failed to fix ${file.path}: ${(error as Error).message}`)
-        }
-      }
+    for (const result of results) {
+      fixesApplied += result.fixesApplied
+      fixesSkipped += result.fixesSkipped
     }
 
     return { fixesApplied, fixesSkipped }

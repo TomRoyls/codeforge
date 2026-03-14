@@ -120,8 +120,8 @@ describe('no-console-log rule', () => {
       expect(noConsoleLogRule.meta.schema).toBeDefined()
     })
 
-    test('should not be fixable', () => {
-      expect(noConsoleLogRule.meta.fixable).toBeUndefined()
+    test('should be fixable', () => {
+      expect(noConsoleLogRule.meta.fixable).toBe('code')
     })
 
     test('should mention console in description', () => {

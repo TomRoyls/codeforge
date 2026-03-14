@@ -9,6 +9,7 @@ import { parseConfigFile } from '../config/parser.js'
 import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { getRuleIds } from '../rules/index.js'
+import { FILE_COUNT_THRESHOLD } from '../utils/constants.js'
 
 interface CheckResult {
   details?: string
@@ -170,7 +171,7 @@ export default class Doctor extends Command {
 
       const fileCount = files.length
 
-      if (fileCount > 1000) {
+      if (fileCount > FILE_COUNT_THRESHOLD) {
         results.checks.push({
           details: 'Consider using .codeforgeignore to exclude unnecessary files',
           message: `Large codebase detected (${fileCount} files)`,

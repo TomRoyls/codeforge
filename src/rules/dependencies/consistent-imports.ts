@@ -135,6 +135,7 @@ export const consistentImportsRule: RuleDefinition = {
   meta: {
     type: 'suggestion',
     severity: 'warn',
+    fixable: 'code',
     docs: {
       description:
         'Enforce consistent import style across the codebase. Choose between default imports, namespace imports, or named imports.',

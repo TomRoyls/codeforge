@@ -23,6 +23,7 @@ export const maxParamsRule: RuleDefinition<MaxParamsOptions> = {
     description: 'Enforce a maximum number of parameters in function definitions',
     category: 'complexity',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {
     max: 4,

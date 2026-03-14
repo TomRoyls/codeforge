@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto'
-import { createReadStream, readFileSync, statSync } from 'node:fs'
-import { mkdir, readFile, writeFile, unlink, readdir } from 'node:fs/promises'
+import { createReadStream, readFileSync } from 'node:fs'
+import { mkdir, readFile, writeFile, unlink, readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 
 export function hashContent(content: string): string {
@@ -58,8 +58,9 @@ export class CacheStore {
       }
 
       return entry.value
-    } catch {
+    } catch (error) {
       // Cache miss or invalid data - this is expected behavior, return null to indicate no value
+      console.warn(`Cache get failed for key "${key}":`, error)
       return null
     }
   }
@@ -81,10 +82,11 @@ export class CacheStore {
   async has(key: string): Promise<boolean> {
     try {
       const filePath = this.getCacheFilePath(key)
-      const stats = statSync(filePath)
+      const stats = await stat(filePath)
       return stats.isFile()
-    } catch {
+    } catch (error) {
       // File doesn't exist or is not accessible - returning false is correct for cache check
+      console.warn(`Cache check failed for key "${key}":`, error)
       return false
     }
   }
@@ -94,8 +96,9 @@ export class CacheStore {
       const filePath = this.getCacheFilePath(key)
       await unlink(filePath)
       return true
-    } catch {
+    } catch (error) {
       // File doesn't exist or cannot be deleted - returning false is acceptable
+      console.warn(`Cache delete failed for key "${key}":`, error)
       return false
     }
   }
@@ -104,24 +107,24 @@ export class CacheStore {
     try {
       const files = await readdir(this.cacheDir)
       await Promise.all(files.map((file) => unlink(path.join(this.cacheDir, file))))
-    } catch {
+    } catch (error) {
       // Cache directory doesn't exist or cannot be read - this is expected during first run or when cache is empty
+      console.warn('Failed to clear cache:', error)
     }
   }
 
   async getStats(): Promise<{ entries: number; size: number }> {
     try {
       const files = await readdir(this.cacheDir)
-      let totalSize = 0
-
-      for (const file of files) {
-        const stats = statSync(path.join(this.cacheDir, file))
-        totalSize += stats.size
-      }
+      const statsArray = await Promise.all(
+        files.map((file) => stat(path.join(this.cacheDir, file))),
+      )
+      const totalSize = statsArray.reduce((sum, stats) => sum + stats.size, 0)
 
       return { entries: files.length, size: totalSize }
-    } catch {
+    } catch (error) {
       // Cache directory doesn't exist or cannot be read - returning empty stats is correct
+      console.warn('Failed to get cache stats:', error)
       return { entries: 0, size: 0 }
     }
   }
@@ -134,8 +137,9 @@ export class CacheStore {
   private async ensureCacheDir(): Promise<void> {
     try {
       await mkdir(this.cacheDir, { recursive: true })
-    } catch {
+    } catch (error) {
       // Directory already exists or cannot be created - this is acceptable, just ensure directory exists
+      console.warn(`Failed to ensure cache directory "${this.cacheDir}":`, error)
     }
   }
 }

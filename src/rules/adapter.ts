@@ -61,7 +61,12 @@ function convertMeta(pluginMeta: PluginRuleDefinition['meta'], ruleId: string): 
     recommended: pluginMeta.docs?.recommended ?? false,
     deprecated: pluginMeta.deprecated,
     replacedBy: pluginMeta.replacedBy?.[0],
-    fixable: pluginMeta.fixable === 'code',
+    fixable:
+      pluginMeta.fixable === 'code'
+        ? 'code'
+        : pluginMeta.fixable === 'whitespace'
+          ? 'whitespace'
+          : undefined,
   }
 }
 

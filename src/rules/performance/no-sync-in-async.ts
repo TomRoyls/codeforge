@@ -47,6 +47,7 @@ export const noSyncInAsyncRule: RuleDefinition<NoSyncInAsyncOptions> = {
     description: 'Disallow synchronous operations in async functions for better performance',
     category: 'performance',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {},
   create: (_options: NoSyncInAsyncOptions) => {

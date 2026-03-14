@@ -200,19 +200,19 @@ describe('adaptPluginRule', () => {
     test('maps fixable correctly when code', () => {
       const pluginRule = createMockPluginRule({ fixable: 'code' })
       const adapted = adaptPluginRule(pluginRule, 'fixable-rule')
-      expect(adapted.meta.fixable).toBe(true)
+      expect(adapted.meta.fixable).toBe('code')
     })
 
     test('maps fixable correctly when whitespace', () => {
       const pluginRule = createMockPluginRule({ fixable: 'whitespace' })
       const adapted = adaptPluginRule(pluginRule, 'whitespace-rule')
-      expect(adapted.meta.fixable).toBe(false)
+      expect(adapted.meta.fixable).toBe('whitespace')
     })
 
     test('maps fixable correctly when undefined', () => {
       const pluginRule = createMockPluginRule({ fixable: undefined })
       const adapted = adaptPluginRule(pluginRule, 'not-fixable-rule')
-      expect(adapted.meta.fixable).toBe(false)
+      expect(adapted.meta.fixable).toBeUndefined()
     })
 
     test('maps recommended flag correctly', () => {

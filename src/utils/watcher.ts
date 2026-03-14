@@ -2,6 +2,8 @@ import { EventEmitter } from 'node:events'
 import * as fs from 'node:fs'
 import path from 'node:path'
 
+import { DEFAULT_DEBOUNCE_MS } from './constants.js'
+
 export interface FileWatcherOptions {
   /** Debounce time in milliseconds (default: 300) */
   debounceMs?: number
@@ -33,7 +35,7 @@ export class FileWatcher extends EventEmitter {
 
   constructor(options: FileWatcherOptions = {}) {
     super()
-    this.debounceMs = options.debounceMs ?? 300
+    this.debounceMs = options.debounceMs ?? DEFAULT_DEBOUNCE_MS
     this.extensions = new Set(options.extensions ?? [])
     this.ignorePatterns = (options.ignorePatterns ?? []).map((p) => this.patternToRegExp(p))
   }

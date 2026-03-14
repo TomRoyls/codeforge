@@ -11,7 +11,7 @@ export interface RuleMeta {
   category: 'complexity' | 'style' | 'correctness' | 'performance' | 'security'
   deprecated?: boolean
   description: string
-  fixable?: boolean
+  fixable?: 'code' | 'whitespace'
   name: string
   recommended: boolean
   replacedBy?: string

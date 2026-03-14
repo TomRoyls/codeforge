@@ -12,6 +12,7 @@ import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { allRules, getRuleCategory } from '../rules/index.js'
+import { DEFAULT_DEBOUNCE_MS } from '../utils/constants.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
 import { FileWatcher } from '../utils/watcher.js'
@@ -49,7 +50,7 @@ export default class Watch extends Command {
     }),
     debounce: Flags.integer({
       char: 'd',
-      default: 300,
+      default: DEFAULT_DEBOUNCE_MS,
       description: 'Debounce time in milliseconds',
     }),
     ignore: Flags.string({

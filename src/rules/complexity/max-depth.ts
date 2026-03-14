@@ -47,6 +47,7 @@ export const maxDepthRule: RuleDefinition<MaxDepthOptions> = {
     description: 'Enforce a maximum nesting depth for code blocks',
     category: 'complexity',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {
     max: 4,

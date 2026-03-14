@@ -332,6 +332,7 @@ export const noCircularDepsRule: RuleDefinition = {
   meta: {
     type: 'problem',
     severity: 'error',
+    fixable: 'code',
     docs: {
       description:
         'Disallow circular dependencies between modules. Circular dependencies can lead to runtime issues, make code harder to understand, and can cause problems with bundlers and tree-shaking.',

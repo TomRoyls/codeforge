@@ -2,7 +2,13 @@ import type { SourceFile } from 'ts-morph'
 import { traverseAST, type RuleViolation } from '../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../rules/types.js'
 
-export type RuleCategory = 'complexity' | 'dependencies' | 'performance' | 'security' | 'patterns'
+export type RuleCategory =
+  | 'complexity'
+  | 'dependencies'
+  | 'performance'
+  | 'security'
+  | 'patterns'
+  | 'correctness'
 
 export interface LoadedRule {
   category: RuleCategory
@@ -16,6 +22,7 @@ export interface LoadedRule {
  */
 export class RuleRegistry {
   private rules = new Map<string, LoadedRule>()
+  private enabledRulesCache: LoadedRule[] | null = null
 
   /**
    * Registers a new rule in the registry
@@ -38,6 +45,7 @@ export class RuleRegistry {
       enabled: true,
       options,
     })
+    this.enabledRulesCache = null
   }
 
   /**
@@ -50,6 +58,7 @@ export class RuleRegistry {
     const rule = this.rules.get(ruleId)
     if (rule) {
       rule.enabled = true
+      this.enabledRulesCache = null
     }
   }
 
@@ -63,18 +72,24 @@ export class RuleRegistry {
     const rule = this.rules.get(ruleId)
     if (rule) {
       rule.enabled = false
+      this.enabledRulesCache = null
     }
   }
 
   /**
    * Gets all currently enabled rules from the registry
+   * Uses caching to avoid repeated array operations on every file analysis
    * @returns Array of enabled LoadedRule objects
    * @example
    * const enabledRules = registry.getEnabledRules();
    * console.log(`Active rules: ${enabledRules.length}`);
    */
   getEnabledRules(): LoadedRule[] {
-    return Array.from(this.rules.values()).filter((r) => r.enabled)
+    if (this.enabledRulesCache !== null) {
+      return this.enabledRulesCache
+    }
+    this.enabledRulesCache = Array.from(this.rules.values()).filter((r) => r.enabled)
+    return this.enabledRulesCache
   }
 
   /**

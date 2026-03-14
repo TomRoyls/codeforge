@@ -120,8 +120,8 @@ describe('no-explicit-any rule', () => {
       expect(noExplicitAnyRule.meta.schema).toBeDefined()
     })
 
-    test('should not be fixable', () => {
-      expect(noExplicitAnyRule.meta.fixable).toBeUndefined()
+    test('should be fixable', () => {
+      expect(noExplicitAnyRule.meta.fixable).toBe('code')
     })
 
     test('should mention any in description', () => {

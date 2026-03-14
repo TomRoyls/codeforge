@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites
+  name="CodeForge Analysis"
+  tests="1"
+  failures="0"
+  errors="1"
+  time="0.030"
+>
+  <testsuite
+    name="test.ts"
+    tests="1"
+    failures="0"
+    errors="1"
+    time="0.030"
+    timestamp="2026-03-14T11:24:51.254Z"
+  >
+    <testcase
+      name="test-rule: Test violation message"
+      classname="test.ts"
+    >
+      <error
+        message="Test violation message"
+        type="test-rule"
+      >
+        Location: test.ts:10:5
+      </error>
+    </testcase>
+  </testsuite>
+</testsuites>

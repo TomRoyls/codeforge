@@ -417,6 +417,7 @@ export const noUnusedExportsRule: RuleDefinition = {
   meta: {
     type: 'problem',
     severity: 'warn',
+    fixable: 'code',
     docs: {
       description:
         'Disallow exports that are never imported by other modules. Unused exports indicate dead code or missing documentation.',

@@ -239,6 +239,70 @@ describe('RuleRegistry', () => {
       expect(loadedRule).toHaveProperty('enabled')
       expect(loadedRule).toHaveProperty('options')
     })
+
+    test('caches enabled rules for performance', () => {
+      const rule1 = createMockRule()
+      const rule2 = createMockRule()
+
+      registry.register('rule-1', rule1, 'complexity')
+      registry.register('rule-2', rule2, 'security')
+
+      const rules1 = registry.getEnabledRules()
+      const rules2 = registry.getEnabledRules()
+
+      expect(rules1).toBe(rules2)
+    })
+
+    test('invalidates cache when rule is disabled', () => {
+      const rule1 = createMockRule()
+      const rule2 = createMockRule()
+
+      registry.register('rule-1', rule1, 'complexity')
+      registry.register('rule-2', rule2, 'security')
+
+      const rulesBefore = registry.getEnabledRules()
+      expect(rulesBefore).toHaveLength(2)
+
+      registry.disable('rule-1')
+
+      const rulesAfter = registry.getEnabledRules()
+      expect(rulesAfter).toHaveLength(1)
+      expect(rulesAfter).not.toBe(rulesBefore)
+    })
+
+    test('invalidates cache when rule is enabled', () => {
+      const rule1 = createMockRule()
+      const rule2 = createMockRule()
+
+      registry.register('rule-1', rule1, 'complexity')
+      registry.register('rule-2', rule2, 'security')
+      registry.disable('rule-1')
+
+      const rulesBefore = registry.getEnabledRules()
+      expect(rulesBefore).toHaveLength(1)
+
+      registry.enable('rule-1')
+
+      const rulesAfter = registry.getEnabledRules()
+      expect(rulesAfter).toHaveLength(2)
+      expect(rulesAfter).not.toBe(rulesBefore)
+    })
+
+    test('invalidates cache when new rule is registered', () => {
+      const rule1 = createMockRule()
+
+      registry.register('rule-1', rule1, 'complexity')
+
+      const rulesBefore = registry.getEnabledRules()
+      expect(rulesBefore).toHaveLength(1)
+
+      const rule2 = createMockRule()
+      registry.register('rule-2', rule2, 'security')
+
+      const rulesAfter = registry.getEnabledRules()
+      expect(rulesAfter).toHaveLength(2)
+      expect(rulesAfter).not.toBe(rulesBefore)
+    })
   })
 
   describe('getRule', () => {

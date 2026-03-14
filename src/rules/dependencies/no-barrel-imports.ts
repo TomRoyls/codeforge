@@ -155,6 +155,7 @@ export const noBarrelImportsRule: RuleDefinition = {
   meta: {
     type: 'suggestion',
     severity: 'warn',
+    fixable: 'code',
     docs: {
       description:
         'Disallow imports from barrel files (index.ts/index.js). Importing from barrel files can cause performance issues, circular dependencies, and make the dependency graph harder to understand.',

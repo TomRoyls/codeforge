@@ -4,6 +4,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractLocation } from '../../utils/ast-helpers.js'
 
 interface PreferReadonlyOptions {
   readonly ignoreLocalVariables?: boolean
@@ -31,36 +32,13 @@ interface VariableInfo {
   loc: SourceLocation
 }
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
-    end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
-      column: typeof end?.column === 'number' ? end.column : 0,
-    },
-  }
+interface ClassPropertyInfo {
+  name: string
+  className: string | null
+  isReadonly: boolean
+  isPrivate: boolean
+  hasInitialValue: boolean
+  loc: SourceLocation
 }
 
 function isArrayOrObjectInitializer(node: unknown): boolean {
@@ -155,7 +133,6 @@ export const preferReadonlyRule: RuleDefinition = {
         additionalProperties: false,
       },
     ],
-    fixable: undefined,
   },
 
   create(context: RuleContext): RuleVisitor {
@@ -168,6 +145,9 @@ export const preferReadonlyRule: RuleDefinition = {
     const ignorePrivateMembers = options.ignorePrivateMembers ?? false
 
     const variables = new Map<string, VariableInfo>()
+    const classProperties = new Map<string, ClassPropertyInfo>()
+    let currentClassName: string | null = null
+    let inConstructor = false
 
     function markAsMutable(varName: string): void {
       const info = variables.get(varName)
@@ -267,6 +247,87 @@ export const preferReadonlyRule: RuleDefinition = {
         })
       },
 
+      ClassDeclaration(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+        const n = node as Record<string, unknown>
+        const id = n.id as Record<string, unknown> | undefined
+        currentClassName = id && typeof id.name === 'string' ? id.name : null
+      },
+
+      'ClassDeclaration:exit'(): void {
+        currentClassName = null
+      },
+
+      ClassExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+        const n = node as Record<string, unknown>
+        const id = n.id as Record<string, unknown> | undefined
+        currentClassName = id && typeof id.name === 'string' ? id.name : null
+      },
+
+      'ClassExpression:exit'(): void {
+        currentClassName = null
+      },
+
+      MethodDefinition(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+        const n = node as Record<string, unknown>
+        const kind = n.kind as string | undefined
+        inConstructor = kind === 'constructor'
+      },
+
+      'MethodDefinition:exit'(): void {
+        inConstructor = false
+      },
+
+      PropertyDefinition(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const key = n.key as Record<string, unknown> | undefined
+        const value = n.value
+        const readonly = n.readonly as boolean | undefined
+
+        if (readonly === true) {
+          return
+        }
+
+        let name: string | null = null
+        let isPrivate = false
+
+        if (key?.type === 'Identifier') {
+          name = key.name as string
+          isPrivate = isPrivateMember(name)
+        } else if (key?.type === 'PrivateIdentifier') {
+          name = key.name as string
+          isPrivate = true
+        }
+
+        if (!name) {
+          return
+        }
+
+        const loc = extractLocation(node)
+        const propertyKey = `${currentClassName ?? 'unknown'}.${name}`
+
+        classProperties.set(propertyKey, {
+          name,
+          className: currentClassName,
+          isReadonly: false,
+          isPrivate,
+          hasInitialValue: value !== null && value !== undefined,
+          loc,
+        })
+      },
+
       AssignmentExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
@@ -285,6 +346,17 @@ export const preferReadonlyRule: RuleDefinition = {
           markAsMutable(leftNode.name as string)
         } else if (leftNode.type === 'MemberExpression') {
           checkMemberMutation(left)
+          const obj = leftNode.object as Record<string, unknown> | undefined
+          if (obj?.type === 'ThisExpression' && !inConstructor) {
+            const prop = leftNode.property as Record<string, unknown> | undefined
+            if (prop?.type === 'Identifier' && typeof prop.name === 'string') {
+              const propertyKey = `${currentClassName ?? 'unknown'}.${prop.name}`
+              const classProp = classProperties.get(propertyKey)
+              if (classProp) {
+                classProp.isReadonly = true
+              }
+            }
+          }
         }
       },
 
@@ -369,6 +441,21 @@ export const preferReadonlyRule: RuleDefinition = {
 
           context.report({
             message: `Variable '${info.name}' is an array or object that is never modified. Consider using 'const' with 'as const' or a 'readonly' type for better immutability.`,
+            loc: info.loc,
+          })
+        }
+
+        for (const [, info] of classProperties) {
+          if (info.isReadonly) {
+            continue
+          }
+
+          if (ignorePrivateMembers && info.isPrivate) {
+            continue
+          }
+
+          context.report({
+            message: `Class property '${info.name}' is never reassigned outside the constructor. Consider using the 'readonly' modifier for better immutability.`,
             loc: info.loc,
           })
         }

@@ -56,6 +56,7 @@ export const maxComplexityRule: RuleDefinition<MaxComplexityOptions> = {
     description: 'Enforce a maximum cyclomatic complexity threshold for functions',
     category: 'complexity',
     recommended: true,
+    fixable: 'code',
   },
   defaultOptions: {
     max: 10,

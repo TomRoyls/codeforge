@@ -998,4 +998,184 @@ describe('prefer-readonly rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('class properties and declarations', () => {
+    test('should report unmodified class PropertyDefinition with array', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: {
+          type: 'Identifier',
+          name: 'MyClass',
+        },
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: {
+          type: 'Identifier',
+          name: 'items',
+        },
+        value: createArrayExpression(),
+        readonly: false,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('items')
+      expect(reports[0].message).toContain('readonly')
+    })
+
+    test('should report unmodified class PropertyDefinition with object', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: {
+          type: 'Identifier',
+          name: 'MyClass',
+        },
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: {
+          type: 'Identifier',
+          name: 'config',
+        },
+        value: createObjectExpression(),
+        readonly: false,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('config')
+    })
+
+    test('should not report class PropertyDefinition with readonly modifier', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: {
+          type: 'Identifier',
+          name: 'MyClass',
+        },
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: {
+          type: 'Identifier',
+          name: 'items',
+        },
+        value: createArrayExpression(),
+        readonly: true,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report class PropertyDefinition assigned outside constructor', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: {
+          type: 'Identifier',
+          name: 'MyClass',
+        },
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: {
+          type: 'Identifier',
+          name: 'items',
+        },
+        value: createArrayExpression(),
+        readonly: false,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor.AssignmentExpression({
+        type: 'AssignmentExpression',
+        left: {
+          type: 'MemberExpression',
+          object: {
+            type: 'ThisExpression',
+          },
+          property: {
+            type: 'Identifier',
+            name: 'items',
+          },
+        },
+        right: createArrayExpression(),
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report class PropertyDefinition assigned in constructor', () => {
+      const { context, reports } = createMockContext()
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: {
+          type: 'Identifier',
+          name: 'MyClass',
+        },
+      })
+
+      visitor.MethodDefinition({
+        type: 'MethodDefinition',
+        kind: 'constructor',
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: {
+          type: 'Identifier',
+          name: 'items',
+        },
+        value: createArrayExpression(),
+        readonly: false,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor.AssignmentExpression({
+        type: 'AssignmentExpression',
+        left: {
+          type: 'MemberExpression',
+          object: {
+            type: 'ThisExpression',
+          },
+          property: {
+            type: 'Identifier',
+            name: 'items',
+          },
+        },
+        right: createArrayExpression(),
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(1)
+    })
+  })
 })

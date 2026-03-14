@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeForge Analysis Report</title>
+  <style>
+    :root {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-card: #0f3460;
+      --text-primary: #eaeaea;
+      --text-secondary: #a0a0a0;
+      --error-color: #ff6b6b;
+      --warning-color: #ffd93d;
+      --info-color: #6bcfff;
+      --success-color: #6bcb77;
+      --border-color: #2d4059;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header h1 { font-size: 2rem; margin-bottom: 10px; }
+
+    .meta { color: var(--text-secondary); font-size: 0.9rem; display: flex; gap: 20px; justify-content: center; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background: var(--bg-secondary);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .summary-card:hover { transform: translateY(-2px); }
+    .summary-card.has-errors { border-color: var(--error-color); }
+    .summary-card.has-warnings { border-color: var(--warning-color); }
+
+    .summary-icon { font-size: 1.5rem; display: block; margin-bottom: 5px; }
+    .summary-icon.error { color: var(--error-color); }
+    .summary-icon.warning { color: var(--warning-color); }
+    .summary-icon.info { color: var(--info-color); }
+    .summary-icon.files { color: var(--text-secondary); }
+
+    .summary-count { font-size: 2rem; font-weight: bold; display: block; }
+    .summary-label { color: var(--text-secondary); font-size: 0.9rem; }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .filter-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover { background: var(--bg-card); }
+    .filter-btn.active { background: var(--bg-card); border-color: var(--info-color); }
+
+    .sort { display: flex; align-items: center; gap: 10px; }
+    .sort label { color: var(--text-secondary); }
+    .sort select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .actions { display: flex; gap: 10px; }
+    .actions button {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .actions button:hover { background: var(--bg-card); }
+
+    .results { margin-bottom: 30px; }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      font-size: 1.2rem;
+      color: var(--success-color);
+    }
+
+    .success-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+    .no-results h2 { margin-bottom: 10px; }
+    .no-results p { color: var(--text-secondary); }
+
+    .file-section {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .file-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px;
+      cursor: pointer;
+      background: var(--bg-card);
+      list-style: none;
+    }
+
+    .file-header::-webkit-details-marker { display: none; }
+
+    .toggle-icon {
+      transition: transform 0.2s;
+      font-size: 0.8rem;
+    }
+
+    .file-section[open] .toggle-icon { transform: rotate(0deg); }
+    .file-section:not([open]) .toggle-icon { transform: rotate(-90deg); }
+
+    .file-path {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .file-badges { display: flex; gap: 8px; }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .badge.error { background: rgba(255, 107, 107, 0.2); color: var(--error-color); }
+    .badge.warning { background: rgba(255, 217, 61, 0.2); color: var(--warning-color); }
+    .badge.info { background: rgba(107, 207, 255, 0.2); color: var(--info-color); }
+
+    .violations { padding: 10px 0; }
+
+    .violation {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.2s;
+    }
+
+    .violation:last-child { border-bottom: none; }
+    .violation:hover { background: rgba(255, 255, 255, 0.02); }
+
+    .violation-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .severity-icon {
+      font-size: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .severity-icon.error { color: var(--error-color); }
+    .severity-icon.warning { color: var(--warning-color); }
+    .severity-icon.info { color: var(--info-color); }
+
+    .location {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .rule-id {
+      margin-left: auto;
+      background: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+
+    .violation-message { padding-left: 30px; }
+
+    .source-code {
+      margin: 10px 0 10px 30px;
+      padding: 10px;
+      background: var(--bg-primary);
+      border-radius: 4px;
+      overflow-x: auto;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+    }
+
+    .suggestion {
+      margin: 10px 0 0 30px;
+      padding: 10px;
+      background: rgba(107, 203, 119, 0.1);
+      border-left: 3px solid var(--success-color);
+      border-radius: 0 4px 4px 0;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>CodeForge Analysis Report</h1>
+      <div class="meta">
+        <span>Generated: 2024-01-15T10:00:00.000Z</span>
+        
+      </div>
+    </header>
+
+    <div class="summary">
+      <div class="summary-card " onclick="filterBy('error')">
+        <span class="summary-icon error">✖</span>
+        <span class="summary-count">0</span>
+        <span class="summary-label">Errors</span>
+      </div>
+      <div class="summary-card " onclick="filterBy('warning')">
+        <span class="summary-icon warning">⚠</span>
+        <span class="summary-count">0</span>
+        <span class="summary-label">Warnings</span>
+      </div>
+      <div class="summary-card" onclick="filterBy('info')">
+        <span class="summary-icon info">ℹ</span>
+        <span class="summary-count">0</span>
+        <span class="summary-label">Info</span>
+      </div>
+      <div class="summary-card" onclick="filterBy('all')">
+        <span class="summary-icon files">📄</span>
+        <span class="summary-count">0</span>
+        <span class="summary-label">Files</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="error">Errors</button>
+        <button class="filter-btn" data-filter="warning">Warnings</button>
+        <button class="filter-btn" data-filter="info">Info</button>
+      </div>
+      <div class="sort">
+        <label for="sort-select">Sort by:</label>
+        <select id="sort-select">
+          <option value="severity">Severity</option>
+          <option value="file">File</option>
+          <option value="rule">Rule</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button id="expand-all">Expand All</button>
+        <button id="collapse-all">Collapse All</button>
+      </div>
+    </div>
+
+    <div class="results">
+      <div class="no-results"><span class="success-icon">✓</span><h2>No problems found!</h2><p>All files passed analysis.</p></div>
+    </div>
+
+    <footer class="footer">
+      <span>Total time: 0ms</span>
+      <span>Powered by CodeForge</span>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var filterBtns = document.querySelectorAll('.filter-btn');
+      var sortSelect = document.getElementById('sort-select');
+      var fileSections = document.querySelectorAll('.file-section');
+      var expandAllBtn = document.getElementById('expand-all');
+      var collapseAllBtn = document.getElementById('collapse-all');
+
+      function filterViolations(severity) {
+        var violations = document.querySelectorAll('.violation');
+        violations.forEach(function(v) {
+          if (severity === 'all' || v.dataset.severity === severity) {
+            v.classList.remove('hidden');
+          } else {
+            v.classList.add('hidden');
+          }
+        });
+        updateFileVisibility();
+        updateFilterButtons(severity);
+      }
+
+      function updateFilterButtons(severity) {
+        filterBtns.forEach(function(btn) {
+          btn.classList.toggle('active', btn.dataset.filter === severity);
+        });
+      }
+
+      function updateFileVisibility() {
+        fileSections.forEach(function(section) {
+          var visibleViolations = section.querySelectorAll('.violation:not(.hidden)');
+          section.classList.toggle('hidden', visibleViolations.length === 0);
+        });
+      }
+
+      function filterBy(severity) {
+        filterViolations(severity);
+      }
+
+      window.filterBy = filterBy;
+
+      filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          filterViolations(this.dataset.filter);
+        });
+      });
+
+      sortSelect.addEventListener('change', function() {
+        var criteria = this.value;
+        var container = document.querySelector('.results');
+        var sections = Array.from(fileSections);
+        
+        sections.sort(function(a, b) {
+          if (criteria === 'file') {
+            return a.dataset.file.localeCompare(b.dataset.file);
+          } else if (criteria === 'severity') {
+            var order = { error: 0, warning: 1, info: 2 };
+            var aSev = getSeverityPriority(a);
+            var bSev = getSeverityPriority(b);
+            return aSev - bSev;
+          } else if (criteria === 'rule') {
+            var aRule = a.querySelector('.violation')?.dataset.rule || '';
+            var bRule = b.querySelector('.violation')?.dataset.rule || '';
+            return aRule.localeCompare(bRule);
+          }
+          return 0;
+        });
+        
+        sections.forEach(function(s) { container.appendChild(s); });
+      });
+
+      function getSeverityPriority(section) {
+        var violations = section.querySelectorAll('.violation');
+        var minPriority = 3;
+        violations.forEach(function(v) {
+          var order = { error: 0, warning: 1, info: 2 };
+          var p = order[v.dataset.severity] ?? 3;
+          if (p < minPriority) minPriority = p;
+        });
+        return minPriority;
+      }
+
+      expandAllBtn.addEventListener('click', function() {
+        fileSections.forEach(function(s) { s.open = true; });
+      });
+
+      collapseAllBtn.addEventListener('click', function() {
+        fileSections.forEach(function(s) { s.open = false; });
+      });
+    })();
+  </script>
+</body>
+</html>
