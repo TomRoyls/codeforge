@@ -171,13 +171,19 @@ export default class Stats extends Command {
         try {
           const content = await fs.readFile(file.absolutePath, 'utf8')
           const lines = content.split('\n')
-          const loc = lines.filter(
-            (line) => line.trim().length > 0 && !line.trim().startsWith('//'),
-          ).length
-          const comments = lines.filter(
-            (line) => line.trim().startsWith('//') || line.trim().startsWith('/*'),
-          ).length
-          const blank = lines.filter((line) => line.trim().length === 0).length
+          let loc = 0
+          let comments = 0
+          let blank = 0
+          for (const line of lines) {
+            const trimmed = line.trim()
+            if (trimmed.length === 0) {
+              blank++
+            } else if (trimmed.startsWith('//') || trimmed.startsWith('/*')) {
+              comments++
+            } else {
+              loc++
+            }
+          }
 
           const ext = extname(file.path).toLowerCase()
 
