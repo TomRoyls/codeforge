@@ -91,7 +91,10 @@ vi.mock('../../../src/config/validator.js', () => ({ validateConfig: vi.fn((c) =
 
 vi.mock('../../../src/config/merger.js', () => ({
   mergeConfigs: vi.fn((base, cli) => ({ ...base, ...cli })),
+  mergeEnvConfig: vi.fn((fileConfig, envConfig) => ({ ...fileConfig, ...envConfig })),
 }))
+
+vi.mock('../../../src/config/env-parser.js', () => ({ parseEnvVars: vi.fn(() => ({})) }))
 
 vi.mock('../../../src/rules/index.js', () => ({
   allRules: {},
@@ -125,7 +128,6 @@ describe('Analyze Command', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    vi.resetModules()
 
     mockDiscoverFiles = (await import('../../../src/core/file-discovery.js'))
       .discoverFiles as ReturnType<typeof vi.fn>

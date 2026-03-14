@@ -9,9 +9,10 @@ import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { allRules } from '../rules/index.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
+import { resolvePatterns, setupRuleRegistry } from './command-helpers.js'
 
 interface FileFixResult {
   conflicts: Array<{ conflictingRule: string; ruleId: string }>
@@ -114,7 +115,7 @@ export default class Fix extends Command {
 
     try {
       const config = DEFAULT_CONFIG
-      const patterns = this.resolvePatterns(args.files, config.files)
+      const patterns = resolvePatterns(args.files, config.files)
       const ignore = flags.ignore ?? config.ignore ?? []
       const requestedRules = flags.rules?.split(',').map((r) => r.trim())
 
@@ -147,7 +148,7 @@ export default class Fix extends Command {
         return
       }
 
-      const registry = this.setupRuleRegistry(requestedRules)
+      const registry = setupRuleRegistry(requestedRules)
       const parser = new Parser()
 
       const context: ProcessContext = {
@@ -360,36 +361,5 @@ export default class Fix extends Command {
     }
 
     return { filesModified, filesUnchanged, totalFixesApplied, totalFixesSkipped }
-  }
-
-  private resolvePatterns(
-    argsFiles: string | string[] | undefined,
-    configFiles: string[] | undefined,
-  ): string[] {
-    if (argsFiles) {
-      return Array.isArray(argsFiles) ? argsFiles : [argsFiles]
-    }
-
-    return configFiles ?? []
-  }
-
-  private setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
-    const registry = new RuleRegistry()
-
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
-    }
-
-    if (requestedRules && requestedRules.length > 0) {
-      const requestedSet = new Set(requestedRules)
-
-      for (const [ruleId] of Object.entries(allRules)) {
-        if (!requestedSet.has(ruleId)) {
-          registry.disable(ruleId)
-        }
-      }
-    }
-
-    return registry
   }
 }

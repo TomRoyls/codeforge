@@ -133,37 +133,25 @@ describe('Watch Command', () => {
 
   describe('helper methods', () => {
     test('resolvePatterns should handle array args', async () => {
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      // @ts-expect-error - accessing private method for testing
-      const resolvePatterns = cmd.resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns(['a.ts', 'b.ts'], ['default.ts'])).toEqual(['a.ts', 'b.ts'])
     })
 
     test('resolvePatterns should handle string args', async () => {
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      // @ts-expect-error - accessing private method for testing
-      const resolvePatterns = cmd.resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns('single.ts', ['default.ts'])).toEqual(['single.ts'])
     })
 
     test('resolvePatterns should fall back to config files', async () => {
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      // @ts-expect-error - accessing private method for testing
-      const resolvePatterns = cmd.resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns(undefined, ['config.ts'])).toEqual(['config.ts'])
     })
 
     test('resolvePatterns should return empty array when no patterns', async () => {
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      // @ts-expect-error - accessing private method for testing
-      const resolvePatterns = cmd.resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns(undefined, undefined)).toEqual([])
     })
@@ -173,18 +161,18 @@ describe('Watch Command', () => {
     test('should load config from file when found', async () => {
       const { findConfigPath } = await import('../../../src/config/discovery.js')
       const { validateConfig } = await import('../../../src/config/validator.js')
+      const { loadCommandConfig } = await import('../../../src/commands/command-helpers.js')
+      const { ConfigCache } = await import('../../../src/config/cache.js')
 
       const mockConfig = { files: ['test.ts'], ignore: ['node_modules'] }
       vi.mocked(findConfigPath).mockResolvedValue('/path/to/config.json')
       vi.mocked(validateConfig).mockReturnValue(mockConfig as never)
 
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-      // @ts-expect-error - accessing private method for testing
-      const loadConfig = cmd.loadConfig.bind(cmd)
-      // @ts-expect-error - accessing private property for testing
-      cmd.configCache.getConfig.mockResolvedValue(mockConfig as never)
+      const mockConfigCache = {
+        getConfig: vi.fn().mockResolvedValue(mockConfig),
+      } as never
 
-      const result = await loadConfig({})
+      const result = await loadCommandConfig({}, mockConfigCache)
 
       expect(findConfigPath).toHaveBeenCalledWith(undefined, process.cwd())
       expect(validateConfig).toHaveBeenCalledWith(mockConfig)
@@ -194,16 +182,17 @@ describe('Watch Command', () => {
     test('should use defaults when no config file found', async () => {
       const { findConfigPath } = await import('../../../src/config/discovery.js')
       const { mergeConfigs } = await import('../../../src/config/merger.js')
+      const { loadCommandConfig } = await import('../../../src/commands/command-helpers.js')
 
       vi.mocked(findConfigPath).mockResolvedValue(null)
       vi.mocked(mergeConfigs).mockReturnValue({ files: ['default.ts'] } as never)
 
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-      // @ts-expect-error - accessing private method for testing
-      const loadConfig = cmd.loadConfig.bind(cmd)
+      const mockConfigCache = {
+        getConfig: vi.fn(),
+      } as never
 
       const flags = { files: ['custom.ts'], ignore: ['dist'] }
-      const result = await loadConfig(flags)
+      const result = await loadCommandConfig(flags, mockConfigCache)
 
       expect(findConfigPath).toHaveBeenCalledWith(undefined, process.cwd())
       expect(mergeConfigs).toHaveBeenCalled()
@@ -213,17 +202,17 @@ describe('Watch Command', () => {
     test('should use defaults when config path is found but no config content', async () => {
       const { findConfigPath } = await import('../../../src/config/discovery.js')
       const { mergeConfigs } = await import('../../../src/config/merger.js')
+      const { loadCommandConfig } = await import('../../../src/commands/command-helpers.js')
+      const { ConfigCache } = await import('../../../src/config/cache.js')
 
       vi.mocked(findConfigPath).mockResolvedValue('/path/to/config.json')
       vi.mocked(mergeConfigs).mockReturnValue({ files: [] } as never)
 
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-      // @ts-expect-error - accessing private method for testing
-      const loadConfig = cmd.loadConfig.bind(cmd)
-      // @ts-expect-error - accessing private property for testing
-      cmd.configCache.getConfig.mockResolvedValue(null)
+      const mockConfigCache = {
+        getConfig: vi.fn().mockResolvedValue(null),
+      } as never
 
-      const result = await loadConfig({})
+      const result = await loadCommandConfig({}, mockConfigCache)
 
       expect(findConfigPath).toHaveBeenCalled()
       expect(result).toBeDefined()
@@ -363,7 +352,9 @@ describe('Watch Command', () => {
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
+      // @ts-expect-error - accessing private method for testing
       const analyzeFile = cmd.analyzeFile.bind(cmd)
+      // @ts-expect-error - accessing private property for testing
       ;(cmd as { parser: Parser }).parser = new Parser()
 
       const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
@@ -447,7 +438,9 @@ describe('Watch Command', () => {
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
+      // @ts-expect-error - accessing private method for testing
       const analyzeFile = cmd.analyzeFile.bind(cmd)
+      // @ts-expect-error - accessing private property for testing
       ;(cmd as { parser: Parser }).parser = new Parser()
 
       const spyLog = vi.spyOn(cmd, 'log').mockImplementation(() => {})
@@ -838,6 +831,7 @@ describe('Watch Command', () => {
   describe('setupRuleRegistry', () => {
     test('should register all rules when no requestedRules provided', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
+      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
@@ -852,9 +846,6 @@ describe('Watch Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      const setupRuleRegistry = cmd.setupRuleRegistry.bind(cmd)
       const registry = setupRuleRegistry(undefined)
 
       expect(mockRegister).toHaveBeenCalled()
@@ -865,6 +856,7 @@ describe('Watch Command', () => {
     test('should disable rules not in requestedRules', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
       const { allRules } = await import('../../../src/rules/index.js')
+      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
@@ -879,9 +871,6 @@ describe('Watch Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      const setupRuleRegistry = cmd.setupRuleRegistry.bind(cmd)
       const ruleIds = Object.keys(allRules)
 
       if (ruleIds.length > 0) {
@@ -918,9 +907,7 @@ describe('Watch Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      const setupRuleRegistry = cmd.setupRuleRegistry.bind(cmd)
+      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
       const ruleIds = Object.keys(allRules)
 
       if (ruleIds.length >= 2) {

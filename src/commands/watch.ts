@@ -1,21 +1,14 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 
-import type { CodeForgeConfig } from '../config/types.js'
-
 import { ConfigCache } from '../config/cache.js'
-import { findConfigPath } from '../config/discovery.js'
-import { parseEnvVars } from '../config/env-parser.js'
-import { mergeConfigs, mergeEnvConfig } from '../config/merger.js'
-import { validateConfig } from '../config/validator.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
-import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
 import { DEFAULT_DEBOUNCE_MS } from '../utils/constants.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
 import { FileWatcher } from '../utils/watcher.js'
+import { loadCommandConfig, resolvePatterns, setupRuleRegistry } from './command-helpers.js'
 
 export default class Watch extends Command {
   static override args = {
@@ -84,8 +77,8 @@ export default class Watch extends Command {
     }
 
     try {
-      const config = await this.loadConfig(flags)
-      const patterns = this.resolvePatterns(args.files, config.files)
+      const config = await loadCommandConfig(flags, this.configCache)
+      const patterns = resolvePatterns(args.files, config.files)
       const ignore = config.ignore ?? []
       const requestedRules = flags.rules?.split(',').map((r) => r.trim())
 
@@ -158,7 +151,7 @@ export default class Watch extends Command {
     this.isRunning = true
 
     try {
-      const registry = this.setupRuleRegistry(requestedRules)
+      const registry = setupRuleRegistry(requestedRules)
 
       if (!this.parser) {
         return
@@ -232,68 +225,5 @@ export default class Watch extends Command {
     }
 
     this.exit(0)
-  }
-
-  private async loadConfig(flags: {
-    config?: string
-    files?: string[]
-    ignore?: string[]
-  }): Promise<CodeForgeConfig> {
-    const envConfig = parseEnvVars()
-    const cliFlagsConfig: Partial<CodeForgeConfig> = {}
-    if (flags.files !== undefined) {
-      cliFlagsConfig.files = flags.files
-    }
-
-    if (flags.ignore !== undefined) {
-      cliFlagsConfig.ignore = flags.ignore
-    }
-
-    const configPath = await findConfigPath(flags.config, process.cwd())
-
-    if (configPath) {
-      logger.info(`Loading config from: ${configPath}`)
-      const rawConfig = await this.configCache.getConfig(configPath)
-      if (rawConfig) {
-        const fileConfig = validateConfig(rawConfig)
-        const mergedWithEnv = mergeEnvConfig(fileConfig, envConfig)
-        return mergeConfigs(mergedWithEnv, cliFlagsConfig)
-      }
-    }
-
-    logger.debug('No config file found, using defaults with env vars')
-    const mergedWithEnv = mergeEnvConfig({}, envConfig)
-    return mergeConfigs(mergedWithEnv, cliFlagsConfig)
-  }
-
-  private resolvePatterns(
-    argsFiles: string | string[] | undefined,
-    configFiles: string[] | undefined,
-  ): string[] {
-    if (argsFiles) {
-      return Array.isArray(argsFiles) ? argsFiles : [argsFiles]
-    }
-
-    return configFiles ?? []
-  }
-
-  private setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
-    const registry = new RuleRegistry()
-
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
-    }
-
-    if (requestedRules && requestedRules.length > 0) {
-      const requestedSet = new Set(requestedRules)
-
-      for (const [ruleId] of Object.entries(allRules)) {
-        if (!requestedSet.has(ruleId)) {
-          registry.disable(ruleId)
-        }
-      }
-    }
-
-    return registry
   }
 }

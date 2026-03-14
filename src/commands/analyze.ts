@@ -4,21 +4,17 @@ import path from 'node:path'
 import ora, { type Ora } from 'ora'
 import pLimit from 'p-limit'
 
-import type { CodeForgeConfig } from '../config/types.js'
-
 import { type RuleViolation } from '../ast/visitor.js'
 import { ConfigCache } from '../config/cache.js'
-import { findConfigPath } from '../config/discovery.js'
-import { mergeConfigs } from '../config/merger.js'
-import { validateConfig } from '../config/validator.js'
 import { type DiscoveredFile, discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { type OutputFormat, Reporter } from '../core/reporter.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { allRules } from '../rules/index.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
+import { loadCommandConfig, setupRuleRegistry } from './command-helpers.js'
 
 interface FileReport {
   filePath: string
@@ -174,7 +170,7 @@ export default class Analyze extends Command {
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Analyze)
 
-    const config = await this.loadConfig(flags)
+    const config = await loadCommandConfig(flags, this.configCache)
     const files = config.files ?? []
     const ignore = config.ignore ?? []
 
@@ -210,7 +206,7 @@ export default class Analyze extends Command {
     spinner?.succeed(`Found ${discoveredFiles.length} files to analyze`)
 
     const requestedRules = flags.rules
-    const registry = this.setupRuleRegistry(requestedRules)
+    const registry = setupRuleRegistry(requestedRules)
 
     const parser = new Parser()
     await parser.initialize()
@@ -472,43 +468,5 @@ export default class Analyze extends Command {
     }
 
     return rulesWithFixes
-  }
-
-  private async loadConfig(flags: {
-    config?: string
-    files?: string[]
-    ignore?: string[]
-  }): Promise<CodeForgeConfig> {
-    const configPath = await findConfigPath(flags.config, process.cwd())
-
-    if (configPath) {
-      logger.info(`Loading config from: ${configPath}`)
-      const rawConfig = await this.configCache.getConfig(configPath)
-      if (rawConfig) {
-        return validateConfig(rawConfig)
-      }
-    }
-
-    logger.debug('No config file found, using defaults')
-    return mergeConfigs({}, { files: flags.files, ignore: flags.ignore })
-  }
-
-  private setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
-    const registry = new RuleRegistry()
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      const category = getRuleCategory(ruleId)
-      registry.register(ruleId, ruleDef, category)
-    }
-
-    if (requestedRules && requestedRules.length > 0) {
-      const requestedSet = new Set(requestedRules)
-      for (const [ruleId] of Object.entries(allRules)) {
-        if (!requestedSet.has(ruleId)) {
-          registry.disable(ruleId)
-        }
-      }
-    }
-
-    return registry
   }
 }

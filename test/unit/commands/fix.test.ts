@@ -321,50 +321,25 @@ describe('Fix Command', () => {
 
   describe('helper methods', () => {
     test('resolvePatterns should handle array args', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
-
-      // Access private method via type assertion
-      const resolvePatterns = (
-        cmd as unknown as {
-          resolvePatterns: typeof import('../../../src/commands/fix.js').default.prototype.resolvePatterns
-        }
-      ).resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns(['a.ts', 'b.ts'], ['default.ts'])).toEqual(['a.ts', 'b.ts'])
     })
 
     test('resolvePatterns should handle string args', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
-
-      const resolvePatterns = (
-        cmd as unknown as {
-          resolvePatterns: typeof import('../../../src/commands/fix.js').default.prototype.resolvePatterns
-        }
-      ).resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns('single.ts', ['default.ts'])).toEqual(['single.ts'])
     })
 
     test('resolvePatterns should fall back to config files', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
-
-      const resolvePatterns = (
-        cmd as unknown as {
-          resolvePatterns: typeof import('../../../src/commands/fix.js').default.prototype.resolvePatterns
-        }
-      ).resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns(undefined, ['config.ts'])).toEqual(['config.ts'])
     })
 
     test('resolvePatterns should return empty array when no patterns', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
-
-      const resolvePatterns = (
-        cmd as unknown as {
-          resolvePatterns: typeof import('../../../src/commands/fix.js').default.prototype.resolvePatterns
-        }
-      ).resolvePatterns
+      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
 
       expect(resolvePatterns(undefined, undefined)).toEqual([])
     })
@@ -606,26 +581,14 @@ describe('Fix Command', () => {
     })
 
     test('setupRuleRegistry should disable non-requested rules', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
-
-      const setupRuleRegistry = (
-        cmd as unknown as {
-          setupRuleRegistry: typeof import('../../../src/commands/fix.js').default.prototype.setupRuleRegistry
-        }
-      ).setupRuleRegistry
+      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
 
       const registry = setupRuleRegistry(['prefer-const'])
       expect(registry).toBeDefined()
     })
 
     test('setupRuleRegistry should handle empty requested rules array', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
-
-      const setupRuleRegistry = (
-        cmd as unknown as {
-          setupRuleRegistry: typeof import('../../../src/commands/fix.js').default.prototype.setupRuleRegistry
-        }
-      ).setupRuleRegistry
+      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
 
       const registry = setupRuleRegistry([])
       expect(registry).toBeDefined()
