@@ -9,8 +9,11 @@ function escapeCSVField(value: unknown): string {
   const str = String(value)
   if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
     return `"${str.replaceAll('"', '""')}"`
+  }
+
   return str
 }
+
 export class CSVReporter implements Reporter {
   readonly name = 'csv'
   private readonly outputPath: string | undefined
@@ -33,15 +36,12 @@ export class CSVReporter implements Reporter {
     return fields.map((field) => escapeCSVField(field)).join(',')
   }
   report(results: AnalysisResult): void {
-    const lines: string[] = []
-    lines.push(this.getHeader())
-    for (const file of results.files) {
-      for (const violation of file.violations) {
-        lines.push(this.formatViolation(violation))
-      }
-    }
-    lines.push('')
-    lines.push(this.formatSummary(results))
+    const lines: string[] = [
+      this.getHeader(),
+      ...results.files.flatMap((file) => file.violations.map((v) => this.formatViolation(v))),
+      '',
+      this.formatSummary(results),
+    ]
     const csv = lines.join('\n')
     if (this.outputPath) {
       writeToFile(this.outputPath, csv)
@@ -83,4 +83,3 @@ export class CSVReporter implements Reporter {
 export function createCSVReporter(options: ReporterOptions): Reporter {
   return new CSVReporter(options)
 }
-
