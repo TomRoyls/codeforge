@@ -30,8 +30,14 @@ interface AnalysisSummary {
   warnings: number
 }
 
+interface FailedFile {
+  error: string
+  filePath: string
+}
+
 interface AnalysisResult {
   allViolations: RuleViolation[]
+  failedFiles: FailedFile[]
   fileReports: FileReport[]
 }
 
@@ -310,11 +316,13 @@ export default class Analyze extends Command {
               violations: violationsWithFilePath,
             }
           } catch (error) {
-            if (verbose) {
-              logger.warn(`Failed to analyze ${file.path}: ${(error as Error).message}`)
-            }
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            logger.debug(`Failed to analyze ${file.path}: ${errorMessage}`)
 
-            return null
+            return {
+              error: errorMessage,
+              filePath: file.path,
+            }
           }
         }),
       ),
@@ -322,15 +330,20 @@ export default class Analyze extends Command {
 
     const allViolations: RuleViolation[] = []
     const fileReports: FileReport[] = []
+    const failedFiles: FailedFile[] = []
 
     for (const result of results) {
-      if (result) {
-        fileReports.push(result)
-        allViolations.push(...result.violations)
+      if (!result) continue
+
+      if ('violations' in result) {
+        fileReports.push(result as FileReport)
+        allViolations.push(...(result as FileReport).violations)
+      } else if ('error' in result) {
+        failedFiles.push(result as FailedFile)
       }
     }
 
-    return { allViolations, fileReports }
+    return { allViolations, failedFiles, fileReports }
   }
 
   private async applyFixes(options: ApplyFixesOptions): Promise<FixResult> {
