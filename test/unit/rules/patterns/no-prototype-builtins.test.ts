@@ -1,10 +1,12 @@
-import { describe, test, expect, vi } from 'vitest'
-import { noPrototypeBuiltinsRule } from '../../../../src/rules/patterns/no-prototype-builtins.js'
+import { describe, expect, test, vi } from 'vitest'
+
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
+import { noPrototypeBuiltinsRule } from '../../../../src/rules/patterns/no-prototype-builtins.js'
+
 interface ReportDescriptor {
+  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
   message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
 }
 
 function createMockContext(
@@ -15,23 +17,23 @@ function createMockContext(
   const reports: ReportDescriptor[] = []
 
   const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
+    config: { options: [options] },
     getAST: () => null,
+    getComments: () => [],
+    getFilePath: () => filePath,
     getSource: () => source,
     getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
     logger: {
       debug: vi.fn(),
+      error: vi.fn(),
       info: vi.fn(),
       warn: vi.fn(),
-      error: vi.fn(),
+    },
+    report(descriptor: ReportDescriptor) {
+      reports.push({
+        loc: descriptor.loc,
+        message: descriptor.message,
+      })
     },
     workspaceRoot: '/src',
   } as unknown as RuleContext
@@ -41,25 +43,25 @@ function createMockContext(
 
 function createIdentifier(name: string, line = 1, column = 0): unknown {
   return {
-    type: 'Identifier',
-    name: name,
     loc: {
-      start: { line, column },
-      end: { line, column: column + name.length },
+      end: { column: column + name.length, line },
+      start: { column, line },
     },
+    name,
+    type: 'Identifier',
   }
 }
 
 function createMemberExpression(object: unknown, property: unknown, line = 1, column = 0): unknown {
   return {
-    type: 'MemberExpression',
-    object,
-    property,
     computed: false,
     loc: {
-      start: { line, column },
-      end: { line, column: column + 10 },
+      end: { column: column + 10, line },
+      start: { column, line },
     },
+    object,
+    property,
+    type: 'MemberExpression',
   }
 }
 
@@ -70,13 +72,13 @@ function createCallExpression(
   column = 0,
 ): unknown {
   return {
-    type: 'CallExpression',
-    callee,
     arguments: args,
+    callee,
     loc: {
-      start: { line, column },
-      end: { line, column: column + 20 },
+      end: { column: column + 20, line },
+      start: { column, line },
     },
+    type: 'CallExpression',
   }
 }
 
@@ -348,7 +350,7 @@ describe('no-prototype-builtins rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noPrototypeBuiltinsRule.create(context)
 
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
+      expect(() => visitor.CallExpression()).not.toThrow()
 
       expect(reports.length).toBe(0)
     })
@@ -368,8 +370,8 @@ describe('no-prototype-builtins rule', () => {
       const visitor = noPrototypeBuiltinsRule.create(context)
 
       const node = {
-        type: 'CallExpression',
         arguments: [],
+        type: 'CallExpression',
       }
       visitor.CallExpression(node)
 
@@ -394,8 +396,8 @@ describe('no-prototype-builtins rule', () => {
 
       const obj = createIdentifier('obj')
       const member = {
-        type: 'MemberExpression',
         object: obj,
+        type: 'MemberExpression',
       }
       const call = createCallExpression(member)
 

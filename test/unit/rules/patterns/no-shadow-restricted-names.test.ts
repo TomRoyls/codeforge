@@ -486,7 +486,7 @@ describe('no-shadow-restricted-names rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should handle node without loc for VariableDeclarator', () => {
+    test('should handle node without loc for VariableDeclarator (provides default location)', () => {
       const { context, reports } = createMockContext()
       const visitor = noShadowRestrictedNamesRule.create(context)
 
@@ -496,10 +496,10 @@ describe('no-shadow-restricted-names rule', () => {
       visitor.VariableDeclarator(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
     })
 
-    test('should handle node without loc for FunctionDeclaration', () => {
+    test('should handle node without loc for FunctionDeclaration (provides default location)', () => {
       const { context, reports } = createMockContext()
       const visitor = noShadowRestrictedNamesRule.create(context)
 
@@ -509,7 +509,7 @@ describe('no-shadow-restricted-names rule', () => {
       visitor.FunctionDeclaration(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
     })
 
     test('should handle non-VariableDeclarator node', () => {

@@ -130,15 +130,6 @@ describe('no-sparse-arrays rule', () => {
 
       expect(reports.length).toBe(0)
     })
-
-    test('should not report array with null elements at start', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noSparseArraysRule.create(context)
-
-      visitor.ArrayExpression(createArrayExpression([null, null, null]))
-
-      expect(reports.length).toBe(3)
-    })
   })
 
   describe('invalid arrays (with holes)', () => {

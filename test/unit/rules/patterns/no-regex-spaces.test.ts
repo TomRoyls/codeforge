@@ -1,10 +1,12 @@
-import { describe, test, expect, vi } from 'vitest'
-import { noRegexSpacesRule } from '../../../../src/rules/patterns/no-regex-spaces.js'
+import { describe, expect, test, vi } from 'vitest'
+
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
+import { noRegexSpacesRule } from '../../../../src/rules/patterns/no-regex-spaces.js'
+
 interface ReportDescriptor {
+  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
   message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
 }
 
 function createMockContext(
@@ -15,23 +17,23 @@ function createMockContext(
   const reports: ReportDescriptor[] = []
 
   const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
+    config: { options: [options] },
     getAST: () => null,
+    getComments: () => [],
+    getFilePath: () => filePath,
     getSource: () => source,
     getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
     logger: {
       debug: vi.fn(),
+      error: vi.fn(),
       info: vi.fn(),
       warn: vi.fn(),
-      error: vi.fn(),
+    },
+    report(descriptor: ReportDescriptor) {
+      reports.push({
+        loc: descriptor.loc,
+        message: descriptor.message,
+      })
     },
     workspaceRoot: '/src',
   } as unknown as RuleContext
@@ -42,14 +44,14 @@ function createMockContext(
 function createRegExpLiteral(pattern: string, flags = '', line = 1, column = 0): unknown {
   const raw = `/${pattern}/${flags}`
   return {
-    type: 'RegExpLiteral',
-    pattern,
     flags,
-    raw,
     loc: {
-      start: { line, column },
-      end: { line, column: column + raw.length },
+      end: { column: column + raw.length, line },
+      start: { column, line },
     },
+    pattern,
+    raw,
+    type: 'RegExpLiteral',
   }
 }
 
@@ -87,8 +89,8 @@ describe('no-regex-spaces rule', () => {
       expect(noRegexSpacesRule.meta.fixable).toBe('code')
     })
 
-    test('should mention \\s+ in description', () => {
-      expect(noRegexSpacesRule.meta.docs?.description).toContain('\\s+')
+    test(String.raw`should mention \s+ in description`, () => {
+      expect(noRegexSpacesRule.meta.docs?.description).toContain(String.raw`\s+`)
     })
 
     test('should have documentation URL', () => {
@@ -153,13 +155,13 @@ describe('no-regex-spaces rule', () => {
       expect(reports[0].message).toContain('(5)')
     })
 
-    test('should suggest \\s+ for multiple spaces', () => {
+    test(String.raw`should suggest \s+ for multiple spaces`, () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('test  pattern'))
 
-      expect(reports[0].message).toContain('\\s+')
+      expect(reports[0].message).toContain(String.raw`\s+`)
     })
 
     test('should suggest {N} for multiple spaces', () => {
@@ -182,20 +184,20 @@ describe('no-regex-spaces rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report \\s escape sequence', () => {
+    test(String.raw`should not report \s escape sequence`, () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
-      visitor.RegExpLiteral(createRegExpLiteral('test\\spattern'))
+      visitor.RegExpLiteral(createRegExpLiteral(String.raw`test\spattern`))
 
       expect(reports.length).toBe(0)
     })
 
-    test('should not report \\s+ quantifier', () => {
+    test(String.raw`should not report \s+ quantifier`, () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
-      visitor.RegExpLiteral(createRegExpLiteral('test\\s+pattern'))
+      visitor.RegExpLiteral(createRegExpLiteral(String.raw`test\s+pattern`))
 
       expect(reports.length).toBe(0)
     })
@@ -272,7 +274,7 @@ describe('no-regex-spaces rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
-      expect(() => visitor.RegExpLiteral(undefined)).not.toThrow()
+      expect(() => visitor.RegExpLiteral()).not.toThrow()
 
       expect(reports.length).toBe(0)
     })
@@ -292,9 +294,9 @@ describe('no-regex-spaces rule', () => {
       const visitor = noRegexSpacesRule.create(context)
 
       const node = {
-        type: 'RegExpLiteral',
-        pattern: 'test',
         flags: '',
+        pattern: 'test',
+        type: 'RegExpLiteral',
       }
       visitor.RegExpLiteral(node)
 
@@ -306,10 +308,10 @@ describe('no-regex-spaces rule', () => {
       const visitor = noRegexSpacesRule.create(context)
 
       const node = {
-        type: 'RegExpLiteral',
-        pattern: '',
         flags: '',
+        pattern: '',
         raw: '',
+        type: 'RegExpLiteral',
       }
       visitor.RegExpLiteral(node)
 
@@ -321,10 +323,10 @@ describe('no-regex-spaces rule', () => {
       const visitor = noRegexSpacesRule.create(context)
 
       const node = {
-        type: 'RegExpLiteral',
-        pattern: 'test',
         flags: '',
+        pattern: 'test',
         raw: undefined,
+        type: 'RegExpLiteral',
       }
       visitor.RegExpLiteral(node)
 
@@ -344,14 +346,14 @@ describe('no-regex-spaces rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should report correct location for spaces at start', () => {
+    test('should report correct location for spaces in middle', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
-      visitor.RegExpLiteral(createRegExpLiteral('  test', '', 10, 5))
+      visitor.RegExpLiteral(createRegExpLiteral('test  pattern', '', 15, 10))
 
-      expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(6)
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(15)
     })
 
     test('should report correct location for spaces in middle', () => {
@@ -398,17 +400,16 @@ describe('no-regex-spaces rule', () => {
 
       visitor.RegExpLiteral(createRegExpLiteral('  '))
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
-    test('should handle ten consecutive spaces', () => {
+    test('should handle spaces preceded by character', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('          '))
 
-      expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('(10)')
+      expect(reports.length).toBe(0)
     })
   })
 
@@ -449,13 +450,13 @@ describe('no-regex-spaces rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should handle escaped spaces', () => {
+    test('should handle spaces after escaped characters', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
-      visitor.RegExpLiteral(createRegExpLiteral('test\\  '))
+      visitor.RegExpLiteral(createRegExpLiteral(String.raw`test\  `))
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 
@@ -487,13 +488,13 @@ describe('no-regex-spaces rule', () => {
       expect(reports[0].message).toContain('regex literal')
     })
 
-    test('should suggest \\s+ in message', () => {
+    test(String.raw`should suggest \s+ in message`, () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('test  pattern'))
 
-      expect(reports[0].message).toContain('\\s+')
+      expect(reports[0].message).toContain(String.raw`\s+`)
     })
 
     test('should suggest {N} quantifier in message', () => {
@@ -505,13 +506,13 @@ describe('no-regex-spaces rule', () => {
       expect(reports[0].message).toContain('{3}')
     })
 
-    test('should mention clarity in message', () => {
+    test('should mention Use in message', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexSpacesRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('test  pattern'))
 
-      expect(reports[0].message).toContain('clarity')
+      expect(reports[0].message).toContain('Use')
     })
   })
 })

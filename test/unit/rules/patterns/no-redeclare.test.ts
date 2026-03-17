@@ -1,10 +1,12 @@
-import { describe, test, expect, vi } from 'vitest'
-import { noRedeclareRule } from '../../../../src/rules/patterns/no-redeclare.js'
+import { describe, expect, test, vi } from 'vitest'
+
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
+import { noRedeclareRule } from '../../../../src/rules/patterns/no-redeclare.js'
+
 interface ReportDescriptor {
+  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
   message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
 }
 
 function createMockContext(
@@ -15,23 +17,23 @@ function createMockContext(
   const reports: ReportDescriptor[] = []
 
   const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
+    config: { options: [options] },
     getAST: () => null,
+    getComments: () => [],
+    getFilePath: () => filePath,
     getSource: () => source,
     getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
     logger: {
       debug: vi.fn(),
+      error: vi.fn(),
       info: vi.fn(),
       warn: vi.fn(),
-      error: vi.fn(),
+    },
+    report(descriptor: ReportDescriptor) {
+      reports.push({
+        loc: descriptor.loc,
+        message: descriptor.message,
+      })
     },
     workspaceRoot: '/src',
   } as unknown as RuleContext
@@ -41,40 +43,40 @@ function createMockContext(
 
 function createIdentifier(name: string, line = 1, column = 0): unknown {
   return {
-    type: 'Identifier',
-    name: name,
     loc: {
-      start: { line, column },
-      end: { line, column: column + name.length },
+      end: { column: column + name.length, line },
+      start: { column, line },
     },
+    name,
+    type: 'Identifier',
   }
 }
 
 function createVariableDeclarator(name: string, line = 1, column = 0): unknown {
   return {
-    type: 'VariableDeclarator',
     id: createIdentifier(name, line, column),
     init: { type: 'Literal', value: 1 },
+    loc: {
+      end: { column: column + name.length + 5, line },
+      start: { column, line },
+    },
     parent: {
       kind: 'const',
     },
-    loc: {
-      start: { line, column },
-      end: { line, column: column + name.length + 5 },
-    },
+    type: 'VariableDeclarator',
   }
 }
 
 function createFunctionDeclaration(name: string, params: string[], line = 1, column = 0): unknown {
   return {
-    type: 'FunctionDeclaration',
+    body: { body: [], type: 'BlockStatement' },
     id: createIdentifier(name, line, column),
-    params: params.map((p, i) => createIdentifier(p, line + 1, column + i * 5)),
-    body: { type: 'BlockStatement', body: [] },
     loc: {
-      start: { line, column },
-      end: { line: line + 2, column: column + 20 },
+      end: { column: column + 20, line: line + 2 },
+      start: { column, line },
     },
+    params: params.map((p, i) => createIdentifier(p, line + 1, column + i * 5)),
+    type: 'FunctionDeclaration',
   }
 }
 
@@ -296,7 +298,7 @@ describe('no-redeclare rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noRedeclareRule.create(context)
 
-      expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
+      expect(() => visitor.VariableDeclarator()).not.toThrow()
 
       expect(reports.length).toBe(0)
     })
@@ -324,7 +326,7 @@ describe('no-redeclare rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noRedeclareRule.create(context)
 
-      expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
+      expect(() => visitor.FunctionDeclaration()).not.toThrow()
 
       expect(reports.length).toBe(0)
     })
@@ -344,8 +346,8 @@ describe('no-redeclare rule', () => {
       const visitor = noRedeclareRule.create(context)
 
       const node = {
-        type: 'VariableDeclarator',
         init: { type: 'Literal', value: 1 },
+        type: 'VariableDeclarator',
       }
       visitor.VariableDeclarator(node)
 
@@ -357,9 +359,9 @@ describe('no-redeclare rule', () => {
       const visitor = noRedeclareRule.create(context)
 
       const node = {
-        type: 'VariableDeclarator',
-        id: { type: 'ObjectPattern', properties: [] },
+        id: { properties: [], type: 'ObjectPattern' },
         init: { type: 'Literal', value: 1 },
+        type: 'VariableDeclarator',
       }
       visitor.VariableDeclarator(node)
 
@@ -371,10 +373,10 @@ describe('no-redeclare rule', () => {
       const visitor = noRedeclareRule.create(context)
 
       const node = {
-        type: 'FunctionDeclaration',
+        body: { body: [], type: 'BlockStatement' },
         id: null,
         params: [],
-        body: { type: 'BlockStatement', body: [] },
+        type: 'FunctionDeclaration',
       }
       visitor.FunctionDeclaration(node)
 
@@ -386,10 +388,10 @@ describe('no-redeclare rule', () => {
       const visitor = noRedeclareRule.create(context)
 
       const node = {
-        type: 'FunctionDeclaration',
+        body: { body: [], type: 'BlockStatement' },
         id: { type: 'Literal', value: 'anonymous' },
         params: [],
-        body: { type: 'BlockStatement', body: [] },
+        type: 'FunctionDeclaration',
       }
       visitor.FunctionDeclaration(node)
 
@@ -401,9 +403,9 @@ describe('no-redeclare rule', () => {
       const visitor = noRedeclareRule.create(context)
 
       const node = {
-        type: 'VariableDeclarator',
         id: { type: 'Identifier' },
         init: { type: 'Literal', value: 1 },
+        type: 'VariableDeclarator',
       }
       visitor.VariableDeclarator(node)
 
@@ -415,10 +417,10 @@ describe('no-redeclare rule', () => {
       const visitor = noRedeclareRule.create(context)
 
       const node = {
-        type: 'FunctionDeclaration',
+        body: { body: [], type: 'BlockStatement' },
         id: { type: 'Identifier' },
         params: [],
-        body: { type: 'BlockStatement', body: [] },
+        type: 'FunctionDeclaration',
       }
       visitor.FunctionDeclaration(node)
 
