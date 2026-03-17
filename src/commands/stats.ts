@@ -1,5 +1,6 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
+import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import { extname, resolve } from 'node:path'
 import ora from 'ora'
@@ -75,6 +76,11 @@ export default class Stats extends Command {
     const { args, flags } = await this.parse(Stats)
 
     const targetPath = resolve(args.path as string)
+
+    if (!existsSync(targetPath)) {
+      this.error(`Path not found: ${targetPath}`, { exit: 1 })
+    }
+
     const format = flags.format as 'json' | 'table'
     const { verbose } = flags
 

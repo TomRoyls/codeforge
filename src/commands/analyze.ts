@@ -1,4 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core'
+import { existsSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import ora, { type Ora } from 'ora'
@@ -195,6 +196,10 @@ export default class Analyze extends Command {
     const startTime = performance.now()
 
     const targetPath = path.resolve(args.path as string)
+
+    if (!existsSync(targetPath)) {
+      this.error(`Path not found: ${targetPath}`, { exit: 1 })
+    }
 
     const spinner = quiet ? null : ora('Discovering files...').start()
 
