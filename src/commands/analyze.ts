@@ -134,7 +134,7 @@ export default class Analyze extends Command {
       default: 'console',
       description: 'Output format',
       options: ['console', 'html', 'json', 'junit', 'markdown', 'sarif', 'gitlab', 'csv'],
-    })
+    }),
     ignore: Flags.string({
       char: 'i',
       description: 'Patterns to ignore',

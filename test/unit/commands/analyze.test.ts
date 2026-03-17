@@ -185,6 +185,7 @@ describe('Analyze Command', () => {
         'markdown',
         'sarif',
         'gitlab',
+        'csv',
       ])
     })
 
