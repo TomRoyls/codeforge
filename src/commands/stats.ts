@@ -96,7 +96,7 @@ export default class Stats extends Command {
 
     let stats: StatsResult
     try {
-      stats = await this.collectStats(discoveredFiles, verbose, flags['sort-by'])
+      stats = await this.collectStats(discoveredFiles, verbose, flags['sort-by'], format)
     } finally {
       this.parser.dispose()
       this.parser = null
@@ -147,6 +147,7 @@ export default class Stats extends Command {
     files: Array<{ absolutePath: string; path: string }>,
     verbose: boolean,
     sortBy: string,
+    format: 'json' | 'table',
   ): Promise<StatsResult> {
     const fileStats: FileStats[] = []
     let totalLoc = 0
@@ -163,6 +164,14 @@ export default class Stats extends Command {
     }
     const fileTypes: Record<string, number> = {}
     const tsExtensions = new Set(['.ts', '.tsx'])
+    const defaultStructures: CodeStructures = {
+      classes: 0,
+      enums: 0,
+      functions: 0,
+      interfaces: 0,
+      methods: 0,
+      typeAliases: 0,
+    }
 
     const results = await Promise.all(
       files.map(async (file) => {
@@ -187,7 +196,7 @@ export default class Stats extends Command {
 
           const ext = extname(file.path).toLowerCase()
 
-          const defaultStructures: CodeStructures = {
+          const localDefaultStructures: CodeStructures = {
             classes: 0,
             enums: 0,
             functions: 0,
@@ -196,7 +205,7 @@ export default class Stats extends Command {
             typeAliases: 0,
           }
           let complexity = 1
-          let structures = defaultStructures
+          let structures = localDefaultStructures
 
           if (this.parser && tsExtensions.has(ext)) {
             try {
@@ -205,7 +214,7 @@ export default class Stats extends Command {
               structures = this.countCodeStructures(parseResult.sourceFile)
             } catch {
               complexity = 1
-              structures = defaultStructures
+              structures = localDefaultStructures
             }
           }
 
@@ -219,8 +228,22 @@ export default class Stats extends Command {
             loc,
             structures,
           }
-        } catch {
-          return null
+        } catch (error) {
+          if (format !== 'json') {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            this.log(`Failed to process file ${file.path}: ${errorMessage}`)
+          }
+
+          return {
+            blank: 0,
+            comments: 0,
+            complexity: 1,
+            content: '',
+            ext: extname(file.path).toLowerCase(),
+            file,
+            loc: 0,
+            structures: defaultStructures,
+          }
         }
       }),
     )
