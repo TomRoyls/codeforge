@@ -309,7 +309,9 @@ describe('no-with rule', () => {
       visitor.WithStatement(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(1)
+      expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should handle with statement with null object', () => {

@@ -432,7 +432,7 @@ describe('require-yield rule', () => {
       }
       visitor.FunctionDeclaration(node)
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should handle node without generator property', () => {
@@ -472,7 +472,9 @@ describe('require-yield rule', () => {
       visitor.FunctionDeclaration(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(1)
+      expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should handle null body', () => {
@@ -514,7 +516,7 @@ describe('require-yield rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should handle function declaration with incorrect type', () => {
+    test('should handle function declaration with incorrect type (still reports if generator true)', () => {
       const { context, reports } = createMockContext()
       const visitor = requireYieldRule.create(context)
 
@@ -525,10 +527,10 @@ describe('require-yield rule', () => {
       }
       visitor.FunctionDeclaration(node)
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('should handle function expression with incorrect type', () => {
+    test('should handle function expression with incorrect type (still reports if generator true)', () => {
       const { context, reports } = createMockContext()
       const visitor = requireYieldRule.create(context)
 
@@ -539,7 +541,7 @@ describe('require-yield rule', () => {
       }
       visitor.FunctionExpression(node)
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 })

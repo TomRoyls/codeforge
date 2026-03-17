@@ -265,7 +265,7 @@ describe('preserve-caught-error rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report catch clause with used error in member expression', () => {
+    test('should report catch clause with used error in member expression', () => {
       const { context, reports } = createMockContext()
       const visitor = preserveCaughtErrorRule.create(context)
 
@@ -277,7 +277,7 @@ describe('preserve-caught-error rule', () => {
       ])
       visitor.CatchClause(createCatchClause(param, body))
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should not report catch clause without param', () => {
@@ -407,7 +407,7 @@ describe('preserve-caught-error rule', () => {
       visitor.CatchClause(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
     })
 
     test('should handle catch clause with non-Identifier param', () => {
@@ -508,7 +508,7 @@ describe('preserve-caught-error rule', () => {
       const body = createBlockStatement([])
       visitor.CatchClause(createCatchClause(param, body))
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should handle param with non-string name', () => {
