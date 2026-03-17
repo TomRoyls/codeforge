@@ -2,9 +2,9 @@
 /* eslint-disable perfectionist/sort-objects */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import { existsSync } from 'node:fs'
+import { existsSync, statSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 
 export default class GeneratePlugin extends Command {
   static override description = 'Generate a new CodeForge plugin scaffold'
@@ -57,9 +57,10 @@ export default class GeneratePlugin extends Command {
   async run(): Promise<void> {
     const { args, flags } = await this.parse(GeneratePlugin)
     const pluginName = args.name as string
-    const outputDir = flags.output.startsWith('/')
-      ? join(flags.output, pluginName)
-      : join(process.cwd(), flags.output, pluginName)
+    const outputBase = flags.output.startsWith('/')
+      ? flags.output
+      : resolve(process.cwd(), flags.output)
+    const outputDir = join(outputBase, pluginName)
 
     // Validate plugin name
     if (!this.isValidPluginName(pluginName)) {
@@ -68,7 +69,16 @@ export default class GeneratePlugin extends Command {
       )
     }
 
-    // Check if directory exists
+    // Validate output base directory exists
+    if (!existsSync(outputBase)) {
+      this.error(`Output directory does not exist: ${outputBase}`)
+    }
+
+    if (!statSync(outputBase).isDirectory()) {
+      this.error(`Output path is not a directory: ${outputBase}`)
+    }
+
+    // Check if plugin directory exists
     if (existsSync(outputDir) && !flags.force) {
       this.error(`Directory "${outputDir}" already exists. Use --force to overwrite.`)
     }
