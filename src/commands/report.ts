@@ -12,14 +12,18 @@ import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { ConsoleReporter } from '../reporters/console-reporter.js'
+import { GitLabReporter } from '../reporters/gitlab-reporter.js'
 import { HTMLReporter } from '../reporters/html-reporter.js'
 import { JSONReporter } from '../reporters/json-reporter.js'
+import { JUnitReporter } from '../reporters/junit-reporter.js'
+import { MarkdownReporter } from '../reporters/markdown-reporter.js'
+import { SARIFReporter } from '../reporters/sarif-reporter.js'
 import { allRules, getRuleCategory } from '../rules/index.js'
 import { CLIError } from '../utils/errors.js'
 
 const execAsync = promisify(exec)
 
-type OutputFormat = 'console' | 'html' | 'json'
+type OutputFormat = 'console' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif'
 
 export default class Report extends Command {
   static override args = {
@@ -50,6 +54,22 @@ export default class Report extends Command {
         '<%= config.bin %> <%= command.id %> --input analysis.json --format html --output report.html',
       description: 'Generate HTML report from cached analysis',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format junit --output junit.xml',
+      description: 'Generate JUnit XML report for CI/CD',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format sarif --output results.sarif',
+      description: 'Generate SARIF report for GitHub Code Scanning',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format gitlab --output gl-code-quality.json',
+      description: 'Generate GitLab Code Quality report',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format markdown --output REPORT.md',
+      description: 'Generate Markdown report for documentation',
+    },
   ]
 
   static override flags = {
@@ -57,7 +77,7 @@ export default class Report extends Command {
       char: 'f',
       default: 'console',
       description: 'Output format',
-      options: ['json', 'html', 'console'],
+      options: ['console', 'gitlab', 'html', 'json', 'junit', 'markdown', 'sarif'],
     }),
     input: Flags.string({
       char: 'i',
@@ -108,12 +128,28 @@ export default class Report extends Command {
 
   private createReporter(format: OutputFormat, options: ReporterOptions): Reporter {
     switch (format) {
+      case 'gitlab': {
+        return new GitLabReporter(options)
+      }
+
       case 'html': {
         return new HTMLReporter(options)
       }
 
       case 'json': {
         return new JSONReporter(options)
+      }
+
+      case 'junit': {
+        return new JUnitReporter(options)
+      }
+
+      case 'markdown': {
+        return new MarkdownReporter(options)
+      }
+
+      case 'sarif': {
+        return new SARIFReporter(options)
       }
 
       default: {
