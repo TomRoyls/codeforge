@@ -213,7 +213,9 @@ describe('ConsoleReporter', () => {
       const reporter = new ConsoleReporter({ color: false })
       const results = createMockAnalysisResult({ files: [] })
       reporter.report(results)
-      expect(consoleSpy).toHaveBeenCalledWith('No files analyzed.')
+      expect(consoleSpy).toHaveBeenCalled()
+      const calls = consoleSpy.mock.calls.map((call) => call[0]) as string[]
+      expect(calls.some((c) => c.includes('No files analyzed'))).toBe(true)
     })
 
     test('should report errors in full mode', () => {

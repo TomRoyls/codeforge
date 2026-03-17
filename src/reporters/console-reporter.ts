@@ -7,6 +7,8 @@ import type {
   Violation,
 } from './types.js'
 
+import { logger } from '../utils/logger.js'
+
 const ANSI_CODES = {
   blue: '\u001B[34m',
   bold: '\u001B[1m',
@@ -89,7 +91,7 @@ export class ConsoleReporter implements Reporter {
   }
 
   private printLine(text: string): void {
-    console.log(text)
+    logger.info(text)
   }
 
   private printSourceSnippet(violation: Violation): void {
