@@ -1,8 +1,8 @@
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import { existsSync } from 'node:fs'
+import { existsSync, statSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 
 type Platform = 'all' | 'github' | 'gitlab'
 
@@ -67,7 +67,15 @@ export default class Ci extends Command {
       platform: flags.platform as Platform,
     }
 
-    const outputDir = options.output
+    const outputDir = resolve(options.output)
+
+    if (!existsSync(outputDir)) {
+      this.error(`Output directory does not exist: ${outputDir}`)
+    }
+
+    if (!statSync(outputDir).isDirectory()) {
+      this.error(`Output path is not a directory: ${outputDir}`)
+    }
 
     if (options.platform === 'all' || options.platform === 'github') {
       await this.generateGitHubActions(outputDir, options.force)
