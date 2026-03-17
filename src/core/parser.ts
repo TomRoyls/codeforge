@@ -1,5 +1,7 @@
 import { Project, type SourceFile } from 'ts-morph'
 
+import { logger } from '../utils/logger.js'
+
 export interface ParseResult {
   sourceFile: SourceFile
   filePath: string
@@ -93,7 +95,7 @@ export class Parser {
         const result = await this.parseFile(filePath)
         results.push(result)
       } catch (error) {
-        console.error(`Failed to parse ${filePath}: ${(error as Error).message}`)
+        logger.error(`Failed to parse ${filePath}: ${(error as Error).message}`)
       }
     }
 

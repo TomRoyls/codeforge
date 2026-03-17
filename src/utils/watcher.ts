@@ -3,6 +3,7 @@ import * as fs from 'node:fs'
 import path from 'node:path'
 
 import { DEFAULT_DEBOUNCE_MS } from './constants.js'
+import { logger } from './logger.js'
 
 export interface FileWatcherOptions {
   /** Debounce time in milliseconds (default: 300) */
@@ -207,7 +208,7 @@ let defaultWatcher: FileWatcher | null = null
 export function createWatcher(options?: FileWatcherOptions): FileWatcher {
   if (defaultWatcher) {
     defaultWatcher.stop().catch((error) => {
-      console.debug('Failed to stop previous watcher:', error)
+      logger.debug('Failed to stop previous watcher:', error)
     })
   }
 
@@ -225,7 +226,7 @@ export function getDefaultWatcher(): FileWatcher | null {
 export function resetDefaultWatcher(): void {
   if (defaultWatcher) {
     defaultWatcher.stop().catch((error) => {
-      console.debug('Failed to stop watcher during reset:', error)
+      logger.debug('Failed to stop watcher during reset:', error)
     })
   }
   defaultWatcher = null
