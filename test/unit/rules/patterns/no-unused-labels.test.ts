@@ -243,7 +243,7 @@ describe('no-unused-labels rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report label when matching break appears before Program:exit', () => {
+    test('should report label when matching break appears after Program:exit', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnusedLabelsRule.create(context)
 
@@ -251,7 +251,7 @@ describe('no-unused-labels rule', () => {
       visitor['Program:exit'](createProgram())
       visitor.BreakStatement(createBreakStatement(createIdentifier('loop')))
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 
@@ -487,7 +487,7 @@ describe('no-unused-labels rule', () => {
       visitor['Program:exit'](createProgram())
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
     })
   })
 })

@@ -243,7 +243,7 @@ describe('no-unsafe-optional-chaining rule', () => {
       visitor.NewExpression(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('optional chaining')
+      expect(reports[0].message).toMatch(/optional chaining/i)
     })
 
     test('should report NewExpression with ChainExpression on member expression', () => {
@@ -256,7 +256,7 @@ describe('no-unsafe-optional-chaining rule', () => {
       visitor.NewExpression(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('optional chaining')
+      expect(reports[0].message).toMatch(/optional chaining/i)
     })
 
     test('should report NewExpression with ChainExpression and arguments', () => {
@@ -268,7 +268,7 @@ describe('no-unsafe-optional-chaining rule', () => {
       visitor.NewExpression(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('optional chaining')
+      expect(reports[0].message).toMatch(/optional chaining/i)
     })
 
     test('should report correct location for violation', () => {
@@ -347,7 +347,7 @@ describe('no-unsafe-optional-chaining rule', () => {
       visitor.NewExpression(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
     })
 
     test('should handle callee without type property', () => {

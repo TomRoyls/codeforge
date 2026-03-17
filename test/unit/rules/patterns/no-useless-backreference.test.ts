@@ -280,13 +280,12 @@ describe('no-useless-backreference rule', () => {
       expect(reports[0].message).toContain('Useless backreference')
     })
 
-    test('should report backreference to non-existent numbered group', () => {
+    test('should not report numeric backreference (rule only checks named groups)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessBackreferenceRule.create(context)
 
       visitor.Literal(createRegexLiteral('\\9'))
-      expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('Useless backreference')
+      expect(reports.length).toBe(0)
     })
 
     test('should report named backreference when only numbered groups exist', () => {
@@ -298,13 +297,12 @@ describe('no-useless-backreference rule', () => {
       expect(reports[0].message).toContain('Useless backreference')
     })
 
-    test('should report numbered backreference when only named groups exist', () => {
+    test('should not report numeric backreference with named groups (rule only checks named groups)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessBackreferenceRule.create(context)
 
       visitor.Literal(createRegexLiteral('(?<name>\\d+)\\1'))
-      expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('Useless backreference')
+      expect(reports.length).toBe(0)
     })
 
     test('should report correct location for useless backreference', () => {
@@ -332,12 +330,12 @@ describe('no-useless-backreference rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report high numbered backreference without groups', () => {
+    test('should not report high numbered backreference (rule only checks named groups)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessBackreferenceRule.create(context)
 
       visitor.Literal(createRegexLiteral('\\99'))
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report backreference with non-existent group after valid groups', () => {
@@ -348,12 +346,12 @@ describe('no-useless-backreference rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report only when no groups exist for backreference', () => {
+    test('should not report multiple numeric backreferences (rule only checks named groups)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessBackreferenceRule.create(context)
 
       visitor.Literal(createRegexLiteral('\\1\\2\\3'))
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
   })
 

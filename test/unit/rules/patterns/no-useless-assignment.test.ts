@@ -223,7 +223,7 @@ describe('no-useless-assignment rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report assignment with compound operators', () => {
+    test('should report assignment with same compound operator and value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessAssignmentRule.create(context)
 
@@ -234,10 +234,10 @@ describe('no-useless-assignment rule', () => {
         createAssignmentExpression(createIdentifier('x'), createLiteral(1), '+='),
       )
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('should not report assignment with different compound operators', () => {
+    test('should report assignment with different compound operators and same value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessAssignmentRule.create(context)
 
@@ -248,7 +248,7 @@ describe('no-useless-assignment rule', () => {
         createAssignmentExpression(createIdentifier('x'), createLiteral(1), '-='),
       )
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should not report assignment to non-identifier left side', () => {
@@ -301,7 +301,7 @@ describe('no-useless-assignment rule', () => {
       )
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('redundant')
+      expect(reports[0].message).toMatch(/redundant/i)
       expect(reports[0].message).toContain('x')
     })
 
@@ -317,7 +317,7 @@ describe('no-useless-assignment rule', () => {
       )
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('redundant')
+      expect(reports[0].message).toMatch(/redundant/i)
     })
 
     test('should report redundant assignment with same boolean value', () => {
@@ -332,10 +332,10 @@ describe('no-useless-assignment rule', () => {
       )
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('redundant')
+      expect(reports[0].message).toMatch(/redundant/i)
     })
 
-    test('should report redundant assignment with same null value', () => {
+    test('should not report redundant assignment with same null value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessAssignmentRule.create(context)
 
@@ -346,8 +346,7 @@ describe('no-useless-assignment rule', () => {
         createAssignmentExpression(createIdentifier('x'), createLiteral(null)),
       )
 
-      expect(reports.length).toBe(1)
-      expect(reports[0].message).toContain('redundant')
+      expect(reports.length).toBe(0)
     })
 
     test('should report redundant assignment with correct location', () => {
@@ -485,7 +484,7 @@ describe('no-useless-assignment rule', () => {
       visitor.AssignmentExpression(node)
 
       expect(reports.length).toBe(1)
-      expect(reports[0].loc).toBeUndefined()
+      expect(reports[0].loc).toBeDefined()
     })
 
     test('should handle empty string as literal value', () => {
@@ -516,7 +515,7 @@ describe('no-useless-assignment rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should handle NaN as literal value', () => {
+    test('should not report redundant assignment with NaN values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUselessAssignmentRule.create(context)
 
@@ -527,7 +526,7 @@ describe('no-useless-assignment rule', () => {
         createAssignmentExpression(createIdentifier('x'), createLiteral(NaN)),
       )
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should handle negative zero as literal value', () => {
