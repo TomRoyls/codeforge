@@ -1,6 +1,7 @@
 import type { Reporter, ReporterFactory, ReporterOptions, ReporterRegistryEntry } from './types.js'
 
 import { ConsoleReporter } from './console-reporter.js'
+import { CSVReporter } from './csv-reporter.js'
 import { GitLabReporter } from './gitlab-reporter.js'
 import { HTMLReporter } from './html-reporter.js'
 import { JSONReporter } from './json-reporter.js'
@@ -9,6 +10,7 @@ import { MarkdownReporter } from './markdown-reporter.js'
 import { SARIFReporter } from './sarif-reporter.js'
 
 export { ConsoleReporter } from './console-reporter.js'
+export { CSVReporter } from './csv-reporter.js'
 export { GitLabReporter } from './gitlab-reporter.js'
 export { HTMLReporter } from './html-reporter.js'
 export { JSONReporter } from './json-reporter.js'
@@ -60,6 +62,12 @@ function initializeDefaultReporters(): void {
     description: 'GitLab Code Quality report format',
     factory: (options: ReporterOptions) => new GitLabReporter(options),
     name: 'gitlab',
+  })
+
+  registerReporter({
+    description: 'CSV format for spreadsheet import and data analysis',
+    factory: (options: ReporterOptions) => new CSVReporter(options),
+    name: 'csv',
   })
 }
 
