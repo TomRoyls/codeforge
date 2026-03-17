@@ -98,10 +98,13 @@ export default class Precommit extends Command {
   }
 
   private generateHookContent(options: PrecommitOptions): string {
-    return `#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh" 2>/dev/null || true
+    const huskySource =
+      options.installer === 'husky'
+        ? '. "$(dirname -- "$0")/_/husky.sh" 2>/dev/null || true\n\n'
+        : ''
 
-${options.command}
+    return `#!/usr/bin/env sh
+${huskySource}${options.command}
 `
   }
 

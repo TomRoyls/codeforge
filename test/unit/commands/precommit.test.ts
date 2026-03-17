@@ -337,7 +337,7 @@ describe('Precommit Command', () => {
 
     describe('Private methods', () => {
       describe('generateHookContent', () => {
-        test('generates hook content with default command', () => {
+        test('generates hook content with default command for git installer', () => {
           const cmd = new Precommit([], {} as never)
           const options = {
             command: 'codeforge analyze --staged',
@@ -351,37 +351,24 @@ describe('Precommit Command', () => {
 
           expect(result).toContain('#!/usr/bin/env sh')
           expect(result).toContain('codeforge analyze --staged')
-          expect(result).toContain('. "$(dirname -- "$0")/_/husky.sh"')
+          expect(result).not.toContain('. "$(dirname -- "$0")/_/husky.sh"')
         })
 
-        test('generates hook content with custom command', () => {
-          const cmd = new Precommit([], {} as never)
-          const options = {
-            command: 'npm run lint',
-            force: false,
-            installer: 'git' as const,
-          }
-
-          const result = (
-            cmd as unknown as { generateHookContent: (o: typeof options) => string }
-          ).generateHookContent(options)
-
-          expect(result).toContain('npm run lint')
-        })
-
-        test('includes husky.sh source with error suppression', () => {
+        test('generates hook content with husky installer includes husky.sh', () => {
           const cmd = new Precommit([], {} as never)
           const options = {
             command: 'codeforge analyze --staged',
             force: false,
-            installer: 'git' as const,
+            installer: 'husky' as const,
           }
 
           const result = (
             cmd as unknown as { generateHookContent: (o: typeof options) => string }
           ).generateHookContent(options)
 
-          expect(result).toContain('2>/dev/null || true')
+          expect(result).toContain('#!/usr/bin/env sh')
+          expect(result).toContain('codeforge analyze --staged')
+          expect(result).toContain('. "$(dirname -- "$0")/_/husky.sh" 2>/dev/null || true')
         })
       })
 

@@ -174,7 +174,15 @@ describe('Report Command', () => {
     })
 
     test('format flag has correct options', () => {
-      expect(Report.flags.format.options).toEqual(['json', 'html', 'console'])
+      expect(Report.flags.format.options).toEqual([
+        'console',
+        'gitlab',
+        'html',
+        'json',
+        'junit',
+        'markdown',
+        'sarif',
+      ])
     })
 
     test('format flag has default console', () => {
