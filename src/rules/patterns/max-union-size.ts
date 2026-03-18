@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface MaxUnionSizeOptions {
   readonly max?: number
@@ -53,10 +54,7 @@ export const maxUnionSizeRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: MaxUnionSizeOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as MaxUnionSizeOptions
+    const options = extractRuleOptions<MaxUnionSizeOptions>(context.config.options, { max: 5 })
 
     const maxUnionSize = options.max ?? 5
 

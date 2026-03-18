@@ -5,6 +5,7 @@
 
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface CodeBlock {
   readonly hash: string
@@ -133,10 +134,13 @@ export const noDuplicateCodeRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoDuplicateCodeOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoDuplicateCodeOptions
+    const options = extractRuleOptions<NoDuplicateCodeOptions>(context.config.options, {
+      minLines: 5,
+      minTokens: 50,
+      ignoreComments: true,
+      ignoreImports: true,
+      threshold: 70,
+    })
 
     const minLines = options.minLines ?? 5
     const ignoreComments = options.ignoreComments ?? true

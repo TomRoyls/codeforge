@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExplicitModuleBoundaryTypesOptions {
   readonly allowArrowFunctions?: boolean
@@ -220,10 +221,11 @@ export const explicitModuleBoundaryTypesRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: ExplicitModuleBoundaryTypesOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as ExplicitModuleBoundaryTypesOptions
+    const options = extractRuleOptions<ExplicitModuleBoundaryTypesOptions>(context.config.options, {
+      allowArrowFunctions: false,
+      allowHigherOrderFunctions: false,
+      allowTypedFunctionExpressions: false,
+    })
 
     function checkFunction(node: unknown, nodeType: string): void {
       const { shouldReport: report, reason } = shouldReport(node, nodeType, options)

@@ -9,6 +9,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface DeprecatedApiInfo {
   readonly name: string
@@ -339,10 +340,10 @@ export const noDeprecatedApiRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoDeprecatedApiOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoDeprecatedApiOptions
+    const options = extractRuleOptions<NoDeprecatedApiOptions>(context.config.options, {
+      additionalApis: undefined,
+      ignoreApis: [],
+    })
 
     // Build combined APIs map
     const apis = new Map(DEPRECATED_APIS)

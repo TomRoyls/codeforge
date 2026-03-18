@@ -11,6 +11,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractLocation } from '../../ast/location-utils.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ImportInfo {
   readonly sourceFile: string
@@ -365,10 +366,11 @@ export const noCircularDepsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: CircularDepsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as CircularDepsOptions
+    const options = extractRuleOptions<CircularDepsOptions>(context.config.options, {
+      maxDepth: 50,
+      ignoreTypeOnly: false,
+      exclude: [],
+    })
     const maxDepth = options.maxDepth ?? 50
     const filePath = context.getFilePath()
 

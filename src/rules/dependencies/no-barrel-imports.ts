@@ -11,6 +11,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractLocation } from '../../ast/location-utils.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface BarrelImport {
   readonly barrelPath: string
@@ -187,10 +188,11 @@ export const noBarrelImportsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoBarrelImportsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoBarrelImportsOptions
+    const options = extractRuleOptions<NoBarrelImportsOptions>(context.config.options, {
+      barrelPatterns: undefined,
+      exclude: [],
+      allowTypeOnly: false,
+    })
     const barrelPatterns = options.barrelPatterns ?? DEFAULT_BARREL_PATTERNS
     const exclude = options.exclude ?? []
     const allowTypeOnly = options.allowTypeOnly ?? false

@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoExplicitAnyOptions {
   readonly allowInGenericArrays?: boolean
@@ -67,10 +68,10 @@ export const noExplicitAnyRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoExplicitAnyOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoExplicitAnyOptions
+    const options = extractRuleOptions<NoExplicitAnyOptions>(context.config.options, {
+      allowInGenericArrays: false,
+      allowAsTypeAssertion: false,
+    })
 
     return {
       TSAnyKeyword(node: unknown): void {

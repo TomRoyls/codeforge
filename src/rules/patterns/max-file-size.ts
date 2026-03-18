@@ -11,6 +11,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { DEFAULT_MAX_FILE_SIZE_LINES } from '../../utils/constants.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface FileInfo {
   readonly lineCount: number
@@ -112,10 +113,13 @@ export const maxFileSizeRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: MaxFileSizeOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as MaxFileSizeOptions
+    const options = extractRuleOptions<MaxFileSizeOptions>(context.config.options, {
+      maxLines: DEFAULT_MAX_FILE_SIZE_LINES,
+      maxCharacters: 50000,
+      ignoreComments: false,
+      ignoreBlankLines: false,
+      exclude: [],
+    })
 
     const maxLines = options.maxLines ?? DEFAULT_MAX_FILE_SIZE_LINES
     const maxCharacters = options.maxCharacters ?? 50000

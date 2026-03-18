@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeAssignmentOptions {
   readonly allowAnyInGenericArrays?: boolean
@@ -109,10 +110,9 @@ export const noUnsafeAssignmentRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoUnsafeAssignmentOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoUnsafeAssignmentOptions
+    const options = extractRuleOptions<NoUnsafeAssignmentOptions>(context.config.options, {
+      allowAnyInGenericArrays: false,
+    })
 
     return {
       VariableDeclarator(node: unknown): void {

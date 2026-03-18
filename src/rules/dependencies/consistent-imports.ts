@@ -10,6 +10,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 type ImportStyle = 'default' | 'namespace' | 'named'
 
@@ -168,10 +169,11 @@ export const consistentImportsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: ConsistentImportsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : { prefer: 'named' }
-    ) as ConsistentImportsOptions
+    const options = extractRuleOptions<ConsistentImportsOptions>(context.config.options, {
+      prefer: 'named',
+      namespaceThreshold: 5,
+      exclude: [],
+    })
     const prefer = options.prefer ?? 'named'
     const namespaceThreshold = options.namespaceThreshold ?? 5
     const exclude = options.exclude ?? []

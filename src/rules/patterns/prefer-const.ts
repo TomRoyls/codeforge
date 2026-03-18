@@ -10,6 +10,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface VariableInfo {
   readonly name: string
@@ -147,10 +148,11 @@ export const preferConstRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: PreferConstOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as PreferConstOptions
+    const options = extractRuleOptions<PreferConstOptions>(context.config.options, {
+      destructuring: 'any',
+      ignoreReadBeforeAssign: false,
+      ignoreDestructuring: false,
+    })
 
     const variableMap = new Map<string, VariableInfo>()
     const reassignments = new Set<string>()

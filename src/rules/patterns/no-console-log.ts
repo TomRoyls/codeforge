@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoConsoleLogOptions {
   readonly allow?: readonly string[]
@@ -101,10 +102,7 @@ export const noConsoleLogRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoConsoleLogOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoConsoleLogOptions
+    const options = extractRuleOptions<NoConsoleLogOptions>(context.config.options, { allow: [] })
 
     const allowedMethods = options.allow ?? []
 

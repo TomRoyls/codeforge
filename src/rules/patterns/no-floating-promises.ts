@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoFloatingPromisesOptions {
   readonly ignoreVoid?: boolean
@@ -128,10 +129,10 @@ export const noFloatingPromisesRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoFloatingPromisesOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoFloatingPromisesOptions
+    const options = extractRuleOptions<NoFloatingPromisesOptions>(context.config.options, {
+      ignoreVoid: false,
+      ignoreIIFE: false,
+    })
 
     return {
       ExpressionStatement(node: unknown): void {

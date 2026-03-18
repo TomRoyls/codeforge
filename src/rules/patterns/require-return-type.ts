@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RequireReturnTypeOptions {
   readonly allowArrowFunctions?: boolean
@@ -195,10 +196,11 @@ export const requireReturnTypeRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: RequireReturnTypeOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as RequireReturnTypeOptions
+    const options = extractRuleOptions<RequireReturnTypeOptions>(context.config.options, {
+      allowArrowFunctions: false,
+      allowTypedFunctionExpressions: false,
+      allowHigherOrderFunctions: false,
+    })
 
     function checkFunction(node: unknown, nodeType: string): void {
       const { shouldReport: report, reason } = shouldReport(node, nodeType, options)

@@ -5,6 +5,7 @@
 
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface PreferNullishCoalescingOptions {
   readonly ignoreConditionalTests?: boolean
@@ -71,10 +72,9 @@ export const preferNullishCoalescingRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: PreferNullishCoalescingOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as PreferNullishCoalescingOptions
+    const options = extractRuleOptions<PreferNullishCoalescingOptions>(context.config.options, {
+      ignoreConditionalTests: false,
+    })
 
     return {
       LogicalExpression(node: unknown): void {

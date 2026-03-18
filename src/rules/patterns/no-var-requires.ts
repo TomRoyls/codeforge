@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoVarRequiresOptions {
   readonly allow?: string[]
@@ -75,10 +76,7 @@ export const noVarRequiresRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoVarRequiresOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoVarRequiresOptions
+    const options = extractRuleOptions<NoVarRequiresOptions>(context.config.options, { allow: [] })
 
     const allowedModules = options.allow ?? []
 

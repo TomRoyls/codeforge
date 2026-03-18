@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface PreferAsyncAwaitOptions {
   readonly allowPromiseMethods?: boolean
@@ -68,10 +69,9 @@ export const preferAsyncAwaitRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: PreferAsyncAwaitOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as PreferAsyncAwaitOptions
+    const options = extractRuleOptions<PreferAsyncAwaitOptions>(context.config.options, {
+      allowPromiseMethods: false,
+    })
 
     return {
       CallExpression(node: unknown): void {

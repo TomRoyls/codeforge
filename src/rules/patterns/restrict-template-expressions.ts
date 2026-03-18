@@ -6,6 +6,7 @@ import {
   isMemberExpression,
   isIdentifier,
 } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RestrictTemplateExpressionsOptions {
   readonly allowNumber?: boolean
@@ -173,10 +174,12 @@ export const restrictTemplateExpressionsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: RestrictTemplateExpressionsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as RestrictTemplateExpressionsOptions
+    const options = extractRuleOptions<RestrictTemplateExpressionsOptions>(context.config.options, {
+      allowNumber: false,
+      allowBoolean: false,
+      allowNull: false,
+      allowUndefined: false,
+    })
 
     return {
       TemplateLiteral(node: unknown): void {

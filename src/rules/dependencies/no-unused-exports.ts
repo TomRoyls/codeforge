@@ -11,6 +11,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractLocation } from '../../ast/location-utils.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExportInfo {
   readonly name: string
@@ -452,10 +453,12 @@ export const noUnusedExportsRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: UnusedExportsOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as UnusedExportsOptions
+    const options = extractRuleOptions<UnusedExportsOptions>(context.config.options, {
+      ignorePatterns: [],
+      ignoreTypeOnly: false,
+      allowEntryExports: true,
+      entryFiles: [],
+    })
     const filePath = context.getFilePath()
     const ignorePatterns = options.ignorePatterns ?? []
     const ignoreTypeOnly = options.ignoreTypeOnly ?? false

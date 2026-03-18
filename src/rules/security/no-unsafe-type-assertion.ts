@@ -9,6 +9,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeTypeAssertionOptions {
   readonly allowAnyToUnknown?: boolean
@@ -231,10 +232,11 @@ export const noUnsafeTypeAssertionRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoUnsafeTypeAssertionOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoUnsafeTypeAssertionOptions
+    const options = extractRuleOptions<NoUnsafeTypeAssertionOptions>(context.config.options, {
+      allowAnyToUnknown: false,
+      allowUnknownToAny: false,
+      reportRedundant: false,
+    })
 
     return {
       TSAsExpression(node: unknown): void {
