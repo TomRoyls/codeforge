@@ -33,6 +33,10 @@ export default class Stats extends Command {
       command: '<%= config.bin %> <%= command.id %> --top 10',
       description: 'Show top 10 largest files',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output stats.json',
+      description: 'Save statistics to JSON file',
+    },
   ]
 
   static override flags = {
@@ -46,6 +50,10 @@ export default class Stats extends Command {
       char: 'i',
       description: 'Patterns to ignore',
       multiple: true,
+    }),
+    output: Flags.string({
+      char: 'o',
+      description: 'Output file path',
     }),
     'sort-by': Flags.string({
       char: 's',
@@ -110,10 +118,18 @@ export default class Stats extends Command {
 
     spinner.succeed(`Analyzed ${discoveredFiles.length} files`)
 
-    if (format === 'json') {
-      this.log(JSON.stringify(stats, null, 2))
+    const outputData =
+      format === 'json'
+        ? JSON.stringify(stats, null, 2)
+        : this.formatOutput(stats, format, flags.top)
+
+    if (flags.output) {
+      await fs.writeFile(flags.output, outputData, 'utf8')
+      this.log(`Results written to ${flags.output}`)
+    } else if (format === 'json') {
+      this.log(outputData)
     } else {
-      this.displayTable(stats, flags.top)
+      this.log(outputData)
     }
   }
 
@@ -369,55 +385,59 @@ export default class Stats extends Command {
     return structures
   }
 
-  private displayTable(stats: StatsResult, topN: number): void {
-    const { files, fileTypes, summary } = stats
+  private formatCsv(stats: StatsResult): string {
+    const headers = ['File', 'LOC', 'Complexity', 'Size (bytes)', 'Type']
+    const rows = stats.files.map((f) => [
+      f.name,
+      f.loc.toString(),
+      f.complexity.toString(),
+      f.size.toString(),
+      f.type,
+    ])
+    return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+  }
 
-    this.log('')
-    this.log(chalk.bold('Codebase Statistics'))
-    this.log('')
-
-    this.log(chalk.bold('Summary:'))
-    this.log(chalk.gray(`  Total files: ${summary.files.toLocaleString()}`))
-    this.log(chalk.gray(`  Lines of code: ${summary.loc.toLocaleString()}`))
-    this.log(chalk.gray(`  Comment lines: ${summary.commentLines.toLocaleString()}`))
-    this.log(chalk.gray(`  Blank lines: ${summary.blankLines.toLocaleString()}`))
-    this.log(chalk.gray(`  Average LOC/file: ${summary.averageLoc}`))
-    this.log('')
-
-    this.log(chalk.bold('Complexity:'))
-    this.log(chalk.gray(`  Total complexity: ${summary.complexity.toLocaleString()}`))
-    this.log(chalk.gray(`  Average complexity/file: ${summary.averageComplexity}`))
-    this.log('')
-
-    this.log(chalk.bold('Code Structures:'))
-    this.log(chalk.gray(`  Functions: ${summary.functions.toLocaleString()}`))
-    this.log(chalk.gray(`  Methods: ${summary.methods.toLocaleString()}`))
-    this.log(chalk.gray(`  Classes: ${summary.classes.toLocaleString()}`))
-    this.log(chalk.gray(`  Interfaces: ${summary.interfaces.toLocaleString()}`))
-    this.log(chalk.gray(`  Type Aliases: ${summary.typeAliases.toLocaleString()}`))
-    this.log(chalk.gray(`  Enums: ${summary.enums.toLocaleString()}`))
-    this.log('')
-
-    if (Object.keys(fileTypes).length > 0) {
-      this.log(chalk.bold('File Types:'))
-      const sortedTypes = Object.entries(fileTypes).sort((a, b) => b[1] - a[1])
-      for (const [ext, count] of sortedTypes) {
-        this.log(chalk.gray(`  ${ext || 'no ext'}: ${count} files`))
-      }
-
-      this.log('')
+  private formatOutput(stats: StatsResult, format: string, top: number): string {
+    if (format === 'csv') {
+      return this.formatCsv(stats)
     }
 
-    if (files.length > 0) {
-      this.log(chalk.bold(`Top ${Math.min(topN, files.length)} Largest Files:`))
-      for (const file of files.slice(0, topN)) {
-        this.log(
-          chalk.gray(
-            `  ${file.name} (${(file.size / 1024).toFixed(1)}KB, ${file.loc} LOC, complexity: ${file.complexity})`,
-          ),
-        )
-      }
-    }
+    return this.formatTable(stats, top)
+  }
+
+  private formatTable(stats: StatsResult, top: number): string {
+    const { summary } = stats
+
+    const lines = [
+      chalk.bold('\n📊 Codebase Statistics\n'),
+      chalk.dim('Summary:'),
+      `  Total files: ${summary.files}`,
+      `  Lines of code: ${summary.loc.toLocaleString()}`,
+      `  Total complexity: ${summary.complexity.toLocaleString()}`,
+      `  Blank lines: ${summary.blankLines.toLocaleString()}`,
+      `  Comment lines: ${summary.commentLines.toLocaleString()}`,
+      '',
+      chalk.dim('Code structures:'),
+      `  Classes: ${summary.classes}`,
+      `  Functions: ${summary.functions}`,
+      `  Methods: ${summary.methods}`,
+      `  Interfaces: ${summary.interfaces}`,
+      `  Type aliases: ${summary.typeAliases}`,
+      `  Enums: ${summary.enums}`,
+      '',
+      chalk.dim('File Types:'),
+      ...Object.entries(stats.fileTypes).map(([ext, count]) => `  ${ext}: ${count}`),
+      '',
+      chalk.dim(`Top ${top} Largest Files:`),
+      ...stats.files
+        .slice(0, top)
+        .flatMap((file) => [
+          `  ${file.name}`,
+          `    LOC: ${file.loc}, Complexity: ${file.complexity}, Size: ${file.size} bytes`,
+        ]),
+    ]
+
+    return lines.join('\n')
   }
 }
 
