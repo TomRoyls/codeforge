@@ -97,6 +97,9 @@ export default class Fix extends Command {
       description: 'Patterns to ignore',
       multiple: true,
     }),
+    'ignore-path': Flags.string({
+      description: 'Path to ignore file (one pattern per line)',
+    }),
     rules: Flags.string({
       char: 'r',
       description: 'Only fix violations from these rules (comma-separated)',

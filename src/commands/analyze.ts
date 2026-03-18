@@ -1,5 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import ora, { type Ora } from 'ora'
@@ -133,6 +133,10 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --severity-level warning',
       description: 'Show only warnings and errors (no info)',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --ignore-path .codeforgeignore',
+      description: 'Use custom ignore file',
+    },
   ]
 
   static override flags = {
@@ -178,6 +182,9 @@ export default class Analyze extends Command {
       char: 'i',
       description: 'Patterns to ignore',
       multiple: true,
+    }),
+    'ignore-path': Flags.string({
+      description: 'Path to ignore file (one pattern per line)',
     }),
     'max-warnings': Flags.integer({
       default: -1,
@@ -231,7 +238,12 @@ export default class Analyze extends Command {
 
     const config = await loadCommandConfig(flags, this.configCache)
     const files = config.files ?? []
-    const ignore = config.ignore ?? []
+    let ignore = config.ignore ?? []
+
+    if (flags['ignore-path']) {
+      const ignoreFilePatterns = this.readIgnoreFile(flags['ignore-path'])
+      ignore = [...ignore, ...ignoreFilePatterns]
+    }
 
     const ciMode = flags.ci
     const format = ciMode && flags.format === 'console' ? 'json' : (flags.format as OutputFormat)
@@ -643,5 +655,17 @@ export default class Analyze extends Command {
     }
 
     return rulesWithFixes
+  }
+
+  private readIgnoreFile(ignorePath: string): string[] {
+    try {
+      const content = readFileSync(ignorePath, 'utf8')
+      return content
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith('#'))
+    } catch {
+      return []
+    }
   }
 }
