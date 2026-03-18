@@ -17,6 +17,13 @@ export function setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
   }
 
   if (requestedRules && requestedRules.length > 0) {
+    const validRuleIds = new Set(Object.keys(allRules))
+    const unknownRules = requestedRules.filter((r) => !validRuleIds.has(r))
+
+    if (unknownRules.length > 0) {
+      logger.warn(`Unknown rules will be ignored: ${unknownRules.join(', ')}`)
+    }
+
     const requestedSet = new Set(requestedRules)
 
     for (const [ruleId] of Object.entries(allRules)) {
