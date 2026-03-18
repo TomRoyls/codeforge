@@ -129,6 +129,10 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
       description: 'Analyze only TypeScript files',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --severity-level warning',
+      description: 'Show only warnings and errors (no info)',
+    },
   ]
 
   static override flags = {
@@ -192,6 +196,11 @@ export default class Analyze extends Command {
       char: 'r',
       description: 'Specific rules to run',
       multiple: true,
+    }),
+    'severity-level': Flags.string({
+      default: 'info',
+      description: 'Minimum severity level to report (error, warning, info)',
+      options: ['error', 'info', 'warning'],
     }),
     staged: Flags.boolean({
       default: false,
@@ -300,10 +309,14 @@ export default class Analyze extends Command {
 
     analysisSpinner?.succeed('Analysis complete')
 
+    const severityLevel = flags['severity-level'] as 'error' | 'info' | 'warning'
+    const filteredViolations = this.filterBySeverity(allViolations, severityLevel)
+    const filteredFileReports = this.filterFileReports(fileReports, severityLevel)
+
     let fixesApplied = 0
     let fixesSkipped = 0
 
-    if (shouldFix && allViolations.length > 0) {
+    if (shouldFix && filteredViolations.length > 0) {
       const fixSpinner = quiet
         ? null
         : ora(dryRun ? 'Previewing fixes...' : 'Applying fixes...').start()
@@ -311,7 +324,7 @@ export default class Analyze extends Command {
       const rulesWithFixes = this.getRulesWithFixes()
 
       const fixResult = await this.applyFixes({
-        allViolations,
+        allViolations: filteredViolations,
         concurrency,
         discoveredFiles: filteredFiles,
         dryRun,
@@ -335,7 +348,7 @@ export default class Analyze extends Command {
 
     const duration = performance.now() - startTime
 
-    const summary = this.generateSummary(allViolations, filteredFiles.length, duration)
+    const summary = this.generateSummary(filteredViolations, filteredFiles.length, duration)
 
     const reporter = new Reporter({
       color: !ciMode,
@@ -346,7 +359,7 @@ export default class Analyze extends Command {
     })
 
     await reporter.writeReport({
-      files: fileReports,
+      files: filteredFileReports,
       summary,
     })
 
@@ -558,6 +571,37 @@ export default class Analyze extends Command {
       ignore,
       patterns: files,
     })
+  }
+
+  private filterBySeverity(
+    violations: RuleViolation[],
+    minLevel: 'error' | 'info' | 'warning',
+  ): RuleViolation[] {
+    const severityOrder = { error: 3, info: 1, warning: 2 }
+    const minOrder = severityOrder[minLevel]
+
+    return violations.filter((v) => {
+      const vOrder = severityOrder[v.severity as keyof typeof severityOrder] ?? 0
+      return vOrder >= minOrder
+    })
+  }
+
+  private filterFileReports(
+    fileReports: FileReport[],
+    minLevel: 'error' | 'info' | 'warning',
+  ): FileReport[] {
+    const severityOrder = { error: 3, info: 1, warning: 2 }
+    const minOrder = severityOrder[minLevel]
+
+    return fileReports
+      .map((report) => ({
+        ...report,
+        violations: report.violations.filter((v) => {
+          const vOrder = severityOrder[v.severity as keyof typeof severityOrder] ?? 0
+          return vOrder >= minOrder
+        }),
+      }))
+      .filter((report) => report.violations.length > 0)
   }
 
   private generateSummary(
