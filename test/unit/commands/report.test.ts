@@ -203,9 +203,6 @@ describe('Report Command', () => {
   })
 
   describe('Flag characters', () => {
-    test('format flag has char f', () => {
-      expect(Report.flags.format.char).toBe('f')
-    })
     test('input flag has char i', () => {
       expect(Report.flags.input.char).toBe('i')
     })

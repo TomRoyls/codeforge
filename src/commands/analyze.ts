@@ -135,7 +135,6 @@ export default class Analyze extends Command {
       description: 'Automatically fix violations where possible',
     }),
     format: Flags.string({
-      char: 'f',
       default: 'console',
       description: 'Output format',
       options: ['console', 'html', 'json', 'junit', 'markdown', 'sarif', 'gitlab', 'csv'],
