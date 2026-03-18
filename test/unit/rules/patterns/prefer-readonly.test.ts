@@ -1177,5 +1177,49 @@ describe('prefer-readonly rule', () => {
 
       expect(reports.length).toBe(1)
     })
+
+    test('should ignore private class property with _ prefix when ignorePrivateMembers is true', () => {
+      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: { type: 'Identifier', name: 'MyClass' },
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: { type: 'Identifier', name: '_privateItems' },
+        value: createArrayExpression(),
+        readonly: false,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should report private class property when ignorePrivateMembers is false', () => {
+      const { context, reports } = createMockContext({ ignorePrivateMembers: false })
+      const visitor = preferReadonlyRule.create(context)
+
+      visitor.ClassDeclaration({
+        type: 'ClassDeclaration',
+        id: { type: 'Identifier', name: 'MyClass' },
+      })
+
+      visitor.PropertyDefinition({
+        type: 'PropertyDefinition',
+        key: { type: 'Identifier', name: '_privateItems' },
+        value: createArrayExpression(),
+        readonly: false,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+
+      visitor['Program:exit']()
+
+      expect(reports.length).toBe(1)
+    })
   })
 })
