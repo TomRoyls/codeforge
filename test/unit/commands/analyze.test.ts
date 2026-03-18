@@ -347,6 +347,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -372,6 +375,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -398,6 +404,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -422,6 +431,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -445,6 +457,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       let exitCode = 0
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
@@ -470,6 +485,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       let exitCode = 0
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
@@ -500,6 +518,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       let exitCode = 0
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
@@ -547,6 +568,9 @@ describe('Analyze Command', () => {
         'fail-on-warnings': false,
         concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -588,6 +612,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
           },
         })
       ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
@@ -629,6 +656,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
           },
         })
       ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
@@ -690,6 +720,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             rules: ['rule-one'],
           },
         })
@@ -937,6 +970,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1028,6 +1064,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             fix: true,
             'dry-run': true,
           },
@@ -1126,6 +1165,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1228,6 +1270,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1327,6 +1372,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1411,6 +1459,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1451,6 +1502,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             ci: true,
           },
         })
@@ -1488,6 +1542,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             ci: true,
           },
         })
@@ -1525,6 +1582,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             ci: true,
           },
         })
@@ -1562,6 +1622,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             ci: true,
           },
         })
@@ -1599,6 +1662,9 @@ describe('Analyze Command', () => {
             'fail-on-warnings': false,
             concurrency: 4,
         'severity-level': 'info',
+        color: true,
+        'severity-level': 'info',
+        color: true,
             ci: true,
           },
         })

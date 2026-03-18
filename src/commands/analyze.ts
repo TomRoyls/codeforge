@@ -144,6 +144,11 @@ export default class Analyze extends Command {
       default: false,
       description: 'Run in CI mode (disables colors, progress, sets JSON output)',
     }),
+    color: Flags.boolean({
+      allowNo: true,
+      default: true,
+      description: 'Control color output in terminal',
+    }),
     concurrency: Flags.integer({
       default: os.cpus().length,
       description: 'Number of files to process in parallel',
@@ -363,7 +368,7 @@ export default class Analyze extends Command {
     const summary = this.generateSummary(filteredViolations, filteredFiles.length, duration)
 
     const reporter = new Reporter({
-      color: !ciMode,
+      color: flags.color && !ciMode,
       format,
       outputPath: output,
       quiet,
