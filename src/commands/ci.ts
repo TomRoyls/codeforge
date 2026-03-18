@@ -181,7 +181,11 @@ codeforge:
       - node_modules/
   script:
     - npm ci
-    - npx codeforge analyze
+    - npx codeforge analyze --format gitlab --output gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    expire_in: 1 week
   only:
     - main
     - master

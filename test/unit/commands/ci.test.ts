@@ -474,6 +474,20 @@ describe('Ci Command', () => {
           ).generateGitLabCiContent()
 
           expect(result).toContain('npx codeforge analyze')
+          expect(result).toContain('--format gitlab')
+          expect(result).toContain('--output gl-code-quality-report.json')
+        })
+
+        test('includes code quality artifacts', () => {
+          const cmd = new Ci([], {} as never)
+          const result = (
+            cmd as unknown as { generateGitLabCiContent: () => string }
+          ).generateGitLabCiContent()
+
+          expect(result).toContain('artifacts:')
+          expect(result).toContain('reports:')
+          expect(result).toContain('codequality: gl-code-quality-report.json')
+          expect(result).toContain('expire_in: 1 week')
         })
 
         test('includes branch configuration', () => {
