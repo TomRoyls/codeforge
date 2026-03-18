@@ -86,6 +86,7 @@ describe('Init Command', () => {
 
     test('has all required flags', () => {
       expect(Init.flags).toBeDefined()
+      expect(Init.flags.dir).toBeDefined()
       expect(Init.flags.format).toBeDefined()
       expect(Init.flags.force).toBeDefined()
       expect(Init.flags.interactive).toBeDefined()
@@ -121,6 +122,10 @@ describe('Init Command', () => {
     test('typescript flag has default true', () => {
       expect(Init.flags.typescript.default).toBe(true)
     })
+
+    test('dir flag has default .', () => {
+      expect(Init.flags.dir.default).toBe('.')
+    })
   })
 
   describe('Flag characters', () => {
@@ -143,7 +148,10 @@ describe('Init Command', () => {
       const cmdWithMock = command as unknown as { parse: ReturnType<typeof vi.fn> }
       cmdWithMock.parse = vi.fn().mockResolvedValue({
         args: {},
-        flags,
+        flags: {
+          dir: '.',
+          ...flags,
+        },
       })
       return command
     }
@@ -519,33 +527,20 @@ describe('Init Command', () => {
 
       describe('detectExistingConfig', () => {
         test('returns null when no config file exists', () => {
-          const originalCwd = process.cwd
-          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
-
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).detectExistingConfig()
+          const result = (cmd as any).detectExistingConfig(tempDir)
           expect(result).toBeNull()
-
-          vi.spyOn(process, 'cwd').mockRestore()
         })
 
         test('returns path when .codeforgerc.json exists', async () => {
-          const originalCwd = process.cwd
-          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
-
           await fs.writeFile(path.join(tempDir, '.codeforgerc.json'), '{}', 'utf-8')
 
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).detectExistingConfig()
+          const result = (cmd as any).detectExistingConfig(tempDir)
           expect(result).toBe(path.join(tempDir, '.codeforgerc.json'))
-
-          vi.spyOn(process, 'cwd').mockRestore()
         })
 
         test('returns path when codeforge.config.js exists', async () => {
-          const originalCwd = process.cwd
-          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
-
           await fs.writeFile(
             path.join(tempDir, 'codeforge.config.js'),
             'export default {};',
@@ -553,29 +548,19 @@ describe('Init Command', () => {
           )
 
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).detectExistingConfig()
+          const result = (cmd as any).detectExistingConfig(tempDir)
           expect(result).toBe(path.join(tempDir, 'codeforge.config.js'))
-
-          vi.spyOn(process, 'cwd').mockRestore()
         })
 
         test('returns path when .codeforgerc exists', async () => {
-          const originalCwd = process.cwd
-          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
-
           await fs.writeFile(path.join(tempDir, '.codeforgerc'), '{}', 'utf-8')
 
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).detectExistingConfig()
+          const result = (cmd as any).detectExistingConfig(tempDir)
           expect(result).toBe(path.join(tempDir, '.codeforgerc'))
-
-          vi.spyOn(process, 'cwd').mockRestore()
         })
 
         test('returns first config found when multiple exist', async () => {
-          const originalCwd = process.cwd
-          vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
-
           await fs.writeFile(
             path.join(tempDir, 'codeforge.config.js'),
             'export default {};',
@@ -584,15 +569,13 @@ describe('Init Command', () => {
           await fs.writeFile(path.join(tempDir, '.codeforgerc.json'), '{}', 'utf-8')
 
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).detectExistingConfig()
+          const result = (cmd as any).detectExistingConfig(tempDir)
           expect(result).not.toBeNull()
           expect(
             ['.codeforgerc', '.codeforgerc.json', '.codeforge.json', 'codeforge.config.js'].some(
               (name) => result?.endsWith(name),
             ),
           ).toBe(true)
-
-          vi.spyOn(process, 'cwd').mockRestore()
         })
       })
 

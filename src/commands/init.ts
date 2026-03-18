@@ -2,7 +2,7 @@ import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import readline from 'node:readline'
 
 import type { CodeForgeConfig } from '../config/types.js'
@@ -12,6 +12,7 @@ import { CONFIG_FILE_NAMES, DEFAULT_CONFIG } from '../config/types.js'
 import { allRules, getRuleCategory } from '../rules/index.js'
 
 interface InitOptions {
+  dir: string
   force: boolean
   format: 'js' | 'json'
   interactive: boolean
@@ -50,9 +51,21 @@ export default class Init extends Command {
       command: '<%= config.bin %> <%= command.id %> --force',
       description: 'Overwrite existing config',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --force',
+      description: 'Overwrite existing config',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --dir ./my-project',
+      description: 'Create config in a specific directory',
+    },
   ]
 
   static override flags = {
+    dir: Flags.string({
+      default: '.',
+      description: 'Directory to create the config file in',
+    }),
     force: Flags.boolean({
       char: 'f',
       default: false,
@@ -84,6 +97,7 @@ export default class Init extends Command {
     const { flags } = await this.parse(Init)
 
     const options: InitOptions = {
+      dir: flags.dir,
       force: flags.force,
       format: flags.format as 'js' | 'json',
       interactive: flags.interactive,
@@ -91,7 +105,8 @@ export default class Init extends Command {
       typescript: flags.typescript,
     }
 
-    const existingConfig = this.detectExistingConfig()
+    const configDir = resolve(options.dir)
+    const existingConfig = this.detectExistingConfig(configDir)
 
     if (existingConfig && !options.force) {
       const shouldOverwrite = await this.confirmOverwrite(existingConfig)
@@ -108,7 +123,7 @@ export default class Init extends Command {
 
     const config = this.generateConfig(options, selectedRules)
     const configFileName = options.format === 'js' ? 'codeforge.config.js' : '.codeforgerc.json'
-    const configPath = join(process.cwd(), configFileName)
+    const configPath = join(configDir, configFileName)
 
     const content =
       options.format === 'js' ? this.generateJsContent(config) : this.generateJsonContent(config)
@@ -116,7 +131,7 @@ export default class Init extends Command {
     await fs.mkdir(dirname(configPath), { recursive: true })
     await fs.writeFile(configPath, content, 'utf8')
 
-    this.log(chalk.green(`✓ Created ${configFileName}`))
+    this.log(chalk.green(`✓ Created ${configFileName} in ${configDir}`))
     this.log('')
     this.log(chalk.bold('Configuration:'))
     this.log(chalk.gray(`  Files: ${(config.files ?? []).join(', ')}`))
@@ -150,11 +165,9 @@ export default class Init extends Command {
     })
   }
 
-  private detectExistingConfig(): null | string {
-    const cwd = process.cwd()
-
+  private detectExistingConfig(configDir: string): null | string {
     for (const fileName of CONFIG_FILE_NAMES) {
-      const filePath = join(cwd, fileName)
+      const filePath = join(configDir, fileName)
       if (existsSync(filePath)) {
         return filePath
       }
