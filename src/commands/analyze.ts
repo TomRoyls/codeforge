@@ -102,6 +102,10 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --rules no-circular-deps,max-params',
       description: 'Run specific rules only',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --max-warnings 10',
+      description: 'Fail if more than 10 warnings found',
+    },
   ]
 
   static override flags = {
@@ -140,6 +144,10 @@ export default class Analyze extends Command {
       char: 'i',
       description: 'Patterns to ignore',
       multiple: true,
+    }),
+    'max-warnings': Flags.integer({
+      default: -1,
+      description: 'Number of warnings to trigger a non-zero exit code (-1 to ignore)',
     }),
     output: Flags.string({
       char: 'o',
@@ -188,6 +196,7 @@ export default class Analyze extends Command {
     const quiet = ciMode || flags.quiet
     const verbose = flags.verbose && !ciMode
     const failOnWarnings = flags['fail-on-warnings']
+    const maxWarnings = flags['max-warnings']
     const shouldFix = flags.fix
     const dryRun = flags['dry-run']
 
@@ -288,7 +297,7 @@ export default class Analyze extends Command {
       summary,
     })
 
-    const exitCode = this.determineExitCode(summary, failOnWarnings)
+    const exitCode = this.determineExitCode(summary, failOnWarnings, maxWarnings)
     this.exit(exitCode)
   }
 
@@ -436,6 +445,7 @@ export default class Analyze extends Command {
   private determineExitCode(
     summary: { errors: number; warnings: number },
     failOnWarnings: boolean,
+    maxWarnings: number,
   ): number {
     if (summary.errors > 0) {
       return 1
@@ -443,6 +453,10 @@ export default class Analyze extends Command {
 
     if (failOnWarnings && summary.warnings > 0) {
       return 2
+    }
+
+    if (maxWarnings >= 0 && summary.warnings > maxWarnings) {
+      return 1
     }
 
     return 0
