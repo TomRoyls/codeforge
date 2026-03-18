@@ -17,11 +17,14 @@ group, place `[Unreleased]` next to the version number.
 - **analyze**: Added `--fail-on-warnings` flag for strict warning handling
 - **analyze**: Added `--staged` flag to analyze only git staged files
 - **analyze**: Added `--concurrency` flag to control parallel processing
+- **analyze**: Added `--ext` flag to filter by file extensions (e.g., --ext .ts,.tsx)
+- **analyze**: Added `--severity-level` flag to filter violations by minimum severity
 - **fix**: Added `--concurrency` flag to control parallel processing
 - **report**: Added `--concurrency` flag to control parallel processing
 - **init**: Added `--dir` flag to specify config directory
 - **rules**: Added `--search` flag to filter rules by keyword
 - **stats**: Added `--output` flag to save results to file
+- **stats**: Added `--ext` flag to filter by file extensions
 - **stats**: Added CSV format option for machine-readable output
 - **ci**: GitHub Actions workflow now uploads SARIF to GitHub Advanced Security
 - **ci**: GitLab CI now generates Code Quality report for merge request widget integration
