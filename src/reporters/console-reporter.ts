@@ -33,6 +33,12 @@ const SEVERITY_COLORS: Record<Severity, string> = {
   warning: ANSI_CODES.yellow,
 }
 
+const SEVERITY_PRIORITY: Record<Severity, number> = {
+  error: 0,
+  info: 2,
+  warning: 1,
+}
+
 export class ConsoleReporter implements Reporter {
   readonly name = 'console'
   private readonly color: boolean
@@ -189,7 +195,11 @@ export class ConsoleReporter implements Reporter {
     for (const file of filesWithViolations) {
       this.printFileHeader(file.filePath)
 
-      for (const violation of file.violations) {
+      const sortedViolations = [...file.violations].sort(
+        (a, b) => SEVERITY_PRIORITY[a.severity] - SEVERITY_PRIORITY[b.severity],
+      )
+
+      for (const violation of sortedViolations) {
         this.printLine(this.format(violation))
 
         if (this.includeSource && violation.source) {
