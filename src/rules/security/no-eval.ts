@@ -9,6 +9,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface EvalCallInfo {
   readonly callee: string
@@ -138,10 +139,10 @@ export const noEvalRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoEvalOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoEvalOptions
+    const options = extractRuleOptions<NoEvalOptions>(context.config.options, {
+      allowIndirect: false,
+      allowWith: false,
+    })
 
     const evalCalls: EvalCallInfo[] = []
 

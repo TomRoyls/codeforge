@@ -5,6 +5,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface PreferReadonlyOptions {
   readonly ignoreLocalVariables?: boolean
@@ -136,13 +137,13 @@ export const preferReadonlyRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: PreferReadonlyOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as PreferReadonlyOptions
+    const options = extractRuleOptions<PreferReadonlyOptions>(context.config.options, {
+      ignoreLocalVariables: false,
+      ignorePrivateMembers: false,
+    })
 
-    const ignoreLocalVariables = options.ignoreLocalVariables ?? false
-    const ignorePrivateMembers = options.ignorePrivateMembers ?? false
+    const ignoreLocalVariables = options.ignoreLocalVariables
+    const ignorePrivateMembers = options.ignorePrivateMembers
 
     const variables = new Map<string, VariableInfo>()
     const classProperties = new Map<string, ClassPropertyInfo>()

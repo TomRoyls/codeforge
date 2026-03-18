@@ -4,6 +4,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoThrowLiteralOptions {
   readonly allowThrowingAny?: boolean
@@ -151,10 +152,10 @@ export const noThrowLiteralRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoThrowLiteralOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoThrowLiteralOptions
+    const options = extractRuleOptions<NoThrowLiteralOptions>(context.config.options, {
+      allowThrowingAny: false,
+      allowThrowingObjects: false,
+    })
 
     return {
       ThrowStatement(node: unknown): void {

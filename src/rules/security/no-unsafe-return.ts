@@ -10,6 +10,8 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractRuleOptions } from '../../utils/options-helpers.js'
+
 interface NoUnsafeReturnOptions {
   readonly allowAny?: boolean
   readonly allowUnknown?: boolean
@@ -238,10 +240,10 @@ export const noUnsafeReturnRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoUnsafeReturnOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoUnsafeReturnOptions
+    const options = extractRuleOptions<NoUnsafeReturnOptions>(context.config.options, {
+      allowAny: false,
+      allowUnknown: false,
+    })
 
     const functionStack: FunctionInfo[] = []
 

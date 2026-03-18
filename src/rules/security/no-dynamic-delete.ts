@@ -9,6 +9,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoDynamicDeleteOptions {
   readonly allowInTests?: boolean
@@ -112,10 +113,9 @@ export const noDynamicDeleteRule: RuleDefinition = {
   },
 
   create(context: RuleContext): RuleVisitor {
-    const rawOptions = context.config.options
-    const options: NoDynamicDeleteOptions = (
-      Array.isArray(rawOptions) && rawOptions.length > 0 ? rawOptions[0] : {}
-    ) as NoDynamicDeleteOptions
+    const options = extractRuleOptions<NoDynamicDeleteOptions>(context.config.options, {
+      allowInTests: false,
+    })
 
     return {
       UnaryExpression(node: unknown): void {
