@@ -40,7 +40,7 @@ export default class Stats extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['json', 'table'],
+      options: ['csv', 'json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',

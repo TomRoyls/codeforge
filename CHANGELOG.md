@@ -15,6 +15,8 @@ group, place `[Unreleased]` next to the version number.
 
 - **analyze**: Added `--max-warnings` flag for CI threshold control
 - **analyze**: Added `--fail-on-warnings` flag for strict warning handling
+- **analyze**: Added `--staged` flag to analyze only git staged files
+- **init**: Added `--dir` flag to specify config directory
 - **ci**: GitHub Actions workflow now uploads SARIF to GitHub Advanced Security
 - **ci**: GitLab CI now generates Code Quality report for merge request widget integration
 - **console-reporter**: Violations are now sorted by severity (errors → warnings → info)
@@ -29,6 +31,7 @@ group, place `[Unreleased]` next to the version number.
 - **analyze**: Removed duplicate flag character `f` from format flag (was conflicting with files flag)
 - **parser**: Replaced `console.warn` with logger for consistency
 - **watcher**: Replaced `console.warn` with logger for consistency
+- **precommit**: Fixed bug where default command referenced non-existent `--staged` flag
 
 ### Refactored
 
