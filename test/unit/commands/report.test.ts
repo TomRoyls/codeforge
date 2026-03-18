@@ -381,6 +381,7 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()
@@ -406,6 +407,7 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()
@@ -429,6 +431,7 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()
@@ -458,6 +461,7 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()
@@ -490,6 +494,7 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()
@@ -536,6 +541,7 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()

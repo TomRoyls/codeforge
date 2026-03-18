@@ -181,7 +181,7 @@ describe('Fix Command', () => {
     })
 
     test('getRulesWithFixes includes all rules with fix functions when safe-only is false', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
 
       const getRulesWithFixes = (
         cmd as unknown as {
@@ -198,7 +198,7 @@ describe('Fix Command', () => {
     })
 
     test('getRulesWithFixes filters to only meta.fixable rules when safe-only is true', async () => {
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
 
       const getRulesWithFixes = (
         cmd as unknown as {
@@ -228,7 +228,11 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { 'safe-only': true }, {})
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4, 'safe-only': true },
+        {},
+      )
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -255,7 +259,11 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { 'safe-only': false }, {})
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4, 'safe-only': false },
+        {},
+      )
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -273,7 +281,7 @@ describe('Fix Command', () => {
     test('should exit early when no files found', async () => {
       vi.mocked(discoverFiles).mockResolvedValueOnce([])
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       cmd.log = vi.fn()
       await cmd.run()
 
@@ -283,7 +291,11 @@ describe('Fix Command', () => {
     test('should discover files with provided patterns', async () => {
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('test.ts')])
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, { files: ['src/**/*.ts'] })
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4 },
+        { files: ['src/**/*.ts'] },
+      )
       cmd.log = vi.fn()
       await cmd.run()
 
@@ -295,7 +307,7 @@ describe('Fix Command', () => {
     test('should show dry run mode in summary', async () => {
       vi.mocked(discoverFiles).mockResolvedValueOnce([])
 
-      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, 'dry-run': true }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -311,7 +323,7 @@ describe('Fix Command', () => {
 
       const { logger } = await import('../../../src/utils/logger.js')
 
-      const cmd = createCommandWithMockedParse(FixCommand, { verbose: true }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, verbose: true }, {})
       cmd.log = vi.fn()
       await cmd.run()
 
@@ -375,7 +387,11 @@ describe('Fix Command', () => {
         .mockReturnValueOnce(createMockFixReport({ fixesApplied: 2, fixesSkipped: 0 }))
         .mockReturnValueOnce(createMockFixReport({ fixesApplied: 1, fixesSkipped: 0 }))
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, { files: ['src/**/*.ts'] })
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4 },
+        { files: ['src/**/*.ts'] },
+      )
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -412,7 +428,11 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, { files: ['src/**/*.ts'] })
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4 },
+        { files: ['src/**/*.ts'] },
+      )
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -435,7 +455,11 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, { files: ['src/**/*.ts'] })
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4 },
+        { files: ['src/**/*.ts'] },
+      )
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -462,7 +486,11 @@ describe('Fix Command', () => {
         createMockFixReport({ fixesApplied: 3, fixesSkipped: 0 }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true, verbose: true }, {})
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4, 'dry-run': true, verbose: true },
+        {},
+      )
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -476,7 +504,7 @@ describe('Fix Command', () => {
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('file.ts')])
 
-      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, 'dry-run': true }, {})
       cmd.log = vi.fn()
       await cmd.run()
 
@@ -491,7 +519,7 @@ describe('Fix Command', () => {
         createMockFixReport({ fixesApplied: 1, fixesSkipped: 0 }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, 'dry-run': true }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -516,7 +544,7 @@ describe('Fix Command', () => {
         }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { verbose: true }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, verbose: true }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -540,7 +568,7 @@ describe('Fix Command', () => {
         }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { verbose: false }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, verbose: false }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -553,7 +581,11 @@ describe('Fix Command', () => {
     test('should filter to specific rules when requested', async () => {
       vi.mocked(discoverFiles).mockResolvedValueOnce([])
 
-      const cmd = createCommandWithMockedParse(FixCommand, { rules: 'prefer-const,no-console' }, {})
+      const cmd = createCommandWithMockedParse(
+        FixCommand,
+        { concurrency: 4, rules: 'prefer-const,no-console' },
+        {},
+      )
       cmd.log = vi.fn()
       await cmd.run()
 
@@ -568,7 +600,7 @@ describe('Fix Command', () => {
     test('should register all rules when no specific rules requested', async () => {
       vi.mocked(discoverFiles).mockResolvedValueOnce([])
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       cmd.log = vi.fn()
       await cmd.run()
 
@@ -609,7 +641,7 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -635,7 +667,7 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -656,7 +688,7 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -674,7 +706,7 @@ describe('Fix Command', () => {
         createMockFixReport({ fixesApplied: 5, fixesSkipped: 0 }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { verbose: true }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, verbose: true }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -691,7 +723,7 @@ describe('Fix Command', () => {
         createMockFixReport({ fixesApplied: 5, fixesSkipped: 0 }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, { verbose: false }, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4, verbose: false }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -714,7 +746,7 @@ describe('Fix Command', () => {
           }) as never,
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
@@ -739,7 +771,7 @@ describe('Fix Command', () => {
         createMockFixReport({ fixesApplied: 2, fixesSkipped: 0 }),
       )
 
-      const cmd = createCommandWithMockedParse(FixCommand, {}, {})
+      const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
       cmd.log = vi.fn((msg: string) => logs.push(msg))
       await cmd.run()
