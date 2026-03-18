@@ -125,6 +125,10 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --concurrency 4',
       description: 'Process 4 files in parallel',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
+      description: 'Analyze only TypeScript files',
+    },
   ]
 
   static override flags = {
@@ -143,6 +147,10 @@ export default class Analyze extends Command {
     'dry-run': Flags.boolean({
       default: false,
       description: 'Preview fixes without applying them (use with --fix)',
+    }),
+    ext: Flags.string({
+      default: '',
+      description: 'Comma-separated file extensions to analyze (e.g., ".ts,.tsx")',
     }),
     'fail-on-warnings': Flags.boolean({
       default: false,
@@ -226,7 +234,7 @@ export default class Analyze extends Command {
     const shouldFix = flags.fix
     const dryRun = flags['dry-run']
     const stagedMode = flags.staged
-    const {concurrency} = flags
+    const { concurrency } = flags
 
     this.configureLogging(verbose, quiet)
 
@@ -248,13 +256,27 @@ export default class Analyze extends Command {
       stagedMode,
     })
 
-    if (discoveredFiles.length === 0) {
+    const extensions = flags.ext
+      ? flags.ext
+          .split(',')
+          .map((e) => e.trim())
+          .filter(Boolean)
+      : null
+
+    const filteredFiles = extensions
+      ? discoveredFiles.filter((f) => {
+          const ext = path.extname(f.path).toLowerCase()
+          return extensions.includes(ext)
+        })
+      : discoveredFiles
+
+    if (filteredFiles.length === 0) {
       spinner?.warn('No files found to analyze')
       this.exit(0)
       return
     }
 
-    spinner?.succeed(`Found ${discoveredFiles.length} files to analyze`)
+    spinner?.succeed(`Found ${filteredFiles.length} files to analyze`)
 
     const requestedRules = flags.rules
     const registry = setupRuleRegistry(requestedRules)
@@ -268,7 +290,7 @@ export default class Analyze extends Command {
 
     const { allViolations, fileReports } = await this.analyzeFiles({
       concurrency,
-      discoveredFiles,
+      discoveredFiles: filteredFiles,
       parseCache,
       parser,
       registry,
@@ -291,7 +313,7 @@ export default class Analyze extends Command {
       const fixResult = await this.applyFixes({
         allViolations,
         concurrency,
-        discoveredFiles,
+        discoveredFiles: filteredFiles,
         dryRun,
         parseCache,
         parser,
@@ -313,7 +335,7 @@ export default class Analyze extends Command {
 
     const duration = performance.now() - startTime
 
-    const summary = this.generateSummary(allViolations, discoveredFiles.length, duration)
+    const summary = this.generateSummary(allViolations, filteredFiles.length, duration)
 
     const reporter = new Reporter({
       color: !ciMode,

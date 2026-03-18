@@ -37,9 +37,17 @@ export default class Stats extends Command {
       command: '<%= config.bin %> <%= command.id %> --format json --output stats.json',
       description: 'Save statistics to JSON file',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
+      description: 'Show statistics for TypeScript files only',
+    },
   ]
 
   static override flags = {
+    ext: Flags.string({
+      default: '',
+      description: 'Comma-separated file extensions to analyze (e.g., ".ts,.tsx")',
+    }),
     format: Flags.string({
       char: 'f',
       default: 'table',
@@ -103,6 +111,20 @@ export default class Stats extends Command {
       patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     })
 
+    const extensions = flags.ext
+      ? flags.ext
+          .split(',')
+          .map((e) => e.trim())
+          .filter(Boolean)
+      : null
+
+    const filteredFiles = extensions
+      ? discoveredFiles.filter((f) => {
+          const ext = extname(f.path).toLowerCase()
+          return extensions.includes(ext)
+        })
+      : discoveredFiles
+
     spinner.text = 'Analyzing files...'
 
     this.parser = new Parser()
@@ -110,13 +132,13 @@ export default class Stats extends Command {
 
     let stats: StatsResult
     try {
-      stats = await this.collectStats(discoveredFiles, verbose, flags['sort-by'], format)
+      stats = await this.collectStats(filteredFiles, verbose, flags['sort-by'], format)
     } finally {
       this.parser.dispose()
       this.parser = null
     }
 
-    spinner.succeed(`Analyzed ${discoveredFiles.length} files`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files`)
 
     const outputData =
       format === 'json'
