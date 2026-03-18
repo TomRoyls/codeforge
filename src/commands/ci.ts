@@ -121,6 +121,10 @@ on:
   pull_request:
     branches: [main, master, develop]
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
@@ -139,7 +143,14 @@ jobs:
         run: npm ci
 
       - name: Run CodeForge analysis
-        run: npx codeforge analyze
+        run: npx codeforge analyze --format sarif --output results.sarif
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: results.sarif
+          category: codeforge
 `
   }
 

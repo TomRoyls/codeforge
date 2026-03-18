@@ -120,6 +120,8 @@ describe('Ci Command', () => {
         expect(content).toContain('actions/setup-node@v4')
         expect(content).toContain('npm ci')
         expect(content).toContain('npx codeforge analyze')
+        expect(content).toContain('--format sarif')
+        expect(content).toContain('--output results.sarif')
       })
 
       test('skips GitHub Actions when file exists and force is false', async () => {
@@ -400,6 +402,30 @@ describe('Ci Command', () => {
           ).generateGitHubActionsContent()
 
           expect(result).toContain('npx codeforge analyze')
+          expect(result).toContain('--format sarif')
+          expect(result).toContain('--output results.sarif')
+        })
+
+        test('includes SARIF upload step', () => {
+          const cmd = new Ci([], {} as never)
+          const result = (
+            cmd as unknown as { generateGitHubActionsContent: () => string }
+          ).generateGitHubActionsContent()
+
+          expect(result).toContain('github/codeql-action/upload-sarif@v3')
+          expect(result).toContain('sarif_file: results.sarif')
+          expect(result).toContain('category: codeforge')
+        })
+
+        test('includes permissions for security-events', () => {
+          const cmd = new Ci([], {} as never)
+          const result = (
+            cmd as unknown as { generateGitHubActionsContent: () => string }
+          ).generateGitHubActionsContent()
+
+          expect(result).toContain('permissions:')
+          expect(result).toContain('security-events: write')
+          expect(result).toContain('contents: read')
         })
       })
 
