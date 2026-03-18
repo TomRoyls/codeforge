@@ -91,6 +91,10 @@ describe('Rules Command', () => {
     test('fixable flag has default false', () => {
       expect(Rules.flags.fixable.default).toBe(false)
     })
+
+    test('search flag has char s', () => {
+      expect(Rules.flags.search.char).toBe('s')
+    })
   })
 
   describe('Flag characters', () => {
@@ -175,6 +179,7 @@ describe('Rules Command', () => {
         format: 'json',
         category: undefined,
         fixable: false,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
@@ -187,6 +192,7 @@ describe('Rules Command', () => {
         format: 'json',
         category: undefined,
         fixable: false,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
@@ -204,6 +210,7 @@ describe('Rules Command', () => {
         format: 'json',
         category: 'performance',
         fixable: false,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
@@ -216,6 +223,7 @@ describe('Rules Command', () => {
         format: 'json',
         category: undefined,
         fixable: true,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
@@ -223,11 +231,27 @@ describe('Rules Command', () => {
       expect(parsed.every((r: { fixable: boolean }) => r.fixable === true)).toBe(true)
     })
 
+    test('filters by search term', async () => {
+      const cmd = createCommandWithMockedParse({
+        format: 'json',
+        category: undefined,
+        fixable: false,
+        search: 'loop',
+      })
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+      expect(
+        parsed.every((r: { description: string }) => r.description.toLowerCase().includes('loop')),
+      ).toBe(true)
+    })
+
     test('outputs table format by default', async () => {
       const cmd = createCommandWithMockedParse({
         format: 'table',
         category: undefined,
         fixable: false,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
@@ -242,6 +266,7 @@ describe('Rules Command', () => {
         format: 'table',
         category: undefined,
         fixable: false,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
@@ -254,6 +279,7 @@ describe('Rules Command', () => {
         format: 'table',
         category: undefined,
         fixable: false,
+        search: undefined,
       })
       await cmd.run()
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')

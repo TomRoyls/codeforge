@@ -27,11 +27,11 @@ export default class Rules extends Command {
     },
     {
       command: '<%= config.bin %> <%= command.id %> --category complexity',
-      description: 'Show only complexity rules',
+      description: 'Filter rules by category',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --fixable',
-      description: 'Show only fixable rules',
+      command: '<%= config.bin %> <%= command.id %> --search async',
+      description: 'Search rules by keyword in description',
     },
   ]
 
@@ -51,6 +51,10 @@ export default class Rules extends Command {
       description: 'Output format',
       options: ['json', 'table'],
     }),
+    search: Flags.string({
+      char: 's',
+      description: 'Search rules by keyword in description',
+    }),
   }
 
   async run(): Promise<void> {
@@ -64,6 +68,11 @@ export default class Rules extends Command {
 
     if (flags.fixable) {
       rules = rules.filter((r) => r.fixable)
+    }
+
+    if (flags.search) {
+      const searchLower = flags.search.toLowerCase()
+      rules = rules.filter((r) => r.description.toLowerCase().includes(searchLower))
     }
 
     const format = flags.format as OutputFormat
