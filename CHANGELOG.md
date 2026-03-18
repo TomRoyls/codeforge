@@ -16,7 +16,13 @@ group, place `[Unreleased]` next to the version number.
 - **analyze**: Added `--max-warnings` flag for CI threshold control
 - **analyze**: Added `--fail-on-warnings` flag for strict warning handling
 - **analyze**: Added `--staged` flag to analyze only git staged files
+- **analyze**: Added `--concurrency` flag to control parallel processing
+- **fix**: Added `--concurrency` flag to control parallel processing
+- **report**: Added `--concurrency` flag to control parallel processing
 - **init**: Added `--dir` flag to specify config directory
+- **rules**: Added `--search` flag to filter rules by keyword
+- **stats**: Added `--output` flag to save results to file
+- **stats**: Added CSV format option for machine-readable output
 - **ci**: GitHub Actions workflow now uploads SARIF to GitHub Advanced Security
 - **ci**: GitLab CI now generates Code Quality report for merge request widget integration
 - **console-reporter**: Violations are now sorted by severity (errors → warnings → info)
@@ -40,7 +46,7 @@ group, place `[Unreleased]` next to the version number.
 
 ### Tests
 
-- Test coverage increased to 8556 tests (94.9% coverage)
+- Test coverage increased to 8570 tests (94.9% coverage)
 - Added tests for `extractRuleOptions` utility
 - Added tests for atomic file write and backup utilities
 - Added tests for `ignorePrivateMembers` with class properties
