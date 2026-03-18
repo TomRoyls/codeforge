@@ -19,6 +19,7 @@ group, place `[Unreleased]` next to the version number.
 - **analyze**: Added `--concurrency` flag to control parallel processing
 - **analyze**: Added `--ext` flag to filter by file extensions (e.g., --ext .ts,.tsx)
 - **analyze**: Added `--severity-level` flag to filter violations by minimum severity
+- **analyze**: Added `--ignore-path` flag to read ignore patterns from file
 - **fix**: Added `--concurrency` flag to control parallel processing
 - **report**: Added `--concurrency` flag to control parallel processing
 - **init**: Added `--dir` flag to specify config directory
