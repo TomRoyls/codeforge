@@ -14,6 +14,7 @@ import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { allRules } from '../rules/index.js'
 import { CLIError } from '../utils/errors.js'
+import { getGitRoot, getStagedFiles, isGitRepository } from '../utils/git-helpers.js'
 import { logger, LogLevel } from '../utils/logger.js'
 import { loadCommandConfig, setupRuleRegistry } from './command-helpers.js'
 
@@ -66,6 +67,14 @@ interface ApplyFixesOptions {
   verbose: boolean
 }
 
+interface DiscoverFilesOptions {
+  cwd: string
+  files: string[]
+  ignore: string[]
+  spinner: null | Ora
+  stagedMode: boolean
+}
+
 export default class Analyze extends Command {
   static override args = {
     path: Args.string({
@@ -85,6 +94,10 @@ export default class Analyze extends Command {
     {
       command: '<%= config.bin %> <%= command.id %> src/',
       description: 'Analyze the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --staged',
+      description: 'Analyze only staged files',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --files "**/*.ts"',
@@ -162,6 +175,10 @@ export default class Analyze extends Command {
       description: 'Specific rules to run',
       multiple: true,
     }),
+    staged: Flags.boolean({
+      default: false,
+      description: 'Analyze only staged files in git',
+    }),
     verbose: Flags.boolean({
       char: 'v',
       default: false,
@@ -198,6 +215,7 @@ export default class Analyze extends Command {
     const maxWarnings = flags['max-warnings']
     const shouldFix = flags.fix
     const dryRun = flags['dry-run']
+    const stagedMode = flags.staged
 
     this.configureLogging(verbose, quiet)
 
@@ -211,10 +229,12 @@ export default class Analyze extends Command {
 
     const spinner = quiet ? null : ora('Discovering files...').start()
 
-    const discoveredFiles = await discoverFiles({
+    const discoveredFiles = await this.discoverFiles({
       cwd: targetPath,
+      files,
       ignore,
-      patterns: files,
+      spinner,
+      stagedMode,
     })
 
     if (discoveredFiles.length === 0) {
@@ -231,7 +251,6 @@ export default class Analyze extends Command {
     const parser = new Parser()
     await parser.initialize()
 
-    // Parse cache to avoid double parsing during fix application
     const parseCache = new Map<string, import('../core/parser.js').ParseResult>()
 
     const analysisSpinner = quiet ? null : ora('Analyzing files...').start()
@@ -459,6 +478,45 @@ export default class Analyze extends Command {
     }
 
     return 0
+  }
+
+  private async discoverFiles(options: DiscoverFilesOptions): Promise<DiscoveredFile[]> {
+    const { cwd, files, ignore, spinner, stagedMode } = options
+
+    if (stagedMode) {
+      if (!isGitRepository(cwd)) {
+        spinner?.fail()
+        this.error('Not a git repository. --staged requires a git repository.', { exit: 1 })
+      }
+
+      const gitRoot = getGitRoot(cwd)
+      if (!gitRoot) {
+        spinner?.fail()
+        this.error('Could not determine git repository root.', { exit: 1 })
+      }
+
+      const stagedFilePaths = getStagedFiles(gitRoot)
+
+      if (stagedFilePaths.length === 0) {
+        return []
+      }
+
+      return stagedFilePaths
+        .filter((filePath) => {
+          const absolutePath = path.join(gitRoot, filePath)
+          return existsSync(absolutePath)
+        })
+        .map((filePath) => ({
+          absolutePath: path.join(gitRoot, filePath),
+          path: filePath,
+        }))
+    }
+
+    return discoverFiles({
+      cwd,
+      ignore,
+      patterns: files,
+    })
   }
 
   private generateSummary(

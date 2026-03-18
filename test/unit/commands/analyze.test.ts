@@ -96,6 +96,12 @@ vi.mock('../../../src/config/merger.js', () => ({
 
 vi.mock('../../../src/config/env-parser.js', () => ({ parseEnvVars: vi.fn(() => ({})) }))
 
+vi.mock('../../../src/utils/git-helpers.js', () => ({
+  isGitRepository: vi.fn().mockReturnValue(true),
+  getGitRoot: vi.fn().mockReturnValue('/resolved/.'),
+  getStagedFiles: vi.fn().mockReturnValue([]),
+}))
+
 vi.mock('../../../src/rules/index.js', () => ({
   allRules: {},
   getRule: vi.fn(),
@@ -169,6 +175,14 @@ describe('Analyze Command', () => {
 
     test('has fail-on-warnings flag', () => {
       expect(Analyze.flags['fail-on-warnings']).toBeDefined()
+    })
+
+    test('has staged flag', () => {
+      expect(Analyze.flags.staged).toBeDefined()
+    })
+
+    test('staged flag has default false', () => {
+      expect(Analyze.flags.staged.default).toBe(false)
     })
 
     test('has examples defined', () => {
