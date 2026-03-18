@@ -24,6 +24,7 @@ interface FileFixResult {
 }
 
 interface FixFlags {
+  concurrency: number
   config: string | undefined
   'dry-run': boolean
   ignore?: string[]
@@ -67,12 +68,20 @@ export default class Fix extends Command {
       command: '<%= config.bin %> <%= command.id %> --rules prefer-const,no-eval',
       description: 'Fix only specific rules',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --concurrency 4',
+      description: 'Process 4 files in parallel',
+    },
   ]
 
   static override flags = {
     ci: Flags.boolean({
       default: false,
       description: 'Run in CI mode (disables colors and progress)',
+    }),
+    concurrency: Flags.integer({
+      default: os.cpus().length,
+      description: 'Number of files to process in parallel',
     }),
     config: Flags.string({
       char: 'c',
@@ -317,8 +326,7 @@ export default class Fix extends Command {
     totalFixesApplied: number
     totalFixesSkipped: number
   }> {
-    const concurrency = os.cpus().length || 4
-    const limit = pLimit(concurrency)
+    const limit = pLimit(flags.concurrency)
 
     const results = await Promise.all(
       discoveredFiles.map((file) => limit(async () => this.processFile(file, context))),

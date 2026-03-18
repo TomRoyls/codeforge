@@ -49,6 +49,7 @@ interface FixResult {
 }
 
 interface AnalyzeFilesOptions {
+  concurrency: number
   discoveredFiles: DiscoveredFile[]
   parseCache: Map<string, import('../core/parser.js').ParseResult>
   parser: Parser
@@ -59,6 +60,7 @@ interface AnalyzeFilesOptions {
 
 interface ApplyFixesOptions {
   allViolations: RuleViolation[]
+  concurrency: number
   discoveredFiles: DiscoveredFile[]
   dryRun: boolean
   parseCache: Map<string, import('../core/parser.js').ParseResult>
@@ -119,12 +121,20 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --max-warnings 10',
       description: 'Fail if more than 10 warnings found',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --concurrency 4',
+      description: 'Process 4 files in parallel',
+    },
   ]
 
   static override flags = {
     ci: Flags.boolean({
       default: false,
       description: 'Run in CI mode (disables colors, progress, sets JSON output)',
+    }),
+    concurrency: Flags.integer({
+      default: os.cpus().length,
+      description: 'Number of files to process in parallel',
     }),
     config: Flags.string({
       char: 'c',
@@ -216,6 +226,7 @@ export default class Analyze extends Command {
     const shouldFix = flags.fix
     const dryRun = flags['dry-run']
     const stagedMode = flags.staged
+    const {concurrency} = flags
 
     this.configureLogging(verbose, quiet)
 
@@ -256,6 +267,7 @@ export default class Analyze extends Command {
     const analysisSpinner = quiet ? null : ora('Analyzing files...').start()
 
     const { allViolations, fileReports } = await this.analyzeFiles({
+      concurrency,
       discoveredFiles,
       parseCache,
       parser,
@@ -278,6 +290,7 @@ export default class Analyze extends Command {
 
       const fixResult = await this.applyFixes({
         allViolations,
+        concurrency,
         discoveredFiles,
         dryRun,
         parseCache,
@@ -320,8 +333,7 @@ export default class Analyze extends Command {
   }
 
   private async analyzeFiles(options: AnalyzeFilesOptions): Promise<AnalysisResult> {
-    const { discoveredFiles, parseCache, parser, registry, spinner, verbose } = options
-    const concurrency = os.cpus().length || 4
+    const { concurrency, discoveredFiles, parseCache, parser, registry, spinner, verbose } = options
     const limit = pLimit(concurrency)
 
     const results = await Promise.all(
@@ -380,8 +392,16 @@ export default class Analyze extends Command {
   }
 
   private async applyFixes(options: ApplyFixesOptions): Promise<FixResult> {
-    const { allViolations, discoveredFiles, dryRun, parseCache, parser, rulesWithFixes, verbose } =
-      options
+    const {
+      allViolations,
+      concurrency,
+      discoveredFiles,
+      dryRun,
+      parseCache,
+      parser,
+      rulesWithFixes,
+      verbose,
+    } = options
 
     const violationsByFile = new Map<string, RuleViolation[]>()
     for (const violation of allViolations) {
@@ -393,7 +413,6 @@ export default class Analyze extends Command {
       }
     }
 
-    const concurrency = os.cpus().length || 4
     const limit = pLimit(concurrency)
 
     const results = await Promise.all(

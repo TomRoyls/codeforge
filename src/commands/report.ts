@@ -70,9 +70,17 @@ export default class Report extends Command {
       command: '<%= config.bin %> <%= command.id %> --format markdown --output REPORT.md',
       description: 'Generate Markdown report for documentation',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --concurrency 4',
+      description: 'Process 4 files in parallel',
+    },
   ]
 
   static override flags = {
+    concurrency: Flags.integer({
+      default: os.cpus().length,
+      description: 'Number of files to process in parallel',
+    }),
     format: Flags.string({
       char: 'f',
       default: 'console',
@@ -111,7 +119,7 @@ export default class Report extends Command {
 
     const results = flags.input
       ? await this.loadFromInput(flags.input)
-      : await this.runAnalysis(args.path)
+      : await this.runAnalysis(args.path, flags.concurrency)
 
     const reporter = this.createReporter(format, {
       outputPath: flags.output,
@@ -208,7 +216,7 @@ export default class Report extends Command {
     }
   }
 
-  private async runAnalysis(targetPath: string): Promise<AnalysisResult> {
+  private async runAnalysis(targetPath: string, concurrency: number): Promise<AnalysisResult> {
     const absolutePath = path.resolve(targetPath)
 
     if (!fs.existsSync(absolutePath)) {
@@ -233,7 +241,6 @@ export default class Report extends Command {
     const parser = new Parser()
     await parser.initialize()
 
-    const concurrency = os.cpus().length || 4
     const limit = pLimit(concurrency)
 
     const fileResults = await Promise.all(
