@@ -5,6 +5,7 @@ import {
   extractLocation,
   isBinaryExpression,
 } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isNullLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
@@ -60,7 +61,7 @@ export const eqEqEqRule: RuleDefinition = {
         const rightSource = getNodeSource(context, n.right)
 
         context.report({
-          message: `Expected '${expectedOperator}' and instead saw '${operator}'.`,
+          message: `Expected '${expectedOperator}' and instead saw '${operator}'. ${RULE_SUGGESTIONS.useStrictEquality}`,
           loc: location,
           fix: range
             ? {

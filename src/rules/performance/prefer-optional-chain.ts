@@ -10,6 +10,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface OptionalChainMatch {
   readonly leftText: string
@@ -213,7 +214,7 @@ export const preferOptionalChainRule: RuleDefinition = {
         if (match) {
           context.report({
             node,
-            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}.`,
+            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}. ${RULE_SUGGESTIONS.preferOptionalChain}`,
             loc: match.location,
             suggest: [
               {
@@ -236,7 +237,7 @@ export const preferOptionalChainRule: RuleDefinition = {
         if (match) {
           context.report({
             node,
-            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}.`,
+            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}. ${RULE_SUGGESTIONS.preferOptionalChain}`,
             loc: match.location,
             suggest: [
               {

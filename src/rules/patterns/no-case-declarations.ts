@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isSwitchCase(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
@@ -38,7 +39,7 @@ export const noCaseDeclarationsRule: RuleDefinition = {
         for (const stmt of consequent) {
           if (isLexicalDeclaration(stmt) || isFunctionDeclaration(stmt)) {
             context.report({
-              message: 'Unexpected lexical declaration in case clause. Wrap in a block.',
+              message: 'Unexpected lexical declaration in case clause. Wrap in a block.' + RULE_SUGGESTIONS.noCaseDeclarations,
               loc: extractLocation(stmt),
             })
           }

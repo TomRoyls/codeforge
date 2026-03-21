@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isArrayExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
@@ -75,7 +76,7 @@ export const noArrayDestructuringRule: RuleDefinition = {
           const displayName = argName ?? 'array'
 
           context.report({
-            message: `Avoid spreading '${displayName}' in array literal. For large arrays, use ${displayName}.concat() or ${displayName}.slice() instead of [...${displayName}] for better performance.`,
+            message: `Avoid spreading '${displayName}' in array literal. For large arrays, use ${displayName}.concat() or ${displayName}.slice() instead of [...${displayName}] for better performance.` + RULE_SUGGESTIONS.noArrayDestructuring,
             loc: location,
           })
         }

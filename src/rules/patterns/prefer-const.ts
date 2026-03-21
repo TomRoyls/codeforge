@@ -11,6 +11,7 @@ import type {
 } from '../../plugins/types.js'
 import { extractLocation, getRange } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface VariableInfo {
   readonly name: string
@@ -226,7 +227,7 @@ export const preferConstRule: RuleDefinition = {
                 : undefined
 
             context.report({
-              message: `'${name}' is never reassigned. Use 'const' instead.`,
+              message: `'${name}' is never reassigned. Use 'const' instead. ${RULE_SUGGESTIONS.preferConst}`,
               loc: info.location,
               fix,
             })

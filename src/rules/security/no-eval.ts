@@ -10,6 +10,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface EvalCallInfo {
   readonly callee: string
@@ -167,7 +168,7 @@ export const noEvalRule: RuleDefinition = {
 
           context.report({
             node,
-            message: `Unexpected use of '${result.callee}'. This can lead to security vulnerabilities.`,
+            message: `Unexpected use of '${result.callee}'. This can lead to security vulnerabilities. ${RULE_SUGGESTIONS.noEval}`,
             loc: extractLocation(node),
           })
         }
@@ -178,7 +179,7 @@ export const noEvalRule: RuleDefinition = {
           context.report({
             node,
             message:
-              'Unexpected use of with statement. It is deprecated and can lead to security issues.',
+              'Unexpected use of with statement. It is deprecated and can lead to security issues. ${RULE_SUGGESTIONS.noEval}',
             loc: extractLocation(node),
           })
         }
@@ -196,7 +197,7 @@ export const noEvalRule: RuleDefinition = {
           context.report({
             node,
             message:
-              "Unexpected use of 'new Function()'. This is equivalent to eval() and can lead to security vulnerabilities.",
+              "Unexpected use of 'new Function()'. This is equivalent to eval() and can lead to security vulnerabilities. ${RULE_SUGGESTIONS.noEval}",
             loc: extractLocation(node),
           })
         }

@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation, isNewExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isAsyncFunction(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
@@ -70,7 +71,7 @@ export const noAsyncPromiseExecutorRule: RuleDefinition = {
           const location = extractLocation(node)
           context.report({
             message:
-              'Promise executor functions should not be async. Async functions already return Promises - use the async function directly or refactor the executor.',
+              'Promise executor functions should not be async. Async functions already return Promises - use the async function directly or refactor the executor.' + RULE_SUGGESTIONS.noAsyncPromiseExecutor,
             loc: location,
           })
         }

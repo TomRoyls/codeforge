@@ -1,6 +1,7 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation, getRange } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface NoConsoleLogOptions {
   readonly allow?: readonly string[]
@@ -118,7 +119,7 @@ export const noConsoleLogRule: RuleDefinition = {
         const range = getRange(node)
 
         context.report({
-          message: `Unexpected console.${method} statement. Use a proper logging library for production code.`,
+          message: `Unexpected console.${method} statement. ${RULE_SUGGESTIONS.noConsoleLog}`,
           loc: location,
           fix: range ? { range, text: '' } : undefined,
         })

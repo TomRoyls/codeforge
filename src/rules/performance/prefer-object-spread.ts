@@ -4,6 +4,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface ObjectAssignMatch {
   readonly sourceText: string
@@ -192,7 +193,7 @@ export const preferObjectSpreadRule: RuleDefinition = {
 
           context.report({
             node,
-            message: `Prefer object spread ({ ${spreadDescription} }) instead of Object.assign({}, ${match.spreadSources.join(', ')}).`,
+            message: `Prefer object spread ({ ${spreadDescription} }) instead of Object.assign({}, ${match.spreadSources.join(', ')}). ${RULE_SUGGESTIONS.preferObjectSpread}`,
             loc: match.location,
             suggest: [
               {

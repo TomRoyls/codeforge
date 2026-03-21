@@ -1,5 +1,7 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
+
 function isDebuggerStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
@@ -22,7 +24,7 @@ export const noDebuggerRule: RuleDefinition = {
       DebuggerStatement(node: unknown): void {
         if (!isDebuggerStatement(node)) return
         context.report({
-          message: "Unexpected 'debugger' statement.",
+          message: `Unexpected 'debugger' statement. ${RULE_SUGGESTIONS.useLoggingLibrary}`,
           loc: extractLocation(node),
         })
       },

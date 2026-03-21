@@ -7,6 +7,7 @@ import {
   getArguments,
   getRange,
 } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 export const noArrayConstructorRule: RuleDefinition = {
   meta: {
@@ -44,20 +45,20 @@ export const noArrayConstructorRule: RuleDefinition = {
 
         if (argCount === 0) {
           context.report({
-            message: 'Use array literal [] instead of new Array().',
+            message: 'Use array literal [] instead of new Array().' + RULE_SUGGESTIONS.noArrayConstructor,
             loc: location,
             fix: range ? { range, text: '[]' } : undefined,
           })
         } else if (argCount === 1) {
           context.report({
             message:
-              'Avoid new Array() with single argument - it creates an array of that length, not an array containing that value. Use array literal [] instead.',
+              'Avoid new Array() with single argument - it creates an array of that length, not an array containing that value. Use array literal [] instead.' + RULE_SUGGESTIONS.noArrayConstructor,
             loc: location,
           })
         } else {
           const argsSource = args.map((arg) => getNodeSource(context, arg)).join(', ')
           context.report({
-            message: 'Use array literal [...] instead of new Array(...).',
+            message: 'Use array literal [...] instead of new Array(...).' + RULE_SUGGESTIONS.noArrayConstructor,
             loc: location,
             fix: range ? { range, text: `[${argsSource}]` } : undefined,
           })
