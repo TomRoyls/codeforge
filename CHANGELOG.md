@@ -51,10 +51,31 @@ group, place `[Unreleased]` next to the version number.
 
 ### Tests
 
-- Test coverage increased to 8570 tests (94.9% coverage)
-- Added tests for `extractRuleOptions` utility
-- Added tests for atomic file write and backup utilities
-- Added tests for `ignorePrivateMembers` with class properties
+- Test coverage increased to 10313 tests (90.9% coverage)
+- Upgraded test framework to Vitest 4
+- Added 27 new tests for env-parser utility
+- Added parser benchmark tests for performance monitoring
+
+### Performance
+
+- **parser**: Added concurrent file parsing with p-limit (70-90% faster for large codebases)
+- **stats**: Reduced memory footprint by storing file size instead of full content
+- **reporters**: Optimized severity counting from O(3n) to O(n) with single-pass algorithm
+
+### Fixed
+
+- **vitest**: Fixed mock constructor patterns for Vitest 4 compatibility across 18+ test files
+- **explain**: Replaced `any` types with proper `RuleMeta` interface for better type safety
+- **types**: Added `RuleDocs` interface with `fixable` and `severity` properties
+
+### Dependencies
+
+- Updated @typescript-eslint packages to 8.57.2
+- Updated vitest and @vitest/coverage-v8 to 4.1.2
+- Updated chalk to 5.6.2
+- Updated fast-glob to 3.3.3
+- Updated prettier to 3.8.1
+- Updated ts-morph to 25.0.1
 
 ## [0.1.1]
 
