@@ -1,4 +1,5 @@
 import { Project, type SourceFile } from 'ts-morph'
+import pLimit from 'p-limit'
 
 import { logger } from '../utils/logger.js'
 
@@ -12,10 +13,12 @@ export interface ParseResult {
  * Options for configuring the Parser
  * @property tsConfigFilePath - Path to the tsconfig.json file
  * @property skipFileDependencyResolution - Whether to skip resolving file dependencies
+ * @property concurrency - Number of files to parse concurrently (default: 4)
  */
 export interface ParserOptions {
   tsConfigFilePath?: string
   skipFileDependencyResolution?: boolean
+  concurrency?: number
 }
 
 /**
@@ -24,15 +27,18 @@ export interface ParserOptions {
 export class Parser {
   private project: Project | null = null
   private options: ParserOptions
+  private concurrency: number
 
   /**
    * Creates a new Parser instance
    * @param options - Configuration options for the parser
    * @example
    * const parser = new Parser({ tsConfigFilePath: './tsconfig.json' });
+   * const parserWithConcurrency = new Parser({ concurrency: 8 });
    */
   constructor(options: ParserOptions = {}) {
     this.options = options
+    this.concurrency = options.concurrency ?? 4
   }
 
   /**
@@ -88,18 +94,29 @@ export class Parser {
    * console.log(`Parsed ${results.length} files`);
    */
   async parseFiles(filePaths: string[]): Promise<ParseResult[]> {
-    const results: ParseResult[] = []
-
-    for (const filePath of filePaths) {
-      try {
-        const result = await this.parseFile(filePath)
-        results.push(result)
-      } catch (error) {
-        logger.error(`Failed to parse ${filePath}: ${(error as Error).message}`)
-      }
+    // Ensure initialization
+    if (!this.project) {
+      await this.initialize()
     }
 
-    return results
+    const limit = pLimit(this.concurrency)
+
+    const results = await Promise.all(
+      filePaths.map((filePath) =>
+        limit(async () => {
+          try {
+            const result = await this.parseFile(filePath)
+            return result
+          } catch (error) {
+            logger.error(`Failed to parse ${filePath}: ${(error as Error).message}`)
+            return null
+          }
+        }),
+      ),
+    )
+
+    // Filter out null results from failed parses
+    return results.filter((result): result is ParseResult => result !== null)
   }
 
   /**

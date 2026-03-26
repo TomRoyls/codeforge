@@ -30,20 +30,14 @@ export function parseEnvVars(): Partial<CodeForgeConfig> {
   return config
 }
 
-/**
- * Parse comma-separated array values
- */
-function parseArrayValue(value: string): string[] {
+export function parseArrayValue(value: string): string[] {
   return value
     .split(',')
     .map((v) => v.trim())
     .filter((v) => v.length > 0)
 }
 
-/**
- * Check if a value is a valid RuleSeverity
- */
-function isValidSeverity(value: string): value is RuleSeverity {
+export function isValidSeverity(value: string): value is RuleSeverity {
   return value === 'error' || value === 'warning' || value === 'info'
 }
 
@@ -55,7 +49,7 @@ function isValidSeverity(value: string): value is RuleSeverity {
  * - CODEFORGE_RULES_MAX_PARAMS='["warning", {"max": 5}]' → rules: { 'max-params': ['warning', { max: 5 }] }
  * - CODEFORGE_RULES_MAX_COMPLEXITY_OPTIONS='{"max": 10}' → combined with severity
  */
-function parseRulesFromEnv(env: NodeJS.ProcessEnv): RuleEnvConfig {
+export function parseRulesFromEnv(env: NodeJS.ProcessEnv): RuleEnvConfig {
   const rules: RuleEnvConfig = {}
   const rulePrefix = 'CODEFORGE_RULES_'
 

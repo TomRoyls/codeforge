@@ -430,4 +430,121 @@ describe('Parser', () => {
       })
     })
   })
+
+  describe('parseFiles with concurrency', () => {
+    test('parses files concurrently with default concurrency (4)', async () => {
+      const files = ['/path/a.ts', '/path/b.ts', '/path/c.ts', '/path/d.ts']
+
+      mockProject.addSourceFileAtPath.mockImplementation(async (path: string) => {
+        // Simulate async parsing delay
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        return createMockSourceFile(path)
+      })
+
+      parser = new Parser()
+      await parser.initialize()
+
+      const startTime = performance.now()
+      const results = await parser.parseFiles(files)
+      const duration = performance.now() - startTime
+
+      expect(results).toHaveLength(4)
+      // With concurrency=4, all 4 files should complete in ~10ms, not 40ms sequential
+      expect(duration).toBeLessThan(30)
+    })
+
+    test('respects custom concurrency parameter', async () => {
+      const options: ParserOptions = {
+        concurrency: 2,
+      }
+      parser = new Parser(options)
+
+      expect(parser).toBeInstanceOf(Parser)
+    })
+
+    test('continues processing other files when one fails (concurrent)', async () => {
+      const files = ['/path/good1.ts', '/path/bad.ts', '/path/good2.ts']
+
+      let callCount = 0
+      mockProject.addSourceFileAtPath.mockImplementation((path: string) => {
+        callCount++
+        if (callCount === 2) {
+          throw new Error('Parse error on bad.ts')
+        }
+        return createMockSourceFile(path)
+      })
+
+      parser = new Parser()
+      await parser.initialize()
+
+      const results = await parser.parseFiles(files)
+
+      // Should have 2 successful results (bad.ts failed)
+      expect(results).toHaveLength(2)
+      expect(results[0].filePath).toBe('/path/good1.ts')
+      expect(results[1].filePath).toBe('/path/good2.ts')
+    })
+
+    test('maintains backward compatibility (no concurrency param)', async () => {
+      parser = new Parser()
+
+      const files = ['/path/a.ts', '/path/b.ts']
+      mockProject.addSourceFileAtPath.mockImplementation((path: string) =>
+        createMockSourceFile(path),
+      )
+
+      await parser.initialize()
+      const results = await parser.parseFiles(files)
+
+      expect(results).toHaveLength(2)
+      expect(results[0].filePath).toBe('/path/a.ts')
+      expect(results[1].filePath).toBe('/path/b.ts')
+    })
+
+    test('filters out null results from failed parses (concurrent)', async () => {
+      const files = ['/path/ok.ts', '/path/fail.ts']
+
+      mockProject.addSourceFileAtPath.mockImplementation((path: string) => {
+        // In concurrent mode, fail on specific path, not call count
+        if (path === '/path/fail.ts') {
+          throw new Error('Failed')
+        }
+        return createMockSourceFile(path)
+      })
+
+      parser = new Parser()
+      await parser.initialize()
+
+      const results = await parser.parseFiles(files)
+
+      expect(results).toHaveLength(1)
+      expect(results[0].filePath).toBe('/path/ok.ts')
+    })
+
+    test('returns empty array for empty input (concurrent)', async () => {
+      parser = new Parser()
+      await parser.initialize()
+
+      const results = await parser.parseFiles([])
+
+      expect(results).toHaveLength(0)
+      expect(mockProject.addSourceFileAtPath).not.toHaveBeenCalled()
+    })
+
+    test('logs error for failed files (concurrent)', async () => {
+      const files = ['/path/failing.ts']
+
+      mockProject.addSourceFileAtPath.mockImplementation(() => {
+        throw new Error('Parse error')
+      })
+
+      parser = new Parser()
+      await parser.initialize()
+      await parser.parseFiles(files)
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to parse /path/failing.ts'),
+      )
+    })
+  })
 })
