@@ -267,10 +267,10 @@ export default class Stats extends Command {
             blank,
             comments,
             complexity,
-            content,
             ext,
             file,
             loc,
+            size: content.length,
             structures,
           }
         } catch (error) {
@@ -283,10 +283,10 @@ export default class Stats extends Command {
             blank: 0,
             comments: 0,
             complexity: 1,
-            content: '',
             ext: extname(file.path).toLowerCase(),
             file,
             loc: 0,
+            size: 0,
             structures: defaultStructures,
           }
         }
@@ -296,7 +296,7 @@ export default class Stats extends Command {
     for (const result of results) {
       if (!result) continue
 
-      const { blank, comments, complexity, content, ext, file, loc, structures } = result
+      const { blank, comments, complexity, ext, file, loc, size, structures } = result
 
       fileTypes[ext] = (fileTypes[ext] || 0) + 1
 
@@ -318,7 +318,7 @@ export default class Stats extends Command {
           complexity,
           loc,
           name: file.path,
-          size: content.length,
+          size,
           structures,
           type: ext || 'unknown',
         })
