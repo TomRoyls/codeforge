@@ -20,3 +20,19 @@ export function formatPercentage(value: number, decimals = 1): string {
 export function pluralize(count: number, singular: string, plural?: string): string {
   return count === 1 ? singular : (plural ?? `${singular}s`)
 }
+
+export interface SeverityCounts {
+  error: number
+  info: number
+  warning: number
+}
+
+export function countSeverities(
+  violations: Array<{ severity: 'error' | 'info' | 'warning' }>,
+): SeverityCounts {
+  const counts: SeverityCounts = { error: 0, info: 0, warning: 0 }
+  for (const v of violations) {
+    counts[v.severity]++
+  }
+  return counts
+}

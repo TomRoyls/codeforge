@@ -8,7 +8,7 @@ import type {
 
 import { escapeXml } from '../utils/escape.js'
 import { writeToFile } from '../utils/file-writer.js'
-import { formatTimeSeconds } from '../utils/format-utils.js'
+import { countSeverities, formatTimeSeconds } from '../utils/format-utils.js'
 
 export class JUnitReporter implements Reporter {
   readonly name = 'junit'
@@ -84,9 +84,10 @@ export class JUnitReporter implements Reporter {
   }
 
   private generateTestSuite(file: FileAnalysisResult): string {
-    const errorCount = file.violations.filter((v) => v.severity === 'error').length
-    const warningCount = file.violations.filter((v) => v.severity === 'warning').length
-    const infoCount = file.violations.filter((v) => v.severity === 'info').length
+    const counts = countSeverities(file.violations)
+    const errorCount = counts.error
+    const warningCount = counts.warning
+    const infoCount = counts.info
     const totalViolations = file.violations.length
     const timeInSeconds = (file.stats.totalTime / 1000).toFixed(3)
 

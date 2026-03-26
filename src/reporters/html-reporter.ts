@@ -9,7 +9,7 @@ import type {
 
 import { escapeHtml } from '../utils/escape.js'
 import { writeToFile } from '../utils/file-writer.js'
-import { formatTime } from '../utils/format-utils.js'
+import { countSeverities, formatTime } from '../utils/format-utils.js'
 
 const SEVERITY_COLORS: Record<Severity, string> = {
   error: '#ff6b6b',
@@ -480,9 +480,10 @@ export class HTMLReporter implements Reporter {
     stats: { analysisTime: number; parseTime: number; totalTime: number }
     violations: Violation[]
   }): string {
-    const errorCount = file.violations.filter((v) => v.severity === 'error').length
-    const warningCount = file.violations.filter((v) => v.severity === 'warning').length
-    const infoCount = file.violations.filter((v) => v.severity === 'info').length
+    const counts = countSeverities(file.violations)
+    const errorCount = counts.error
+    const warningCount = counts.warning
+    const infoCount = counts.info
 
     return `
     <details class="file-section" data-file="${escapeHtml(file.filePath)}" open>
