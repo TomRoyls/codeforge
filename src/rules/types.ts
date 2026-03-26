@@ -7,14 +7,23 @@ export interface RuleOptions {
   max?: number
 }
 
+export interface RuleDocs {
+  description?: string
+  recommended?: boolean
+  severity?: RuleSeverity
+  url?: string
+}
+
 export interface RuleMeta {
   category: 'complexity' | 'style' | 'correctness' | 'performance' | 'security'
   deprecated?: boolean
   description: string
+  docs?: RuleDocs
   fixable?: 'code' | 'whitespace'
   name: string
   recommended: boolean
   replacedBy?: string
+  severity?: RuleSeverity
 }
 
 export interface RuleDefinition<TOptions extends RuleOptions = RuleOptions> {
