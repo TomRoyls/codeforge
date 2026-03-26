@@ -267,7 +267,7 @@ export default ${JSON.stringify(config, null, 2)};
         }
 
         if (input.toLowerCase() === 'all') {
-          const recommended = rules.filter((r) => r.recommended).map((r) => r.id)
+          const recommended = rules.flatMap((r) => (r.recommended ? [r.id] : []))
           resolve(recommended)
           return
         }

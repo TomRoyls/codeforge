@@ -229,4 +229,90 @@ export function traverseAST(
   visit(sourceFile, 0)
 }
 
+export function traverseASTMultiple(
+  sourceFile: SourceFile,
+  visitors: ASTVisitor[],
+  violations: RuleViolation[] = [],
+): void {
+  if (visitors.length === 0) return
+  if (visitors.length === 1) {
+    traverseAST(sourceFile, visitors[0]!, violations)
+    return
+  }
+
+  const filePath = sourceFile.getFilePath()
+
+  const createChildContext = (parent: Node, currentDepth: number): VisitorContext => ({
+    sourceFile,
+    depth: currentDepth,
+    parent,
+    addViolation: (violation: RuleViolation) => {
+      violations.push(violation)
+    },
+    getFilePath: () => filePath,
+  })
+
+  function visit(node: Node, depth: number): void {
+    const nodeContext = createChildContext(node, depth)
+
+    for (const visitor of visitors) {
+      visitor.visitNode?.(node, nodeContext)
+    }
+
+    if (Node.isSourceFile(node)) {
+      for (const visitor of visitors) {
+        visitor.visitSourceFile?.(node, nodeContext)
+      }
+    } else if (isFunctionLike(node)) {
+      for (const visitor of visitors) {
+        visitor.visitFunction?.(node, nodeContext)
+      }
+    } else if (Node.isIfStatement(node)) {
+      for (const visitor of visitors) {
+        visitor.visitIfStatement?.(node, nodeContext)
+      }
+    } else if (
+      Node.isForStatement(node) ||
+      Node.isForInStatement(node) ||
+      Node.isForOfStatement(node) ||
+      Node.isWhileStatement(node) ||
+      Node.isDoStatement(node)
+    ) {
+      for (const visitor of visitors) {
+        visitor.visitLoop?.(node, nodeContext)
+      }
+    } else if (Node.isSwitchStatement(node)) {
+      for (const visitor of visitors) {
+        visitor.visitSwitch?.(node, nodeContext)
+      }
+    } else if (Node.isCaseClause(node) || Node.isDefaultClause(node)) {
+      for (const visitor of visitors) {
+        visitor.visitCase?.(node, nodeContext)
+      }
+    } else if (Node.isCatchClause(node)) {
+      for (const visitor of visitors) {
+        visitor.visitCatch?.(node, nodeContext)
+      }
+    } else if (Node.isConditionalExpression(node)) {
+      for (const visitor of visitors) {
+        visitor.visitConditional?.(node, nodeContext)
+      }
+    } else if (Node.isBinaryExpression(node)) {
+      for (const visitor of visitors) {
+        visitor.visitBinaryExpression?.(node, nodeContext)
+      }
+    }
+
+    node.forEachChild((child) => {
+      visit(child, depth + 1)
+    })
+
+    for (const visitor of visitors) {
+      visitor.exitNode?.(node, nodeContext)
+    }
+  }
+
+  visit(sourceFile, 0)
+}
+
 export { Node }

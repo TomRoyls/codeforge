@@ -59,10 +59,16 @@ function shouldExclude(filePath: string, excludePatterns: readonly string[]): bo
   return false
 }
 
+const globPatternCache = new Map<string, RegExp>()
+
 function matchGlob(filePath: string, pattern: string): boolean {
-  // Simple glob matching
+  const cached = globPatternCache.get(pattern)
+  if (cached) return cached.test(filePath)
+
   const regex = pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*').replace(/\?/g, '.')
-  return new RegExp(regex).test(filePath)
+  const compiled = new RegExp(regex)
+  globPatternCache.set(pattern, compiled)
+  return compiled.test(filePath)
 }
 
 /**

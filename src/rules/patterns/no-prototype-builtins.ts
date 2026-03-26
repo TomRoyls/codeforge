@@ -1,9 +1,7 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
 
-const PROTOTYPE_METHODS = new Set([
-  'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable'
-])
+const PROTOTYPE_METHODS = new Set(['hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable'])
 
 function isCallExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false

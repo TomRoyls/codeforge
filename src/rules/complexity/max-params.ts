@@ -13,6 +13,10 @@ interface MaxParamsOptions extends RuleOptions {
 }
 
 function countParameters(node: FunctionLikeNode): number {
+  // Check if getParameters method exists (some FunctionLikeNode types don't have it)
+  if (typeof node.getParameters !== 'function') {
+    return 0
+  }
   const params = node.getParameters()
   return params.length
 }

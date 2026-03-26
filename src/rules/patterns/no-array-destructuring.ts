@@ -76,7 +76,9 @@ export const noArrayDestructuringRule: RuleDefinition = {
           const displayName = argName ?? 'array'
 
           context.report({
-            message: `Avoid spreading '${displayName}' in array literal. For large arrays, use ${displayName}.concat() or ${displayName}.slice() instead of [...${displayName}] for better performance.` + RULE_SUGGESTIONS.noArrayDestructuring,
+            message:
+              `Avoid spreading '${displayName}' in array literal. For large arrays, use ${displayName}.concat() or ${displayName}.slice() instead of [...${displayName}] for better performance.` +
+              RULE_SUGGESTIONS.noArrayDestructuring,
             loc: location,
           })
         }

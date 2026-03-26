@@ -6,7 +6,7 @@ import { noUnnecessarySliceRule } from '../../../../src/rules/patterns/no-unnece
 
 interface ReportDescriptor {
   fix?: { range: [number, number]; text: string }
-  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
+  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
   message: string
 }
 

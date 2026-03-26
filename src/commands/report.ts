@@ -1,6 +1,7 @@
 import { Args, Command, Flags } from '@oclif/core'
 import { exec } from 'node:child_process'
-import * as fs from 'node:fs'
+import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
@@ -167,11 +168,11 @@ export default class Report extends Command {
   }
 
   private async loadFromInput(inputPath: string): Promise<AnalysisResult> {
-    if (!fs.existsSync(inputPath)) {
+    if (!existsSync(inputPath)) {
       this.error(`Input file not found: ${inputPath}`, { exit: 1 })
     }
 
-    const content = fs.readFileSync(inputPath, 'utf8')
+    const content = await readFile(inputPath, 'utf8')
 
     try {
       const data = JSON.parse(content) as AnalysisResult
@@ -194,7 +195,7 @@ export default class Report extends Command {
   private async openInBrowser(filePath: string): Promise<void> {
     const absolutePath = path.resolve(filePath)
 
-    if (!fs.existsSync(absolutePath)) {
+    if (!existsSync(absolutePath)) {
       this.error(`Report file not found: ${absolutePath}`, { exit: 1 })
     }
 
@@ -219,7 +220,7 @@ export default class Report extends Command {
   private async runAnalysis(targetPath: string, concurrency: number): Promise<AnalysisResult> {
     const absolutePath = path.resolve(targetPath)
 
-    if (!fs.existsSync(absolutePath)) {
+    if (!existsSync(absolutePath)) {
       this.error(`Path not found: ${absolutePath}`, { exit: 1 })
     }
 

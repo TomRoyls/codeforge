@@ -37,6 +37,8 @@ interface UnusedExportsOptions {
 
 const globalExports = new Map<string, ExportInfo[]>()
 const globalImports = new Map<string, ImportInfo[]>()
+// Reverse index: maps target file to Set of imported export names (for O(1) lookup)
+const importedByTargetFile = new Map<string, Set<string>>()
 
 function extractExports(ast: unknown, filePath: string): ExportInfo[] {
   const exports: ExportInfo[] = []
@@ -378,6 +380,27 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
   return imports
 }
 
+const isEntryFileCache = new Map<string, RegExp>()
+const ignorePatternCache = new Map<string, RegExp>()
+
+function getEntryFileRegex(pattern: string): RegExp {
+  const cached = isEntryFileCache.get(pattern)
+  if (cached) return cached
+
+  const regex = new RegExp(`^${pattern.replace(/\*/g, '.*').replace(/\?/g, '.')}$`)
+  isEntryFileCache.set(pattern, regex)
+  return regex
+}
+
+function getIgnorePatternRegex(pattern: string): RegExp {
+  const cached = ignorePatternCache.get(pattern)
+  if (cached) return cached
+
+  const regex = new RegExp(pattern.slice(1, -1))
+  ignorePatternCache.set(pattern, regex)
+  return regex
+}
+
 function isEntryFile(filePath: string, entryFiles: readonly string[]): boolean {
   if (entryFiles.length === 0) {
     const fileName = filePath.split('/').pop() ?? ''
@@ -391,8 +414,7 @@ function isEntryFile(filePath: string, entryFiles: readonly string[]): boolean {
 
   return entryFiles.some((pattern) => {
     if (pattern.includes('*')) {
-      const regex = new RegExp(pattern.replace(/\*/g, '.*').replace(/\?/g, '.'))
-      return regex.test(filePath)
+      return getEntryFileRegex(pattern).test(filePath)
     }
     return filePath.includes(pattern)
   })
@@ -403,8 +425,7 @@ function shouldIgnoreExport(name: string, patterns: readonly string[]): boolean 
 
   return patterns.some((pattern) => {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
-      const regex = new RegExp(pattern.slice(1, -1))
-      return regex.test(name)
+      return getIgnorePatternRegex(pattern).test(name)
     }
     return name === pattern
   })
@@ -460,6 +481,14 @@ export const noUnusedExportsRule: RuleDefinition = {
       entryFiles: [],
     })
     const filePath = context.getFilePath()
+
+    // Reset global state if we're re-processing a file (new analysis run)
+    if (globalExports.has(filePath)) {
+      globalExports.clear()
+      globalImports.clear()
+      importedByTargetFile.clear()
+    }
+
     const ignorePatterns = options.ignorePatterns ?? []
     const ignoreTypeOnly = options.ignoreTypeOnly ?? false
     const allowEntryExports = options.allowEntryExports ?? true
@@ -473,6 +502,17 @@ export const noUnusedExportsRule: RuleDefinition = {
 
         globalExports.set(filePath, exports)
         globalImports.set(filePath, imports)
+
+        // Build reverse index incrementally
+        for (const imp of imports) {
+          const target = imp.targetFile
+          let names = importedByTargetFile.get(target)
+          if (names) {
+            names.add(imp.name)
+          } else {
+            importedByTargetFile.set(target, new Set([imp.name]))
+          }
+        }
       },
 
       'Program:exit'(): void {
@@ -482,14 +522,9 @@ export const noUnusedExportsRule: RuleDefinition = {
 
         const fileExports = globalExports.get(filePath) ?? []
         const usedExports = new Set<string>()
-
-        for (const [, imports] of globalImports) {
-          for (const imp of imports) {
-            const resolvedTarget = imp.targetFile
-            if (resolvedTarget === filePath || resolvedTarget.endsWith(filePath)) {
-              usedExports.add(imp.name)
-            }
-          }
+        const targetImports = importedByTargetFile.get(filePath)
+        if (targetImports) {
+          targetImports.forEach((name) => usedExports.add(name))
         }
 
         for (const exp of fileExports) {

@@ -1,5 +1,5 @@
 import type { SourceFile } from 'ts-morph'
-import { traverseAST, type RuleViolation } from '../ast/visitor.js'
+import { traverseASTMultiple, type RuleViolation, type ASTVisitor } from '../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../rules/types.js'
 
 export type RuleCategory =
@@ -118,19 +118,23 @@ export class RuleRegistry {
     const allViolations: RuleViolation[] = []
     const enabledRules = this.getEnabledRules()
 
+    // Optimization: Collect all visitors and onComplete callbacks
+    const visitors: ASTVisitor[] = []
+    const onCompleteCallbacks: (() => RuleViolation[])[] = []
+
     for (const loadedRule of enabledRules) {
       const { definition, options } = loadedRule
       const { visitor, onComplete } = definition.create(options)
+      visitors.push(visitor)
+      if (onComplete) onCompleteCallbacks.push(onComplete)
+    }
 
-      const violations: RuleViolation[] = []
+    // Single-pass AST traversal with all visitors
+    traverseASTMultiple(sourceFile, visitors, allViolations)
 
-      traverseAST(sourceFile, visitor, violations)
-
-      if (onComplete) {
-        const completedViolations = onComplete()
-        allViolations.push(...completedViolations)
-      }
-
+    // Call all onComplete callbacks to collect remaining violations
+    for (const onComplete of onCompleteCallbacks) {
+      const violations = onComplete()
       allViolations.push(...violations)
     }
 

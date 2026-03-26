@@ -39,7 +39,9 @@ export const noCaseDeclarationsRule: RuleDefinition = {
         for (const stmt of consequent) {
           if (isLexicalDeclaration(stmt) || isFunctionDeclaration(stmt)) {
             context.report({
-              message: 'Unexpected lexical declaration in case clause. Wrap in a block.' + RULE_SUGGESTIONS.noCaseDeclarations,
+              message:
+                'Unexpected lexical declaration in case clause. Wrap in a block.' +
+                RULE_SUGGESTIONS.noCaseDeclarations,
               loc: extractLocation(stmt),
             })
           }

@@ -20,13 +20,8 @@ export default defineConfig({
       },
     },
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: false,
-        minThreads: 1,
-        maxThreads: 4,
-      },
-    },
+    isolate: true,
+    maxWorkers: 4,
     testTimeout: 10000,
     hookTimeout: 10000,
     teardownTimeout: 10000,

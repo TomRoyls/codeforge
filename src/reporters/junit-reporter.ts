@@ -8,6 +8,7 @@ import type {
 
 import { escapeXml } from '../utils/escape.js'
 import { writeToFile } from '../utils/file-writer.js'
+import { formatTimeSeconds } from '../utils/format-utils.js'
 
 export class JUnitReporter implements Reporter {
   readonly name = 'junit'
@@ -116,7 +117,7 @@ export class JUnitReporter implements Reporter {
     xml += `  tests="${totalTests}"\n`
     xml += `  failures="${summary.warningCount + summary.infoCount}"\n`
     xml += `  errors="${summary.errorCount}"\n`
-    xml += `  time="${(summary.totalTime / 1000).toFixed(3)}"\n`
+    xml += `  time="${formatTimeSeconds(summary.totalTime)}"\n`
     xml += '>\n'
 
     for (const file of results.files) {

@@ -1,8 +1,10 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
 
+const EMPTY_CHAR_CLASS_PATTERN = /\[\]/
+
 function hasEmptyCharacterClass(pattern: string): boolean {
-  return /\[\]/.test(pattern)
+  return EMPTY_CHAR_CLASS_PATTERN.test(pattern)
 }
 
 export const noEmptyCharacterClassRule: RuleDefinition = {

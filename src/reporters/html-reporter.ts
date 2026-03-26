@@ -9,6 +9,7 @@ import type {
 
 import { escapeHtml } from '../utils/escape.js'
 import { writeToFile } from '../utils/file-writer.js'
+import { formatTime } from '../utils/format-utils.js'
 
 const SEVERITY_COLORS: Record<Severity, string> = {
   error: '#ff6b6b',
@@ -40,11 +41,6 @@ export class HTMLReporter implements Reporter {
     const html = this.generateHTML(results)
     writeToFile(this.outputPath, html)
     console.log(`HTML report generated: ${this.outputPath}`)
-  }
-
-  private formatTime(ms: number): string {
-    if (ms < 1000) return `${ms}ms`
-    return `${(ms / 1000).toFixed(2)}s`
   }
 
   private generateHTML(results: AnalysisResult): string {
@@ -122,7 +118,7 @@ export class HTMLReporter implements Reporter {
     </div>
 
     <footer class="footer">
-      <span>Total time: ${this.formatTime(summary.totalTime)}</span>
+      <span>Total time: ${formatTime(summary.totalTime)}</span>
       <span>Powered by CodeForge</span>
     </footer>
   </div>

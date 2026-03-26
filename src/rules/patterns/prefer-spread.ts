@@ -4,6 +4,7 @@ import {
   isCallExpression,
   isMemberExpression,
   getRange,
+  getNodeText,
 } from '../../utils/ast-helpers.js'
 
 function getMethodName(node: unknown): string | null {
@@ -90,14 +91,6 @@ function hasAcceptableApplyContext(node: unknown): boolean {
   const isThisExpression = thisArg.type === 'ThisExpression'
 
   return isNullLiteral || isUndefinedIdentifier || isThisExpression
-}
-
-function getNodeText(node: unknown, source: string): string {
-  const range = getRange(node)
-  if (!range) {
-    return ''
-  }
-  return source.slice(range[0], range[1])
 }
 
 function getApplyArgs(node: unknown): unknown[] {

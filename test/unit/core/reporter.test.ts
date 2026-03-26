@@ -1943,16 +1943,17 @@ describe('Reporter', () => {
     })
   })
 
-  describe('formatReport default case', () => {
-    test('defaults to console format for unknown format', () => {
+  describe('formatReport error handling', () => {
+    test('throws descriptive error for unknown format', () => {
       const reporter = new Reporter({
         format: 'unknown' as 'console',
         verbose: false,
         quiet: false,
       })
       const report = createReport()
-      const output = reporter.formatReport(report)
-      expect(output).toContain('Summary')
+      expect(() => reporter.formatReport(report)).toThrow(
+        'Unsupported output format: "unknown". Valid formats are: console, json, html, junit, sarif, markdown, gitlab. Please check your configuration and try again.',
+      )
     })
   })
 })

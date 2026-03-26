@@ -1,6 +1,7 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
-const IRREGULAR_WHITESPACE = /[\u000B\u000C\u00A0\u0085\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/
+const IRREGULAR_WHITESPACE =
+  /[\u000B\u000C\u00A0\u0085\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/
 function isLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>

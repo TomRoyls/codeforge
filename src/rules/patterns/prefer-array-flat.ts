@@ -4,6 +4,7 @@ import {
   isCallExpression,
   isMemberExpression,
   getRange,
+  getNodeText,
 } from '../../utils/ast-helpers.js'
 
 function getMethodName(node: unknown): string | null {
@@ -314,14 +315,6 @@ function isNestedForLoopFlattening(node: unknown): boolean {
   }
 
   return false
-}
-
-function getNodeText(node: unknown, source: string): string {
-  const range = getRange(node)
-  if (!range) {
-    return ''
-  }
-  return source.slice(range[0], range[1])
 }
 
 export const preferArrayFlatRule: RuleDefinition = {

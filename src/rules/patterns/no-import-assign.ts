@@ -33,7 +33,7 @@ export const noImportAssignRule: RuleDefinition = {
   },
   create(context: RuleContext): RuleVisitor {
     const importNames = new Set<string>()
-    
+
     return {
       ImportSpecifier(node: unknown): void {
         if (!isImportSpecifier(node)) return

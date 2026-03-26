@@ -103,11 +103,21 @@ function analyzeImport(node: unknown): ImportStatement | null {
   }
 }
 
+const excludePatternCache = new Map<string, RegExp>()
+
+function getExcludePatternRegex(pattern: string): RegExp {
+  const cached = excludePatternCache.get(pattern)
+  if (cached) return cached
+
+  const regex = new RegExp(pattern.slice(1, -1))
+  excludePatternCache.set(pattern, regex)
+  return regex
+}
+
 function isExcluded(source: string, patterns: readonly string[]): boolean {
   return patterns.some((pattern) => {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
-      const regex = new RegExp(pattern.slice(1, -1))
-      return regex.test(source)
+      return getExcludePatternRegex(pattern).test(source)
     }
     return source === pattern || source.includes(pattern)
   })

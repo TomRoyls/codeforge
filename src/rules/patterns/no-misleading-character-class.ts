@@ -10,11 +10,11 @@ function isLiteral(node: unknown): boolean {
 function hasMisleadingChars(pattern: unknown): boolean {
   if (typeof pattern !== 'string') return false
   const misleadingRanges: [number, number][] = [
-    [0x1F1E6, 0x1F1FF],
-    [0x200D, 0x200D],
-    [0xFE0F, 0xFE0F],
+    [0x1f1e6, 0x1f1ff],
+    [0x200d, 0x200d],
+    [0xfe0f, 0xfe0f],
   ]
-  
+
   for (let i = 0; i < pattern.length; i++) {
     const code = pattern.codePointAt(i)
     if (code === undefined) continue
@@ -23,7 +23,7 @@ function hasMisleadingChars(pattern: unknown): boolean {
       const end = range[1]
       if (code >= start && code <= end) return true
     }
-    if (code > 0xFFFF) i++
+    if (code > 0xffff) i++
   }
   return false
 }

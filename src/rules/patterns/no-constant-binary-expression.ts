@@ -48,7 +48,7 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
         if (!isBinaryExpression(node)) return
         const n = node as Record<string, unknown>
         const operator = n.operator as string
-        
+
         if (isUselessOperator(n.left, operator)) {
           context.report({
             message: 'Expression reduces to the left operand and has no effect.',
@@ -61,7 +61,7 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (n.type !== 'LogicalExpression') return
         const operator = n.operator as string
-        
+
         if (isUselessOperator(n.left, operator)) {
           context.report({
             message: 'Expression reduces to the left operand and has no effect.',

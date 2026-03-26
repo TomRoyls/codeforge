@@ -54,7 +54,7 @@ export const noDupeClassMembersRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         const body = n.body
         if (!Array.isArray(body)) return
-        
+
         const seen = new Map<string, unknown>()
         for (const member of body) {
           if (!isMethodDefinition(member)) continue

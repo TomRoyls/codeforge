@@ -4,6 +4,7 @@ import {
   isCallExpression,
   isMemberExpression,
   getRange,
+  getNodeText,
 } from '../../utils/ast-helpers.js'
 
 function isThisExpression(node: unknown): boolean {
@@ -90,14 +91,6 @@ function isAssignmentToThisProperty(node: unknown): boolean {
   const n = node as Record<string, unknown>
   const obj = n.object as Record<string, unknown> | undefined
   return isThisExpression(obj)
-}
-
-function getNodeText(node: unknown, source: string): string {
-  const range = getRange(node)
-  if (!range) {
-    return ''
-  }
-  return source.slice(range[0], range[1])
 }
 
 export const preferAtContextRule: RuleDefinition = {

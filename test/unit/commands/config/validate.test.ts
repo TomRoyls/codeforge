@@ -27,7 +27,9 @@ vi.mock('../../../../src/config/discovery.js', () => ({
 }))
 
 vi.mock('../../../../src/config/cache.js', () => ({
-  ConfigCache: vi.fn().mockImplementation(() => ({ getConfig: vi.fn().mockResolvedValue(null) })),
+  ConfigCache: vi.fn().mockImplementation(function () {
+    return { getConfig: vi.fn().mockResolvedValue(null) }
+  }),
 }))
 
 vi.mock('../../../../src/config/validator.js', () => ({
@@ -97,9 +99,11 @@ describe('Validate Command', () => {
   describe('run', () => {
     async function setupConfigCache(config: unknown) {
       const { ConfigCache } = await import('../../../../src/config/cache.js')
-      ;(ConfigCache as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-        getConfig: vi.fn().mockResolvedValue(config),
-      }))
+      ;(ConfigCache as ReturnType<typeof vi.fn>).mockImplementation(function () {
+        return {
+          getConfig: vi.fn().mockResolvedValue(config),
+        }
+      })
     }
 
     function createCommandWithMockedParse(flags: Record<string, unknown>) {

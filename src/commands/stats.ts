@@ -8,6 +8,7 @@ import { type BinaryExpression, Node, type SourceFile } from 'ts-morph'
 
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
+import { MAX_TOP_STATS_FILES } from '../utils/constants.js'
 
 export default class Stats extends Command {
   static override args = {
@@ -71,7 +72,7 @@ export default class Stats extends Command {
     }),
     top: Flags.integer({
       char: 't',
-      default: 10,
+      default: MAX_TOP_STATS_FILES,
       description: 'Number of top files to show',
     }),
     verbose: Flags.boolean({
@@ -345,7 +346,7 @@ export default class Stats extends Command {
     })
 
     return {
-      files: fileStats.slice(0, 10),
+      files: fileStats.slice(0, MAX_TOP_STATS_FILES),
       fileTypes,
       summary: {
         averageComplexity: files.length > 0 ? Math.round(totalComplexity / files.length) : 0,

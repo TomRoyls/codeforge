@@ -47,6 +47,7 @@ vi.mock('fs', () => ({
 
 vi.mock('fs/promises', () => ({
   mkdir: vi.fn().mockResolvedValue(undefined),
+  readFile: vi.fn(),
   writeFile: vi.fn().mockResolvedValue(undefined),
 }))
 
@@ -69,27 +70,33 @@ vi.mock('util', () => ({
 }))
 
 vi.mock('../../../src/reporters/console-reporter.js', () => ({
-  ConsoleReporter: vi.fn().mockImplementation(() => ({
-    name: 'console',
-    report: vi.fn(),
-    format: vi.fn().mockReturnValue('formatted'),
-  })),
+  ConsoleReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'console',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('formatted'),
+    }
+  }),
 }))
 
 vi.mock('../../../src/reporters/json-reporter.js', () => ({
-  JSONReporter: vi.fn().mockImplementation(() => ({
-    name: 'json',
-    report: vi.fn(),
-    format: vi.fn().mockReturnValue('{}'),
-  })),
+  JSONReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'json',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('{}'),
+    }
+  }),
 }))
 
 vi.mock('../../../src/reporters/html-reporter.js', () => ({
-  HTMLReporter: vi.fn().mockImplementation(() => ({
-    name: 'html',
-    report: vi.fn(),
-    format: vi.fn().mockReturnValue('<html></html>'),
-  })),
+  HTMLReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'html',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('<html></html>'),
+    }
+  }),
 }))
 
 vi.mock('../../../src/core/file-discovery.js', () => ({
@@ -97,21 +104,25 @@ vi.mock('../../../src/core/file-discovery.js', () => ({
 }))
 
 vi.mock('../../../src/core/parser.js', () => ({
-  Parser: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(undefined),
-    parseFile: vi.fn().mockResolvedValue({
-      sourceFile: { getFilePath: () => '/test.ts', saveSync: vi.fn() },
-      parseTime: 10,
-    }),
-    dispose: vi.fn(),
-  })),
+  Parser: vi.fn().mockImplementation(function () {
+    return {
+      initialize: vi.fn().mockResolvedValue(undefined),
+      parseFile: vi.fn().mockResolvedValue({
+        sourceFile: { getFilePath: () => '/test.ts', saveSync: vi.fn() },
+        parseTime: 10,
+      }),
+      dispose: vi.fn(),
+    }
+  }),
 }))
 
 vi.mock('../../../src/core/rule-registry.js', () => ({
-  RuleRegistry: vi.fn().mockImplementation(() => ({
-    register: vi.fn(),
-    runRules: vi.fn().mockReturnValue([]),
-  })),
+  RuleRegistry: vi.fn().mockImplementation(function () {
+    return {
+      register: vi.fn(),
+      runRules: vi.fn().mockReturnValue([]),
+    }
+  }),
 }))
 
 vi.mock('../../../src/rules/index.js', () => ({
@@ -126,6 +137,11 @@ describe('Report Command', () => {
     statSync: ReturnType<typeof vi.fn>
     readdirSync: ReturnType<typeof vi.fn>
   }
+  let mockFsPromises: {
+    readFile: ReturnType<typeof vi.fn>
+    writeFile: ReturnType<typeof vi.fn>
+    mkdir: ReturnType<typeof vi.fn>
+  }
   let mockConsoleLog: ReturnType<typeof vi.spyOn>
 
   beforeEach(async () => {
@@ -134,6 +150,9 @@ describe('Report Command', () => {
 
     const fs = await import('fs')
     mockFs = fs as unknown as typeof mockFs
+
+    const fsPromises = await import('fs/promises')
+    mockFsPromises = fsPromises as unknown as typeof mockFsPromises
 
     mockFs.existsSync.mockReturnValue(true)
     mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<typeof fs.statSync>)
@@ -273,7 +292,7 @@ describe('Report Command', () => {
     test('loads valid JSON input file', async () => {
       const validResult = createMockAnalysisResult()
       mockFs.existsSync.mockReturnValue(true)
-      mockFs.readFileSync.mockReturnValue(JSON.stringify(validResult))
+      mockFsPromises.readFile.mockResolvedValue(JSON.stringify(validResult))
 
       const cmd = createCommandWithMocks()
       const result = await cmd.loadFromInput('/valid.json')
@@ -294,7 +313,7 @@ describe('Report Command', () => {
 
     test('throws when JSON is invalid', async () => {
       mockFs.existsSync.mockReturnValue(true)
-      mockFs.readFileSync.mockReturnValue('not valid json')
+      mockFsPromises.readFile.mockResolvedValue('not valid json')
 
       const cmd = createCommandWithMocks()
       cmd.error = vi.fn((msg: string) => {
@@ -306,7 +325,7 @@ describe('Report Command', () => {
 
     test('throws when missing required fields', async () => {
       mockFs.existsSync.mockReturnValue(true)
-      mockFs.readFileSync.mockReturnValue(JSON.stringify({ files: [] }))
+      mockFsPromises.readFile.mockResolvedValue(JSON.stringify({ files: [] }))
 
       const cmd = createCommandWithMocks()
       cmd.error = vi.fn((msg: string) => {
@@ -354,7 +373,7 @@ describe('Report Command', () => {
     test('uses input file when provided', async () => {
       const validResult = createMockAnalysisResult()
       mockFs.existsSync.mockReturnValue(true)
-      mockFs.readFileSync.mockReturnValue(JSON.stringify(validResult))
+      mockFsPromises.readFile.mockResolvedValue(JSON.stringify(validResult))
 
       const cmd = createCommandWithMockedParse({
         format: 'json',
@@ -366,7 +385,7 @@ describe('Report Command', () => {
       })
 
       await cmd.run()
-      expect(mockFs.readFileSync).toHaveBeenCalledWith('/analysis.json', 'utf8')
+      expect(mockFsPromises.readFile).toHaveBeenCalledWith('/analysis.json', 'utf8')
     })
 
     test('runs analysis when no input provided', async () => {
@@ -390,11 +409,13 @@ describe('Report Command', () => {
     test('calls reporter.report with results', async () => {
       const { ConsoleReporter } = await import('../../../src/reporters/console-reporter.js')
       const mockReport = vi.fn()
-      ;(ConsoleReporter as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-        name: 'console',
-        report: mockReport,
-        format: vi.fn().mockReturnValue('formatted'),
-      }))
+      ;(ConsoleReporter as ReturnType<typeof vi.fn>).mockImplementation(function () {
+        return {
+          name: 'console',
+          report: mockReport,
+          format: vi.fn().mockReturnValue('formatted'),
+        }
+      })
 
       mockFs.statSync.mockReturnValue({ isDirectory: () => false } as ReturnType<
         typeof mockFs.statSync
@@ -529,10 +550,12 @@ describe('Report Command', () => {
         severity: 'warning',
         message: 'Test warning',
       })
-      mockRuleRegistry.mockImplementation(() => ({
-        register: vi.fn(),
-        runRules: vi.fn().mockReturnValue([violation]),
-      }))
+      mockRuleRegistry.mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          runRules: vi.fn().mockReturnValue([violation]),
+        }
+      })
 
       const cmd = createCommandWithMockedParse({
         format: 'console',
@@ -612,7 +635,7 @@ describe('Report Command', () => {
       mockDiscoverFiles.mockResolvedValueOnce([])
 
       const validResult = createMockAnalysisResult()
-      mockFs.readFileSync.mockReturnValue(JSON.stringify(validResult))
+      mockFsPromises.readFile.mockResolvedValue(JSON.stringify(validResult))
 
       const cmd = createCommandWithMockedParse({
         format: 'html',
@@ -637,7 +660,7 @@ describe('Report Command', () => {
       mockDiscoverFiles.mockResolvedValueOnce([])
 
       const validResult = createMockAnalysisResult()
-      mockFs.readFileSync.mockReturnValue(JSON.stringify(validResult))
+      mockFsPromises.readFile.mockResolvedValue(JSON.stringify(validResult))
 
       const cmd = createCommandWithMockedParse({
         format: 'html',

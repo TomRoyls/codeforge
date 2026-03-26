@@ -121,3 +121,11 @@ export function getRange(node: unknown): [number, number] | null {
   const range = (node as Record<string, unknown>).range as [number, number] | undefined
   return range ?? null
 }
+
+export function getNodeText(node: unknown, source: string): string {
+  const range = getRange(node)
+  if (!range) {
+    return ''
+  }
+  return source.slice(range[0], range[1])
+}

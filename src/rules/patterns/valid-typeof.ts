@@ -20,7 +20,14 @@ function isLiteral(node: unknown): boolean {
 }
 
 const VALID_TYPES = new Set([
-  'undefined', 'object', 'boolean', 'number', 'string', 'symbol', 'function', 'bigint'
+  'undefined',
+  'object',
+  'boolean',
+  'number',
+  'string',
+  'symbol',
+  'function',
+  'bigint',
 ])
 
 export const validTypeofRule: RuleDefinition = {
@@ -41,23 +48,29 @@ export const validTypeofRule: RuleDefinition = {
         if (!isBinaryExpression(node)) return
         const n = node as Record<string, unknown>
         if (n.operator !== '===' && n.operator !== '!==') return
-        
+
         let typeofNode: unknown = null
         let valueNode: unknown = null
-        
-        if (isUnaryExpression(n.left) && (n.left as Record<string, unknown>).operator === 'typeof') {
+
+        if (
+          isUnaryExpression(n.left) &&
+          (n.left as Record<string, unknown>).operator === 'typeof'
+        ) {
           typeofNode = n.left
           valueNode = n.right
-        } else if (isUnaryExpression(n.right) && (n.right as Record<string, unknown>).operator === 'typeof') {
+        } else if (
+          isUnaryExpression(n.right) &&
+          (n.right as Record<string, unknown>).operator === 'typeof'
+        ) {
           typeofNode = n.right
           valueNode = n.left
         }
-        
+
         if (!typeofNode || !valueNode) return
         if (!isLiteral(valueNode)) return
         const v = valueNode as Record<string, unknown>
         if (typeof v.value !== 'string') return
-        
+
         if (!VALID_TYPES.has(v.value)) {
           context.report({
             message: `Invalid typeof comparison value '${v.value}'.`,

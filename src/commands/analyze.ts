@@ -1,5 +1,6 @@
 import { Args, Command, Flags } from '@oclif/core'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import ora, { type Ora } from 'ora'
@@ -13,10 +14,16 @@ import { type OutputFormat, Reporter } from '../core/reporter.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { allRules } from '../rules/index.js'
+import {
+  applyFixesToFiles,
+  filterFilesByExtension,
+  loadCommandConfig,
+  normalizeFlags,
+  setupRuleRegistry,
+} from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
 import { getGitRoot, getStagedFiles, isGitRepository } from '../utils/git-helpers.js'
 import { logger, LogLevel } from '../utils/logger.js'
-import { loadCommandConfig, setupRuleRegistry } from './command-helpers.js'
 
 interface FileReport {
   filePath: string
@@ -246,21 +253,24 @@ export default class Analyze extends Command {
     let ignore = config.ignore ?? []
 
     if (flags['ignore-path']) {
-      const ignoreFilePatterns = this.readIgnoreFile(flags['ignore-path'])
+      const ignoreFilePatterns = await this.readIgnoreFile(flags['ignore-path'])
       ignore = [...ignore, ...ignoreFilePatterns]
     }
 
-    const ciMode = flags.ci
-    const format = ciMode && flags.format === 'console' ? 'json' : (flags.format as OutputFormat)
-    const { output } = flags
-    const quiet = ciMode || flags.quiet
-    const verbose = flags.verbose && !ciMode
-    const failOnWarnings = flags['fail-on-warnings']
-    const maxWarnings = flags['max-warnings']
-    const shouldFix = flags.fix
-    const dryRun = flags['dry-run']
-    const stagedMode = flags.staged
-    const { concurrency } = flags
+    const normalized = normalizeFlags(flags)
+    const {
+      ciMode,
+      concurrency,
+      dryRun,
+      failOnWarnings,
+      format,
+      maxWarnings,
+      output,
+      quiet,
+      shouldFix,
+      stagedMode,
+      verbose,
+    } = normalized
 
     this.configureLogging(verbose, quiet)
 
@@ -282,19 +292,7 @@ export default class Analyze extends Command {
       stagedMode,
     })
 
-    const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
-      : null
-
-    const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = path.extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
-      : discoveredFiles
+    const filteredFiles = filterFilesByExtension(discoveredFiles, flags.ext)
 
     if (filteredFiles.length === 0) {
       spinner?.warn('No files found to analyze')
@@ -340,13 +338,25 @@ export default class Analyze extends Command {
 
       const rulesWithFixes = this.getRulesWithFixes()
 
-      const fixResult = await this.applyFixes({
+      const fixResult = await applyFixesToFiles({
         allViolations: filteredViolations,
+        applyFixesFn: (opts) =>
+          this.applyFixes({
+            allViolations: opts.allViolations,
+            concurrency: opts.concurrency,
+            discoveredFiles: opts.discoveredFiles,
+            dryRun: opts.dryRun,
+            parseCache: opts.parseCache,
+            parser: opts.parser,
+            rulesWithFixes: opts.rulesWithFixes,
+            verbose: opts.verbose,
+          }),
         concurrency,
         discoveredFiles: filteredFiles,
         dryRun,
         parseCache,
         parser,
+        quiet,
         rulesWithFixes,
         verbose,
       })
@@ -369,7 +379,7 @@ export default class Analyze extends Command {
 
     const reporter = new Reporter({
       color: flags.color && !ciMode,
-      format,
+      format: format as OutputFormat,
       outputPath: output,
       quiet,
       verbose,
@@ -662,9 +672,9 @@ export default class Analyze extends Command {
     return rulesWithFixes
   }
 
-  private readIgnoreFile(ignorePath: string): string[] {
+  private async readIgnoreFile(ignorePath: string): Promise<string[]> {
     try {
-      const content = readFileSync(ignorePath, 'utf8')
+      const content = await readFile(ignorePath, 'utf8')
       return content
         .split('\n')
         .map((line) => line.trim())

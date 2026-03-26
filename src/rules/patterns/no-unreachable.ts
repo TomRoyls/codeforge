@@ -32,7 +32,12 @@ function isContinueStatement(node: unknown): boolean {
 }
 
 function terminatesFlow(node: unknown): boolean {
-  return isReturnStatement(node) || isThrowStatement(node) || isBreakStatement(node) || isContinueStatement(node)
+  return (
+    isReturnStatement(node) ||
+    isThrowStatement(node) ||
+    isBreakStatement(node) ||
+    isContinueStatement(node)
+  )
 }
 
 export const noUnreachableRule: RuleDefinition = {
@@ -54,7 +59,7 @@ export const noUnreachableRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         const body = n.body
         if (!Array.isArray(body)) return
-        
+
         let foundTerminator = false
         for (const stmt of body) {
           if (foundTerminator) {

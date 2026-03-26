@@ -33,7 +33,7 @@ export const noRedeclareRule: RuleDefinition = {
   },
   create(context: RuleContext): RuleVisitor {
     const declared = new Set<string>()
-    
+
     return {
       VariableDeclarator(node: unknown): void {
         if (!isVariableDeclarator(node)) return

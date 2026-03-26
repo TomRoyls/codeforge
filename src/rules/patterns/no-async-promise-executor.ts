@@ -71,7 +71,8 @@ export const noAsyncPromiseExecutorRule: RuleDefinition = {
           const location = extractLocation(node)
           context.report({
             message:
-              'Promise executor functions should not be async. Async functions already return Promises - use the async function directly or refactor the executor.' + RULE_SUGGESTIONS.noAsyncPromiseExecutor,
+              'Promise executor functions should not be async. Async functions already return Promises - use the async function directly or refactor the executor.' +
+              RULE_SUGGESTIONS.noAsyncPromiseExecutor,
             loc: location,
           })
         }

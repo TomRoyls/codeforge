@@ -30,29 +30,31 @@ vi.mock('node:fs/promises', () => ({
 }))
 
 vi.mock('../../../src/core/parser.js', () => ({
-  Parser: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(undefined),
-    dispose: vi.fn(),
-    parseFile: vi.fn().mockImplementation((filePath: string) => {
-      const isHighComplexityFile = filePath.includes('high')
-      const isMediumComplexityFile = filePath.includes('medium')
-      const complexityNodeCount = isHighComplexityFile ? 5 : isMediumComplexityFile ? 2 : 0
+  Parser: vi.fn().mockImplementation(function () {
+    return {
+      initialize: vi.fn().mockResolvedValue(undefined),
+      dispose: vi.fn(),
+      parseFile: vi.fn().mockImplementation((filePath: string) => {
+        const isHighComplexityFile = filePath.includes('high')
+        const isMediumComplexityFile = filePath.includes('medium')
+        const complexityNodeCount = isHighComplexityFile ? 5 : isMediumComplexityFile ? 2 : 0
 
-      const mockSourceFile = {
-        getFilePath: () => filePath,
-        getText: () => 'mock code',
-        getFullText: () => 'mock code',
-        forEachChild: vi.fn((callback: (node: unknown) => void) => {
-          for (let i = 0; i < complexityNodeCount; i++) callback({})
-        }),
-      }
-      return Promise.resolve({
-        sourceFile: mockSourceFile,
-        filePath,
-        parseTime: 10,
-      })
-    }),
-  })),
+        const mockSourceFile = {
+          getFilePath: () => filePath,
+          getText: () => 'mock code',
+          getFullText: () => 'mock code',
+          forEachChild: vi.fn((callback: (node: unknown) => void) => {
+            for (let i = 0; i < complexityNodeCount; i++) callback({})
+          }),
+        }
+        return Promise.resolve({
+          sourceFile: mockSourceFile,
+          filePath,
+          parseTime: 10,
+        })
+      }),
+    }
+  }),
 }))
 
 describe('Stats Command', () => {

@@ -5,7 +5,7 @@ import type { RuleContext } from '../../../../src/plugins/types.js'
 import { noPrototypeBuiltinsRule } from '../../../../src/rules/patterns/no-prototype-builtins.js'
 
 interface ReportDescriptor {
-  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
+  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
   message: string
 }
 

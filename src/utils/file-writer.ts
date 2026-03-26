@@ -29,17 +29,13 @@ export function writeToFileAtomic(outputPath: string, content: string): void {
 
 export async function writeToFileAsync(outputPath: string, content: string): Promise<void> {
   const dir = path.dirname(outputPath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
+  await fs.promises.mkdir(dir, { recursive: true })
   await fs.promises.writeFile(outputPath, content, 'utf8')
 }
 
 export async function writeToFileAtomicAsync(outputPath: string, content: string): Promise<void> {
   const dir = path.dirname(outputPath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
+  await fs.promises.mkdir(dir, { recursive: true })
 
   const tempPath = `${outputPath}.${crypto.randomBytes(8).toString('hex')}.tmp`
   try {

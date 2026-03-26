@@ -91,6 +91,23 @@ vi.mock('../../../src/ast/visitor', () => ({
       handler(null, mockContext)
     }
   }),
+  traverseASTMultiple: vi.fn(
+    (_sourceFile: SourceFile, visitors: object[], violations: RuleViolation[]) => {
+      for (const visitor of visitors) {
+        if (visitor && 'visitFunction' in visitor) {
+          const mockContext: VisitorContext = {
+            addViolation: (v: RuleViolation) => violations.push(v),
+            depth: 0,
+            getFilePath: () => '/test/file.ts',
+            parent: undefined,
+            sourceFile: createMockSourceFile(),
+          }
+          const handler = visitor.visitFunction as (node: unknown, ctx: VisitorContext) => void
+          handler(null, mockContext)
+        }
+      }
+    },
+  ),
 }))
 
 describe('RuleRegistry', () => {

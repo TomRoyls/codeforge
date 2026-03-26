@@ -5,6 +5,7 @@ import {
   isFunctionLike,
   getFunctionName,
   traverseAST,
+  traverseASTMultiple,
   type RuleViolation,
   type ASTVisitor,
 } from '../../../src/ast/visitor'
@@ -770,6 +771,469 @@ describe('traverseAST', () => {
       traverseAST(sourceFile, visitor, violations)
 
       expect(violations[0].suggestion).toBeUndefined()
+    })
+  })
+})
+
+describe('traverseASTMultiple', () => {
+  describe('edge cases', () => {
+    test('handles empty visitors array without error', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const violations: RuleViolation[] = []
+
+      expect(() => traverseASTMultiple(sourceFile, [], violations)).not.toThrow()
+      expect(violations).toHaveLength(0)
+    })
+
+    test('delegates to traverseAST for single visitor', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const visitor: ASTVisitor = {
+        visitSourceFile: vi.fn(),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(visitor.visitSourceFile).toHaveBeenCalledTimes(1)
+    })
+
+    test('handles many visitors (100+) gracefully', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const visitorCount = 150
+      const visitors: ASTVisitor[] = Array.from({ length: visitorCount }, () => ({
+        visitNode: vi.fn(),
+      }))
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, visitors, violations)
+
+      // Each visitor's visitNode should be called at least once (for source file)
+      visitors.forEach((visitor) => {
+        expect(visitor.visitNode).toHaveBeenCalled()
+      })
+    })
+
+    test('works with visitors that only have visitNode', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn(),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(visitor.visitNode).toHaveBeenCalled()
+    })
+
+    test('works with visitors that only have exitNode', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const visitor: ASTVisitor = {
+        exitNode: vi.fn(),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(visitor.exitNode).toHaveBeenCalled()
+    })
+
+    test('calls all callbacks in correct order (visitNode -> specific -> children -> exitNode)', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callOrder: string[] = []
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitNode')),
+        visitSourceFile: vi.fn(() => callOrder.push('visitSourceFile')),
+        exitNode: vi.fn(() => callOrder.push('exitNode')),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      // visitNode should be called before visitSourceFile
+      const visitNodeIndex = callOrder.indexOf('visitNode')
+      const visitSourceFileIndex = callOrder.indexOf('visitSourceFile')
+      const exitNodeIndex = callOrder.indexOf('exitNode')
+
+      expect(visitNodeIndex).toBeLessThan(visitSourceFileIndex)
+      expect(visitSourceFileIndex).toBeLessThan(exitNodeIndex)
+    })
+
+    test('collects violations from multiple visitors', () => {
+      const funcNode1 = createMockFunctionDeclaration({ functionName: 'func1' })
+      const funcNode2 = createMockFunctionDeclaration({ functionName: 'func2' })
+      const sourceFile = createSourceFileWithChildren([funcNode1, funcNode2])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const violations: RuleViolation[] = []
+
+      const visitor1: ASTVisitor = {
+        visitFunction: vi.fn((_node, context) => {
+          context.addViolation({
+            ruleId: 'rule-1',
+            severity: 'error',
+            message: 'Visitor 1 violation',
+            filePath: context.getFilePath(),
+            range: { start: { line: 1, column: 0 }, end: { line: 1, column: 5 } },
+          })
+        }),
+      }
+
+      const visitor2: ASTVisitor = {
+        visitFunction: vi.fn((_node, context) => {
+          context.addViolation({
+            ruleId: 'rule-2',
+            severity: 'warning',
+            message: 'Visitor 2 violation',
+            filePath: context.getFilePath(),
+            range: { start: { line: 1, column: 0 }, end: { line: 1, column: 5 } },
+          })
+        }),
+      }
+
+      traverseASTMultiple(sourceFile, [visitor1, visitor2], violations)
+
+      // 2 functions x 2 visitors = 4 violations
+      expect(violations).toHaveLength(4)
+      expect(violations.filter((v) => v.ruleId === 'rule-1')).toHaveLength(2)
+      expect(violations.filter((v) => v.ruleId === 'rule-2')).toHaveLength(2)
+    })
+
+    test('propagates errors from visitors', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn(() => {
+          throw new Error('Test error from visitor')
+        }),
+      }
+      const violations: RuleViolation[] = []
+
+      expect(() => traverseASTMultiple(sourceFile, [visitor], violations)).toThrow(
+        'Test error from visitor',
+      )
+    })
+
+    test('handles visitors with undefined callbacks gracefully', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      // Visitor with explicitly undefined callbacks
+      const visitor: ASTVisitor = {
+        visitNode: undefined,
+        exitNode: undefined,
+        visitSourceFile: undefined,
+      }
+      const violations: RuleViolation[] = []
+
+      // Should not throw
+      expect(() => traverseASTMultiple(sourceFile, [visitor], violations)).not.toThrow()
+    })
+
+    test('handles mixed visitors with some having callbacks and some not', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callCount = { visitor1: 0, visitor2: 0 }
+
+      const visitor1: ASTVisitor = {
+        visitSourceFile: vi.fn(() => {
+          callCount.visitor1++
+        }),
+      }
+
+      const visitor2: ASTVisitor = {
+        // No callbacks defined
+      }
+
+      const visitor3: ASTVisitor = {
+        visitSourceFile: vi.fn(() => {
+          callCount.visitor2++
+        }),
+      }
+
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor1, visitor2, visitor3], violations)
+
+      expect(callCount.visitor1).toBe(1)
+      expect(callCount.visitor2).toBe(1)
+    })
+
+    test('handles mixed visitors with some having callbacks and some not', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callCount = { visitor1: 0, visitor2: 0 }
+
+      const visitor1: ASTVisitor = {
+        visitSourceFile: vi.fn(() => {
+          callCount.visitor1++
+        }),
+      }
+
+      const visitor2: ASTVisitor = {}
+
+      const visitor3: ASTVisitor = {
+        visitSourceFile: vi.fn(() => {
+          callCount.visitor2++
+        }),
+      }
+
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor1, visitor2, visitor3], violations)
+
+      expect(callCount.visitor1).toBe(1)
+      expect(callCount.visitor2).toBe(1)
+    })
+
+    test('handles completely empty visitor object {} without error', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const visitor: ASTVisitor = {}
+      const violations: RuleViolation[] = []
+
+      expect(() => traverseASTMultiple(sourceFile, [visitor], violations)).not.toThrow()
+      expect(violations).toHaveLength(0)
+    })
+
+    test('calls all visitors in order when multiple visitors have same method', () => {
+      const childNode = createMockNode({ kind: SyntaxKind.Identifier })
+      const sourceFile = createSourceFileWithChildren([childNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callOrder: string[] = []
+
+      const visitor1: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitor1')),
+      }
+
+      const visitor2: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitor2')),
+      }
+
+      const visitor3: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitor3')),
+      }
+
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor1, visitor2, visitor3], violations)
+
+      expect(callOrder).toHaveLength(6)
+      expect(callOrder[0]).toBe('visitor1')
+      expect(callOrder[1]).toBe('visitor2')
+      expect(callOrder[2]).toBe('visitor3')
+    })
+
+    test('calls exitNode after children are traversed', () => {
+      const childNode = createMockNode({ kind: SyntaxKind.Identifier })
+      const sourceFile = createSourceFileWithChildren([childNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callOrder: string[] = []
+
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn((_node, context) => {
+          if (context.depth === 0) {
+            callOrder.push('visitNode-parent')
+          } else {
+            callOrder.push('visitNode-child')
+          }
+        }),
+        exitNode: vi.fn((_node, context) => {
+          if (context.depth === 0) {
+            callOrder.push('exitNode-parent')
+          } else {
+            callOrder.push('exitNode-child')
+          }
+        }),
+      }
+
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(callOrder).toEqual([
+        'visitNode-parent',
+        'visitNode-child',
+        'exitNode-child',
+        'exitNode-parent',
+      ])
+    })
+
+    test('handles deeply nested AST structure (50+ levels) without stack overflow', () => {
+      const depth = 50
+      const nestedNode = createDeeplyNestedNodes(depth)
+      const sourceFile = createSourceFileWithChildren([nestedNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const maxDepthSeen = { value: 0 }
+      const nodeCount = { value: 0 }
+
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn((_node, context) => {
+          nodeCount.value++
+          if (context.depth > maxDepthSeen.value) {
+            maxDepthSeen.value = context.depth
+          }
+        }),
+      }
+      const violations: RuleViolation[] = []
+
+      expect(() => traverseASTMultiple(sourceFile, [visitor], violations)).not.toThrow()
+      expect(maxDepthSeen.value).toBe(depth + 1)
+      expect(nodeCount.value).toBe(depth + 2)
+    })
+  })
+
+  describe('visitor context', () => {
+    test('calls multiple visitors with same method in order', () => {
+      const childNode = createMockNode({ kind: SyntaxKind.Identifier })
+      const sourceFile = createSourceFileWithChildren([childNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callOrder: string[] = []
+
+      const visitor1: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitor1')),
+      }
+
+      const visitor2: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitor2')),
+      }
+
+      const visitor3: ASTVisitor = {
+        visitNode: vi.fn(() => callOrder.push('visitor3')),
+      }
+
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor1, visitor2, visitor3], violations)
+
+      // Each node should call all 3 visitors in order
+      // Source file + child node = 2 nodes, each visited by 3 visitors = 6 calls
+      expect(callOrder).toHaveLength(6)
+      // Verify order is preserved for first node
+      expect(callOrder[0]).toBe('visitor1')
+      expect(callOrder[1]).toBe('visitor2')
+      expect(callOrder[2]).toBe('visitor3')
+    })
+
+    test('calls exitNode after children are traversed', () => {
+      const childNode = createMockNode({ kind: SyntaxKind.Identifier })
+      const sourceFile = createSourceFileWithChildren([childNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const callOrder: string[] = []
+
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn((_node, context) => {
+          if (context.depth === 0) {
+            callOrder.push('visitNode-parent')
+          } else {
+            callOrder.push('visitNode-child')
+          }
+        }),
+        exitNode: vi.fn((_node, context) => {
+          if (context.depth === 0) {
+            callOrder.push('exitNode-parent')
+          } else {
+            callOrder.push('exitNode-child')
+          }
+        }),
+      }
+
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      // Verify: visitNode(parent) -> visitNode(child) -> exitNode(child) -> exitNode(parent)
+      expect(callOrder).toEqual([
+        'visitNode-parent',
+        'visitNode-child',
+        'exitNode-child',
+        'exitNode-parent',
+      ])
+    })
+
+    test('handles deeply nested AST structure (50+ levels) without stack overflow', () => {
+      const depth = 50
+      const nestedNode = createDeeplyNestedNodes(depth)
+      const sourceFile = createSourceFileWithChildren([nestedNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const maxDepthSeen = { value: 0 }
+      const nodeCount = { value: 0 }
+
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn((_node, context) => {
+          nodeCount.value++
+          if (context.depth > maxDepthSeen.value) {
+            maxDepthSeen.value = context.depth
+          }
+        }),
+      }
+      const violations: RuleViolation[] = []
+
+      expect(() => traverseASTMultiple(sourceFile, [visitor], violations)).not.toThrow()
+      // Should traverse all levels (source file at 0 + nested nodes)
+      expect(maxDepthSeen.value).toBe(depth + 1)
+      expect(nodeCount.value).toBeGreaterThan(depth)
+    })
+  })
+
+  describe('visitor context', () => {
+    test('provides correct depth for nested nodes', () => {
+      const childNode = createMockNode({ kind: SyntaxKind.Identifier })
+      const parentNode = createMockNode({ kind: SyntaxKind.IfStatement, children: [childNode] })
+      const sourceFile = createSourceFileWithChildren([parentNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      const depths: number[] = []
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn((_node, context) => {
+          depths.push(context.depth)
+        }),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(depths).toContain(0) // source file
+      expect(depths).toContain(1) // parent node
+      expect(depths).toContain(2) // child node
+    })
+
+    test('provides correct parent reference', () => {
+      const childNode = createMockNode({ kind: SyntaxKind.Identifier })
+      const parentNode = createMockNode({ kind: SyntaxKind.IfStatement, children: [childNode] })
+      const sourceFile = createSourceFileWithChildren([parentNode])
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      let capturedParent: unknown = null
+      const visitor: ASTVisitor = {
+        visitNode: vi.fn((node, context) => {
+          if ((node as { getKind: () => number }).getKind() === SyntaxKind.Identifier) {
+            capturedParent = context.parent
+          }
+        }),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(capturedParent).toBeDefined()
+    })
+
+    test('getFilePath returns correct path', () => {
+      const sourceFile = createMockSourceFile()
+      ;(sourceFile as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+      let capturedPath: string | undefined
+      const visitor: ASTVisitor = {
+        visitSourceFile: vi.fn((_node, context) => {
+          capturedPath = context.getFilePath()
+        }),
+      }
+      const violations: RuleViolation[] = []
+
+      traverseASTMultiple(sourceFile, [visitor], violations)
+
+      expect(capturedPath).toBe('/test/file.ts')
     })
   })
 })

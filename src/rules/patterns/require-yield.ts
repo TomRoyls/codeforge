@@ -10,15 +10,15 @@ function isYieldExpression(node: unknown): boolean {
 function hasYield(body: unknown): boolean {
   if (!body || typeof body !== 'object') return false
   const b = body as Record<string, unknown>
-  
+
   if (isYieldExpression(body)) return true
-  
+
   if (Array.isArray(b.body)) {
     for (const stmt of b.body) {
       if (hasYield(stmt)) return true
     }
   }
-  
+
   if (b.consequent && hasYield(b.consequent)) return true
   if (b.alternate && hasYield(b.alternate)) return true
   if (b.argument && hasYield(b.argument)) return true
@@ -29,7 +29,7 @@ function hasYield(body: unknown): boolean {
     }
   }
   if (b.init && hasYield(b.init)) return true
-  
+
   return false
 }
 
@@ -58,7 +58,7 @@ export const requireYieldRule: RuleDefinition = {
         })
       }
     }
-    
+
     return {
       FunctionDeclaration(node: unknown): void {
         checkGenerator(node)

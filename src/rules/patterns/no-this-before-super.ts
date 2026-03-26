@@ -16,8 +16,12 @@ function isThisExpression(node: unknown): boolean {
 function isSuperCall(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
-  return n.type === 'CallExpression' && n.callee !== null && 
-         typeof n.callee === 'object' && (n.callee as Record<string, unknown>).type === 'Super'
+  return (
+    n.type === 'CallExpression' &&
+    n.callee !== null &&
+    typeof n.callee === 'object' &&
+    (n.callee as Record<string, unknown>).type === 'Super'
+  )
 }
 
 function checkBodyForThisBeforeSuper(body: unknown[], hasSuper: { value: boolean }): boolean {
@@ -63,7 +67,7 @@ export const noThisBeforeSuperRule: RuleDefinition = {
         if (!value.body || typeof value.body !== 'object') return
         const body = value.body as Record<string, unknown>
         if (body.type !== 'BlockStatement' || !Array.isArray(body.body)) return
-        
+
         const hasSuper = { value: false }
         if (checkBodyForThisBeforeSuper(body.body, hasSuper)) {
           context.report({

@@ -11,7 +11,7 @@ function hasReturnStatement(body: unknown): boolean {
   if (!body || typeof body !== 'object') return false
   const b = body as Record<string, unknown>
   if (b.type !== 'BlockStatement' || !Array.isArray(b.body)) return false
-  
+
   for (const stmt of b.body) {
     if (!stmt || typeof stmt !== 'object') continue
     const s = stmt as Record<string, unknown>
@@ -51,7 +51,7 @@ export const getterReturnRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (n.kind !== 'get') return
         if (!n.value || !isFunctionExpression(n.value)) return
-        
+
         const value = n.value as Record<string, unknown>
         if (!value.body || !hasReturnStatement(value.body)) {
           context.report({

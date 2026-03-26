@@ -5,7 +5,7 @@ import type { RuleContext } from '../../../../src/plugins/types.js'
 import { noRedeclareRule } from '../../../../src/rules/patterns/no-redeclare.js'
 
 interface ReportDescriptor {
-  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
+  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
   message: string
 }
 

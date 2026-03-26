@@ -51,20 +51,20 @@ export const noInvalidRegexpRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         const args = n.arguments
         if (!Array.isArray(args) || args.length < 1) return
-        
+
         const patternArg = args[0]
         const flagsArg = args[1]
-        
+
         if (isLiteral(patternArg)) {
           const p = patternArg as Record<string, unknown>
           const pattern = p.value as string
           let flags: string | undefined
-          
+
           if (flagsArg && isLiteral(flagsArg)) {
             const f = flagsArg as Record<string, unknown>
             flags = f.value as string
           }
-          
+
           if (typeof pattern === 'string') {
             const result = isValidRegex(pattern, flags)
             if (!result.valid) {

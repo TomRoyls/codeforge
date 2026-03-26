@@ -12,6 +12,9 @@ import {
   deleteFile,
   listFiles,
   getFileInfo,
+  readJsonFile,
+  clearCache,
+  getCacheStats,
 } from '../../../src/utils/fs-helpers'
 
 describe('fs-helpers', () => {
@@ -299,6 +302,117 @@ describe('fs-helpers', () => {
       await fs.writeFile(testFile, '', 'utf-8')
       const info = await getFileInfo(testFile)
       expect(info.size).toBe(0)
+    })
+  })
+
+  describe('readJsonFile', () => {
+    test('reads valid JSON file', async () => {
+      const testFile = path.join(tempDir, 'test.json')
+      await fs.writeFile(testFile, JSON.stringify({ name: 'test', value: 42 }), 'utf-8')
+      const result = await readJsonFile<{ name: string; value: number }>(testFile)
+      expect(result).toEqual({ name: 'test', value: 42 })
+    })
+
+    test('returns null for non-existing file', async () => {
+      const result = await readJsonFile(path.join(tempDir, 'nonexistent.json'))
+      expect(result).toBeNull()
+    })
+
+    test('reads array JSON', async () => {
+      const testFile = path.join(tempDir, 'array.json')
+      await fs.writeFile(testFile, JSON.stringify([1, 2, 3]), 'utf-8')
+      const result = await readJsonFile<number[]>(testFile)
+      expect(result).toEqual([1, 2, 3])
+    })
+
+    test('reads nested JSON', async () => {
+      const testFile = path.join(tempDir, 'nested.json')
+      const nested = { level1: { level2: { level3: 'deep' } } }
+      await fs.writeFile(testFile, JSON.stringify(nested), 'utf-8')
+      const result = await readJsonFile(testFile)
+      expect(result).toEqual(nested)
+    })
+
+    test('throws for invalid JSON', async () => {
+      const testFile = path.join(tempDir, 'invalid.json')
+      await fs.writeFile(testFile, 'not valid json', 'utf-8')
+      await expect(readJsonFile(testFile)).rejects.toThrow()
+    })
+
+    test('reads empty object JSON', async () => {
+      const testFile = path.join(tempDir, 'empty.json')
+      await fs.writeFile(testFile, '{}', 'utf-8')
+      const result = await readJsonFile(testFile)
+      expect(result).toEqual({})
+    })
+  })
+
+  describe('clearCache', () => {
+    test('clearCache function exists and can be called', () => {
+      expect(typeof clearCache).toBe('function')
+      expect(() => clearCache()).not.toThrow()
+    })
+
+    test('clearCache clears the cache', async () => {
+      const testFile = path.join(tempDir, 'cached.txt')
+      await fs.writeFile(testFile, 'content', 'utf-8')
+      await readFileSafe(testFile)
+      clearCache()
+      const stats = getCacheStats()
+      expect(stats.size).toBe(0)
+    })
+  })
+
+  describe('getCacheStats', () => {
+    test('returns cache statistics', () => {
+      clearCache()
+      const stats = getCacheStats()
+      expect(stats).toHaveProperty('size')
+      expect(stats).toHaveProperty('keys')
+      expect(Array.isArray(stats.keys)).toBe(true)
+    })
+
+    test('size increases after caching', async () => {
+      clearCache()
+      const testFile = path.join(tempDir, 'stats-test.txt')
+      await fs.writeFile(testFile, 'content', 'utf-8')
+      const beforeSize = getCacheStats().size
+      await readFileSafe(testFile)
+      const afterSize = getCacheStats().size
+      expect(afterSize).toBeGreaterThan(beforeSize)
+    })
+
+    test('keys contain cached file paths', async () => {
+      clearCache()
+      const testFile = path.join(tempDir, 'keys-test.txt')
+      await fs.writeFile(testFile, 'content', 'utf-8')
+      await readFileSafe(testFile)
+      const stats = getCacheStats()
+      const hasKey = stats.keys.some((key) => key.includes('keys-test.txt'))
+      expect(hasKey).toBe(true)
+    })
+  })
+
+  describe('cache behavior', () => {
+    test('readFileSafe uses cache on second call', async () => {
+      clearCache()
+      const testFile = path.join(tempDir, 'cache-test.txt')
+      await fs.writeFile(testFile, 'original', 'utf-8')
+      await readFileSafe(testFile)
+      await fs.writeFile(testFile, 'modified', 'utf-8')
+      const cachedContent = await readFileSafe(testFile)
+      expect(cachedContent).toBe('original')
+    })
+
+    test('fileExists caches result', async () => {
+      clearCache()
+      const testFile = path.join(tempDir, 'exists-cache.txt')
+      await fs.writeFile(testFile, 'content', 'utf-8')
+      const exists1 = await fileExists(testFile)
+      await fs.unlink(testFile)
+      const exists2 = await fileExists(testFile)
+      expect(exists1).toBe(true)
+      expect(exists2).toBe(true)
     })
   })
 })

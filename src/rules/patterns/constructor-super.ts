@@ -10,8 +10,12 @@ function isClassMethod(node: unknown): boolean {
 function isSuperCall(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
-  return n.type === 'CallExpression' && n.callee !== null && 
-         typeof n.callee === 'object' && (n.callee as Record<string, unknown>).type === 'Super'
+  return (
+    n.type === 'CallExpression' &&
+    n.callee !== null &&
+    typeof n.callee === 'object' &&
+    (n.callee as Record<string, unknown>).type === 'Super'
+  )
 }
 
 function hasSuperCall(body: unknown[]): boolean {

@@ -11,13 +11,13 @@ function hasUselessBackreference(pattern: unknown): boolean {
   if (typeof pattern !== 'string') return false
   const groups = new Set<string>()
   const backrefs: { num: string }[] = []
-  
+
   const groupRegex = /\(\?<([a-zA-Z][a-zA-Z0-9]*)>/g
   let match
   while ((match = groupRegex.exec(pattern)) !== null) {
     if (match[1]) groups.add(match[1])
   }
-  
+
   const backrefRegex = /\\([1-9][0-9]*|[k]<([^>]+)>)/g
   while ((match = backrefRegex.exec(pattern)) !== null) {
     const ref = match[2] || match[1]
@@ -25,7 +25,7 @@ function hasUselessBackreference(pattern: unknown): boolean {
       backrefs.push({ num: ref })
     }
   }
-  
+
   return backrefs.some(({ num }) => !groups.has(num) && isNaN(parseInt(num, 10)))
 }
 

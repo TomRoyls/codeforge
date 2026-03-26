@@ -6,6 +6,9 @@ import type {
 } from '../../plugins/types.js'
 import { extractLocation, getRange } from '../../utils/ast-helpers.js'
 
+const DEDENT_PATTERN = /^( {1,2}|\t)(.*)$/
+const BLOCK_CONTENT_PATTERN = /^\s*\{([\s\S]*)\}\s*$/
+
 function isIfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
@@ -93,14 +96,14 @@ export const noElseReturnRule: RuleDefinition = {
     function dedentCode(text: string): string {
       const lines = text.split('\n')
       const dedentedLines = lines.map((line) => {
-        const match = line.match(/^( {1,2}|\t)(.*)$/)
-        return match ? match[2] : line
+        const match = DEDENT_PATTERN.exec(line)
+        return match?.[2] ?? line
       })
       return dedentedLines.join('\n')
     }
 
     function extractBlockContent(source: string): string | null {
-      const match = source.match(/^\s*\{([\s\S]*)\}\s*$/)
+      const match = BLOCK_CONTENT_PATTERN.exec(source)
       return match?.[1] ?? null
     }
 

@@ -33,7 +33,7 @@ export const noExAssignRule: RuleDefinition = {
   },
   create(context: RuleContext): RuleVisitor {
     const catchParamNames = new Set<string>()
-    
+
     return {
       CatchClause(node: unknown): void {
         if (!isCatchClause(node)) return

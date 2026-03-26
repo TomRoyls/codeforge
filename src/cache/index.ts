@@ -14,8 +14,14 @@ export async function hashFile(filePath: string): Promise<string> {
     const hash = createHash('sha256')
     const stream = createReadStream(filePath)
     stream.on('data', (chunk) => hash.update(chunk))
-    stream.on('end', () => resolve(hash.digest('hex')))
-    stream.on('error', reject)
+    stream.on('end', () => {
+      stream.destroy()
+      resolve(hash.digest('hex'))
+    })
+    stream.on('error', (err) => {
+      stream.destroy()
+      reject(err)
+    })
   })
 }
 

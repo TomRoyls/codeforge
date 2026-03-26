@@ -39,7 +39,7 @@ export const noUselessCatchRule: RuleDefinition = {
       TryStatement(node: unknown): void {
         if (!isTryStatement(node)) return
         const n = node as Record<string, unknown>
-        
+
         if (n.handler && typeof n.handler === 'object') {
           const handler = n.handler as Record<string, unknown>
           if (handler.body && onlyRethrows(handler.body)) {

@@ -7,7 +7,10 @@ import type {
   Violation,
 } from './types.js'
 
+import { SOURCE_SNIPPET_LINES } from '../utils/constants.js'
+import { formatTime } from '../utils/format-utils.js'
 import { logger } from '../utils/logger.js'
+import { SEVERITY_ICONS, SEVERITY_PRIORITY } from './severity-utils.js'
 
 const ANSI_CODES = {
   blue: '\u001B[34m',
@@ -20,23 +23,10 @@ const ANSI_CODES = {
   reset: '\u001B[0m',
   yellow: '\u001B[33m',
 } as const satisfies Record<string, string>
-
-const SEVERITY_ICONS: Record<Severity, string> = {
-  error: '✖',
-  info: 'ℹ',
-  warning: '⚠',
-}
-
-const SEVERITY_COLORS: Record<Severity, string> = {
+const SEVERITY_ANSI_COLORS: Record<Severity, string> = {
   error: ANSI_CODES.red,
   info: ANSI_CODES.blue,
   warning: ANSI_CODES.yellow,
-}
-
-const SEVERITY_PRIORITY: Record<Severity, number> = {
-  error: 0,
-  info: 2,
-  warning: 1,
 }
 
 export class ConsoleReporter implements Reporter {
@@ -59,7 +49,7 @@ export class ConsoleReporter implements Reporter {
     const severity = violation.severity.toUpperCase()
 
     if (this.color) {
-      const color = SEVERITY_COLORS[violation.severity] ?? ANSI_CODES.reset
+      const color = SEVERITY_ANSI_COLORS[violation.severity] ?? ANSI_CODES.reset
       return `${color}${icon}${ANSI_CODES.reset} ${this.colorize(ANSI_CODES.bold, location)} ${this.colorize(color, severity)} ${violation.message} [${violation.ruleId}]`
     }
 
@@ -83,11 +73,6 @@ export class ConsoleReporter implements Reporter {
     return this.color ? `${code}${text}${ANSI_CODES.reset}` : text
   }
 
-  private formatTime(ms: number): string {
-    if (ms < 1000) return `${ms}ms`
-    return `${(ms / 1000).toFixed(2)}s`
-  }
-
   private printFileHeader(filePath: string): void {
     if (this.color) {
       this.printLine(`${ANSI_CODES.cyan}${ANSI_CODES.bold}${filePath}${ANSI_CODES.reset}`)
@@ -107,7 +92,7 @@ export class ConsoleReporter implements Reporter {
       ? `${ANSI_CODES.gray}${lineNum} | ${ANSI_CODES.reset}`
       : `${lineNum} | `
 
-    for (const line of lines.slice(0, 3)) {
+    for (const line of lines.slice(0, SOURCE_SNIPPET_LINES)) {
       this.printLine(`  ${prefix}${line}`)
     }
 
@@ -165,8 +150,8 @@ export class ConsoleReporter implements Reporter {
 
     this.printLine(
       this.color
-        ? `${ANSI_CODES.gray}${summary.totalFiles} file${summary.totalFiles === 1 ? '' : 's'} analyzed in ${this.formatTime(summary.totalTime)}${ANSI_CODES.reset}`
-        : `${summary.totalFiles} file${summary.totalFiles === 1 ? '' : 's'} analyzed in ${this.formatTime(summary.totalTime)}`,
+        ? `${ANSI_CODES.gray}${summary.totalFiles} file${summary.totalFiles === 1 ? '' : 's'} analyzed in ${formatTime(summary.totalTime)}${ANSI_CODES.reset}`
+        : `${summary.totalFiles} file${summary.totalFiles === 1 ? '' : 's'} analyzed in ${formatTime(summary.totalTime)}`,
     )
   }
 

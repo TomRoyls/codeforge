@@ -40,16 +40,16 @@ export const noUselessAssignmentRule: RuleDefinition = {
   },
   create(context: RuleContext): RuleVisitor {
     const lastValues = new Map<string, unknown>()
-    
+
     return {
       AssignmentExpression(node: unknown): void {
         if (!isAssignmentExpression(node)) return
         const n = node as Record<string, unknown>
         const leftName = getIdentifierName(n.left)
         if (!leftName) return
-        
+
         const rightValue = isLiteral(n.right) ? (n.right as Record<string, unknown>).value : null
-        
+
         if (lastValues.has(leftName)) {
           const lastValue = lastValues.get(leftName)
           if (rightValue !== null && lastValue === rightValue) {
@@ -59,7 +59,7 @@ export const noUselessAssignmentRule: RuleDefinition = {
             })
           }
         }
-        
+
         lastValues.set(leftName, rightValue)
       },
     }

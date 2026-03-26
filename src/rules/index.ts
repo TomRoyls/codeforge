@@ -1,5 +1,13 @@
 import type { RuleDefinition } from './types.js'
 
+// Best practices rules
+import {
+  noMagicNumbersRule,
+  preferConstAssertionsRule,
+  noUnnecessaryTypeAssertionRule,
+  strictBooleanExpressionsRule,
+} from './best-practices/index.js'
+
 // Complexity rules
 import {
   maxComplexityRule,
@@ -329,6 +337,11 @@ const adaptedPreferTernaryOperator = adaptPluginRule(
 )
 
 export const allRules: Record<string, RuleDefinition> = {
+  // Best practices
+  'no-magic-numbers': noMagicNumbersRule,
+  'prefer-const-assertions': preferConstAssertionsRule,
+  'no-unnecessary-type-assertion': noUnnecessaryTypeAssertionRule,
+  'strict-boolean-expressions': strictBooleanExpressionsRule,
   // Complexity
   'max-complexity': maxComplexityRule,
   'max-depth': maxDepthRule,
@@ -554,6 +567,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-type-only-return': 'patterns',
   'prefer-date-now': 'patterns',
   'prefer-readonly-parameter': 'patterns',
+  // Best practices
+  'prefer-const-assertions': 'patterns',
+  'no-unnecessary-type-assertion': 'patterns',
+  'strict-boolean-expressions': 'patterns',
   'no-throw-literal': 'correctness',
   'no-constant-binary-expression': 'correctness',
 }

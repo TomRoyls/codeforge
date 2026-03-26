@@ -4,7 +4,11 @@ import { extractLocation } from '../../utils/ast-helpers.js'
 function isFunctionDeclaration(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
-  return n.type === 'FunctionDeclaration' || n.type === 'FunctionExpression' || n.type === 'ArrowFunctionExpression'
+  return (
+    n.type === 'FunctionDeclaration' ||
+    n.type === 'FunctionExpression' ||
+    n.type === 'ArrowFunctionExpression'
+  )
 }
 
 function getParamName(param: unknown): string | null {
@@ -46,7 +50,7 @@ export const noDupeArgsRule: RuleDefinition = {
       const n = node as Record<string, unknown>
       const params = n.params
       if (!Array.isArray(params)) return
-      
+
       const seen = new Set<string>()
       for (const param of params) {
         const name = getParamName(param)

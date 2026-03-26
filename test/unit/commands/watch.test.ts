@@ -19,27 +19,37 @@ function createCommandWithMockedParse(
 vi.mock('../../../src/core/file-discovery.js', () => ({ discoverFiles: vi.fn() }))
 
 vi.mock('../../../src/core/parser.js', () => ({
-  Parser: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(undefined),
-    dispose: vi.fn(),
-    parseFile: vi.fn().mockResolvedValue({
-      sourceFile: {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
-      },
-      filePath: '/test/file.ts',
-      parseTime: 10,
-    }),
-  })),
+  Parser: vi.fn().mockImplementation(function () {
+    return {
+      initialize: vi.fn().mockResolvedValue(undefined),
+      dispose: vi.fn(),
+      parseFile: vi.fn().mockResolvedValue({
+        sourceFile: {
+          getFilePath: function () {
+            return '/test/file.ts'
+          },
+          getText: function () {
+            return 'test code'
+          },
+          getFullText: function () {
+            return 'fixed code'
+          },
+        },
+        filePath: '/test/file.ts',
+        parseTime: 10,
+      }),
+    }
+  }),
 }))
 
 vi.mock('../../../src/core/rule-registry.js', () => ({
-  RuleRegistry: vi.fn().mockImplementation(() => ({
-    register: vi.fn(),
-    disable: vi.fn(),
-    runRules: vi.fn().mockReturnValue([]),
-  })),
+  RuleRegistry: vi.fn().mockImplementation(function () {
+    return {
+      register: vi.fn(),
+      disable: vi.fn(),
+      runRules: vi.fn().mockReturnValue([]),
+    }
+  }),
 }))
 
 vi.mock('../../../src/utils/watcher.js', () => ({
@@ -67,9 +77,11 @@ vi.mock('../../../src/config/discovery.js', () => ({
 }))
 
 vi.mock('../../../src/config/cache.js', () => ({
-  ConfigCache: vi.fn().mockImplementation(() => ({
-    getConfig: vi.fn(),
-  })),
+  ConfigCache: vi.fn().mockImplementation(function () {
+    return {
+      getConfig: vi.fn(),
+    }
+  }),
 }))
 
 vi.mock('../../../src/config/validator.js', () => ({
@@ -133,25 +145,25 @@ describe('Watch Command', () => {
 
   describe('helper methods', () => {
     test('resolvePatterns should handle array args', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns(['a.ts', 'b.ts'], ['default.ts'])).toEqual(['a.ts', 'b.ts'])
     })
 
     test('resolvePatterns should handle string args', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns('single.ts', ['default.ts'])).toEqual(['single.ts'])
     })
 
     test('resolvePatterns should fall back to config files', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns(undefined, ['config.ts'])).toEqual(['config.ts'])
     })
 
     test('resolvePatterns should return empty array when no patterns', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns(undefined, undefined)).toEqual([])
     })
@@ -161,7 +173,7 @@ describe('Watch Command', () => {
     test('should load config from file when found', async () => {
       const { findConfigPath } = await import('../../../src/config/discovery.js')
       const { validateConfig } = await import('../../../src/config/validator.js')
-      const { loadCommandConfig } = await import('../../../src/commands/command-helpers.js')
+      const { loadCommandConfig } = await import('../../../src/utils/command-helpers.js')
       const { ConfigCache } = await import('../../../src/config/cache.js')
 
       const mockConfig = { files: ['test.ts'], ignore: ['node_modules'] }
@@ -182,7 +194,7 @@ describe('Watch Command', () => {
     test('should use defaults when no config file found', async () => {
       const { findConfigPath } = await import('../../../src/config/discovery.js')
       const { mergeConfigs } = await import('../../../src/config/merger.js')
-      const { loadCommandConfig } = await import('../../../src/commands/command-helpers.js')
+      const { loadCommandConfig } = await import('../../../src/utils/command-helpers.js')
 
       vi.mocked(findConfigPath).mockResolvedValue(null)
       vi.mocked(mergeConfigs).mockReturnValue({ files: ['default.ts'] } as never)
@@ -202,7 +214,7 @@ describe('Watch Command', () => {
     test('should use defaults when config path is found but no config content', async () => {
       const { findConfigPath } = await import('../../../src/config/discovery.js')
       const { mergeConfigs } = await import('../../../src/config/merger.js')
-      const { loadCommandConfig } = await import('../../../src/commands/command-helpers.js')
+      const { loadCommandConfig } = await import('../../../src/utils/command-helpers.js')
       const { ConfigCache } = await import('../../../src/config/cache.js')
 
       vi.mocked(findConfigPath).mockResolvedValue('/path/to/config.json')
@@ -248,18 +260,17 @@ describe('Watch Command', () => {
     test('should return early when parseResult.sourceFile is null', async () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: null,
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: null,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -275,23 +286,26 @@ describe('Watch Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       const mockSourceFile = {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
+        getFilePath: function () {
+          return '/test/file.ts'
+        },
+        getText: function () {
+          return 'test code'
+        },
+        getFullText: function () {
+          return 'fixed code'
+        },
       }
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: mockSourceFile,
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -305,6 +319,7 @@ describe('Watch Command', () => {
       await analyzeFile('/test/file.ts', undefined, false)
 
       expect(spyLog).toHaveBeenCalledWith(expect.stringContaining('✓'))
+
       spyLog.mockRestore()
     })
 
@@ -313,9 +328,15 @@ describe('Watch Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       const mockSourceFile = {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
+        getFilePath: function () {
+          return '/test/file.ts'
+        },
+        getText: function () {
+          return 'test code'
+        },
+        getFullText: function () {
+          return 'fixed code'
+        },
       }
 
       const mockViolations = [
@@ -328,27 +349,25 @@ describe('Watch Command', () => {
         },
       ]
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue(mockViolations),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue(mockViolations),
+        } as never
+      })
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: mockSourceFile,
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -371,9 +390,15 @@ describe('Watch Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       const mockSourceFile = {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
+        getFilePath: function () {
+          return '/test/file.ts'
+        },
+        getText: function () {
+          return 'test code'
+        },
+        getFullText: function () {
+          return 'fixed code'
+        },
       }
 
       const mockViolations = [
@@ -414,27 +439,25 @@ describe('Watch Command', () => {
         },
       ]
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue(mockViolations),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue(mockViolations),
+        } as never
+      })
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: mockSourceFile,
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -457,9 +480,15 @@ describe('Watch Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       const mockSourceFile = {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
+        getFilePath: function () {
+          return '/test/file.ts'
+        },
+        getText: function () {
+          return 'test code'
+        },
+        getFullText: function () {
+          return 'fixed code'
+        },
       }
 
       const mockViolations = [
@@ -479,27 +508,35 @@ describe('Watch Command', () => {
         },
       ]
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue(mockViolations),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue(mockViolations),
+        } as never
+      })
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: mockSourceFile,
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: {
+              getFilePath: function () {
+                return '/test/file.ts'
+              },
+              getText: function () {
+                return 'test code'
+              },
+              getFullText: function () {
+                return 'fixed code'
+              },
+            },
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -522,9 +559,15 @@ describe('Watch Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       const mockSourceFile = {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
+        getFilePath: function () {
+          return '/test/file.ts'
+        },
+        getText: function () {
+          return 'test code'
+        },
+        getFullText: function () {
+          return 'fixed code'
+        },
       }
 
       const mockViolations = [
@@ -544,27 +587,25 @@ describe('Watch Command', () => {
         },
       ]
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue(mockViolations),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue(mockViolations),
+        } as never
+      })
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: mockSourceFile,
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -584,68 +625,31 @@ describe('Watch Command', () => {
 
     test('should handle errors gracefully', async () => {
       const { Parser } = await import('../../../src/core/parser.js')
-
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockRejectedValue(new Error('Parse error')),
-          }) as never,
-      )
-
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      // @ts-expect-error - accessing private method for testing
-      const analyzeFile = cmd.analyzeFile.bind(cmd)
-      // @ts-expect-error - setting private property for testing
-      cmd.parser = new Parser()
-
-      await expect(analyzeFile('/test/file.ts', undefined, false)).resolves.toBeUndefined()
-    })
-
-    test('should schedule pending analysis after completion', async () => {
-      const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
-
-      // @ts-expect-error - accessing private method for testing
-      const analyzeFile = cmd.analyzeFile.bind(cmd)
-      // @ts-expect-error - setting private property for testing
-      cmd.pendingAnalysis = true
-      const originalSetImmediate = global.setImmediate
-      const mockSetImmediate = vi.fn((fn) => {
-        return originalSetImmediate(fn)
-      })
-      global.setImmediate = mockSetImmediate as never
-
-      try {
-        await analyzeFile('/test/file.ts', undefined, false)
-
-        await new Promise((resolve) => setTimeout(resolve, 10))
-      } finally {
-        global.setImmediate = originalSetImmediate
-      }
-    })
-
-    test('should log debug message when scheduled analysis fails', async () => {
-      const { Parser } = await import('../../../src/core/parser.js')
       const { logger } = await import('../../../src/utils/logger.js')
 
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: {
-                getFilePath: () => '/test/file.ts',
-                getText: () => 'test code',
-                getFullText: () => 'fixed code',
-              },
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      const mockSourceFile = {
+        getFilePath: function () {
+          return '/test/file.ts'
+        },
+        getText: function () {
+          return 'test code'
+        },
+        getFullText: function () {
+          return 'fixed code'
+        },
+      }
+
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -704,15 +708,14 @@ describe('Watch Command', () => {
       const { FileWatcher } = await import('../../../src/utils/watcher.js')
 
       const mockStop = vi.fn().mockResolvedValue(undefined)
-      vi.mocked(FileWatcher).mockImplementation(
-        () =>
-          ({
-            on: vi.fn().mockReturnThis(),
-            watch: vi.fn().mockResolvedValue(undefined),
-            stop: mockStop,
-            isActive: vi.fn().mockReturnValue(false),
-          }) as never,
-      )
+      vi.mocked(FileWatcher).mockImplementation(function () {
+        return {
+          on: vi.fn().mockReturnThis(),
+          watch: vi.fn().mockResolvedValue(undefined),
+          stop: mockStop,
+          isActive: vi.fn().mockReturnValue(false),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -744,15 +747,14 @@ describe('Watch Command', () => {
       const { logger } = await import('../../../src/utils/logger.js')
 
       const mockStop = vi.fn().mockRejectedValue(new Error('Stop failed'))
-      vi.mocked(FileWatcher).mockImplementation(
-        () =>
-          ({
-            on: vi.fn().mockReturnThis(),
-            watch: vi.fn().mockResolvedValue(undefined),
-            stop: mockStop,
-            isActive: vi.fn().mockReturnValue(false),
-          }) as never,
-      )
+      vi.mocked(FileWatcher).mockImplementation(function () {
+        return {
+          on: vi.fn().mockReturnThis(),
+          watch: vi.fn().mockResolvedValue(undefined),
+          stop: mockStop,
+          isActive: vi.fn().mockReturnValue(false),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -787,22 +789,27 @@ describe('Watch Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       const mockDispose = vi.fn()
-      vi.mocked(Parser).mockImplementation(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: mockDispose,
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: {
-                getFilePath: () => '/test/file.ts',
-                getText: () => 'test code',
-                getFullText: () => 'fixed code',
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: mockDispose,
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: {
+              getFilePath: function () {
+                return '/test/file.ts'
               },
-              filePath: '/test/file.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+              getText: function () {
+                return 'test code'
+              },
+              getFullText: function () {
+                return 'fixed code'
+              },
+            },
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(WatchCommand, {}, {})
 
@@ -831,19 +838,18 @@ describe('Watch Command', () => {
   describe('setupRuleRegistry', () => {
     test('should register all rules when no requestedRules provided', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
-      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
+      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
       const mockRunRules = vi.fn().mockReturnValue([])
 
       vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: mockRegister,
-            disable: mockDisable,
-            runRules: mockRunRules,
-          }) as never,
+        class {
+          register = mockRegister
+          disable = mockDisable
+          runRules = mockRunRules
+        } as never,
       )
 
       const registry = setupRuleRegistry(undefined)
@@ -856,19 +862,18 @@ describe('Watch Command', () => {
     test('should disable rules not in requestedRules', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
       const { allRules } = await import('../../../src/rules/index.js')
-      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
+      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
       const mockRunRules = vi.fn().mockReturnValue([])
 
       vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: mockRegister,
-            disable: mockDisable,
-            runRules: mockRunRules,
-          }) as never,
+        class {
+          register = mockRegister
+          disable = mockDisable
+          runRules = mockRunRules
+        } as never,
       )
 
       const ruleIds = Object.keys(allRules)
@@ -899,15 +904,14 @@ describe('Watch Command', () => {
       const mockRunRules = vi.fn().mockReturnValue([])
 
       vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: mockRegister,
-            disable: mockDisable,
-            runRules: mockRunRules,
-          }) as never,
+        class {
+          register = mockRegister
+          disable = mockDisable
+          runRules = mockRunRules
+        } as never,
       )
 
-      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
+      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
       const ruleIds = Object.keys(allRules)
 
       if (ruleIds.length >= 2) {

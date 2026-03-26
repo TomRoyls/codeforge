@@ -5,7 +5,7 @@ import type { RuleContext } from '../../../../src/plugins/types.js'
 import { noRegexSpacesRule } from '../../../../src/rules/patterns/no-regex-spaces.js'
 
 interface ReportDescriptor {
-  loc?: { end: { column: number; line: number; }; start: { column: number; line: number; }; }
+  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
   message: string
 }
 

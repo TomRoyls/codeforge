@@ -55,27 +55,31 @@ function createCommandWithMockedParse(
 vi.mock('../../../src/core/file-discovery.js', () => ({ discoverFiles: vi.fn() }))
 
 vi.mock('../../../src/core/parser.js', () => ({
-  Parser: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(undefined),
-    dispose: vi.fn(),
-    parseFile: vi.fn().mockResolvedValue({
-      sourceFile: {
-        getFilePath: () => '/test/file.ts',
-        getText: () => 'test code',
-        getFullText: () => 'fixed code',
-      },
-      filePath: '/test/file.ts',
-      parseTime: 10,
-    }),
-  })),
+  Parser: vi.fn().mockImplementation(function () {
+    return {
+      initialize: vi.fn().mockResolvedValue(undefined),
+      dispose: vi.fn(),
+      parseFile: vi.fn().mockResolvedValue({
+        sourceFile: {
+          getFilePath: () => '/test/file.ts',
+          getText: () => 'test code',
+          getFullText: () => 'fixed code',
+        },
+        filePath: '/test/file.ts',
+        parseTime: 10,
+      }),
+    }
+  }),
 }))
 
 vi.mock('../../../src/core/rule-registry.js', () => ({
-  RuleRegistry: vi.fn().mockImplementation(() => ({
-    register: vi.fn(),
-    disable: vi.fn(),
-    runRules: vi.fn().mockReturnValue([createMockViolation()]),
-  })),
+  RuleRegistry: vi.fn().mockImplementation(function () {
+    return {
+      register: vi.fn(),
+      disable: vi.fn(),
+      runRules: vi.fn().mockReturnValue([createMockViolation()]),
+    }
+  }),
 }))
 
 vi.mock('../../../src/fix/fixer.js', () => ({
@@ -219,14 +223,13 @@ describe('Fix Command', () => {
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('test.ts')])
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue([createMockViolation()]),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue([createMockViolation()]),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(
         FixCommand,
@@ -250,14 +253,13 @@ describe('Fix Command', () => {
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('test.ts')])
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue([createMockViolation()]),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue([createMockViolation()]),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(
         FixCommand,
@@ -333,25 +335,25 @@ describe('Fix Command', () => {
 
   describe('helper methods', () => {
     test('resolvePatterns should handle array args', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns(['a.ts', 'b.ts'], ['default.ts'])).toEqual(['a.ts', 'b.ts'])
     })
 
     test('resolvePatterns should handle string args', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns('single.ts', ['default.ts'])).toEqual(['single.ts'])
     })
 
     test('resolvePatterns should fall back to config files', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns(undefined, ['config.ts'])).toEqual(['config.ts'])
     })
 
     test('resolvePatterns should return empty array when no patterns', async () => {
-      const { resolvePatterns } = await import('../../../src/commands/command-helpers.js')
+      const { resolvePatterns } = await import('../../../src/utils/command-helpers.js')
 
       expect(resolvePatterns(undefined, undefined)).toEqual([])
     })
@@ -369,19 +371,18 @@ describe('Fix Command', () => {
       ])
 
       let callCount = 0
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockImplementation(() => {
-              callCount++
-              if (callCount === 1) return [createMockViolation()]
-              if (callCount === 2) return []
-              return [createMockViolation()]
-            }),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockImplementation(function () {
+            callCount++
+            if (callCount === 1) return [createMockViolation()]
+            if (callCount === 2) return []
+            return [createMockViolation()]
+          }),
+        } as never
+      })
 
       vi.mocked(applyFixesToFile)
         .mockReturnValueOnce(createMockFixReport({ fixesApplied: 2, fixesSkipped: 0 }))
@@ -408,25 +409,24 @@ describe('Fix Command', () => {
         createMockFile('good-file.ts'),
       ])
 
-      vi.mocked(Parser).mockImplementationOnce(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi
-              .fn()
-              .mockRejectedValueOnce(new Error('Parse error'))
-              .mockResolvedValueOnce({
-                sourceFile: {
-                  getFilePath: () => '/test/good-file.ts',
-                  getText: () => 'test code',
-                  getFullText: () => 'fixed code',
-                },
-                filePath: '/test/good-file.ts',
-                parseTime: 10,
-              }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementationOnce(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi
+            .fn()
+            .mockRejectedValueOnce(new Error('Parse error'))
+            .mockResolvedValueOnce({
+              sourceFile: {
+                getFilePath: () => '/test/good-file.ts',
+                getText: () => 'test code',
+                getFullText: () => 'fixed code',
+              },
+              filePath: '/test/good-file.ts',
+              parseTime: 10,
+            }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(
         FixCommand,
@@ -446,14 +446,13 @@ describe('Fix Command', () => {
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('unchanged.ts')])
 
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue([]),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue([]),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(
         FixCommand,
@@ -474,14 +473,13 @@ describe('Fix Command', () => {
       const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('file.ts')])
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue([createMockViolation()]),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue([createMockViolation()]),
+        } as never
+      })
       vi.mocked(applyFixesToFile).mockReturnValue(
         createMockFixReport({ fixesApplied: 3, fixesSkipped: 0 }),
       )
@@ -613,14 +611,14 @@ describe('Fix Command', () => {
     })
 
     test('setupRuleRegistry should disable non-requested rules', async () => {
-      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
+      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
 
       const registry = setupRuleRegistry(['prefer-const'])
       expect(registry).toBeDefined()
     })
 
     test('setupRuleRegistry should handle empty requested rules array', async () => {
-      const { setupRuleRegistry } = await import('../../../src/commands/command-helpers.js')
+      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
 
       const registry = setupRuleRegistry([])
       expect(registry).toBeDefined()
@@ -632,14 +630,13 @@ describe('Fix Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('bad-file.ts')])
-      vi.mocked(Parser).mockImplementationOnce(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockRejectedValue(new Error('Syntax error in file')),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementationOnce(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockRejectedValue(new Error('Syntax error in file')),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
@@ -654,18 +651,17 @@ describe('Fix Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('null-source.ts')])
-      vi.mocked(Parser).mockImplementationOnce(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockResolvedValue({
-              sourceFile: null,
-              filePath: '/test/null-source.ts',
-              parseTime: 10,
-            }),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementationOnce(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: null,
+            filePath: '/test/null-source.ts',
+            parseTime: 10,
+          }),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
@@ -679,14 +675,13 @@ describe('Fix Command', () => {
       const { Parser } = await import('../../../src/core/parser.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('weird-error.ts')])
-      vi.mocked(Parser).mockImplementationOnce(
-        () =>
-          ({
-            initialize: vi.fn().mockResolvedValue(undefined),
-            dispose: vi.fn(),
-            parseFile: vi.fn().mockRejectedValue('string error'),
-          }) as never,
-      )
+      vi.mocked(Parser).mockImplementationOnce(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockRejectedValue('string error'),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
@@ -737,14 +732,13 @@ describe('Fix Command', () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('clean.ts')])
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue([]),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue([]),
+        } as never
+      })
 
       const cmd = createCommandWithMockedParse(FixCommand, { concurrency: 4 }, {})
       const logs: string[] = []
@@ -759,14 +753,13 @@ describe('Fix Command', () => {
       const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
 
       vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('fixed.ts')])
-      vi.mocked(RuleRegistry).mockImplementation(
-        () =>
-          ({
-            register: vi.fn(),
-            disable: vi.fn(),
-            runRules: vi.fn().mockReturnValue([createMockViolation()]),
-          }) as never,
-      )
+      vi.mocked(RuleRegistry).mockImplementation(function () {
+        return {
+          register: vi.fn(),
+          disable: vi.fn(),
+          runRules: vi.fn().mockReturnValue([createMockViolation()]),
+        } as never
+      })
       vi.mocked(applyFixesToFile).mockReturnValue(
         createMockFixReport({ fixesApplied: 2, fixesSkipped: 0 }),
       )

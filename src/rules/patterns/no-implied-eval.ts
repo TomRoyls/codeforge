@@ -20,7 +20,11 @@ function isImpliedEvalCall(node: unknown): { isImpliedEval: boolean; functionNam
 
   const functionName = callee.name as string
 
-  if (functionName !== 'setTimeout' && functionName !== 'setInterval') {
+  if (
+    functionName !== 'setTimeout' &&
+    functionName !== 'setInterval' &&
+    functionName !== 'execScript'
+  ) {
     return { isImpliedEval: false, functionName: null }
   }
 
@@ -53,7 +57,7 @@ export const noImpliedEvalRule: RuleDefinition = {
     severity: 'error',
     docs: {
       description:
-        'Disallow implied eval via setTimeout/setInterval with string arguments. Using strings as the first argument to setTimeout/setInterval is equivalent to using eval, which poses security risks.',
+        'Disallow implied eval via setTimeout/setInterval/execScript with string arguments. Using strings as the first argument to setTimeout/setInterval/execScript is equivalent to using eval, which poses security risks.',
       category: 'security',
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-implied-eval',
@@ -75,7 +79,7 @@ export const noImpliedEvalRule: RuleDefinition = {
 
         context.report({
           message:
-            'Implied eval. Do not use strings as the first argument to setTimeout/setInterval.',
+            'Implied eval. Do not use strings as the first argument to setTimeout/setInterval/execScript.',
           loc: location,
         })
       },

@@ -39,7 +39,7 @@ export const noUnusedLabelsRule: RuleDefinition = {
   },
   create(context: RuleContext): RuleVisitor {
     const labels = new Map<string, { used: boolean; node: unknown }>()
-    
+
     return {
       LabeledStatement(node: unknown): void {
         if (!isLabeledStatement(node)) return

@@ -8,11 +8,38 @@ function isLiteral(node: unknown): boolean {
 }
 
 const REGEX_SPECIAL_CHARS = new Set([
-  '\\', '^', '$', '.', '|', '?', '*', '+', '(', ')', '[', ']', '{', '}', '/'
+  '\\',
+  '^',
+  '$',
+  '.',
+  '|',
+  '?',
+  '*',
+  '+',
+  '(',
+  ')',
+  '[',
+  ']',
+  '{',
+  '}',
+  '/',
 ])
 
 const STRING_ESCAPABLE = new Set([
-  'n', 'r', 't', 'b', 'f', 'v', '0', '\\', "'", '"', '`', '$', '\n', '\r'
+  'n',
+  'r',
+  't',
+  'b',
+  'f',
+  'v',
+  '0',
+  '\\',
+  "'",
+  '"',
+  '`',
+  '$',
+  '\n',
+  '\r',
 ])
 
 function hasUselessEscape(raw: unknown, isRegex: boolean): boolean {

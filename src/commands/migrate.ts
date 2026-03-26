@@ -11,6 +11,7 @@ import {
   migrateESLintConfig,
   readESLintConfig,
 } from '../core/migrators/eslint.js'
+import { MAX_UNMAPPED_RULES_TO_SHOW } from '../utils/constants.js'
 
 export default class Migrate extends Command {
   static override description = 'Migrate from another linter to CodeForge'
@@ -103,12 +104,14 @@ export default class Migrate extends Command {
     if (result.unmapped.length > 0) {
       this.log('')
       this.log(chalk.yellow('Unmapped ESLint rules:'))
-      for (const rule of result.unmapped.slice(0, 10)) {
+      for (const rule of result.unmapped.slice(0, MAX_UNMAPPED_RULES_TO_SHOW)) {
         this.log(chalk.gray(`  - ${rule}`))
       }
 
-      if (result.unmapped.length > 10) {
-        this.log(chalk.gray(`  ... and ${result.unmapped.length - 10} more`))
+      if (result.unmapped.length > MAX_UNMAPPED_RULES_TO_SHOW) {
+        this.log(
+          chalk.gray(`  ... and ${result.unmapped.length - MAX_UNMAPPED_RULES_TO_SHOW} more`),
+        )
       }
     }
 

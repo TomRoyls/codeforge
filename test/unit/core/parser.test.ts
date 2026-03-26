@@ -40,7 +40,9 @@ describe('Parser', () => {
     }
 
     // Configure Project mock constructor
-    ;(Project as ReturnType<typeof vi.fn>).mockImplementation(() => mockProject)
+    ;(Project as ReturnType<typeof vi.fn>).mockImplementation(function () {
+      return mockProject
+    })
 
     // Spy on console.error for parseFiles error handling tests
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

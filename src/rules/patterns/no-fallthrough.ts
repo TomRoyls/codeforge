@@ -10,7 +10,9 @@ function hasTerminatingStatement(statements: unknown[] | undefined): boolean {
   const last = statements[statements.length - 1]
   if (!last || typeof last !== 'object') return false
   const s = last as Record<string, unknown>
-  return ['BreakStatement', 'ReturnStatement', 'ThrowStatement', 'ContinueStatement'].includes(s.type as string)
+  return ['BreakStatement', 'ReturnStatement', 'ThrowStatement', 'ContinueStatement'].includes(
+    s.type as string,
+  )
 }
 export const noFallthroughRule: RuleDefinition = {
   meta: {

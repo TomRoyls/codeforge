@@ -35,6 +35,27 @@ const DEFAULT_BARREL_PATTERNS = [
   '/index.cjs',
 ]
 
+const wildcardPatternCache = new Map<string, RegExp>()
+const excludePatternCache = new Map<string, RegExp>()
+
+function getWildcardPatternRegex(pattern: string): RegExp {
+  const cached = wildcardPatternCache.get(pattern)
+  if (cached) return cached
+
+  const regex = new RegExp('^' + pattern.replace(/\*/g, '.*').replace(/\?/g, '.') + '$')
+  wildcardPatternCache.set(pattern, regex)
+  return regex
+}
+
+function getExcludePatternRegex(pattern: string): RegExp {
+  const cached = excludePatternCache.get(pattern)
+  if (cached) return cached
+
+  const regex = new RegExp(pattern.slice(1, -1))
+  excludePatternCache.set(pattern, regex)
+  return regex
+}
+
 function isBarrelImport(source: string, patterns: readonly string[]): boolean {
   const normalizedSource = source.replace(/\\/g, '/')
 
@@ -43,8 +64,7 @@ function isBarrelImport(source: string, patterns: readonly string[]): boolean {
       return true
     }
     if (pattern.includes('*')) {
-      const regex = new RegExp('^' + pattern.replace(/\*/g, '.*').replace(/\?/g, '.') + '$')
-      if (regex.test(normalizedSource)) {
+      if (getWildcardPatternRegex(pattern).test(normalizedSource)) {
         return true
       }
     }
@@ -56,8 +76,7 @@ function isBarrelImport(source: string, patterns: readonly string[]): boolean {
 function isExcluded(source: string, patterns: readonly string[]): boolean {
   return patterns.some((pattern) => {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
-      const regex = new RegExp(pattern.slice(1, -1))
-      return regex.test(source)
+      return getExcludePatternRegex(pattern).test(source)
     }
     return source === pattern || source.includes(pattern)
   })

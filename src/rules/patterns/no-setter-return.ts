@@ -44,7 +44,7 @@ export const noSetterReturnRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (n.kind !== 'set') return
         if (!n.value || !isFunctionExpression(n.value)) return
-        
+
         const value = n.value as Record<string, unknown>
         if (value.body && hasReturnValue(value.body)) {
           context.report({

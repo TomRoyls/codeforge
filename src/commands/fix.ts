@@ -10,9 +10,9 @@ import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { allRules } from '../rules/index.js'
+import { resolvePatterns, setupRuleRegistry } from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
-import { resolvePatterns, setupRuleRegistry } from './command-helpers.js'
 
 interface FileFixResult {
   conflicts: Array<{ conflictingRule: string; ruleId: string }>
@@ -126,65 +126,17 @@ export default class Fix extends Command {
     }
 
     try {
-      const config = DEFAULT_CONFIG
-      const patterns = resolvePatterns(args.files, config.files)
-      const ignore = flags.ignore ?? config.ignore ?? []
-      const requestedRules = flags.rules?.split(',').map((r) => r.trim())
+      const setupResult = await this.setupFixContext(args, flags, ciMode)
 
-      const cwd = process.cwd()
-      const discoveredFiles = await discoverFiles({ cwd, ignore, patterns })
-
-      if (discoveredFiles.length === 0) {
-        if (ciMode) {
-          this.outputJson({ error: 'No files found to fix', files: [] })
-        } else {
-          this.log(chalk.yellow('No files found to fix.'))
-        }
-
+      if (!setupResult) {
         return
       }
 
-      if (!ciMode) {
-        this.log(chalk.blue(`\n🔧 Fixing ${discoveredFiles.length} file(s)...\n`))
-      }
-
-      const rulesWithFixes = this.getRulesWithFixes(flags['safe-only'])
-
-      if (rulesWithFixes.size === 0) {
-        if (ciMode) {
-          this.outputJson({ error: 'No fixable rules available', files: [] })
-        } else {
-          this.log(chalk.yellow('No fixable rules available.'))
-        }
-
-        return
-      }
-
-      const registry = setupRuleRegistry(requestedRules)
-      const parser = new Parser()
-
-      const context: ProcessContext = {
-        dryRun: flags['dry-run'],
-        parser,
-        registry,
-        rulesWithFixes,
-      }
+      const { context, discoveredFiles } = setupResult
 
       const results = await this.processFiles(discoveredFiles, context, flags)
 
-      if (ciMode) {
-        this.outputJson({
-          dryRun: flags['dry-run'],
-          filesModified: results.filesModified,
-          filesUnchanged: results.filesUnchanged,
-          summary: {
-            fixesApplied: results.totalFixesApplied,
-            fixesSkipped: results.totalFixesSkipped,
-          },
-        })
-      } else {
-        this.printSummary(results, flags)
-      }
+      this.outputFixResults(results, flags, ciMode)
     } catch (error) {
       if (ciMode) {
         this.outputJson({ error: error instanceof Error ? error.message : String(error) })
@@ -215,6 +167,31 @@ export default class Fix extends Command {
     }
 
     return rulesWithFixes
+  }
+
+  private outputFixResults(
+    results: {
+      filesModified: string[]
+      filesUnchanged: string[]
+      totalFixesApplied: number
+      totalFixesSkipped: number
+    },
+    flags: FixFlags,
+    ciMode: boolean,
+  ): void {
+    if (ciMode) {
+      this.outputJson({
+        dryRun: flags['dry-run'],
+        filesModified: results.filesModified,
+        filesUnchanged: results.filesUnchanged,
+        summary: {
+          fixesApplied: results.totalFixesApplied,
+          fixesSkipped: results.totalFixesSkipped,
+        },
+      })
+    } else {
+      this.printSummary(results, flags)
+    }
   }
 
   private outputJson(data: unknown): void {
@@ -372,5 +349,60 @@ export default class Fix extends Command {
     }
 
     return { filesModified, filesUnchanged, totalFixesApplied, totalFixesSkipped }
+  }
+
+  private async setupFixContext(
+    args: { files: string[] | undefined },
+    flags: FixFlags,
+    ciMode: boolean,
+  ): Promise<null | {
+    context: ProcessContext
+    discoveredFiles: Array<{ absolutePath: string; path: string }>
+  }> {
+    const config = DEFAULT_CONFIG
+    const patterns = resolvePatterns(args.files ?? [], config.files)
+    const ignore = flags.ignore ?? config.ignore ?? []
+    const requestedRules = flags.rules?.split(',').map((r) => r.trim())
+
+    const cwd = process.cwd()
+    const discoveredFiles = await discoverFiles({ cwd, ignore, patterns })
+
+    if (discoveredFiles.length === 0) {
+      if (ciMode) {
+        this.outputJson({ error: 'No files found to fix', files: [] })
+      } else {
+        this.log(chalk.yellow('No files found to fix.'))
+      }
+
+      return null
+    }
+
+    if (!ciMode) {
+      this.log(chalk.blue(`\n🔧 Fixing ${discoveredFiles.length} file(s)...\n`))
+    }
+
+    const rulesWithFixes = this.getRulesWithFixes(flags['safe-only'])
+
+    if (rulesWithFixes.size === 0) {
+      if (ciMode) {
+        this.outputJson({ error: 'No fixable rules available', files: [] })
+      } else {
+        this.log(chalk.yellow('No fixable rules available.'))
+      }
+
+      return null
+    }
+
+    const registry = setupRuleRegistry(requestedRules)
+    const parser = new Parser()
+
+    const context: ProcessContext = {
+      dryRun: flags['dry-run'],
+      parser,
+      registry,
+      rulesWithFixes,
+    }
+
+    return { context, discoveredFiles }
   }
 }

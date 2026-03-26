@@ -9,7 +9,7 @@ import { parseConfigFile } from '../config/parser.js'
 import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { getRuleIds } from '../rules/index.js'
-import { FILE_COUNT_THRESHOLD } from '../utils/constants.js'
+import { FILE_COUNT_THRESHOLD, MAX_TOP_RULES_SHOWN } from '../utils/constants.js'
 
 interface CheckResult {
   details?: string
@@ -319,7 +319,7 @@ export default class Doctor extends Command {
         })
       } else {
         results.checks.push({
-          details: `Valid rules: ${[...knownRules].slice(0, 5).join(', ')}, ...`,
+          details: `Valid rules: ${[...knownRules].slice(0, MAX_TOP_RULES_SHOWN).join(', ')}, ...`,
           message: `Unknown rules found: ${unknownRules.join(', ')}`,
           status: 'error',
         })

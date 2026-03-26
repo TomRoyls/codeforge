@@ -9,7 +9,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
-import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractLocation, getNodeText } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface OptionalChainMatch {
@@ -17,26 +17,6 @@ interface OptionalChainMatch {
   readonly rightText: string
   readonly location: SourceLocation
   readonly suggestion: string
-}
-
-function getNodeText(node: unknown, source: string): string {
-  if (!node || typeof node !== 'object') {
-    return ''
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (Array.isArray(n.range) && n.range.length === 2) {
-    const start = n.range[0] as number
-    const end = n.range[1] as number
-    return source.slice(start, end)
-  }
-
-  if (typeof n.start === 'number' && typeof n.end === 'number') {
-    return source.slice(n.start, n.end)
-  }
-
-  return ''
 }
 
 function isPropertyAccessExpression(node: unknown): boolean {

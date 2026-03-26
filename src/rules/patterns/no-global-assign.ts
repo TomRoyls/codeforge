@@ -2,12 +2,45 @@ import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../utils/ast-helpers.js'
 
 const GLOBAL_OBJECTS = new Set([
-  'undefined', 'NaN', 'Infinity', 'Object', 'Function', 'Boolean', 'Symbol',
-  'Number', 'BigInt', 'Math', 'Date', 'String', 'RegExp', 'Array', 'Map',
-  'Set', 'WeakMap', 'WeakSet', 'JSON', 'Promise', 'Reflect', 'Proxy',
-  'Error', 'AggregateError', 'EvalError', 'RangeError', 'ReferenceError',
-  'SyntaxError', 'TypeError', 'URIError', 'globalThis', 'console', 'window',
-  'document', 'navigator', 'Intl', 'WebAssembly', 'Atomics', 'SharedArrayBuffer'
+  'undefined',
+  'NaN',
+  'Infinity',
+  'Object',
+  'Function',
+  'Boolean',
+  'Symbol',
+  'Number',
+  'BigInt',
+  'Math',
+  'Date',
+  'String',
+  'RegExp',
+  'Array',
+  'Map',
+  'Set',
+  'WeakMap',
+  'WeakSet',
+  'JSON',
+  'Promise',
+  'Reflect',
+  'Proxy',
+  'Error',
+  'AggregateError',
+  'EvalError',
+  'RangeError',
+  'ReferenceError',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
+  'globalThis',
+  'console',
+  'window',
+  'document',
+  'navigator',
+  'Intl',
+  'WebAssembly',
+  'Atomics',
+  'SharedArrayBuffer',
 ])
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -16,10 +49,10 @@ function isAssignmentExpression(node: unknown): boolean {
   return n.type === 'AssignmentExpression'
 }
 
-function isIdentifier(node: unknown): boolean {
+export function isIdentifier(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
+  return n.type === 'Identifier' || typeof n.name === 'string'
 }
 
 export const noGlobalAssignRule: RuleDefinition = {

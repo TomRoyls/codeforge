@@ -36,11 +36,11 @@ export const useIsnanRule: RuleDefinition = {
         if (!isBinaryExpression(node)) return
         const n = node as Record<string, unknown>
         const operator = n.operator as string
-        
+
         if (['===', '!==', '==', '!='].includes(operator)) {
           if (isNaNIdentifier(n.left) || isNaNIdentifier(n.right)) {
             context.report({
-              message: "Use the isNaN function to compare with NaN.",
+              message: 'Use the isNaN function to compare with NaN.',
               loc: extractLocation(node),
             })
           }

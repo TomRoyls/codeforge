@@ -20,7 +20,7 @@ export const noUndefRule: RuleDefinition = {
   },
   create(_context: RuleContext): RuleVisitor {
     const declared = new Set<string>()
-    
+
     return {
       VariableDeclarator(node: unknown): void {
         if (!node || typeof node !== 'object') return

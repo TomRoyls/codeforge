@@ -73,8 +73,13 @@ export class Reporter {
       case 'gitlab':
         return this.formatGitlab(report)
       case 'console':
-      default:
         return this.formatConsole(report)
+      default:
+        throw new Error(
+          `Unsupported output format: "${this.options.format}". ` +
+            `Valid formats are: console, json, html, junit, sarif, markdown, gitlab. ` +
+            `Please check your configuration and try again.`,
+        )
     }
   }
 
@@ -114,12 +119,14 @@ export class Reporter {
   }
 
   private escapeXml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;')
+    const escapeMap: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }
+    return text.replace(/[&<>"']/g, (char) => escapeMap[char] ?? char)
   }
 
   private formatSarif(report: AnalysisReport): string {
@@ -338,12 +345,14 @@ export class Reporter {
   }
 
   private escapeHtml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;')
+    const escapeMap: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }
+    return text.replace(/[&<>"']/g, (char) => escapeMap[char] ?? char)
   }
 
   private formatConsole(report: AnalysisReport): string {
@@ -412,8 +421,19 @@ export class Reporter {
 
     if (this.options.outputPath) {
       const absolutePath = path.resolve(this.options.outputPath)
-      await fs.mkdir(path.dirname(absolutePath), { recursive: true })
-      await fs.writeFile(absolutePath, content, 'utf-8')
+      try {
+        await fs.mkdir(path.dirname(absolutePath), { recursive: true })
+        await fs.writeFile(absolutePath, content, 'utf-8')
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new Error(
+            `Failed to write report to "${this.options.outputPath}". ` +
+              `Error: ${error.message}. ` +
+              `Please ensure the path is valid and you have write permissions.`,
+          )
+        }
+        throw error
+      }
     } else {
       console.log(content)
     }

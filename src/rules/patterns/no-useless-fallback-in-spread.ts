@@ -4,7 +4,7 @@
  */
 
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractLocation, getRange, getNodeText } from '../../utils/ast-helpers.js'
 
 /**
  * Check if a node is a LogicalExpression with || operator
@@ -118,17 +118,6 @@ function getLogicalRight(node: unknown): unknown {
 
   const n = node as Record<string, unknown>
   return n.right
-}
-
-/**
- * Get text representation of a node from source
- */
-function getNodeText(node: unknown, source: string): string {
-  const range = getRange(node)
-  if (!range) {
-    return ''
-  }
-  return source.slice(range[0], range[1])
 }
 
 export const noUselessFallbackInSpreadRule: RuleDefinition = {

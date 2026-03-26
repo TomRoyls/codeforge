@@ -1,9 +1,7 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../utils/ast-helpers.js'
 
-const NON_CALLABLE_GLOBALS = new Set([
-  'Math', 'JSON', 'Reflect', 'Atomics', 'Intl'
-])
+const NON_CALLABLE_GLOBALS = new Set(['Math', 'JSON', 'Reflect', 'Atomics', 'Intl'])
 
 function isCallExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false

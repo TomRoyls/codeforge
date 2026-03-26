@@ -4,11 +4,11 @@ import chalk from 'chalk'
 import { ConfigCache } from '../config/cache.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
+import { loadCommandConfig, resolvePatterns, setupRuleRegistry } from '../utils/command-helpers.js'
 import { DEFAULT_DEBOUNCE_MS } from '../utils/constants.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
 import { FileWatcher } from '../utils/watcher.js'
-import { loadCommandConfig, resolvePatterns, setupRuleRegistry } from './command-helpers.js'
 
 export default class Watch extends Command {
   static override args = {
