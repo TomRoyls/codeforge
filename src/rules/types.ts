@@ -9,6 +9,7 @@ export interface RuleOptions {
 
 export interface RuleDocs {
   description?: string
+  fixable?: 'code' | 'whitespace'
   recommended?: boolean
   severity?: RuleSeverity
   url?: string

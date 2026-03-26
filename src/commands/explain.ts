@@ -1,6 +1,8 @@
 import { Args, Command } from '@oclif/core'
 import chalk from 'chalk'
 
+import type { RuleMeta } from '../rules/types.js'
+
 import { allRules, getRuleCategory } from '../rules/index.js'
 
 interface RuleExample {
@@ -78,8 +80,7 @@ export default class Explain extends Command {
     this.log('')
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private displayDescription(meta: any): void {
+  private displayDescription(meta: RuleMeta): void {
     const description = meta.docs?.description ?? meta.description ?? 'No description available'
 
     this.log(chalk.bold('Description'))
@@ -105,8 +106,7 @@ export default class Explain extends Command {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private displayFixable(meta: any): void {
+  private displayFixable(meta: RuleMeta): void {
     const fixable = meta.fixable ?? meta.docs?.fixable ?? false
     const fixableText = fixable ? chalk.green('Yes') : chalk.gray('No')
 
@@ -125,8 +125,7 @@ export default class Explain extends Command {
     this.log('')
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private displayMetadata(meta: any): void {
+  private displayMetadata(meta: RuleMeta): void {
     const recommended = meta.docs?.recommended ?? meta.recommended ?? false
     const recommendedText = recommended ? chalk.cyan('Yes') : chalk.gray('No')
 
@@ -148,8 +147,7 @@ export default class Explain extends Command {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private displaySeverity(meta: any): void {
+  private displaySeverity(meta: RuleMeta): void {
     const severity = meta.severity ?? meta.docs?.severity ?? 'error'
     let severityText: string
 
@@ -179,8 +177,7 @@ export default class Explain extends Command {
     this.log('')
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private displayUrl(meta: any): void {
+  private displayUrl(meta: RuleMeta): void {
     const url = meta.docs?.url
 
     if (url) {
