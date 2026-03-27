@@ -1,65 +1,5 @@
-import { describe, expect } from 'vitest'
-import { CLIError, SystemError } from '../../../utils/errors.js'
-import { logger, LogLevel } from '../../../utils/logger.js'
-import { ConfigCache } from '../../../config/cache.js'
-import { findConfigPath } from '../../../config/discovery.js'
-import { parseEnvVars } from '../../../config/env-parser.js'
-import { mergeConfigs, mergeEnvConfig } from '../../../config/merger.js'
-import { type CodeForgeConfig } from '../../../config/types.js'
-import { validateConfig } from '../../../config/validator.js'
-import { Parser } from '../../../core/parser.js'
-import { RuleRegistry } from '../../../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../../../rules/index.js'
-
-// Create a concrete test subclass to access protected methods
-class TestableBaseCommand extends BaseCommand {
-  // Override methods to make them public for testing
-  public override configureLogging(verbose: boolean, quiet: boolean): void {
-    if (verbose) {
-      logger.setLevel(LogLevel.DEBUG)
-    } else if (quiet) {
-      logger.setLevel(LogLevel.SILENT)
-    }
-  }
-
-  // Override determineExitCode to make things testable
-  public override determineExitCode(
-    summary: { errors: number; warnings: number },
-    failOnWarnings: boolean,
-    maxWarnings: number,
-  ): number {
-    if (summary.errors > 0) {
-      return ExitCode.ERRORS_FOUND
-    }
-
-    if (failOnWarnings && summary.warnings > 0) {
-      return ExitCode.WARNINGS_AS_ERRORS
-    }
-
-    if (maxWarnings >= 0 && summary.warnings > maxWarnings) {
-      return ExitCode.ERRORS_FOUND
-    }
-
-    return ExitCode.SUCCESS
-  }
-
-  // Override disposeParser for cleanup
-  public override disposeParser(): void {
-    // no-op for test
-  }
-
-  // Override resolvePatterns for test various inputs
-  public override resolvePatterns(
-    argsFiles: string | string[] | undefined,
-    configFiles: string[] | undefined,
-  ): string[] {
-    if (argsFiles) {
-      return Array.isArray(argsFiles) ? argsFiles : [argsFiles]
-    }
-
-    return configFiles ?? []
-  }
-}
+import { describe, test, expect } from 'vitest'
+import { ExitCode, commonFlags, BaseCommand } from '../../../src/lib/base.js'
 
 describe('ExitCode', () => {
   test('should have correct constant values', () => {
@@ -90,39 +30,121 @@ describe('commonFlags', () => {
   })
 })
 
+class TestableBaseCommand extends BaseCommand {
+  public override async run(): Promise<void> {
+    return Promise.resolve()
+  }
+
+  public override determineExitCode(
+    summary: { errors: number; warnings: number },
+    failOnWarnings: boolean,
+    maxWarnings: number,
+  ): number {
+    if (summary.errors > 0) {
+      return ExitCode.ERRORS_FOUND
+    }
+
+    if (failOnWarnings && summary.warnings > 0) {
+      return ExitCode.WARNINGS_AS_ERRORS
+    }
+
+    if (maxWarnings >= 0 && summary.warnings > maxWarnings) {
+      return ExitCode.ERRORS_FOUND
+    }
+
+    return ExitCode.SUCCESS
+  }
+
+  public override resolvePatterns(
+    argsFiles: string | string[] | undefined,
+    configFiles: string[] | undefined,
+  ): string[] {
+    if (argsFiles) {
+      return Array.isArray(argsFiles) ? argsFiles : [argsFiles]
+    }
+    return configFiles ?? []
+  }
+}
+
 describe('TestableBaseCommand', () => {
-  const scenarios: Array<{
-    errors: number
- warnings: number
-    failOnWarnings: boolean
-    maxWarnings: number
-    expectedExitCode: number
-  }>(
-    { errors, warnings, failOnWarnings, maxWarnings }: expected,
-  ) => {
-      // No errors, no warnings
- failOnWarnings: false, maxWarnings: -1
-      return ExitCode.SUCCESS
-    }
+  const cmd = new TestableBaseCommand()
 
-    { errors: 0, warnings: 0, failOnWarnings: true, maxWarnings: 5 },
-      expected: ExitCode.ERRORS_FOUND
-    }
+  describe('determineExitCode', () => {
+    test('should return ERRORS_FOUND when there are errors', () => {
+      const result = cmd.determineExitCode({ errors: 1, warnings: 0 }, false, -1)
+      expect(result).toBe(ExitCode.ERRORS_FOUND)
+    })
 
-    { errors: 1, warnings: 0, failOnWarnings: false, maxWarnings: 10 },
-      expected: ExitCode.ERRORS_FOUND
-    }
+    test('should return ERRORS_FOUND when errors exist regardless of warnings', () => {
+      const result = cmd.determineExitCode({ errors: 2, warnings: 10 }, true, 5)
+      expect(result).toBe(ExitCode.ERRORS_FOUND)
+    })
 
-    { errors: 0, warnings: 0, failOnWarnings: false, maxWarnings: 0 },
-      expected: ExitCode.ERRORS_FOUND
-    }
+    test('should return WARNINGS_AS_ERRORS when failOnWarnings=true and warnings>0', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 5 }, true, -1)
+      expect(result).toBe(ExitCode.WARNINGS_AS_ERRORS)
+    })
 
-    { errors: 0, warnings: 0, failOnWarnings: false, maxWarnings: 1_000 },
-      expected: ExitCode.WARNINGS_AS_ERRORS
-    }
+    test('should return ERRORS_FOUND when warnings exceed maxWarnings', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 10 }, false, 5)
+      expect(result).toBe(ExitCode.ERRORS_FOUND)
+    })
 
-    { errors: 0, warnings: 0, failOnWarnings: false, maxWarnings: 0 },
-      expected: ExitCode.SUCCESS
-    }
+    test('should return SUCCESS when no errors or warnings', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 0 }, false, -1)
+      expect(result).toBe(ExitCode.SUCCESS)
+    })
+
+    test('should return SUCCESS when no errors and warnings within maxWarnings', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 3 }, false, 5)
+      expect(result).toBe(ExitCode.SUCCESS)
+    })
+
+    test('should return ERRORS_FOUND when warnings equal maxWarnings+1', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 6 }, false, 5)
+      expect(result).toBe(ExitCode.ERRORS_FOUND)
+    })
+
+    test('should return SUCCESS when warnings equal maxWarnings', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 5 }, false, 5)
+      expect(result).toBe(ExitCode.SUCCESS)
+    })
+
+    test('should return ERRORS_FOUND when maxWarnings is 0 and warnings>0', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 1 }, false, 0)
+      expect(result).toBe(ExitCode.ERRORS_FOUND)
+    })
+
+    test('should ignore maxWarnings when negative', () => {
+      const result = cmd.determineExitCode({ errors: 0, warnings: 100 }, false, -1)
+      expect(result).toBe(ExitCode.SUCCESS)
+    })
+  })
+
+  describe('resolvePatterns', () => {
+    test('should return argsFiles as array when provided as array', () => {
+      const result = cmd.resolvePatterns(['foo.ts', 'bar.ts'], undefined)
+      expect(result).toEqual(['foo.ts', 'bar.ts'])
+    })
+
+    test('should return argsFiles as single-item array when string provided', () => {
+      const result = cmd.resolvePatterns('single.ts', undefined)
+      expect(result).toEqual(['single.ts'])
+    })
+
+    test('should return configFiles when argsFiles is undefined', () => {
+      const result = cmd.resolvePatterns(undefined, ['config.ts'])
+      expect(result).toEqual(['config.ts'])
+    })
+
+    test('should return empty array when both are undefined', () => {
+      const result = cmd.resolvePatterns(undefined, undefined)
+      expect(result).toEqual([])
+    })
+
+    test('should prefer argsFiles over configFiles', () => {
+      const result = cmd.resolvePatterns('args.ts', ['config.ts'])
+      expect(result).toEqual(['args.ts'])
+    })
   })
 })
