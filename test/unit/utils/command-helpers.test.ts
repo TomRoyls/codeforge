@@ -300,4 +300,353 @@ describe('command-helpers', () => {
       expect(mergeConfigs).toHaveBeenCalledWith({}, { ignore: ['node_modules', 'dist'] })
     })
   })
+
+  describe('normalizeFlags', () => {
+    test('should normalize all flags correctly', async () => {
+      const { normalizeFlags } = await import('../../../src/utils/command-helpers.js')
+
+      const result = normalizeFlags({
+        ci: false,
+        concurrency: 8,
+        'dry-run': true,
+        'fail-on-warnings': true,
+        fix: true,
+        format: 'json',
+        'max-warnings': 10,
+        output: 'output.json',
+        quiet: false,
+        staged: true,
+        verbose: true,
+      })
+
+      expect(result).toEqual({
+        ciMode: false,
+        concurrency: 8,
+        dryRun: true,
+        failOnWarnings: true,
+        format: 'json',
+        maxWarnings: 10,
+        output: 'output.json',
+        quiet: false,
+        shouldFix: true,
+        stagedMode: true,
+        verbose: true,
+      })
+    })
+
+    test('should force JSON format in CI mode when format is console', async () => {
+      const { normalizeFlags } = await import('../../../src/utils/command-helpers.js')
+
+      const result = normalizeFlags({
+        ci: true,
+        concurrency: 4,
+        'dry-run': false,
+        'fail-on-warnings': false,
+        fix: false,
+        format: 'console',
+        'max-warnings': -1,
+        output: undefined,
+        quiet: false,
+        staged: false,
+        verbose: true,
+      })
+
+      expect(result.format).toBe('json')
+    })
+
+    test('should preserve non-console format in CI mode', async () => {
+      const { normalizeFlags } = await import('../../../src/utils/command-helpers.js')
+
+      const result = normalizeFlags({
+        ci: true,
+        concurrency: 4,
+        'dry-run': false,
+        'fail-on-warnings': false,
+        fix: false,
+        format: 'junit',
+        'max-warnings': -1,
+        output: undefined,
+        quiet: false,
+        staged: false,
+        verbose: true,
+      })
+
+      expect(result.format).toBe('junit')
+    })
+
+    test('should force quiet mode in CI mode', async () => {
+      const { normalizeFlags } = await import('../../../src/utils/command-helpers.js')
+
+      const result = normalizeFlags({
+        ci: true,
+        concurrency: 4,
+        'dry-run': false,
+        'fail-on-warnings': false,
+        fix: false,
+        format: 'json',
+        'max-warnings': -1,
+        output: undefined,
+        quiet: false,
+        staged: false,
+        verbose: false,
+      })
+
+      expect(result.quiet).toBe(true)
+    })
+
+    test('should disable verbose in CI mode', async () => {
+      const { normalizeFlags } = await import('../../../src/utils/command-helpers.js')
+
+      const result = normalizeFlags({
+        ci: true,
+        concurrency: 4,
+        'dry-run': false,
+        'fail-on-warnings': false,
+        fix: false,
+        format: 'json',
+        'max-warnings': -1,
+        output: undefined,
+        quiet: false,
+        staged: false,
+        verbose: true,
+      })
+
+      expect(result.verbose).toBe(false)
+    })
+
+    test('should handle default values', async () => {
+      const { normalizeFlags } = await import('../../../src/utils/command-helpers.js')
+
+      const result = normalizeFlags({
+        ci: false,
+        concurrency: 4,
+        'dry-run': false,
+        'fail-on-warnings': false,
+        fix: false,
+        format: 'console',
+        'max-warnings': -1,
+        output: undefined,
+        quiet: false,
+        staged: false,
+        verbose: false,
+      })
+
+      expect(result.ciMode).toBe(false)
+      expect(result.quiet).toBe(false)
+      expect(result.verbose).toBe(false)
+    })
+  })
+
+  describe('filterFilesByExtension', () => {
+    test('should return all files when no extension specified', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+      ]
+
+      const result = filterFilesByExtension(files)
+
+      expect(result).toEqual(files)
+    })
+
+    test('should return all files when extension string is empty', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+      ]
+
+      const result = filterFilesByExtension(files, '')
+
+      expect(result).toEqual(files)
+    })
+
+    test('should filter by single extension', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+        { path: 'another.ts', absolutePath: '/abs/another.ts' },
+      ]
+
+      const result = filterFilesByExtension(files, '.ts')
+
+      expect(result).toHaveLength(2)
+      expect(result.map((f) => f.path)).toEqual(['test.ts', 'another.ts'])
+    })
+
+    test('should filter by multiple extensions', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+        { path: 'test.py', absolutePath: '/abs/test.py' },
+      ]
+
+      const result = filterFilesByExtension(files, '.ts, .js')
+
+      expect(result).toHaveLength(2)
+      expect(result.map((f) => f.path)).toEqual(['test.ts', 'test.js'])
+    })
+
+    test('should require leading dot in extension string', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+      ]
+
+      const result = filterFilesByExtension(files, 'ts, js')
+
+      expect(result).toHaveLength(0)
+    })
+
+    test('should handle case-insensitive extensions', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.TS', absolutePath: '/abs/test.TS' },
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+      ]
+
+      const result = filterFilesByExtension(files, '.ts')
+
+      expect(result).toHaveLength(2)
+    })
+
+    test('should return empty array when no files match', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+        { path: 'test.js', absolutePath: '/abs/test.js' },
+      ]
+
+      const result = filterFilesByExtension(files, '.py')
+
+      expect(result).toHaveLength(0)
+    })
+
+    test('should handle files without extensions', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [
+        { path: 'Makefile', absolutePath: '/abs/Makefile' },
+        { path: 'test.ts', absolutePath: '/abs/test.ts' },
+      ]
+
+      const result = filterFilesByExtension(files, '.ts')
+
+      expect(result).toHaveLength(1)
+      expect(result[0].path).toBe('test.ts')
+    })
+
+    test('should return all files when extensions array is empty after parsing', async () => {
+      const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
+
+      const files = [{ path: 'test.ts', absolutePath: '/abs/test.ts' }]
+
+      const result = filterFilesByExtension(files, ',,')
+
+      expect(result).toEqual(files)
+    })
+  })
+
+  describe('applyFixesToFiles', () => {
+    const createMockViolation = (ruleId: string) => ({
+      ruleId,
+      message: 'Test violation',
+      severity: 'error' as const,
+      filePath: 'test.ts',
+      range: {
+        start: { line: 1, column: 1 },
+        end: { line: 1, column: 10 },
+      },
+    })
+
+    test('should return early when no violations', async () => {
+      const { applyFixesToFiles } = await import('../../../src/utils/command-helpers.js')
+
+      const mockApplyFixesFn = vi.fn().mockResolvedValue({ fixesApplied: 0, fixesSkipped: 0 })
+
+      const result = await applyFixesToFiles({
+        allViolations: [],
+        applyFixesFn: mockApplyFixesFn,
+        concurrency: 4,
+        discoveredFiles: [],
+        dryRun: false,
+        parseCache: new Map(),
+        parser: {} as never,
+        quiet: false,
+        rulesWithFixes: new Map(),
+        verbose: false,
+      })
+
+      expect(result).toEqual({ fixesApplied: 0, fixesSkipped: 0 })
+      expect(mockApplyFixesFn).not.toHaveBeenCalled()
+    })
+
+    test('should call applyFixesFn when violations exist', async () => {
+      const { applyFixesToFiles } = await import('../../../src/utils/command-helpers.js')
+
+      const mockApplyFixesFn = vi.fn().mockResolvedValue({ fixesApplied: 5, fixesSkipped: 2 })
+      const mockViolation = createMockViolation('test-rule')
+
+      const result = await applyFixesToFiles({
+        allViolations: [mockViolation],
+        applyFixesFn: mockApplyFixesFn,
+        concurrency: 4,
+        discoveredFiles: [],
+        dryRun: true,
+        parseCache: new Map(),
+        parser: {} as never,
+        quiet: true,
+        rulesWithFixes: new Map(),
+        verbose: true,
+      })
+
+      expect(mockApplyFixesFn).toHaveBeenCalledWith({
+        allViolations: [mockViolation],
+        concurrency: 4,
+        discoveredFiles: [],
+        dryRun: true,
+        parseCache: expect.any(Map),
+        parser: {},
+        quiet: true,
+        rulesWithFixes: expect.any(Map),
+        verbose: true,
+      })
+      expect(result).toEqual({ fixesApplied: 5, fixesSkipped: 2 })
+    })
+
+    test('should pass dryRun and quiet flags correctly', async () => {
+      const { applyFixesToFiles } = await import('../../../src/utils/command-helpers.js')
+
+      const mockApplyFixesFn = vi.fn().mockResolvedValue({ fixesApplied: 1, fixesSkipped: 0 })
+
+      await applyFixesToFiles({
+        allViolations: [createMockViolation('test')],
+        applyFixesFn: mockApplyFixesFn,
+        concurrency: 4,
+        discoveredFiles: [],
+        dryRun: true,
+        parseCache: new Map(),
+        parser: {} as never,
+        quiet: true,
+        rulesWithFixes: new Map(),
+        verbose: false,
+      })
+
+      const callArgs = mockApplyFixesFn.mock.calls[0][0]
+      expect(callArgs.dryRun).toBe(true)
+      expect(callArgs.quiet).toBe(true)
+    })
+  })
 })
