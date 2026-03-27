@@ -13,6 +13,7 @@ group, place `[Unreleased]` next to the version number.
 
 ### Added
 
+- **score**: Added comprehensive tests for `calculateCorrectnessScore`, `formatScore`, and edge cases
 - **analyze**: Added `--max-warnings` flag for CI threshold control
 - **analyze**: Added `--fail-on-warnings` flag for strict warning handling
 - **analyze**: Added `--staged` flag to analyze only git staged files
@@ -39,6 +40,8 @@ group, place `[Unreleased]` next to the version number.
 
 ### Fixed
 
+- **types**: Replaced unsafe `as unknown as` casts with proper TypeScript type predicates in `no-misused-promises` rule
+- **types**: Removed redundant `as unknown as` cast in `visualize` command
 - **analyze**: Removed duplicate flag character `f` from format flag (was conflicting with files flag)
 - **parser**: Replaced `console.warn` with logger for consistency
 - **watcher**: Replaced `console.warn` with logger for consistency
