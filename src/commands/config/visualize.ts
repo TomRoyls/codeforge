@@ -57,9 +57,9 @@ export default class ConfigVisualize extends Command {
     const envConfig = parseEnvVars()
     const mergedConfig = mergeConfigs(fileConfig, envConfig)
 
-    let validatedConfig: Record<string, unknown> = {}
+    let validatedConfig: Record<string, unknown>
     try {
-      validatedConfig = validateConfig(mergedConfig) as unknown as Record<string, unknown>
+      validatedConfig = validateConfig(mergedConfig) as Record<string, unknown>
     } catch {
       validatedConfig = mergedConfig as Record<string, unknown>
     }

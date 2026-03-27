@@ -1,4 +1,10 @@
-import { Node } from 'ts-morph'
+import {
+  type ArrowFunction,
+  type CallExpression,
+  type FunctionExpression,
+  type PropertyAccessExpression,
+  Node,
+} from 'ts-morph'
 import type { RuleDefinition, RuleOptions } from '../types.js'
 import { type RuleViolation, type VisitorContext, getNodeRange } from '../../ast/visitor.js'
 
@@ -9,15 +15,16 @@ const PROPERTY_ACCESS_EXPRESSION_KIND = 203
 const ARROW_FUNCTION_KIND = 211
 const FUNCTION_EXPRESSION_KIND = 216
 
-function isCallExpression(node: Node): boolean {
+// Use getKind() checks for compatibility with both real ts-morph nodes and test mocks
+function isCallExpression(node: Node): node is CallExpression {
   return node.getKind() === CALL_EXPRESSION_KIND
 }
 
-function isPropertyAccessExpression(node: Node): boolean {
+function isPropertyAccessExpression(node: Node): node is PropertyAccessExpression {
   return node.getKind() === PROPERTY_ACCESS_EXPRESSION_KIND
 }
 
-function isArrowOrFunctionExpression(node: Node): boolean {
+function isArrowOrFunctionExpression(node: Node): node is ArrowFunction | FunctionExpression {
   const kind = node.getKind()
   return kind === ARROW_FUNCTION_KIND || kind === FUNCTION_EXPRESSION_KIND
 }
@@ -27,18 +34,14 @@ function checkAsyncForEachCallback(node: Node, context: VisitorContext): RuleVio
     return null
   }
 
-  const callExpr = node as unknown as {
-    getExpression: () => Node
-    getArguments: () => Node[]
-  }
-
+  const callExpr = node
   const expression = callExpr.getExpression()
 
   if (!isPropertyAccessExpression(expression)) {
     return null
   }
 
-  const propAccess = expression as unknown as { getName: () => string }
+  const propAccess = expression
   const methodName = propAccess.getName()
   if (methodName !== 'forEach') {
     return null
@@ -58,7 +61,7 @@ function checkAsyncForEachCallback(node: Node, context: VisitorContext): RuleVio
     return null
   }
 
-  const asyncCallback = callback as unknown as { isAsync: () => boolean }
+  const asyncCallback = callback
   if (!asyncCallback.isAsync()) {
     return null
   }
