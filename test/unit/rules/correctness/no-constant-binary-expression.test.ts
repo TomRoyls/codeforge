@@ -80,6 +80,19 @@ function createIdentifier(name: string, line = 1, column = 0): unknown {
   }
 }
 
+function createUnaryExpression(argument: unknown, operator: string, line = 1, column = 0): unknown {
+  return {
+    type: 'UnaryExpression',
+    operator,
+    argument,
+    prefix: true,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 15 },
+    },
+  }
+}
+
 describe('no-constant-binary-expression rule', () => {
   describe('meta', () => {
     test('should have correct rule type', () => {
@@ -219,6 +232,92 @@ describe('no-constant-binary-expression rule', () => {
 
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
+    })
+
+    test('should report comparison with !true on left', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConstantBinaryExpressionRule.create(context)
+
+      visitor.BinaryExpression(
+        createBinaryExpression(
+          createUnaryExpression(createLiteral(true), '!'),
+          createIdentifier('flag'),
+          '===',
+        ),
+      )
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('boolean')
+    })
+
+    test('should report comparison with !false on right', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConstantBinaryExpressionRule.create(context)
+
+      visitor.BinaryExpression(
+        createBinaryExpression(
+          createIdentifier('flag'),
+          createUnaryExpression(createLiteral(false), '!'),
+          '!==',
+        ),
+      )
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('boolean')
+    })
+
+    test('should report comparison with numeric literal 42', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConstantBinaryExpressionRule.create(context)
+
+      visitor.BinaryExpression(
+        createBinaryExpression(createLiteral(42), createIdentifier('count'), '==='),
+      )
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('numeric')
+    })
+
+    test('should report comparison with negative numeric literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConstantBinaryExpressionRule.create(context)
+
+      visitor.BinaryExpression(
+        createBinaryExpression(createIdentifier('temperature'), createLiteral(-1), '!=='),
+      )
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('numeric')
+    })
+
+    test('should not report comparison with !variable', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConstantBinaryExpressionRule.create(context)
+
+      visitor.BinaryExpression(
+        createBinaryExpression(
+          createUnaryExpression(createIdentifier('flag'), '!'),
+          createIdentifier('other'),
+          '===',
+        ),
+      )
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report comparison with non-boolean unary expression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConstantBinaryExpressionRule.create(context)
+
+      visitor.BinaryExpression(
+        createBinaryExpression(
+          createUnaryExpression(createLiteral('string'), '!'),
+          createIdentifier('x'),
+          '===',
+        ),
+      )
+
+      expect(reports.length).toBe(0)
     })
   })
 
