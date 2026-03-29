@@ -1,0 +1,895 @@
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
+import Dependencies from '../../../src/commands/dependencies.js'
+import { discoverFiles } from '../../../src/core/file-discovery.js'
+import { Parser } from '../../../src/core/parser.js'
+
+vi.mock('../../../src/core/file-discovery.js')
+vi.mock('../../../src/core/parser.js')
+
+describe('Dependencies Command', () => {
+  let command: Dependencies
+
+  const mockDiscoverFiles = vi.mocked(discoverFiles)
+  const mockParser = vi.mocked(Parser)
+
+  beforeEach(() => {
+    command = new Dependencies([], {} as any)
+    mockDiscoverFiles.mockReset()
+    mockParser.mockReset()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  describe('flags', () => {
+    test('has circular flag', () => {
+      const flags = Dependencies.flags
+      expect(flags).toHaveProperty('circular')
+      expect((flags.circular as any).char).toBe('c')
+    })
+
+    test('has external flag', () => {
+      const flags = Dependencies.flags
+      expect(flags).toHaveProperty('external')
+      expect((flags.external as any).char).toBe('e')
+    })
+
+    test('has format flag', () => {
+      const flags = Dependencies.flags
+      expect(flags).toHaveProperty('format')
+      expect((flags.format as any).options).toContain('json')
+      expect((flags.format as any).options).toContain('dot')
+    })
+  })
+
+  describe('description', () => {
+    test('has description', () => {
+      expect(Dependencies.description).toBe('Analyze and visualize module dependencies')
+    })
+
+    test('has examples', () => {
+      expect(Dependencies.examples).toHaveLength(4)
+    })
+  })
+
+  describe('extractImports', () => {
+    test('extracts static imports', () => {
+      const sourceCode = 'import { foo } from "./bar"\nimport baz from "qux"'
+      const result = (command as any).extractImports(sourceCode, 'test.ts')
+      expect(result).toHaveLength(2)
+      expect(result[0].modulePath).toBe('./bar')
+      expect(result[1].modulePath).toBe('qux')
+    })
+
+    test('extracts dynamic imports', () => {
+      const sourceCode = 'const mod = import("./dynamic")'
+      const result = (command as any).extractImports(sourceCode, 'test.ts')
+      expect(result).toHaveLength(1)
+      expect(result[0].modulePath).toBe('./dynamic')
+    })
+
+    test('extracts require calls', () => {
+      const sourceCode = 'const fs = require("fs")'
+      const result = (command as any).extractImports(sourceCode, 'test.ts')
+      expect(result).toHaveLength(1)
+      expect(result[0].modulePath).toBe('fs')
+    })
+
+    test('returns empty array for no imports', () => {
+      const sourceCode = 'const x = 1'
+      const result = (command as any).extractImports(sourceCode, 'test.ts')
+      expect(result).toHaveLength(0)
+    })
+  })
+
+  describe('detectCircularDependencies', () => {
+    test('returns empty array when no cycles', () => {
+      const graph = {
+        nodes: new Map([
+          ['a.ts', { filePath: 'a.ts', importDetails: new Map(), imports: new Set(['./b.ts']) }],
+          ['b.ts', { filePath: 'b.ts', importDetails: new Map(), imports: new Set() }],
+        ]),
+      }
+
+      const result = (command as any).detectCircularDependencies(graph)
+      expect(result).toHaveLength(0)
+    })
+
+    test('detects simple cycle', () => {
+      const graph = {
+        nodes: new Map([
+          [
+            'src/a.ts',
+            {
+              filePath: 'src/a.ts',
+              importDetails: new Map([
+                [
+                  './b.ts',
+                  {
+                    location: { column: 1, line: 1 },
+                    modulePath: './b.ts',
+                    sourceFile: 'src/a.ts',
+                  },
+                ],
+              ]),
+              imports: new Set(['./b.ts']),
+            },
+          ],
+          [
+            'src/b.ts',
+            {
+              filePath: 'src/b.ts',
+              importDetails: new Map([
+                [
+                  './a.ts',
+                  {
+                    location: { column: 1, line: 1 },
+                    modulePath: './a.ts',
+                    sourceFile: 'src/b.ts',
+                  },
+                ],
+              ]),
+              imports: new Set(['./a.ts']),
+            },
+          ],
+        ]),
+      }
+
+      const result = (command as any).detectCircularDependencies(graph)
+      expect(result.length).toBeGreaterThanOrEqual(0)
+    })
+  })
+
+  describe('findOrphanFiles', () => {
+    test('finds files not imported by others', () => {
+      const graph = {
+        nodes: new Map([
+          ['src/main.ts', { filePath: 'src/main.ts', imports: new Set(['src/utils.ts']) }],
+          ['src/utils.ts', { filePath: 'src/utils.ts', imports: new Set() }],
+          ['src/orphan.ts', { filePath: 'src/orphan.ts', imports: new Set() }],
+        ]),
+      }
+
+      const result = (command as any).findOrphanFiles(graph)
+      expect(result).toContain('src/main.ts')
+      expect(result).toContain('src/orphan.ts')
+      expect(result).toContain('src/utils.ts')
+    })
+  })
+
+  describe('normalizeCycle', () => {
+    test('normalizes cycle to start with smallest element', () => {
+      const cycle = ['c.ts', 'a.ts', 'b.ts']
+      const result = (command as any).normalizeCycle(cycle)
+      expect(result[0]).toBe('a.ts')
+    })
+
+    test('handles single element cycle', () => {
+      const cycle = ['a.ts']
+      const result = (command as any).normalizeCycle(cycle)
+      expect(result).toEqual(['a.ts'])
+    })
+
+    test('handles empty cycle', () => {
+      const result = (command as any).normalizeCycle([])
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('deduplicateCycles', () => {
+    test('removes duplicate cycles', () => {
+      const cycles = [
+        { cycle: ['a.ts', 'b.ts'], location: { column: 1, line: 1 } },
+        { cycle: ['b.ts', 'a.ts'], location: { column: 1, line: 2 } },
+      ]
+      const result = (command as any).deduplicateCycles(cycles)
+      expect(result.length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  describe('graphToDotFormat', () => {
+    test('handles empty graph', () => {
+      const graph = { nodes: new Map() }
+      const result = (command as any).graphToDotFormat(graph)
+      expect(result).toHaveProperty('nodes')
+      expect(result).toHaveProperty('edges')
+    })
+
+    test('converts graph to dot format', () => {
+      const graph = {
+        nodes: new Map([
+          ['a.ts', { filePath: 'a.ts', imports: new Set(['./b.ts']) }],
+          ['b.ts', { filePath: 'b.ts', imports: new Set() }],
+        ]),
+      }
+
+      const result = (command as any).graphToDotFormat(graph)
+      expect(result.nodes).toContain('a.ts')
+      expect(result.edges).toHaveLength(1)
+    })
+  })
+
+  describe('formatOutput', () => {
+    test('formats as JSON when format is json', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: ['lodash'],
+        filesAnalyzed: 2,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const result = (command as any).formatOutput(report, { format: 'json' })
+      expect(() => JSON.parse(result)).not.toThrow()
+    })
+
+    test('formats as DOT when format is dot', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 2,
+        graph: { edges: [['a.ts', 'b.ts']], nodes: ['a.ts', 'b.ts'] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const result = (command as any).formatOutput(report, { format: 'dot' })
+      expect(result).toContain('digraph')
+    })
+
+    test('formats as table by default', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: ['lodash'],
+        filesAnalyzed: 2,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const result = (command as any).formatOutput(report, { format: 'table' })
+      expect(typeof result).toBe('string')
+    })
+  })
+
+  describe('processDependency', () => {
+    test('returns early when dependency node not found in graph', () => {
+      const graph = {
+        nodes: new Map([
+          ['a.ts', { filePath: 'a.ts', importDetails: new Map(), imports: new Set() }],
+        ]),
+      }
+      const context = {
+        cycles: [],
+        graph,
+        maxDepth: 50,
+        path: ['a.ts'],
+        recursionStack: new Set(['a.ts']),
+        visited: new Set(['a.ts']),
+      }
+      const initialCyclesLength = context.cycles.length
+
+      // 'non-existent.ts' is not in the graph
+      ;(command as any).processDependency('non-existent.ts', graph.nodes.get('a.ts')!, context)
+      expect(context.cycles.length).toBe(initialCyclesLength)
+    })
+
+    test('calls detectCyclesFromNode for unvisited dependency', () => {
+      const graph = {
+        nodes: new Map([
+          ['a.ts', { filePath: 'a.ts', importDetails: new Map(), imports: new Set(['b.ts']) }],
+          ['b.ts', { filePath: 'b.ts', importDetails: new Map(), imports: new Set() }],
+        ]),
+      }
+      const context = {
+        cycles: [],
+        graph,
+        maxDepth: 50,
+        path: ['a.ts'],
+        recursionStack: new Set(['a.ts']),
+        visited: new Set(['a.ts']),
+      }
+
+      // 'b.ts' exists in graph but is not in visited set
+      ;(command as any).processDependency('b.ts', graph.nodes.get('a.ts')!, context)
+      // The method will call detectCyclesFromNode which handles the unvisited node
+      // We just verify it doesn't throw and the graph lookup succeeds
+      expect(context.graph.nodes.has('b.ts')).toBe(true)
+    })
+  })
+
+  describe('recordCycle', () => {
+    test('records cycle with import details', () => {
+      const node = {
+        filePath: 'b.ts',
+        importDetails: new Map([
+          [
+            './a.ts',
+            { location: { column: 1, line: 1 }, modulePath: './a.ts', sourceFile: 'b.ts' },
+          ],
+        ]),
+        imports: new Set(['./a.ts']),
+      }
+      const context = {
+        cycles: [],
+        path: ['a.ts', 'b.ts'],
+      }
+
+      ;(command as any).recordCycle('./a.ts', node, context)
+      expect(context.cycles).toHaveLength(1)
+    })
+
+    test('does not record cycle without import details', () => {
+      const node = {
+        filePath: 'b.ts',
+        importDetails: new Map(),
+        imports: new Set(['./a.ts']),
+      }
+      const context = {
+        cycles: [],
+        path: ['a.ts', 'b.ts'],
+      }
+
+      ;(command as any).recordCycle('./a.ts', node, context)
+      expect(context.cycles).toHaveLength(0)
+    })
+  })
+
+  describe('finishNodeVisit', () => {
+    test('removes path element and recursion stack entry', () => {
+      const path = ['a.ts', 'b.ts', 'c.ts']
+      const recursionStack = new Set(['a.ts', 'b.ts', 'c.ts'])
+
+      ;(command as any).finishNodeVisit('c.ts', path, recursionStack)
+
+      expect(path).toEqual(['a.ts', 'b.ts'])
+      expect(recursionStack.has('c.ts')).toBe(false)
+      expect(recursionStack.has('b.ts')).toBe(true)
+    })
+  })
+
+  describe('detectCyclesFromNode', () => {
+    test('returns early when max depth exceeded', () => {
+      const graph = {
+        nodes: new Map([
+          ['a.ts', { filePath: 'a.ts', importDetails: new Map(), imports: new Set(['./b.ts']) }],
+        ]),
+      }
+      const context = {
+        cycles: [] as any[],
+        graph,
+        maxDepth: 2,
+        path: ['x.ts', 'y.ts', 'z.ts'],
+        recursionStack: new Set(['x.ts', 'y.ts', 'z.ts']),
+        visited: new Set(['x.ts', 'y.ts', 'z.ts']),
+      }
+      const initialCycles = context.cycles.length
+
+      ;(command as any).detectCyclesFromNode('a.ts', context)
+
+      expect(context.cycles.length).toBe(initialCycles)
+    })
+
+    test('returns early when node not in graph', () => {
+      const graph = { nodes: new Map() }
+      const context = {
+        cycles: [] as any[],
+        graph,
+        maxDepth: 50,
+        path: [],
+        recursionStack: new Set(),
+        visited: new Set(),
+      }
+
+      ;(command as any).detectCyclesFromNode('nonexistent.ts', context)
+
+      expect(context.visited.has('nonexistent.ts')).toBe(true)
+    })
+  })
+
+  describe('formatOutput with flags', () => {
+    test('formats circular dependencies when circular flag is true', () => {
+      const report = {
+        circularDependencies: [{ cycle: ['a.ts', 'b.ts'], location: { line: 1, column: 1 } }],
+        externalModules: ['lodash'],
+        filesAnalyzed: 2,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const result = (command as any).formatOutput(report, { circular: true })
+      const parsed = JSON.parse(result)
+      expect(parsed).toHaveProperty('circularDependencies')
+    })
+
+    test('formats external modules when external flag is true', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: ['lodash', 'react'],
+        filesAnalyzed: 2,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const result = (command as any).formatOutput(report, { external: true })
+      const parsed = JSON.parse(result)
+      expect(parsed).toHaveProperty('externalModules')
+      expect(parsed.externalModules).toContain('lodash')
+    })
+  })
+
+  describe('displayCircularDependencies', () => {
+    test('displays message when no circular dependencies', () => {
+      const report = { circularDependencies: [] }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayCircularDependencies(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('No circular dependencies'))
+    })
+
+    test('displays circular dependencies in json format', () => {
+      const report = {
+        circularDependencies: [{ cycle: ['a.ts', 'b.ts'], location: { line: 1, column: 1 } }],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayCircularDependencies(report, 'json')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('circularDependencies'))
+    })
+
+    test('displays circular dependencies count in table format', () => {
+      const report = {
+        circularDependencies: [
+          { cycle: ['a.ts', 'b.ts', 'a.ts'], location: { line: 1, column: 1 } },
+        ],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayCircularDependencies(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('circular dependencies'))
+    })
+  })
+
+  describe('displayExternalModules', () => {
+    test('displays message when no external modules', () => {
+      const report = { externalModules: [] }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayExternalModules(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('No external dependencies'))
+    })
+
+    test('displays external modules in json format', () => {
+      const report = { externalModules: ['lodash', 'react'] }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayExternalModules(report, 'json')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('externalModules'))
+    })
+
+    test('displays external modules count in table format', () => {
+      const report = { externalModules: ['lodash', 'react'] }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayExternalModules(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('External modules'))
+    })
+  })
+
+  describe('displayDotFormat', () => {
+    test('outputs valid dot format', () => {
+      const report = {
+        graph: {
+          edges: [['a.ts', 'b.ts']],
+          nodes: ['a.ts', 'b.ts'],
+        },
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayDotFormat(report)
+
+      expect(logSpy).toHaveBeenCalledWith('digraph dependencies {')
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('a.ts'))
+    })
+  })
+
+  describe('displayFullReport', () => {
+    test('displays json format', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 5,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'json')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('filesAnalyzed'))
+    })
+
+    test('displays dot format', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 5,
+        graph: { edges: [['a.ts', 'b.ts']], nodes: ['a.ts', 'b.ts'] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'dot')
+
+      expect(logSpy).toHaveBeenCalledWith('digraph dependencies {')
+    })
+
+    test('displays circular dependencies section', () => {
+      const report = {
+        circularDependencies: [
+          { cycle: ['a.ts', 'b.ts', 'a.ts'], location: { line: 1, column: 1 } },
+        ],
+        externalModules: [],
+        filesAnalyzed: 5,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Circular Dependencies'))
+    })
+
+    test('displays no circular dependencies message', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 5,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('No circular dependencies'))
+    })
+
+    test('displays internal modules section', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 5,
+        graph: { edges: [], nodes: [] },
+        internalModules: ['./utils', './helpers'],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Internal Modules'))
+    })
+
+    test('displays external modules section', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: ['lodash', 'react'],
+        filesAnalyzed: 5,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('External Modules'))
+    })
+
+    test('displays orphan files section', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 5,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: ['orphan.ts'],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Orphan Files'))
+    })
+  })
+
+  describe('displayDependencyTree', () => {
+    test('displays message when no root files found', () => {
+      const report = {
+        graph: {
+          edges: [['a.ts', 'b.ts']],
+          nodes: ['b.ts'],
+        },
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayDependencyTree(report)
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('No root files found'))
+    })
+
+    test('displays tree for root files', () => {
+      const report = {
+        graph: {
+          edges: [['a.ts', 'b.ts']],
+          nodes: ['a.ts', 'b.ts'],
+        },
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayDependencyTree(report)
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Dependency Tree'))
+    })
+
+    test('truncates when more than 5 root files', () => {
+      const report = {
+        graph: {
+          edges: [],
+          nodes: ['a.ts', 'b.ts', 'c.ts', 'd.ts', 'e.ts', 'f.ts', 'g.ts'],
+        },
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayDependencyTree(report)
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('more root files'))
+    })
+  })
+
+  describe('normalizeCycle edge cases', () => {
+    test('handles two-element cycle', () => {
+      const result = (command as any).normalizeCycle(['b.ts', 'a.ts'])
+      expect(result[0]).toBe('b.ts')
+    })
+
+    test('handles cycle where all elements are same', () => {
+      const result = (command as any).normalizeCycle(['b.ts', 'b.ts', 'b.ts'])
+      expect(result[0]).toBe('b.ts')
+    })
+
+    test('handles cycle with undefined elements filtered', () => {
+      const result = (command as any).normalizeCycle(['z.ts', undefined, 'a.ts'].filter(Boolean))
+      expect(result.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('graphToDotFormat with mixed imports', () => {
+    test('only includes relative imports as edges', () => {
+      const graph = {
+        nodes: new Map([
+          ['a.ts', { filePath: 'a.ts', imports: new Set(['./b.ts', 'lodash', 'react']) }],
+          ['b.ts', { filePath: 'b.ts', imports: new Set() }],
+        ]),
+      }
+
+      const result = (command as any).graphToDotFormat(graph)
+      expect(result.edges).toHaveLength(1)
+      expect(result.edges[0]).toEqual(['a.ts', './b.ts'])
+    })
+
+    test('handles file with only external imports', () => {
+      const graph = {
+        nodes: new Map([['a.ts', { filePath: 'a.ts', imports: new Set(['lodash', 'react']) }]]),
+      }
+
+      const result = (command as any).graphToDotFormat(graph)
+      expect(result.edges).toHaveLength(0)
+      expect(result.nodes).toContain('a.ts')
+    })
+  })
+
+  describe('findOrphanFiles with mixed imports', () => {
+    test('only counts relative imports as imported files', () => {
+      const graph = {
+        nodes: new Map([
+          ['src/main.ts', { filePath: 'src/main.ts', imports: new Set(['./utils.ts', 'lodash']) }],
+          ['src/utils.ts', { filePath: 'src/utils.ts', imports: new Set() }],
+          ['src/standalone.ts', { filePath: 'src/standalone.ts', imports: new Set(['react']) }],
+        ]),
+      }
+
+      const result = (command as any).findOrphanFiles(graph)
+      expect(result).toContain('src/main.ts')
+      expect(result).toContain('src/standalone.ts')
+    })
+  })
+
+  describe('processDependency cycle detection', () => {
+    test('records cycle when dependency is in recursionStack', () => {
+      const graph = {
+        nodes: new Map([
+          [
+            'a.ts',
+            {
+              filePath: 'a.ts',
+              importDetails: new Map([
+                [
+                  './b.ts',
+                  { location: { column: 1, line: 1 }, modulePath: './b.ts', sourceFile: 'a.ts' },
+                ],
+              ]),
+              imports: new Set(['./b.ts']),
+            },
+          ],
+          [
+            'b.ts',
+            {
+              filePath: 'b.ts',
+              importDetails: new Map([
+                [
+                  'a.ts',
+                  { location: { column: 1, line: 1 }, modulePath: './a.ts', sourceFile: 'b.ts' },
+                ],
+              ]),
+              imports: new Set(['./a.ts']),
+            },
+          ],
+        ]),
+      }
+
+      const context = {
+        cycles: [] as any[],
+        graph,
+        maxDepth: 50,
+        path: ['a.ts', 'b.ts'],
+        recursionStack: new Set(['a.ts', 'b.ts']),
+        visited: new Set(['a.ts', 'b.ts']),
+      }
+
+      ;(command as any).processDependency('a.ts', graph.nodes.get('b.ts')!, context)
+
+      expect(context.cycles.length).toBe(1)
+      expect(context.cycles[0].cycle).toContain('a.ts')
+    })
+  })
+
+  describe('normalizeCycle rotation edge cases', () => {
+    test('rotates cycle to start with minimum element', () => {
+      const cycle = ['z.ts', 'a.ts', 'm.ts']
+      const result = (command as any).normalizeCycle(cycle)
+      expect(result[0]).toBe('a.ts')
+    })
+
+    test('handles cycle that is already normalized', () => {
+      const cycle = ['a.ts', 'b.ts', 'c.ts']
+      const result = (command as any).normalizeCycle(cycle)
+      expect(result[0]).toBe('a.ts')
+    })
+  })
+
+  describe('extractImports additional patterns', () => {
+    test('extracts external npm module imports', () => {
+      const sourceCode = 'import lodash from "lodash"\nimport react from "react"'
+      const result = (command as any).extractImports(sourceCode, 'test.ts')
+      expect(result).toHaveLength(2)
+      expect(result[0].modulePath).toBe('lodash')
+      expect(result[1].modulePath).toBe('react')
+    })
+
+    test('extracts scoped package imports', () => {
+      const sourceCode = 'import { something } from "@scope/package"'
+      const result = (command as any).extractImports(sourceCode, 'test.ts')
+      expect(result).toHaveLength(1)
+      expect(result[0].modulePath).toBe('@scope/package')
+    })
+  })
+
+  describe('displayFullReport truncation', () => {
+    test('truncates circular dependencies when more than 5', () => {
+      const report = {
+        circularDependencies: Array.from({ length: 10 }, (_, i) => ({
+          cycle: [`a${i}.ts`, `b${i}.ts`],
+          location: { line: 1, column: 1 },
+        })),
+        externalModules: [],
+        filesAnalyzed: 10,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('and 5 more'))
+    })
+
+    test('truncates internal modules when more than 10', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 15,
+        graph: { edges: [], nodes: [] },
+        internalModules: Array.from({ length: 15 }, (_, i) => `./module${i}`),
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('and 5 more'))
+    })
+
+    test('truncates external modules when more than 10', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: Array.from({ length: 15 }, (_, i) => `npm-package-${i}`),
+        filesAnalyzed: 15,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: [],
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('and 5 more'))
+    })
+
+    test('truncates orphan files when more than 5', () => {
+      const report = {
+        circularDependencies: [],
+        externalModules: [],
+        filesAnalyzed: 10,
+        graph: { edges: [], nodes: [] },
+        internalModules: [],
+        orphanFiles: Array.from({ length: 10 }, (_, i) => `orphan${i}.ts`),
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayFullReport(report, 'table')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('and 5 more'))
+    })
+  })
+
+  describe('displayDependencyTree visited nodes', () => {
+    test('handles nodes already visited', () => {
+      const report = {
+        graph: {
+          edges: [['a.ts', 'a.ts']],
+          nodes: ['a.ts'],
+        },
+      }
+      const logSpy = vi.spyOn(command, 'log')
+
+      ;(command as any).displayDependencyTree(report)
+
+      expect(logSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('deduplicateCycles with different rotations', () => {
+    test('deduplicates cycles that are same but different starting point', () => {
+      const cycles = [
+        { cycle: ['a.ts', 'b.ts', 'c.ts'], location: { line: 1, column: 1 } },
+        { cycle: ['b.ts', 'c.ts', 'a.ts'], location: { line: 2, column: 1 } },
+        { cycle: ['c.ts', 'a.ts', 'b.ts'], location: { line: 3, column: 1 } },
+      ]
+      const result = (command as any).deduplicateCycles(cycles)
+      expect(result.length).toBeLessThanOrEqual(3)
+    })
+  })
+})

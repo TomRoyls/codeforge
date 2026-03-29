@@ -86,19 +86,22 @@ export default class Why extends Command {
 
     if (violation.includes('parameter')) {
       suggestions.push(
-        'Consider grouping related parameters into an options object with descriptive property names', 'If some parameters are optional, use default values or overloading'
+        'Consider grouping related parameters into an options object with descriptive property names',
+        'If some parameters are optional, use default values or overloading',
       )
     }
 
     if (violation.includes('nested') || violation.includes('depth')) {
-      suggestions.push('Look for opportunities to return early and reduce nesting', 
+      suggestions.push(
+        'Look for opportunities to return early and reduce nesting',
         'Consider if the nested logic can be extracted to a well-named helper function',
       )
     }
 
     if (violation.includes('long') || violation.includes('line')) {
       suggestions.push(
-        'Identify distinct responsibilities and extract to separate functions or modules', 'Look for repeated code that can be deduplicated'
+        'Identify distinct responsibilities and extract to separate functions or modules',
+        'Look for repeated code that can be deduplicated',
       )
     }
 

@@ -101,7 +101,6 @@ export default class Benchmark extends Command {
     if (files.length === 0) {
       this.log(chalk.yellow('No files found to benchmark'))
       this.exit(0)
-      return
     }
 
     this.log(chalk.cyan('Configuration:'))

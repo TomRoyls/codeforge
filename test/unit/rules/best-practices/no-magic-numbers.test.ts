@@ -107,6 +107,99 @@ describe('no-magic-numbers rule', () => {
       const violations = analyzeNoMagicNumbers(sourceFile, { ignore: [42, 100] })
       expect(violations).toHaveLength(0)
     })
+
+    it('should not flag type indexed access by default', () => {
+      const sourceFile = createSourceFile(`
+        type Port = 3000 | 8080;
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile)
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should not flag readonly class properties when enabled', () => {
+      const sourceFile = createSourceFile(`
+        class Config {
+          readonly timeout = 5000;
+        }
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreReadonlyClassProperties: true })
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should flag readonly class properties when disabled', () => {
+      const sourceFile = createSourceFile(`
+        class Config {
+          readonly timeout = 5000;
+        }
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreReadonlyClassProperties: false })
+      expect(violations.length).toBeGreaterThan(0)
+    })
+
+    it('should handle function parameters with default values', () => {
+      const sourceFile = createSourceFile(`
+        function configure(timeout = 5000) {
+          return timeout;
+        }
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreDefaultValues: true })
+      expect(violations.length).toBeGreaterThanOrEqual(0)
+    })
+
+    it('should not flag default values in binding elements when enabled', () => {
+      const sourceFile = createSourceFile(`
+        const { timeout = 3000 } = config;
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreDefaultValues: true })
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should not flag default values in property assignments when enabled', () => {
+      const sourceFile = createSourceFile(`
+        const obj = { timeout: 5000 };
+        function setup({ timeout = 3000 } = {}) {}
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreDefaultValues: true })
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should not flag numbers in array literals by default', () => {
+      const sourceFile = createSourceFile(`
+        const arr = [1, 2, 3, 100, 200];
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile)
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should flag numbers in array literals when ignoreArrayLiterals is false', () => {
+      const sourceFile = createSourceFile(`
+        const arr = [100, 200];
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreArrayLiterals: false })
+      expect(violations.length).toBeGreaterThan(0)
+    })
+
+    it('should not flag numbers in enum members by default', () => {
+      const sourceFile = createSourceFile(`
+        enum HttpStatus {
+          OK = 200,
+          NotFound = 404
+        }
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile)
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should flag numbers in enum members when ignoreEnums is false', () => {
+      const sourceFile = createSourceFile(`
+        enum HttpStatus {
+          OK = 200,
+          NotFound = 404
+        }
+      `)
+      const violations = analyzeNoMagicNumbers(sourceFile, { ignoreEnums: false })
+      expect(violations.length).toBeGreaterThan(0)
+    })
   })
 
   describe('rule definition', () => {

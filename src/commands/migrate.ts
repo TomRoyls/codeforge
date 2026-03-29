@@ -74,7 +74,6 @@ export default class Migrate extends Command {
 
     if (!configPath) {
       this.error('No ESLint configuration found.')
-      return
     }
 
     this.log(chalk.green(`✓ Found: ${configPath}`))
@@ -83,7 +82,6 @@ export default class Migrate extends Command {
 
     if (!config) {
       this.error('Could not parse ESLint configuration. JS configs require manual conversion.')
-      return
     }
 
     this.log(chalk.gray('Migrating rules...'))
@@ -128,7 +126,6 @@ export default class Migrate extends Command {
       try {
         await fs.access(outputPath)
         this.error(`Config already exists: ${flags.output}. Use --force to overwrite.`)
-        return
       } catch {
         // File doesn't exist
       }

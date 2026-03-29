@@ -160,4 +160,127 @@ describe('GeneratePlugin Command', () => {
       expect(existsSync(path.join(pluginDir, 'package.json'))).toBe(true)
     })
   })
+
+  describe('error handling', () => {
+    it('rejects invalid plugin name with special characters', async () => {
+      const cmd = createCommandWithMockedParse(
+        { output: tempDir, typescript: false, rule: 'samplerule', force: false },
+        { name: 'Invalid-Plugin-Name!' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('Plugin name')
+    })
+
+    it('rejects plugin name with uppercase letters', async () => {
+      const cmd = createCommandWithMockedParse(
+        { output: tempDir, typescript: false, rule: 'samplerule', force: false },
+        { name: 'MyPlugin' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('Plugin name')
+    })
+
+    it('rejects plugin name with spaces', async () => {
+      const cmd = createCommandWithMockedParse(
+        { output: tempDir, typescript: false, rule: 'samplerule', force: false },
+        { name: 'my plugin' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('Plugin name')
+    })
+
+    it('rejects plugin name with underscores', async () => {
+      const cmd = createCommandWithMockedParse(
+        { output: tempDir, typescript: false, rule: 'samplerule', force: false },
+        { name: 'my_plugin' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('Plugin name')
+    })
+
+    it('errors when output directory does not exist', async () => {
+      const nonExistentDir = path.join(tempDir, 'nonexistent')
+
+      const cmd = createCommandWithMockedParse(
+        { output: nonExistentDir, typescript: false, rule: 'samplerule', force: false },
+        { name: 'testplugin' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('Output directory does not exist')
+    })
+
+    it('errors when output path is a file not a directory', async () => {
+      const filePath = path.join(tempDir, 'notadir.txt')
+      await fs.writeFile(filePath, 'test')
+
+      const cmd = createCommandWithMockedParse(
+        { output: filePath, typescript: false, rule: 'samplerule', force: false },
+        { name: 'testplugin' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('Output path is not a directory')
+    })
+
+    it('errors when plugin directory exists without force flag', async () => {
+      const pluginDir = path.join(tempDir, 'testplugin')
+      await fs.mkdir(pluginDir, { recursive: true })
+
+      const cmd = createCommandWithMockedParse(
+        { output: tempDir, typescript: false, rule: 'samplerule', force: false },
+        { name: 'testplugin' },
+      )
+
+      await expect(cmd.run()).rejects.toThrow('already exists')
+    })
+  })
+
+  describe('isValidPluginName', () => {
+    function getTestableCommand(): { isValidPluginName: (name: string) => boolean } {
+      return new GeneratePlugin([], {} as never) as unknown as ReturnType<typeof getTestableCommand>
+    }
+
+    it('accepts valid lowercase plugin names', () => {
+      const cmd = getTestableCommand()
+      expect(cmd.isValidPluginName('codeforge-plugin-custom')).toBe(true)
+      expect(cmd.isValidPluginName('my-plugin')).toBe(true)
+      expect(cmd.isValidPluginName('plugin123')).toBe(true)
+      expect(cmd.isValidPluginName('a')).toBe(true)
+    })
+
+    it('rejects plugin names with uppercase', () => {
+      const cmd = getTestableCommand()
+      expect(cmd.isValidPluginName('MyPlugin')).toBe(false)
+      expect(cmd.isValidPluginName('my-Plugin')).toBe(false)
+    })
+
+    it('rejects plugin names with special characters', () => {
+      const cmd = getTestableCommand()
+      expect(cmd.isValidPluginName('my_plugin')).toBe(false)
+      expect(cmd.isValidPluginName('my plugin')).toBe(false)
+      expect(cmd.isValidPluginName('my.plugin')).toBe(false)
+      expect(cmd.isValidPluginName('my@plugin')).toBe(false)
+    })
+  })
+
+  describe('toCamelCase', () => {
+    function getTestableCommand(): { toCamelCase: (str: string) => string } {
+      return new GeneratePlugin([], {} as never) as unknown as ReturnType<typeof getTestableCommand>
+    }
+
+    it('converts kebab-case to camelCase', () => {
+      const cmd = getTestableCommand()
+      expect(cmd.toCamelCase('sample-rule')).toBe('sampleRule')
+      expect(cmd.toCamelCase('my-custom-rule')).toBe('myCustomRule')
+    })
+
+    it('handles single word', () => {
+      const cmd = getTestableCommand()
+      expect(cmd.toCamelCase('samplerule')).toBe('samplerule')
+    })
+
+    it('handles already camelCase', () => {
+      const cmd = getTestableCommand()
+      expect(cmd.toCamelCase('sampleRule')).toBe('sampleRule')
+    })
+  })
 })

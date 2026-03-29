@@ -1,7 +1,29 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest'
-import Version from '../../../src/commands/version.js'
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
+import * as fs from 'node:fs'
+
+vi.mock('node:fs', () => ({
+  readFileSync: vi.fn(),
+}))
 
 describe('Version Command', () => {
+  let Version: typeof import('../../../src/commands/version.js').default
+  let mockConsoleLog: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    vi.resetModules()
+
+    mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ version: '1.2.3' }))
+
+    Version = (await import('../../../src/commands/version.js')).default
+  })
+
+  afterEach(() => {
+    mockConsoleLog.mockRestore()
+  })
+
   describe('Command metadata', () => {
     test('has correct description', () => {
       expect(Version.description).toBe('Show current version of CodeForge')
@@ -13,57 +35,32 @@ describe('Version Command', () => {
     })
   })
 
-  describe('run integration', () => {
-    test('shows version number', async () => {
-      const command = new Version([], {} as any)
-      const logSpy = vi.spyOn(command as any, 'log')
-
+  describe('run', () => {
+    test('logs current version', async () => {
+      const command = new Version([], {} as never)
       await command.run()
 
-      expect(logSpy).toHaveBeenCalled()
-      const calls = logSpy.mock.calls
-      const output = calls.map((call: unknown[]) => call.join(' ')).join('\n')
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
       expect(output).toContain('Current version:')
-      expect(output).toMatch(/\d+\.\d+\.\d+/)
+      expect(output).toContain('1.2.3')
     })
 
-    test('reads version from package.json', async () => {
-      const command = new Version([], {} as any)
-      const logSpy = vi.spyOn(command as any, 'log')
-
+    test('reads package.json file', async () => {
+      const command = new Version([], {} as never)
       await command.run()
 
-      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('0.1.0'))
+      expect(fs.readFileSync).toHaveBeenCalled()
     })
 
-    test('handles missing package.json gracefully', async () => {
-      const command = new Version([], {} as any)
-      const logSpy = vi.spyOn(command as any, 'log')
+    test('handles missing version field', async () => {
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({}))
 
-      // The command should still work - it reads from the actual package.json
+      const command = new Version([], {} as never)
       await command.run()
 
-      expect(logSpy).toHaveBeenCalled()
-    })
-
-    test('outputs single line', async () => {
-      const command = new Version([], {} as any)
-      const logSpy = vi.spyOn(command as any, 'log')
-
-      await command.run()
-
-      expect(logSpy).toHaveBeenCalled()
-    })
-
-    test('version format includes major.minor.patch', async () => {
-      const command = new Version([], {} as any)
-      const logSpy = vi.spyOn(command as any, 'log')
-
-      await command.run()
-
-      const calls = logSpy.mock.calls
-      const output = calls[0][0] as string
-      expect(output).toMatch(/^Current version: \d+\.\d+\.\d+.*$/)
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      expect(output).toContain('Current version:')
+      expect(output).toContain('0.0.0')
     })
   })
 })

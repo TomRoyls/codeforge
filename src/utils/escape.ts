@@ -23,7 +23,7 @@ export function escapeHtml(text: string): string {
     '<': '&lt;',
     '>': '&gt;',
   }
-  return text.replaceAll(/[&<>"']/g, (char: string) => map[char] ?? char)
+  return text.replaceAll(/[&<>"']/g, (char: string) => map[char]!)
 }
 
 /**

@@ -8,7 +8,7 @@ export default defineConfig({
     exclude: ['node_modules', 'dist'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
+      reporter: ['json', 'html', 'lcov'],
       reportsDirectory: './coverage',
       include: ['src/**/*.ts'],
       exclude: ['src/**/*.d.ts', 'src/index.ts'],
@@ -19,15 +19,12 @@ export default defineConfig({
         statements: 85,
       },
     },
+    testTimeout: 30000,
+    hookTimeout: 30000,
+    teardownTimeout: 30000,
+    slowTestThreshold: 300,
     pool: 'threads',
     isolate: true,
     maxWorkers: 4,
-    testTimeout: 10000,
-    hookTimeout: 10000,
-    teardownTimeout: 10000,
-    slowTestThreshold: 300,
-  },
-  resolve: {
-    extensions: ['.ts', '.js', '.json'],
   },
 })

@@ -628,4 +628,68 @@ describe('Docs Command', () => {
       )
     })
   })
+
+  describe('run', () => {
+    function createCommandWithMockedParse(flags: Record<string, unknown>) {
+      const command = new Docs([], {} as never)
+      const cmdWithMock = command as unknown as { parse: ReturnType<typeof vi.fn> }
+      cmdWithMock.parse = vi.fn().mockResolvedValue({
+        args: {},
+        flags,
+      })
+      return command
+    }
+
+    test('generates per-rule files by default', async () => {
+      const cmd = createCommandWithMockedParse({
+        output: '/tmp/test-docs',
+        category: undefined,
+        single: false,
+      })
+
+      await cmd.run()
+
+      expect(fs.mkdir).toHaveBeenCalledWith('/tmp/test-docs', { recursive: true })
+    })
+
+    test('generates single file when --single flag is set', async () => {
+      const cmd = createCommandWithMockedParse({
+        output: '/tmp/test-docs',
+        category: undefined,
+        single: true,
+      })
+
+      await cmd.run()
+
+      expect(fs.mkdir).toHaveBeenCalledWith('/tmp/test-docs', { recursive: true })
+    })
+
+    test('filters rules by category', async () => {
+      const cmd = createCommandWithMockedParse({
+        output: '/tmp/test-docs',
+        category: 'complexity',
+        single: false,
+      })
+
+      await cmd.run()
+
+      expect(fs.mkdir).toHaveBeenCalled()
+    })
+
+    test('handles no rules found', async () => {
+      const cmd = createCommandWithMockedParse({
+        output: '/tmp/test-docs',
+        category: 'nonexistent-category',
+        single: false,
+      })
+
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+      await cmd.run()
+
+      expect(consoleSpy).toHaveBeenCalledWith('No rules found matching the criteria')
+
+      consoleSpy.mockRestore()
+    })
+  })
 })

@@ -115,7 +115,10 @@ export default class Report extends Command {
     const format = flags.format as OutputFormat
 
     if (format === 'html' && !flags.output) {
-      this.error('--output is required when using --format html', { exit: 1 })
+      this.error(
+        '--output is required when using --format html. Specify the path where the HTML report should be saved.',
+        { exit: 1 },
+      )
     }
 
     const results = flags.input

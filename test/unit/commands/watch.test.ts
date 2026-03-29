@@ -986,5 +986,51 @@ describe('Watch Command', () => {
 
       expect(errorSpy).toHaveBeenCalledWith('Watch failed: string error')
     })
+
+    test('should set debug log level when verbose flag is true', async () => {
+      const { logger, LogLevel } = await import('../../../src/utils/logger.js')
+
+      const cmd = createCommandWithMockedParse(
+        WatchCommand,
+        { verbose: true },
+        { files: undefined },
+      )
+      const logSpy = vi.spyOn(cmd, 'log').mockImplementation(() => {})
+
+      // Run will hang due to infinite promise, so we catch the rejection
+      await cmd.run().catch(() => {})
+
+      expect(logger.setLevel).toHaveBeenCalledWith(LogLevel.DEBUG)
+
+      logSpy.mockRestore()
+    })
+
+    test('should use empty array when config.ignore is null', async () => {
+      const { findConfigPath } = await import('../../../src/config/discovery.js')
+
+      vi.mocked(findConfigPath).mockResolvedValue('/test/.codeforgerc.json')
+
+      const cmd = createCommandWithMockedParse(
+        WatchCommand,
+        { verbose: false },
+        { files: undefined },
+      )
+
+      const mockGetConfig = vi.fn().mockResolvedValue({
+        files: ['**/*.ts'],
+        ignore: null,
+      })
+      ;(cmd as unknown as { configCache: { getConfig: typeof mockGetConfig } }).configCache = {
+        getConfig: mockGetConfig,
+      }
+
+      const logSpy = vi.spyOn(cmd, 'log').mockImplementation(() => {})
+
+      await cmd.run().catch(() => {})
+
+      expect(logSpy).toHaveBeenCalled()
+
+      logSpy.mockRestore()
+    })
   })
 })

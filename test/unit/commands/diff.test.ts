@@ -303,6 +303,28 @@ describe('Diff Command', () => {
       expect(() => cmd.displayReport(report, true)).not.toThrow()
     })
 
+    test('displays verbose report with 21+ added violations (truncation)', () => {
+      const cmd = getTestableCommand()
+      const manyAdded = Array.from({ length: 25 }, (_, i) => ({
+        filePath: `src/file${i}.ts`,
+        range: { start: { line: i + 1, column: 0 }, end: { line: i + 1, column: 5 } },
+        ruleId: 'max-complexity',
+        message: 'Violation',
+      }))
+      const report = createMockReport({
+        added: manyAdded,
+        summary: {
+          addedCount: 25,
+          removedCount: 0,
+          improvedCount: 0,
+          netChange: 25,
+          totalBase: 10,
+          totalHead: 35,
+        },
+      })
+      expect(() => cmd.displayReport(report, true)).not.toThrow()
+    })
+
     test('displays verbose report with many removed violations', () => {
       const cmd = getTestableCommand()
       const manyRemoved = Array.from({ length: 20 }, (_, i) => ({
@@ -319,6 +341,28 @@ describe('Diff Command', () => {
           improvedCount: 0,
           netChange: -20,
           totalBase: 30,
+          totalHead: 10,
+        },
+      })
+      expect(() => cmd.displayReport(report, true)).not.toThrow()
+    })
+
+    test('displays verbose report with 21+ removed violations (truncation)', () => {
+      const cmd = getTestableCommand()
+      const manyRemoved = Array.from({ length: 25 }, (_, i) => ({
+        filePath: `src/file${i}.ts`,
+        range: { start: { line: i + 1, column: 0 }, end: { line: i + 1, column: 5 } },
+        ruleId: 'max-complexity',
+        message: 'Violation',
+      }))
+      const report = createMockReport({
+        removed: manyRemoved,
+        summary: {
+          addedCount: 0,
+          removedCount: 25,
+          improvedCount: 0,
+          netChange: -25,
+          totalBase: 35,
           totalHead: 10,
         },
       })
@@ -390,6 +434,45 @@ describe('Diff Command', () => {
       vi.mocked(execSync).mockImplementation((cmd: string) => {
         if (cmd.includes('git worktree') || cmd.includes('git archive')) {
           return Buffer.from('')
+        }
+        if (cmd.includes('git rev-parse')) {
+          throw new Error('Not a git repo')
+        }
+        return Buffer.from('')
+      })
+      const cmd = getTestableCommand()
+      const result = await cmd.getViolationsAtRef('/tmp/test-path', 'main')
+      expect(Array.isArray(result)).toBe(true)
+    })
+
+    test('getViolationsAtRef uses git archive fallback when worktree fails', async () => {
+      let callCount = 0
+      vi.mocked(execSync).mockImplementation((cmd: string) => {
+        callCount++
+        if (cmd.includes('git worktree add')) {
+          throw new Error('worktree failed')
+        }
+        if (cmd.includes('git archive')) {
+          return Buffer.from('')
+        }
+        if (cmd.includes('git rev-parse')) {
+          throw new Error('Not a git repo')
+        }
+        return Buffer.from('')
+      })
+      const cmd = getTestableCommand()
+      const result = await cmd.getViolationsAtRef('/tmp/test-path', 'main')
+      expect(Array.isArray(result)).toBe(true)
+      expect(callCount).toBeGreaterThan(1)
+    })
+
+    test('getViolationsAtRef handles cleanup failure in finally', async () => {
+      vi.mocked(execSync).mockImplementation((cmd: string) => {
+        if (cmd.includes('git worktree add')) {
+          return Buffer.from('')
+        }
+        if (cmd.includes('git worktree remove') || cmd.includes('rm -rf')) {
+          throw new Error('cleanup failed')
         }
         if (cmd.includes('git rev-parse')) {
           throw new Error('Not a git repo')

@@ -99,6 +99,46 @@ vi.mock('../../../src/reporters/html-reporter.js', () => ({
   }),
 }))
 
+vi.mock('../../../src/reporters/gitlab-reporter.js', () => ({
+  GitLabReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'gitlab',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('[]'),
+    }
+  }),
+}))
+
+vi.mock('../../../src/reporters/junit-reporter.js', () => ({
+  JUnitReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'junit',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('<?xml version="1.0"?>'),
+    }
+  }),
+}))
+
+vi.mock('../../../src/reporters/markdown-reporter.js', () => ({
+  MarkdownReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'markdown',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('# Report'),
+    }
+  }),
+}))
+
+vi.mock('../../../src/reporters/sarif-reporter.js', () => ({
+  SARIFReporter: vi.fn().mockImplementation(function () {
+    return {
+      name: 'sarif',
+      report: vi.fn(),
+      format: vi.fn().mockReturnValue('{}'),
+    }
+  }),
+}))
+
 vi.mock('../../../src/core/file-discovery.js', () => ({
   discoverFiles: vi.fn().mockResolvedValue([]),
 }))
@@ -669,6 +709,82 @@ describe('Report Command', () => {
         open: false,
         pretty: false,
         verbose: false,
+      })
+
+      await cmd.run()
+    })
+
+    test('uses gitlab format reporter', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const cmd = createCommandWithMockedParse({
+        format: 'gitlab',
+        output: '/report.json',
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+        concurrency: 4,
+      })
+
+      await cmd.run()
+    })
+
+    test('uses junit format reporter', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const cmd = createCommandWithMockedParse({
+        format: 'junit',
+        output: '/report.xml',
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+        concurrency: 4,
+      })
+
+      await cmd.run()
+    })
+
+    test('uses markdown format reporter', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const cmd = createCommandWithMockedParse({
+        format: 'markdown',
+        output: '/report.md',
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+        concurrency: 4,
+      })
+
+      await cmd.run()
+    })
+
+    test('uses sarif format reporter', async () => {
+      mockFs.statSync.mockReturnValue({ isDirectory: () => true } as ReturnType<
+        typeof mockFs.statSync
+      >)
+      mockFs.existsSync.mockReturnValue(true)
+
+      const cmd = createCommandWithMockedParse({
+        format: 'sarif',
+        output: '/report.sarif',
+        input: undefined,
+        open: false,
+        pretty: false,
+        verbose: false,
+        concurrency: 4,
       })
 
       await cmd.run()

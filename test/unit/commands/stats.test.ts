@@ -1,7 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { Node as TsMorphNode } from 'ts-morph'
 
-// Spy on Node.is* methods before any imports
 vi.spyOn(TsMorphNode, 'isFunctionDeclaration').mockImplementation(
   (node: any) => node?.getKind?.() === 250,
 )
@@ -27,6 +26,7 @@ vi.mock('../../../src/core/file-discovery.js', () => ({
 
 vi.mock('node:fs/promises', () => ({
   readFile: vi.fn(),
+  writeFile: vi.fn(),
 }))
 
 vi.mock('../../../src/core/parser.js', () => ({
@@ -203,11 +203,11 @@ describe('Stats Command', () => {
         { absolutePath: '/test/medium.ts', path: 'medium.ts' },
       ])
       mockReadFile
-        .mockResolvedValueOnce('const x = 1;') // 1 LOC
+        .mockResolvedValueOnce('const x = 1;')
         .mockResolvedValueOnce(
           'const a = 1;\nconst b = 2;\nconst c = 3;\nconst d = 4;\nconst e = 5;',
-        ) // 5 LOC
-        .mockResolvedValueOnce('const a = 1;\nconst b = 2;\nconst c = 3;') // 3 LOC
+        )
+        .mockResolvedValueOnce('const a = 1;\nconst b = 2;\nconst c = 3;')
 
       const cmd = createCommandWithMockedParse(
         {
@@ -265,9 +265,9 @@ describe('Stats Command', () => {
         { absolutePath: '/test/medium.ts', path: 'medium.ts' },
       ])
       mockReadFile
-        .mockResolvedValueOnce('const x = 1;') // small
-        .mockResolvedValueOnce('const a = 1; const b = 2; const c = 3; const d = 4; const e = 5;') // large
-        .mockResolvedValueOnce('const a = 1; const b = 2; const c = 3;') // medium
+        .mockResolvedValueOnce('const x = 1;')
+        .mockResolvedValueOnce('const a = 1; const b = 2; const c = 3; const d = 4; const e = 5;')
+        .mockResolvedValueOnce('const a = 1; const b = 2; const c = 3;')
 
       const cmd = createCommandWithMockedParse(
         {
@@ -592,6 +592,270 @@ describe('Stats Command', () => {
       const result = command.countCodeStructures(mockSourceFile)
       expect(result).toBeDefined()
       expect(result.enums).toBeGreaterThanOrEqual(0)
+    })
+  })
+
+  describe('CSV format', () => {
+    test('outputs CSV format when format is csv', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/file1.ts', path: 'file1.ts' },
+        { absolutePath: '/test/file2.ts', path: 'file2.ts' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'csv',
+          top: 10,
+          verbose: false,
+          'sort-by': 'size',
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      expect(output).toContain('File,LOC,Complexity,Size (bytes),Type')
+    })
+  })
+
+  describe('--ext flag filtering', () => {
+    test('filters files by single extension', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/a.ts', path: 'a.ts' },
+        { absolutePath: '/test/b.js', path: 'b.js' },
+        { absolutePath: '/test/c.ts', path: 'c.ts' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          ext: '.ts',
+          format: 'json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.summary.files).toBe(2)
+      expect(parsed.fileTypes['.ts']).toBe(2)
+      expect(parsed.fileTypes['.js']).toBeUndefined()
+    })
+
+    test('filters files by multiple extensions', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/a.ts', path: 'a.ts' },
+        { absolutePath: '/test/b.js', path: 'b.js' },
+        { absolutePath: '/test/c.jsx', path: 'c.jsx' },
+        { absolutePath: '/test/d.go', path: 'd.go' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          ext: '.ts,.js',
+          format: 'json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.summary.files).toBe(2)
+      expect(parsed.fileTypes['.ts']).toBe(1)
+      expect(parsed.fileTypes['.js']).toBe(1)
+      expect(parsed.fileTypes['.go']).toBeUndefined()
+    })
+
+    test('handles extensions with extra whitespace', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/a.ts', path: 'a.ts' },
+        { absolutePath: '/test/b.js', path: 'b.js' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          ext: '  .ts , .js  ',
+          format: 'json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.summary.files).toBe(2)
+    })
+
+    test('filters with empty string in extensions list', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/a.ts', path: 'a.ts' },
+        { absolutePath: '/test/b.js', path: 'b.js' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          ext: '.ts,,.js',
+          format: 'json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.summary.files).toBe(2)
+    })
+
+    test('filters files case-insensitively', async () => {
+      mockDiscoverFiles.mockResolvedValue([
+        { absolutePath: '/test/a.TS', path: 'a.TS' },
+        { absolutePath: '/test/b.ts', path: 'b.ts' },
+        { absolutePath: '/test/c.js', path: 'c.js' },
+      ])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          ext: '.ts',
+          format: 'json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      const parsed = JSON.parse(output)
+
+      expect(parsed.summary.files).toBe(2)
+    })
+  })
+
+  describe('--output flag', () => {
+    test('writes output to file when --output is specified', async () => {
+      mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/file.ts', path: 'file.ts' }])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          output: '/test/output.json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      expect(output).toContain('Results written to /test/output.json')
+    })
+  })
+
+  describe('error handling', () => {
+    test('logs file read error message when format is table', async () => {
+      mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/file.ts', path: 'file.ts' }])
+      mockReadFile.mockRejectedValue(new Error('Permission denied'))
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'table',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+
+      expect(output).toContain('Failed to process file file.ts')
+      expect(output).toContain('Permission denied')
+    })
+
+    test('logs file read error with unknown error type', async () => {
+      mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/file.ts', path: 'file.ts' }])
+      mockReadFile.mockRejectedValue('string error')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'table',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+
+      expect(output).toContain('Failed to process file file.ts')
+      expect(output).toContain('Unknown error')
+    })
+
+    test('does not log error message when format is json', async () => {
+      mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/file.ts', path: 'file.ts' }])
+      mockReadFile.mockRejectedValue(new Error('Permission denied'))
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+
+      expect(output).not.toContain('Failed to process file')
+    })
+  })
+
+  describe('ignore flag', () => {
+    test('uses custom ignore patterns', async () => {
+      mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/file.ts', path: 'file.ts' }])
+      mockReadFile.mockResolvedValue('const x = 1;')
+
+      const cmd = createCommandWithMockedParse(
+        {
+          format: 'json',
+          ignore: ['**/dist/**', '**/build/**'],
+          top: 10,
+          verbose: false,
+        },
+        { path: '.' },
+      )
+
+      await cmd.run()
+
+      expect(mockDiscoverFiles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ignore: expect.arrayContaining(['**/node_modules/**', '**/dist/**', '**/build/**']),
+        }),
+      )
     })
   })
 })

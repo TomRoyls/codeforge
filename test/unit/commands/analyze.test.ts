@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
+import { writeFileSync, unlinkSync, mkdirSync, rmSync } from 'fs'
 import type { DiscoveredFile } from '../../../src/core/file-discovery.js'
 import type { RuleViolation } from '../../../src/ast/visitor.js'
 
@@ -354,8 +355,6 @@ describe('Analyze Command', () => {
         concurrency: 4,
         'severity-level': 'info',
         color: true,
-        'severity-level': 'info',
-        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -380,8 +379,6 @@ describe('Analyze Command', () => {
         verbose: false,
         'fail-on-warnings': false,
         concurrency: 4,
-        'severity-level': 'info',
-        color: true,
         'severity-level': 'info',
         color: true,
       })
@@ -411,8 +408,6 @@ describe('Analyze Command', () => {
         concurrency: 4,
         'severity-level': 'info',
         color: true,
-        'severity-level': 'info',
-        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -436,8 +431,6 @@ describe('Analyze Command', () => {
         verbose: false,
         'fail-on-warnings': false,
         concurrency: 4,
-        'severity-level': 'info',
-        color: true,
         'severity-level': 'info',
         color: true,
       })
@@ -464,8 +457,6 @@ describe('Analyze Command', () => {
         concurrency: 4,
         'severity-level': 'info',
         color: true,
-        'severity-level': 'info',
-        color: true,
       })
       let exitCode = 0
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
@@ -490,8 +481,6 @@ describe('Analyze Command', () => {
         verbose: false,
         'fail-on-warnings': false,
         concurrency: 4,
-        'severity-level': 'info',
-        color: true,
         'severity-level': 'info',
         color: true,
       })
@@ -525,8 +514,6 @@ describe('Analyze Command', () => {
         verbose: false,
         'fail-on-warnings': false,
         concurrency: 4,
-        'severity-level': 'info',
-        color: true,
         'severity-level': 'info',
         color: true,
       })
@@ -581,8 +568,6 @@ describe('Analyze Command', () => {
         concurrency: 4,
         'severity-level': 'info',
         color: true,
-        'severity-level': 'info',
-        color: true,
       })
       ;(cmd as { exit: (c: number) => never }).exit = (code: number) => {
         throw new ExitCodeError(code)
@@ -625,8 +610,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
           },
         })
       ;(command as unknown as { exit: (c: number) => never }).exit = (code: number) => {
@@ -667,8 +650,6 @@ describe('Analyze Command', () => {
             verbose: false,
             'fail-on-warnings': false,
             concurrency: 4,
-            'severity-level': 'info',
-            color: true,
             'severity-level': 'info',
             color: true,
           },
@@ -733,8 +714,6 @@ describe('Analyze Command', () => {
             verbose: false,
             'fail-on-warnings': false,
             concurrency: 4,
-            'severity-level': 'info',
-            color: true,
             'severity-level': 'info',
             color: true,
             rules: ['rule-one'],
@@ -987,8 +966,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1081,8 +1058,6 @@ describe('Analyze Command', () => {
             verbose: false,
             'fail-on-warnings': false,
             concurrency: 4,
-            'severity-level': 'info',
-            color: true,
             'severity-level': 'info',
             color: true,
             fix: true,
@@ -1184,8 +1159,6 @@ describe('Analyze Command', () => {
             verbose: false,
             'fail-on-warnings': false,
             concurrency: 4,
-            'severity-level': 'info',
-            color: true,
             'severity-level': 'info',
             color: true,
             fix: true,
@@ -1293,8 +1266,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1397,8 +1368,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1486,8 +1455,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             fix: true,
             'dry-run': false,
           },
@@ -1527,8 +1494,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             ci: true,
           },
         })
@@ -1563,8 +1528,6 @@ describe('Analyze Command', () => {
             verbose: false,
             'fail-on-warnings': false,
             concurrency: 4,
-            'severity-level': 'info',
-            color: true,
             'severity-level': 'info',
             color: true,
             ci: true,
@@ -1603,8 +1566,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             ci: true,
           },
         })
@@ -1639,8 +1600,6 @@ describe('Analyze Command', () => {
             verbose: false,
             'fail-on-warnings': false,
             concurrency: 4,
-            'severity-level': 'info',
-            color: true,
             'severity-level': 'info',
             color: true,
             ci: true,
@@ -1678,8 +1637,6 @@ describe('Analyze Command', () => {
             concurrency: 4,
             'severity-level': 'info',
             color: true,
-            'severity-level': 'info',
-            color: true,
             ci: true,
           },
         })
@@ -1694,6 +1651,468 @@ describe('Analyze Command', () => {
       }
 
       expect(logger.setLevel).toHaveBeenCalledWith(LogLevel.SILENT)
+    })
+  })
+
+  describe('discoverFiles staged mode', () => {
+    test('should call git helpers when in git repository', async () => {
+      const { isGitRepository, getGitRoot, getStagedFiles } =
+        await import('../../../src/utils/git-helpers.js')
+      vi.mocked(isGitRepository).mockReturnValue(true)
+      vi.mocked(getGitRoot).mockReturnValue('/test/repo')
+      vi.mocked(getStagedFiles).mockReturnValue(['src/file1.ts', 'src/file2.ts'])
+
+      const command = new Analyze(['--staged'], {} as never)
+      await (
+        command as unknown as {
+          discoverFiles: (opts: {
+            cwd: string
+            files: string[]
+            ignore: string[]
+            spinner?: { fail: () => void }
+            stagedMode: boolean
+          }) => Promise<Array<{ absolutePath: string; path: string }>>
+        }
+      ).discoverFiles({ cwd: '/test/repo', files: [], ignore: [], stagedMode: true })
+
+      expect(getStagedFiles).toHaveBeenCalled()
+    })
+
+    test('should error when not in git repository', async () => {
+      const { isGitRepository } = await import('../../../src/utils/git-helpers.js')
+      vi.mocked(isGitRepository).mockReturnValue(false)
+
+      const mockSpinner = { fail: vi.fn() }
+      const command = new Analyze(['--staged'], {} as never)
+
+      await expect(
+        (
+          command as unknown as {
+            discoverFiles: (opts: {
+              cwd: string
+              files: string[]
+              ignore: string[]
+              spinner?: { fail: () => void }
+              stagedMode: boolean
+            }) => Promise<Array<{ absolutePath: string; path: string }>>
+          }
+        ).discoverFiles({
+          cwd: '/test/repo',
+          files: [],
+          ignore: [],
+          spinner: mockSpinner,
+          stagedMode: true,
+        }),
+      ).rejects.toThrow('Not a git repository')
+
+      expect(mockSpinner.fail).toHaveBeenCalled()
+    })
+
+    test('should error when git root cannot be determined', async () => {
+      const { isGitRepository, getGitRoot } = await import('../../../src/utils/git-helpers.js')
+      vi.mocked(isGitRepository).mockReturnValue(true)
+      vi.mocked(getGitRoot).mockReturnValue(null)
+
+      const mockSpinner = { fail: vi.fn() }
+      const command = new Analyze(['--staged'], {} as never)
+
+      await expect(
+        (
+          command as unknown as {
+            discoverFiles: (opts: {
+              cwd: string
+              files: string[]
+              ignore: string[]
+              spinner?: { fail: () => void }
+              stagedMode: boolean
+            }) => Promise<Array<{ absolutePath: string; path: string }>>
+          }
+        ).discoverFiles({
+          cwd: '/test/repo',
+          files: [],
+          ignore: [],
+          spinner: mockSpinner,
+          stagedMode: true,
+        }),
+      ).rejects.toThrow('Could not determine git repository root')
+
+      expect(mockSpinner.fail).toHaveBeenCalled()
+    })
+
+    test('should return empty array when no staged files', async () => {
+      const { isGitRepository, getGitRoot, getStagedFiles } =
+        await import('../../../src/utils/git-helpers.js')
+      vi.mocked(isGitRepository).mockReturnValue(true)
+      vi.mocked(getGitRoot).mockReturnValue('/test/repo')
+      vi.mocked(getStagedFiles).mockReturnValue([])
+
+      const command = new Analyze(['--staged'], {} as never)
+      const result = await (
+        command as unknown as {
+          discoverFiles: (opts: {
+            cwd: string
+            files: string[]
+            ignore: string[]
+            spinner?: { fail: () => void }
+            stagedMode: boolean
+          }) => Promise<Array<{ absolutePath: string; path: string }>>
+        }
+      ).discoverFiles({ cwd: '/test/repo', files: [], ignore: [], stagedMode: true })
+
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('discoverFiles staged mode with real files', () => {
+    test('should return staged files that exist on disk', async () => {
+      const tmpDir = '/tmp/test-staged-files-' + Date.now()
+      mkdirSync(tmpDir, { recursive: true })
+      writeFileSync(tmpDir + '/file1.ts', 'const a = 1')
+      writeFileSync(tmpDir + '/file2.ts', 'const b = 2')
+
+      try {
+        const { isGitRepository, getGitRoot, getStagedFiles } =
+          await import('../../../src/utils/git-helpers.js')
+        vi.mocked(isGitRepository).mockReturnValue(true)
+        vi.mocked(getGitRoot).mockReturnValue(tmpDir)
+        vi.mocked(getStagedFiles).mockReturnValue(['file1.ts', 'file2.ts', 'deleted.ts'])
+
+        const command = new Analyze(['--staged'], {} as never)
+        const result = await (
+          command as unknown as {
+            discoverFiles: (opts: {
+              cwd: string
+              files: string[]
+              ignore: string[]
+              spinner?: { fail: () => void }
+              stagedMode: boolean
+            }) => Promise<Array<{ absolutePath: string; path: string }>>
+          }
+        ).discoverFiles({ cwd: tmpDir, files: [], ignore: [], stagedMode: true })
+
+        expect(result).toHaveLength(2)
+        expect(result.map((f) => f.path)).toContain('file1.ts')
+        expect(result.map((f) => f.path)).toContain('file2.ts')
+        expect(result.map((f) => f.path)).not.toContain('deleted.ts')
+      } finally {
+        rmSync(tmpDir, { recursive: true, force: true })
+      }
+    })
+  })
+
+  describe('readIgnoreFile', () => {
+    test('should return empty array when file does not exist', async () => {
+      const command = new Analyze([], {} as never)
+      const result = await (
+        command as unknown as { readIgnoreFile: (p: string) => Promise<string[]> }
+      ).readIgnoreFile('/nonexistent/path/.codeforgeignore')
+      expect(result).toEqual([])
+    })
+
+    test('should parse ignore file content correctly', async () => {
+      const tempFile = '/tmp/test-codeforgeignore-' + Date.now()
+      const fileContent = `# This is a comment
+node_modules
+*.log
+
+# Another comment
+dist
+*.min.js
+     whitespace line     `
+      writeFileSync(tempFile, fileContent)
+
+      const command = new Analyze([], {} as never)
+      const result = await (
+        command as unknown as { readIgnoreFile: (p: string) => Promise<string[]> }
+      ).readIgnoreFile(tempFile)
+
+      expect(result).toContain('node_modules')
+      expect(result).toContain('*.log')
+      expect(result).toContain('dist')
+      expect(result).toContain('*.min.js')
+      expect(result).toContain('whitespace line')
+      expect(result).not.toContain('# This is a comment')
+      expect(result).not.toContain('')
+      expect(result).not.toContain('# Another comment')
+
+      unlinkSync(tempFile)
+    })
+  })
+
+  describe('getRulesWithFixes', () => {
+    test('should return map of rules with fix functions', async () => {
+      const command = new Analyze([], {} as never)
+      const result = (
+        command as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      ).getRulesWithFixes()
+      expect(result).toBeInstanceOf(Map)
+    })
+  })
+
+  describe('determineExitCode', () => {
+    test('should return 1 when errors > 0', async () => {
+      const command = new Analyze([], {} as never)
+      const result = (
+        command as unknown as {
+          determineExitCode: (
+            summary: { errors: number; warnings: number },
+            failOnWarnings: boolean,
+            maxWarnings: number,
+          ) => number
+        }
+      ).determineExitCode({ errors: 5, warnings: 0 }, false, -1)
+      expect(result).toBe(1)
+    })
+
+    test('should return 2 when failOnWarnings is true and warnings > 0', async () => {
+      const command = new Analyze([], {} as never)
+      const result = (
+        command as unknown as {
+          determineExitCode: (
+            summary: { errors: number; warnings: number },
+            failOnWarnings: boolean,
+            maxWarnings: number,
+          ) => number
+        }
+      ).determineExitCode({ errors: 0, warnings: 3 }, true, -1)
+      expect(result).toBe(2)
+    })
+
+    test('should return 1 when maxWarnings >= 0 and warnings > maxWarnings', async () => {
+      const command = new Analyze([], {} as never)
+      const result = (
+        command as unknown as {
+          determineExitCode: (
+            summary: { errors: number; warnings: number },
+            failOnWarnings: boolean,
+            maxWarnings: number,
+          ) => number
+        }
+      ).determineExitCode({ errors: 0, warnings: 5 }, false, 3)
+      expect(result).toBe(1)
+    })
+
+    test('should return 0 when no errors and warnings within limit', async () => {
+      const command = new Analyze([], {} as never)
+      const result = (
+        command as unknown as {
+          determineExitCode: (
+            summary: { errors: number; warnings: number },
+            failOnWarnings: boolean,
+            maxWarnings: number,
+          ) => number
+        }
+      ).determineExitCode({ errors: 0, warnings: 2 }, false, 5)
+      expect(result).toBe(0)
+    })
+  })
+
+  describe('applyFixes', () => {
+    test('should return fixesApplied and fixesSkipped counts', async () => {
+      const command = new Analyze([], {} as never)
+
+      // Create minimal mock options
+      const mockOptions = {
+        allViolations: [],
+        concurrency: 1,
+        discoveredFiles: [],
+        dryRun: false,
+        parseCache: new Map(),
+        parser: { parseFile: vi.fn() } as never,
+        rulesWithFixes: new Map(),
+        verbose: false,
+      }
+
+      const result = await (
+        command as unknown as {
+          applyFixes: (
+            opts: typeof mockOptions,
+          ) => Promise<{ fixesApplied: number; fixesSkipped: number }>
+        }
+      ).applyFixes(mockOptions)
+
+      expect(result).toHaveProperty('fixesApplied')
+      expect(result).toHaveProperty('fixesSkipped')
+      expect(result.fixesApplied).toBe(0)
+      expect(result.fixesSkipped).toBe(0)
+    })
+
+    test('should handle violations for non-existent files', async () => {
+      const command = new Analyze([], {} as never)
+
+      const mockViolation = {
+        ruleId: 'test-rule',
+        severity: 'error',
+        message: 'Test violation',
+        filePath: '/nonexistent/file.ts',
+        line: 1,
+        column: 1,
+      }
+
+      const mockOptions = {
+        allViolations: [mockViolation],
+        concurrency: 1,
+        discoveredFiles: [{ absolutePath: '/nonexistent/file.ts', path: 'file.ts' }],
+        dryRun: false,
+        parseCache: new Map(),
+        parser: {
+          parseFile: vi.fn().mockRejectedValue(new Error('File not found')),
+        } as never,
+        rulesWithFixes: new Map(),
+        verbose: true,
+      }
+
+      const result = await (
+        command as unknown as {
+          applyFixes: (
+            opts: typeof mockOptions,
+          ) => Promise<{ fixesApplied: number; fixesSkipped: number }>
+        }
+      ).applyFixes(mockOptions)
+
+      expect(result.fixesApplied).toBe(0)
+      expect(result.fixesSkipped).toBe(0)
+    })
+  })
+
+  describe('applyFixes with violations', () => {
+    test('should process violations and add to violationsByFile', async () => {
+      const command = new Analyze([], {} as never)
+
+      // Create mock violations for the same file (to test existing.push)
+      const mockViolation1 = {
+        ruleId: 'test-rule',
+        severity: 'error',
+        message: 'Test violation 1',
+        filePath: '/test/file.ts',
+        line: 1,
+        column: 1,
+      }
+      const mockViolation2 = {
+        ruleId: 'test-rule',
+        severity: 'warning',
+        message: 'Test violation 2',
+        filePath: '/test/file.ts',
+        line: 2,
+        column: 1,
+      }
+
+      // Create a mock source file
+      const mockSourceFile = {
+        saveSync: vi.fn(),
+        getText: vi.fn().mockReturnValue('const x = 1'),
+      }
+
+      const mockOptions = {
+        allViolations: [mockViolation1, mockViolation2],
+        concurrency: 1,
+        discoveredFiles: [{ absolutePath: '/test/file.ts', path: '/test/file.ts' }],
+        dryRun: true,
+        parseCache: new Map(),
+        parser: {
+          parseFile: vi.fn().mockResolvedValue({ sourceFile: mockSourceFile }),
+        } as never,
+        rulesWithFixes: new Map(),
+        verbose: false,
+      }
+
+      const result = await (
+        command as unknown as {
+          applyFixes: (
+            opts: typeof mockOptions,
+          ) => Promise<{ fixesApplied: number; fixesSkipped: number }>
+        }
+      ).applyFixes(mockOptions)
+
+      // Should have called parseFile
+      expect(mockOptions.parser.parseFile).toHaveBeenCalled()
+      expect(result).toHaveProperty('fixesApplied')
+      expect(result).toHaveProperty('fixesSkipped')
+    })
+
+    test('should use cached parse result when available', async () => {
+      const command = new Analyze([], {} as never)
+
+      const mockViolation = {
+        ruleId: 'test-rule',
+        severity: 'error',
+        message: 'Test violation',
+        filePath: '/test/file.ts',
+        line: 1,
+        column: 1,
+      }
+
+      const mockSourceFile = {
+        saveSync: vi.fn(),
+        getText: vi.fn().mockReturnValue('const x = 1'),
+      }
+
+      const parseCache = new Map()
+      parseCache.set('/test/file.ts', { sourceFile: mockSourceFile })
+
+      const mockOptions = {
+        allViolations: [mockViolation],
+        concurrency: 1,
+        discoveredFiles: [{ absolutePath: '/test/file.ts', path: '/test/file.ts' }],
+        dryRun: true,
+        parseCache,
+        parser: { parseFile: vi.fn() } as never,
+        rulesWithFixes: new Map(),
+        verbose: false,
+      }
+
+      const result = await (
+        command as unknown as {
+          applyFixes: (
+            opts: typeof mockOptions,
+          ) => Promise<{ fixesApplied: number; fixesSkipped: number }>
+        }
+      ).applyFixes(mockOptions)
+
+      // Should NOT have called parseFile since we have cached result
+      expect(mockOptions.parser.parseFile).not.toHaveBeenCalled()
+    })
+
+    test('should handle fix conflicts with verbose mode', async () => {
+      const command = new Analyze([], {} as never)
+
+      const mockViolation = {
+        ruleId: 'test-rule',
+        severity: 'error',
+        message: 'Test violation',
+        filePath: '/test/file.ts',
+        line: 1,
+        column: 1,
+      }
+
+      const mockSourceFile = {
+        saveSync: vi.fn(),
+        getText: vi.fn().mockReturnValue('const x = 1'),
+      }
+
+      const mockOptions = {
+        allViolations: [mockViolation],
+        concurrency: 1,
+        discoveredFiles: [{ absolutePath: '/test/file.ts', path: '/test/file.ts' }],
+        dryRun: true,
+        parseCache: new Map(),
+        parser: {
+          parseFile: vi.fn().mockResolvedValue({ sourceFile: mockSourceFile }),
+        } as never,
+        rulesWithFixes: new Map(),
+        verbose: true,
+      }
+
+      // This should not throw even with verbose=true
+      const result = await (
+        command as unknown as {
+          applyFixes: (
+            opts: typeof mockOptions,
+          ) => Promise<{ fixesApplied: number; fixesSkipped: number }>
+        }
+      ).applyFixes(mockOptions)
+
+      expect(result).toHaveProperty('fixesApplied')
     })
   })
 })

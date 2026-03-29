@@ -297,7 +297,6 @@ export default class Analyze extends Command {
     if (filteredFiles.length === 0) {
       spinner?.warn('No files found to analyze')
       this.exit(0)
-      return
     }
 
     spinner?.succeed(`Found ${filteredFiles.length} files to analyze`)
