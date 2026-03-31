@@ -1,8 +1,8 @@
 import type {
   RuleDefinition,
   RuleContext,
-  RuleVisitor
-  SourceLocation
+  RuleVisitor,
+  SourceLocation,
 } from '../../plugins/types.js'
 
 function extractLocation(node: unknown): SourceLocation {
@@ -44,47 +44,38 @@ function isEmptyCharacterClass(node: unknown): boolean {
 
   const n = node as Record<string, unknown>
 
-  if (n.type !== 'Literal' || typeof n.value !== 'string') {
-    return false
+  if (n.type === 'Literal' && n.value instanceof RegExp) {
+    const regex = n.value as RegExp
+    return regex.source.includes('[]')
   }
 
-  const value = n.value as string
-
-  const regexPattern = /^\/(.*)\/([gimsuy]*)$/
-  const match = value.match(regexPattern)
-
-  if (!match) {
-    return false
-  }
-
-  const pattern = match[1]
-
-  return pattern === '[]'
+  return false
 }
 
-function isEmptyCharacterClass(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+export const noEmptyCharacterClassRule: RuleDefinition = {
+  meta: {
+    type: 'problem',
+    severity: 'error',
+    docs: {
+      description: 'Disallow empty character classes in regular expressions',
+      category: 'correctness',
+      recommended: true,
+    },
+    schema: [],
+  },
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'Literal' || typeof n.value !== 'string') {
-    return false
-  }
-
-  const value = n.value as string
-
-  const regexPattern = /^\/(.*)\/([gimsuy]*)$/
-  const match = value.match(regexPattern)
-
-  if (!match) {
-    return false
-  }
-
-  const pattern = match[1]
-
-  return pattern === '[]'
+  create(context: RuleContext): RuleVisitor {
+    return {
+      Literal(node: unknown): void {
+        if (isEmptyCharacterClass(node)) {
+          context.report({
+            message: 'Empty character class in regular expression',
+            loc: extractLocation(node),
+          })
+        }
+      },
+    }
+  },
 }
 
 export default noEmptyCharacterClassRule

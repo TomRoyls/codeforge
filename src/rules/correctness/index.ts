@@ -16,9 +16,3 @@ export const correctnessRules = {
   'no-empty-function': noEmptyFunctionRule,
   'no-empty-character-class': noEmptyCharacterClassRule,
 }
-
-export const correctnessRules = {
-  'no-throw-literal': noThrowLiteralRule,
-  'no-constant-binary-expression': noConstantBinaryExpressionRule,
-  'no-empty-function': noEmptyFunctionRule,
-}
