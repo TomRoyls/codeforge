@@ -15,3 +15,7 @@ export {
   preferDefaultExportRule,
   analyzePreferDefaultExport,
 } from './prefer-default-export.js'
+export {
+  explicitFunctionReturnTypeRule,
+  analyzeExplicitFunctionReturnType,
+} from './explicit-function-return-type.js'
