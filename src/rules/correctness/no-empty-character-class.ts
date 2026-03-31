@@ -37,18 +37,21 @@ function extractLocation(node: unknown): SourceLocation {
   }
 }
 
-function isEmptyCharacterClass(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
+function isEmptyCharacterClass(value: unknown): boolean {
+  // Handle RegExp objects
+  if (value instanceof RegExp) {
+    return value.source.includes('[]')
   }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'Literal' && n.value instanceof RegExp) {
-    const regex = n.value as RegExp
-    return regex.source.includes('[]')
+  
+  // Handle string values that look like regex literals (e.g., "/[]/")
+  if (typeof value === 'string') {
+    // Check if string is a regex literal pattern
+    const regexLiteralMatch = value.match(/^\/(.+)\/[gimsuvy]*$/)
+    if (regexLiteralMatch && regexLiteralMatch[1]) {
+      return regexLiteralMatch[1].includes('[]')
+    }
   }
-
+  
   return false
 }
 
@@ -67,7 +70,13 @@ export const noEmptyCharacterClassRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
-        if (isEmptyCharacterClass(node)) {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+        
+        const n = node as Record<string, unknown>
+        
+        if (isEmptyCharacterClass(n.value)) {
           context.report({
             message: 'Empty character class in regular expression',
             loc: extractLocation(node),
