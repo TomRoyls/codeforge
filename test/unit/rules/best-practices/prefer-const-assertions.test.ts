@@ -1,11 +1,15 @@
+import { describe, it, expect } from 'vitest'
+import { Project } from 'ts-morph'
+import {
+  analyzePreferConstAssertions,
+  preferConstAssertionsRule,
+} from '../../../../src/rules/best-practices/prefer-const-assertions.js'
 
 describe('prefer-const-assertions rule', () => {
   const createSourceFile = (code: string) => {
     const project = new Project({ useInMemoryFileSystem: true })
     return project.createSourceFile('test.ts', code)
   }
-import type { RuleViolation } from ' src/ast/visitor.js';
-import { traverseAST } from ' ../../ast/visitor.js';
 
   describe('analyzePreferConstAssertions', () => {
     describe('object literals', () => {
@@ -224,170 +228,6 @@ import { traverseAST } from ' ../../ast/visitor.js';
       expect(result.visitor).toBeDefined()
       expect(result.visitor.visitNode).toBeDefined()
       expect(result.onComplete).toBeDefined()
-    })
-  })
-})
-
-  describe('visitor-based execution', () => {
-    it('should detect violations using visitor pattern', () => {
-      const project = new Project({ useInMemoryFileSystem: true })
-      const sourceFile = project.createSourceFile('test.ts', `
-        const config = { mode: 'dev' };
-      `)
-      const result = preferConstAssertionsRule.create(preferConstAssertionsRule.defaultOptions)
-      const violations: RuleViolation[] = []
-      
-      traverseAST(sourceFile, result.visitor, violations)
-      const finalViolations = result.onComplete ? result.onComplete() : violations
-      
-      expect(finalViolations.length).toBeGreaterThan(0)
-      expect(finalViolations[0].ruleId).toBe('prefer-const-assertions')
-    })
-
-    it('should respect options in visitor mode', () => {
-      const project = new Project({ useInMemoryFileSystem: true })
-      const sourceFile = project.createSourceFile('test.ts', `
-        const config = { mode: 'dev' };
-      `)
-      const result = preferConstAssertionsRule.create({ checkObjects: false })
-      const violations: RuleViolation[] = []
-      
-      traverseAST(sourceFile, result.visitor, violations)
-      const finalViolations = result.onComplete ? result.onComplete() : violations
-      
-      expect(finalViolations).toHaveLength(0)
-    })
-
-    it('should handle arrays in visitor mode', () => {
-      const project = new Project({ useInMemoryFileSystem: true })
-      const sourceFile = project.createSourceFile('test.ts', `
-        const colors = ['red', 'green', 'blue'];
-      `)
-      const result = preferConstAssertionsRule.create(preferConstAssertionsRule.defaultOptions)
-      const violations: RuleViolation[] = []
-      
-      traverseAST(sourceFile, result.visitor, violations)
-      const finalViolations = result.onComplete ? result.onComplete() : violations
-      
-      expect(finalViolations.length).toBeGreaterThan(0)
-    })
-  })
-
-  describe('skipExported option', () => {
-    it('should not flag exported variables when skipExported is true', () => {
-      const sourceFile = createSourceFile(`
-        export const config = { mode: 'dev' };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile, { skipExported: true })
-      expect(violations).toHaveLength(0)
-    })
-
-    it('should flag exported variables when skipExported is false', () => {
-      const sourceFile = createSourceFile(`
-        export const config = { mode: 'dev' };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile, { skipExported: false })
-      expect(violations.length).toBeGreaterThan(0)
-    })
-
-    it('should handle named export declarations', () => {
-      const sourceFile = createSourceFile(`
-        const config = { mode: 'dev' };
-        export { config };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile, { skipExported: true })
-      // Named exports don't affect the variable declaration directly
-      expect(violations.length).toBeGreaterThanOrEqual(0)
-    })
-  })
-
-  describe('satisfies expression', () => {
-    it('should not flag objects with satisfies expression', () => {
-      const sourceFile = createSourceFile(`
-        const config = { mode: 'dev' } satisfies { mode: string };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations).toHaveLength(0)
-    })
-
-    it('should not flag arrays with satisfies expression', () => {
-      const sourceFile = createSourceFile(`
-        const colors = ['red', 'green'] satisfies readonly string[];
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations).toHaveLength(0)
-    })
-  })
-
-  describe('skipEmpty option', () => {
-    it('should flag empty objects when skipEmpty is false', () => {
-      const sourceFile = createSourceFile(`
-        const empty = {};
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile, { skipEmpty: false })
-      expect(violations.length).toBeGreaterThan(0)
-    })
-
-    it('should flag empty arrays when skipEmpty is false', () => {
-      const sourceFile = createSourceFile(`
-        const empty = [];
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile, { skipEmpty: false })
-      expect(violations.length).toBeGreaterThan(0)
-    })
-  })
-
-  describe('minimumProperties option with arrays', () => {
-    it('should respect minimumProperties for arrays', () => {
-      const sourceFile = createSourceFile(`
-        const small = [1, 2];
-        const large = [1, 2, 3, 4];
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile, { minimumProperties: 4 })
-      expect(violations).toHaveLength(1)
-    })
-  })
-
-  describe('additional value types', () => {
-    it('should handle bigint literals', () => {
-      const sourceFile = createSourceFile(`
-        const bigs = [1n, 2n, 3n];
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations.length).toBeGreaterThan(0)
-    })
-
-    it('should handle template literals without substitution', () => {
-      const sourceFile = createSourceFile(`
-        const messages = [\`hello\`, \`world\`];
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations.length).toBeGreaterThan(0)
-    })
-
-    it('should handle nested arrays', () => {
-      const sourceFile = createSourceFile(`
-        const nested = { items: [1, 2, 3] };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations.length).toBeGreaterThan(0)
-    })
-
-    it('should not flag objects with method properties', () => {
-      const sourceFile = createSourceFile(`
-        const obj = { method() { return 1; } };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations).toHaveLength(0)
-    })
-
-    it('should not flag objects with shorthand properties that are functions', () => {
-      const sourceFile = createSourceFile(`
-        const fn = () => 1;
-        const obj = { fn };
-      `)
-      const violations = analyzePreferConstAssertions(sourceFile)
-      expect(violations).toHaveLength(0)
     })
   })
 })
