@@ -11,3 +11,7 @@ export {
   strictBooleanExpressionsRule,
   analyzeStrictBooleanExpressions,
 } from './strict-boolean-expressions.js'
+export {
+  preferDefaultExportRule,
+  analyzePreferDefaultExport,
+} from './prefer-default-export.js'
