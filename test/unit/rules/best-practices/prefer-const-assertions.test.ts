@@ -196,10 +196,9 @@ describe('prefer-const-assertions rule', () => {
         expect(violations.length).toBeGreaterThan(0)
       })
 
-      it('should handle prefix unary expressions (negative numbers)', () => {
-        const sourceFile = createSourceFile(`
-          const values = [-1, -2, -3];
-        `)
+      it('should handle prefix unary expressions in arrays', () => {
+        const code = 'const negs = [-1, -2, -3];'
+        const sourceFile = createSourceFile(code)
         const violations = analyzePreferConstAssertions(sourceFile)
         expect(violations.length).toBeGreaterThan(0)
       })
@@ -296,6 +295,87 @@ describe('prefer-const-assertions rule', () => {
         const sourceFile = createSourceFile(code)
         const violations = analyzePreferConstAssertions(sourceFile, { checkObjects: false })
         expect(violations).toHaveLength(0)
+      })
+    })
+
+
+
+    describe('additional coverage tests', () => {
+      it('should handle template literals without expressions in arrays', () => {
+        const code = 'const msgs = [`Hello`, `World`];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle BigInt literals in arrays', () => {
+        const code = 'const bigs = [1n, 2n, 3n];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle prefix unary expressions in arrays', () => {
+        const code = 'const negs = [-1, -2, -3];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should not flag objects with spread elements', () => {
+        const code = 'const obj = { ...other, a: 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should not flag arrays with spread elements', () => {
+        const code = 'const arr = [...other, 1, 2];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should not flag objects with computed property names', () => {
+        const code = 'const key = "a"; const obj = { [key]: 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should not flag objects with method shorthand', () => {
+        const code = 'const obj = { method() { return 1; } };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should not flag objects with non-constable values', () => {
+        const code = 'const obj = { fn: () => 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should respect minimumProperties option', () => {
+        const code = 'const small = { a: 1 }; const large = { a: 1, b: 2, c: 3 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { minimumProperties: 3 })
+        expect(violations.length).toBe(1)
+      })
+
+      it('should respect skipExported option', () => {
+        const code = 'export const config = { mode: "dev" };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { skipExported: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag exported const when skipExported is false', () => {
+        const code = 'export const config = { mode: "dev" };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { skipExported: false })
+        expect(violations.length).toBeGreaterThan(0)
       })
     })
 
