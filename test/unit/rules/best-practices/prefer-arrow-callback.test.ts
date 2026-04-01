@@ -334,4 +334,43 @@ describe('prefer-arrow-callback rule', () => {
       })
     })
 
+
+
+    describe('additional edge cases for coverage', () => {
+      it('should handle arrow function in callback context (not flagged)', () => {
+        const code = 'arr.map((x) => x * 2);'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle function expression in variable declaration', () => {
+        const code = 'const fn = function() { return 1; };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle arrow function in variable declaration (not flagged)', () => {
+        const code = 'const fn = () => 1;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle named function declaration with allowNamedFunctions false', () => {
+        const code = 'arr.map(function named(x) { return x; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile, { allowNamedFunctions: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle function in property shorthand', () => {
+        const code = 'const obj = { method() { return 1; } };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
 })
