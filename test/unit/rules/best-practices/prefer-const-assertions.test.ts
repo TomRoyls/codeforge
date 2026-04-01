@@ -230,4 +230,73 @@ describe('prefer-const-assertions rule', () => {
       expect(result.onComplete).toBeDefined()
     })
   })
+
+    describe('checkArrays option', () => {
+      it('should not flag arrays when checkArrays is false', () => {
+        const code = 'const arr = [1, 2, 3]; arr.map(function(x) { return x * 2; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { checkArrays: false })
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+    describe('checkObjects option', () => {
+      it('should not flag objects when checkObjects is false', () => {
+        const code = 'const obj = { a: 1, b: 2 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { checkObjects: false })
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+
+
+    describe('skipEmpty option', () => {
+      it('should not flag empty object when skipEmpty is true', () => {
+        const code = 'const obj = {};'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { skipEmpty: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag empty object when skipEmpty is false', () => {
+        const code = 'const obj = {};'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { skipEmpty: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+    })
+
+    describe('checkArrays option', () => {
+      it('should flag array when checkArrays is true', () => {
+        const code = 'const arr = [1, 2, 3];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { checkArrays: true })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should not flag array when checkArrays is false', () => {
+        const code = 'const arr = [1, 2, 3];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { checkArrays: false })
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+    describe('checkObjects option', () => {
+      it('should flag object when checkObjects is true', () => {
+        const code = 'const obj = { a: 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { checkObjects: true })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should not flag object when checkObjects is false', () => {
+        const code = 'const obj = { a: 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferConstAssertions(sourceFile, { checkObjects: false })
+        expect(violations).toHaveLength(0)
+      })
+    })
+
 })

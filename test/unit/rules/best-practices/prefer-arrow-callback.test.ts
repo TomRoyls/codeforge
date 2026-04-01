@@ -168,5 +168,107 @@ describe('prefer-arrow-callback rule', () => {
         allowNamedFunctions: true,
       })
     })
+
+
+    describe('property assignment in object literal', () => {
+      it('should flag function expression as object property', () => {
+        const code = 'const obj = { fn: function() { return 1; } };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+        expect(violations[0].message).toContain('arrow function')
+      })
+
+      it('should not flag arrow function as object property', () => {
+        const code = 'const obj = { fn: () => 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+    describe('array literal context', () => {
+      it('should flag function expression in array', () => {
+        const code = 'const callbacks = [function() { return 1; }];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+        expect(violations[0].message).toContain('arrow function')
+      })
+
+      it('should not flag arrow function in array', () => {
+        const code = 'const callbacks = [() => 1];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+    describe('standalone function declarations', () => {
+      it('should not flag standalone function declaration', () => {
+        const code = 'function standalone() { return 1; }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should not flag exported standalone function', () => {
+        const code = 'export function helper() { return 1; }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
   })
+
+    describe('object literal property assignment', () => {
+      it('should flag function expression as object property value', () => {
+        const code = 'const obj = { handler: function() { return 1; } };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+        expect(violations[0].message).toContain('arrow function')
+      })
+
+      it('should not flag arrow function as object property value', () => {
+        const code = 'const obj = { handler: () => 1 };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+    describe('array literal callbacks', () => {
+      it('should flag function expression in array', () => {
+        const code = 'const handlers = [function() { return 1; }, function() { return 2; }];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should not flag arrow function in array', () => {
+        const code = 'const handlers = [() => 1, () => 2];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
+    describe('named function declarations', () => {
+      it('should not flag standalone named function declaration', () => {
+        const code = 'function helper() { return 1; }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should not flag exported standalone function', () => {
+        const code = 'export function utility() { return 1; }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
 })
