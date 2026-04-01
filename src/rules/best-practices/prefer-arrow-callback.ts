@@ -56,8 +56,13 @@ export const preferArrowCallbackRule: RuleDefinition<PreferArrowCallbackOptions>
           if (!Node.isFunctionExpression(node) && !Node.isFunctionDeclaration(node)) return
 
           // Skip if named functions are allowed and this has a name
-          if (mergedOptions.allowNamedFunctions && Node.isFunctionDeclaration(node) && node.getName()) {
-            return
+          if (mergedOptions.allowNamedFunctions) {
+            if (Node.isFunctionDeclaration(node) && node.getName()) {
+              return
+            }
+            if (Node.isFunctionExpression(node) && node.getName()) {
+              return
+            }
           }
 
           // Check if this is being used as a callback
@@ -95,8 +100,13 @@ export function analyzePreferArrowCallback(
       visitNode: (node: Node, _context: VisitorContext) => {
         if (!Node.isFunctionExpression(node) && !Node.isFunctionDeclaration(node)) return
 
-        if (mergedOptions.allowNamedFunctions && Node.isFunctionDeclaration(node) && node.getName()) {
-          return
+        if (mergedOptions.allowNamedFunctions) {
+          if (Node.isFunctionDeclaration(node) && node.getName()) {
+            return
+          }
+          if (Node.isFunctionExpression(node) && node.getName()) {
+            return
+          }
         }
 
         if (!isCallbackContext(node)) return
