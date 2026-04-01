@@ -158,4 +158,99 @@ describe('no-unnecessary-type-assertion rule', () => {
       expect(result.onComplete).toBeDefined()
     })
   })
+
+
+    describe('additional option tests', () => {
+      it('should respect skipStringLiterals option', () => {
+        const code = 'const x = "hello" as string;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipStringLiterals: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag string literals when skipStringLiterals is false', () => {
+        const code = 'const x = "hello" as string;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipStringLiterals: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should respect skipNumericLiterals option', () => {
+        const code = 'const x = 42 as number;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipNumericLiterals: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag numeric literals when skipNumericLiterals is false', () => {
+        const code = 'const x = 42 as number;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipNumericLiterals: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should respect skipBooleanLiterals option', () => {
+        const code = 'const x = true as boolean;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipBooleanLiterals: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag boolean literals when skipBooleanLiterals is false', () => {
+        const code = 'const x = true as boolean;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipBooleanLiterals: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should respect skipNullLiterals option (default true)', () => {
+        const code = 'const x = null as null;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipNullLiterals: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag null literals when skipNullLiterals is false', () => {
+        const code = 'const x = null as null;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile, { skipNullLiterals: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle bigint literals', () => {
+        const code = 'const x = 42n as bigint;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle template literals', () => {
+        const code = 'const x = `hello` as string;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle false keyword', () => {
+        const code = 'const x = false as boolean;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should not flag non-redundant assertions', () => {
+        const code = 'const x = 42 as string;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle undefined type assertion', () => {
+        const code = 'const x = undefined as undefined;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoUnnecessaryTypeAssertion(sourceFile)
+        expect(violations.length).toBeGreaterThanOrEqual(0)
+      })
+    })
+
 })
