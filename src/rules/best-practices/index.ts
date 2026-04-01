@@ -21,3 +21,5 @@ export { preferArrowCallbackRule } from './prefer-arrow-callback.js'
 export { noImplicitCoercionRule, analyzeNoImplicitCoercion } from './no-implicit-coercion.js'
 export { preferNullishCoalescingRule, analyzePreferNullishCoalescing } from './prefer-nullish-coalescing.js'
 export { explicitReturnTypeRule, analyzeExplicitReturnType } from './explicit-return-type.js'
+
+export { preferReadonlyRule, analyzePreferReadonly } from './prefer-readonly.js'
