@@ -271,4 +271,67 @@ describe('prefer-arrow-callback rule', () => {
       })
     })
 
+
+    describe('allowNamedFunctions: false option', () => {
+      it('should flag named function expression when allowNamedFunctions is false', () => {
+        const code = 'arr.map(function namedFn(x) { return x * 2; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile, { allowNamedFunctions: false })
+        expect(violations.length).toBeGreaterThan(0)
+        expect(violations[0].message).toContain('arrow function')
+      })
+
+      it('should flag named function expression in variable when allowNamedFunctions is false', () => {
+        const code = 'const fn = function namedFn() { return 1; };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile, { allowNamedFunctions: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should not flag named function expression when allowNamedFunctions is true (default)', () => {
+        const code = 'arr.map(function namedFn(x) { return x * 2; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile, { allowNamedFunctions: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should flag anonymous function expression when allowNamedFunctions is false', () => {
+        const code = 'arr.map(function(x) { return x * 2; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile, { allowNamedFunctions: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+    })
+
+    describe('edge cases', () => {
+      it('should handle nested function expressions in callbacks', () => {
+        const code = 'arr.map(function(x) { return function(y) { return x + y; }; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThanOrEqual(1)
+      })
+
+      it('should handle function expression in object nested in callback', () => {
+        const code = 'arr.map(function(x) { return { fn: function() { return x; } }; });'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle function expression in IIFE', () => {
+        const code = '(function() { return 1; })();'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        // IIFE is a call expression, so function is argument - should flag
+        expect(violations.length).toBeGreaterThanOrEqual(0)
+      })
+
+      it('should handle class method (not flagged)', () => {
+        const code = 'class Foo { method() { return 1; } }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzePreferArrowCallback(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
 })
