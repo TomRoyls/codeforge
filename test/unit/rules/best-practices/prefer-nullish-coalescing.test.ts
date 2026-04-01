@@ -12,7 +12,7 @@ describe('prefer-nullish-coalescing rule', () => {
   }
 
   describe('analyzePreferNullishCoalescing', () => {
-    it('should detect || operator', () => {
+    it('should detect || operator for default values', () => {
       const code = 'const x = a || b;'
       const sourceFile = createSourceFile(code)
       const violations = analyzePreferNullishCoalescing(sourceFile)
@@ -34,18 +34,34 @@ describe('prefer-nullish-coalescing rule', () => {
       expect(violations).toHaveLength(0)
     })
 
-    it('should detect || in default assignment', () => {
-      const code = 'const value = input || "default";'
+    it('should handle multiple || operators', () => {
+      const code = 'const x = a || b || c;'
       const sourceFile = createSourceFile(code)
       const violations = analyzePreferNullishCoalescing(sourceFile)
+      expect(violations.length).toBeGreaterThan(0)
+    })
+
+    it('should respect ignoreConditionalTests option', () => {
+      const code = 'if (a || b) {}'
+      const sourceFile = createSourceFile(code)
+      const violations = analyzePreferNullishCoalescing(sourceFile, { ignoreConditionalTests: true })
+      expect(violations).toHaveLength(0)
+    })
+
+    it('should flag || in condition when ignoreConditionalTests is false', () => {
+      const code = 'if (a || b) {}'
+      const sourceFile = createSourceFile(code)
+      const violations = analyzePreferNullishCoalescing(sourceFile, { ignoreConditionalTests: false })
       expect(violations.length).toBeGreaterThan(0)
     })
   })
 
   describe('rule definition', () => {
-    it('should have correct meta', () => {
+    it('should have correct meta properties', () => {
       expect(preferNullishCoalescingRule.meta.name).toBe('prefer-nullish-coalescing')
       expect(preferNullishCoalescingRule.meta.category).toBe('style')
+      expect(preferNullishCoalescingRule.meta.recommended).toBe(false)
+      expect(preferNullishCoalescingRule.meta.fixable).toBe('code')
     })
 
     it('should have default options', () => {
@@ -54,9 +70,10 @@ describe('prefer-nullish-coalescing rule', () => {
       })
     })
 
-    it('should create visitor', () => {
-      const result = preferNullishCoalescingRule.create({})
+    it('should create visitor with visitNode method', () => {
+      const result = preferNullishCoalescingRule.create(preferNullishCoalescingRule.defaultOptions)
       expect(result.visitor).toBeDefined()
+      expect(result.visitor.visitNode).toBeDefined()
       expect(result.onComplete).toBeDefined()
     })
   })

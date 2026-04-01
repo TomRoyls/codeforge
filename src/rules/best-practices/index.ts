@@ -19,3 +19,4 @@ export {
 export { preferArrowCallbackRule } from './prefer-arrow-callback.js'
 
 export { noImplicitCoercionRule, analyzeNoImplicitCoercion } from './no-implicit-coercion.js'
+export { preferNullishCoalescingRule, analyzePreferNullishCoalescing } from './prefer-nullish-coalescing.js'

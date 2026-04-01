@@ -12,6 +12,24 @@ const DEFAULT_OPTIONS: PreferNullishCoalescingOptions = {
   ignoreConditionalTests: true,
 }
 
+function isInConditionalTest(node: Node): boolean {
+  let parent: Node | undefined = node.getParent()
+  
+  while (parent) {
+    if (
+      Node.isIfStatement(parent) ||
+      Node.isWhileStatement(parent) ||
+      Node.isDoStatement(parent) ||
+      Node.isConditionalExpression(parent)
+    ) {
+      return true
+    }
+    parent = parent.getParent()
+  }
+  
+  return false
+}
+
 export const preferNullishCoalescingRule: RuleDefinition<PreferNullishCoalescingOptions> = {
   meta: {
     name: 'prefer-nullish-coalescing',
@@ -21,15 +39,20 @@ export const preferNullishCoalescingRule: RuleDefinition<PreferNullishCoalescing
     fixable: 'code',
   },
   defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: PreferNullishCoalescingOptions) => {
+  create: (options: PreferNullishCoalescingOptions) => {
     const violations: RuleViolation[] = []
-    
+    const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
       visitor: {
         visitNode: (node: Node, _context: VisitorContext) => {
           if (!Node.isBinaryExpression(node)) return
           if (node.getOperatorToken().getKind() !== SyntaxKind.BarBarToken) return
+          
+          // Skip if in conditional test and option is enabled
+          if (mergedOptions.ignoreConditionalTests && isInConditionalTest(node)) {
+            return
+          }
           
           const range = getNodeRange(node)
           violations.push({
@@ -49,10 +72,10 @@ export const preferNullishCoalescingRule: RuleDefinition<PreferNullishCoalescing
 
 export function analyzePreferNullishCoalescing(
   sourceFile: SourceFile,
-  _options: PreferNullishCoalescingOptions = {},
+  options: PreferNullishCoalescingOptions = {},
 ): RuleViolation[] {
   const violations: RuleViolation[] = []
-  
+  const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
   traverseAST(
     sourceFile,
@@ -60,6 +83,11 @@ export function analyzePreferNullishCoalescing(
       visitNode: (node: Node, _context: VisitorContext) => {
         if (!Node.isBinaryExpression(node)) return
         if (node.getOperatorToken().getKind() !== SyntaxKind.BarBarToken) return
+        
+        // Skip if in conditional test and option is enabled
+        if (mergedOptions.ignoreConditionalTests && isInConditionalTest(node)) {
+          return
+        }
         
         const range = getNodeRange(node)
         violations.push({
