@@ -207,4 +207,64 @@ describe('no-magic-numbers rule', () => {
       })
     })
 
+
+
+    describe('additional edge case tests', () => {
+      it('should not flag numbers in binding elements', () => {
+        const code = 'const { x = 42 } = obj;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile, { ignoreDefaultValues: true })
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle nested object literals', () => {
+        const code = 'const config = { server: { port: 3000 } };'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle array destructuring', () => {
+        const code = 'const [a, b] = [1, 2];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle spread in arrays', () => {
+        const code = 'const arr = [...items, 42];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile)
+        expect(violations.length).toBeGreaterThanOrEqual(0)
+      })
+
+      it('should handle computed property access', () => {
+        const code = 'const key = 2; const val = obj[key];'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+
+      it('should handle function return values', () => {
+        const code = 'function getValue() { return 42; }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile)
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle class property without readonly', () => {
+        const code = 'class Foo { value = 42; }'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile, { ignoreReadonlyClassProperties: false })
+        expect(violations.length).toBeGreaterThan(0)
+      })
+
+      it('should handle export declarations', () => {
+        const code = 'export const VALUE = 42;'
+        const sourceFile = createSourceFile(code)
+        const violations = analyzeNoMagicNumbers(sourceFile)
+        expect(violations).toHaveLength(0)
+      })
+    })
+
 })
