@@ -17,3 +17,5 @@ export {
 } from './prefer-default-export.js'
 
 export { preferArrowCallbackRule } from './prefer-arrow-callback.js'
+
+export { noImplicitCoercionRule, analyzeNoImplicitCoercion } from './no-implicit-coercion.js'
