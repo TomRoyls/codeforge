@@ -16,4 +16,4 @@ export {
   analyzePreferDefaultExport,
 } from './prefer-default-export.js'
 
-import { preferArrowCallbackRule } from './prefer-arrow-callback.js'
+export { preferArrowCallbackRule } from './prefer-arrow-callback.js'
