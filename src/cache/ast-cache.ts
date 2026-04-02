@@ -1,9 +1,8 @@
-import { mkdir, readFile, writeFile, readdir, unlink, stat } from 'node:fs/promises'
+import { readFile, readdir, unlink } from 'node:fs/promises'
 import path from 'node:path'
-import { createHash } from 'node:crypto'
 import { Project, type SourceFile } from 'ts-morph'
 
-import { hashContent, CacheStore } from './index.js'
+import { CacheStore } from './index.js'
 import { logger } from '../utils/logger.js'
 
 /**
