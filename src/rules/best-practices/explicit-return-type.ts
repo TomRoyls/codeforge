@@ -29,7 +29,7 @@ export const explicitReturnTypeRule: RuleDefinition<ExplicitReturnTypeOptions> =
   meta: {
     name: 'explicit-return-type',
     description: 'Require explicit return types on functions',
-    category: 'best-practices',
+    category: 'style',
     recommended: false,
     fixable: undefined,
   },

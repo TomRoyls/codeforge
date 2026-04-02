@@ -80,7 +80,7 @@ describe('explicit-return-type rule', () => {
   describe('rule definition', () => {
     it('should have correct meta properties', () => {
       expect(explicitReturnTypeRule.meta.name).toBe('explicit-return-type')
-      expect(explicitReturnTypeRule.meta.category).toBe('best-practices')
+      expect(explicitReturnTypeRule.meta.category).toBe('style')
       expect(explicitReturnTypeRule.meta.recommended).toBe(false)
     })
 
