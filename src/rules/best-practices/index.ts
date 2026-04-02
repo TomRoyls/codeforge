@@ -27,3 +27,5 @@ export { noUnnecessaryConditionRule, analyzeNoUnnecessaryCondition } from './no-
 export { preferArraySomeRule, analyzePreferArraySome } from './prefer-array-some.js'
 export { preferStringTemplateRule, analyzePreferStringTemplate } from './prefer-string-template.js'
 export * from './prefer-exponent-operator.js';
+
+export * from './prefer-nullish-coalescing.js';
