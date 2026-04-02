@@ -5,7 +5,7 @@
 import type { RuleDefinition, RuleOptions } from '../types.js'
 import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
-import { Node, SyntaxKind } from 'ts-morph'
+import { Node } from 'ts-morph'
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferFlatMapOptions extends RuleOptions {}
