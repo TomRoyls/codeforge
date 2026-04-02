@@ -882,77 +882,55 @@ describe('Analyze Command', () => {
 
   describe('--fix flag integration', () => {
     test('applies fixes when --fix flag is set', async () => {
-      vi.resetModules()
-
       const mockSaveSync = vi.fn()
-
-      vi.doMock('../../../src/rules/index.js', () => ({
-        allRules: {
-          'fixable-rule': {
-            meta: { id: 'fixable-rule' },
-            fix: vi.fn().mockReturnValue({ applied: true, changes: [] }),
-          },
-        },
-        getRule: vi.fn(),
-        getRuleIds: vi.fn().mockReturnValue(['fixable-rule']),
-        getRuleCategory: vi.fn().mockReturnValue('style'),
-      }))
-
       const mockSourceFile = {
         getFilePath: () => '/test/file.ts',
         getText: () => 'test code',
         saveSync: mockSaveSync,
       }
 
-      const mockParser = {
-        initialize: vi.fn().mockResolvedValue(undefined),
-        dispose: vi.fn(),
-        parseFile: vi.fn().mockResolvedValue({
-          sourceFile: mockSourceFile,
-          filePath: '/test/file.ts',
-          parseTime: 10,
-        }),
-      }
+      const { Parser } = await import('../../../src/core/parser.js')
 
-      vi.doMock('../../../src/core/parser.js', () => ({
-        Parser: vi.fn().mockImplementation(function () {
-          return mockParser
-        }),
-      }))
-
-      vi.doMock('../../../src/utils/command-helpers.js', () => ({
-        setupRuleRegistry: vi.fn(() => ({
-          register: vi.fn(),
-          runRules: vi.fn().mockReturnValue([createMockViolation({ ruleId: 'fixable-rule' })]),
-          getEnabledRules: vi.fn().mockReturnValue([]),
-          getRule: vi.fn(),
-          disable: vi.fn(),
-        })),
-        applyFixesToFiles: vi.fn().mockResolvedValue({
-          fixesApplied: 1,
-          fixesSkipped: 0,
-        }),
-        loadCommandConfig: vi.fn().mockResolvedValue({}),
-        normalizeFlags: (flags: unknown) => ({
-          ciMode: false,
-          concurrency: 4,
-          dryRun: false,
-          failOnWarnings: false,
-          format: flags.format ?? 'console',
-          maxWarnings: -1,
-          output: flags.output,
-          quiet: flags.quiet ?? false,
-          shouldFix: flags.fix ?? false,
-          stagedMode: false,
-          verbose: flags.verbose ?? false,
-        }),
-        filterFilesByExtension: (files: unknown) => files,
-      }))
-
-      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
-      const { applyFixesToFiles } = await import('../../../src/utils/command-helpers.js')
+      // Setup Parser mock to return the mockSourceFile
+      vi.mocked(Parser).mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        }
+      })
 
       mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
+
+      // Setup applyFixesToFiles to actually call the callback
+      vi.mocked(applyFixesToFiles).mockImplementation(async (opts) => {
+        return opts.applyFixesFn({
+          allViolations: opts.allViolations,
+          concurrency: opts.concurrency,
+          discoveredFiles: opts.discoveredFiles,
+          dryRun: opts.dryRun,
+          parseCache: opts.parseCache,
+          parser: opts.parser,
+          quiet: opts.quiet,
+          rulesWithFixes: opts.rulesWithFixes,
+          verbose: opts.verbose,
+        })
+      })
+
+      // Setup applyFixesToFile to return changes so saveSync gets called
+      vi.mocked(applyFixesToFile).mockReturnValue({
+        changes: [{ start: 0, end: 4, newText: 'fixed' }],
+        conflicts: [],
+        filePath: '/test/file.ts',
+        fixesApplied: 1,
+        fixesSkipped: 0,
+      })
+
+      const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
 
       const command = new AnalyzeCmd([], {} as never)
       ;(command as unknown as { parse: ReturnType<typeof vi.fn> }).parse = vi
