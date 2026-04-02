@@ -1,0 +1,15 @@
+{
+  "files": ["src/**/*.ts"],
+  "ignore": ["node_modules", "dist", "coverage", "**/*.test.ts"],
+  "rules": {
+    "no-any": "error",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-console": "error",
+    "no-circular-deps": "error",
+    "max-params": ["error", { "max": 3 }],
+    "max-depth": ["error", { "max": 3 }],
+    "no-eval": "error",
+    "no-deprecated-api": "error"
+  }
+}

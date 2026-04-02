@@ -1,0 +1,24 @@
+{
+  "files": ["src/**/*.{ts,tsx}"],
+  "ignore": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ],
+  "rules": {
+    "no-any": "error",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "warning",
+    "max-params": ["warning", { "max": 3 }],
+    "max-depth": ["warning", { "max": 3 }],
+    "no-console": ["warning", { "allow": ["warn", "error"] }],
+    "prefer-readonly": "warning",
+    "no-useless-comparison": "error"
+  }
+}
