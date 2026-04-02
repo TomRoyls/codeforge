@@ -21,8 +21,8 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'
-import ora from 'ora'
 import os from 'node:os'
+import ora from 'ora'
 import pLimit from 'p-limit'
 
 import { DEFAULT_CONFIG } from '../config/types.js'
@@ -341,6 +341,7 @@ export default class Fix extends Command {
           if (spinner) {
             spinner.text = `Fixing files... (${completedCount}/${totalFiles})`
           }
+
           return result
         }),
       ),

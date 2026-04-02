@@ -48,10 +48,6 @@ export type FixFunction = (context: {
 
 /**
  * Represents a rule with automatic fix capability.
- *
- * @property id - Unique identifier for the rule
- * @property fix - Function that applies the fix
- * @property priority - Fix priority (lower values = higher priority)
  */
 export interface RuleWithFix {
   fix: FixFunction
