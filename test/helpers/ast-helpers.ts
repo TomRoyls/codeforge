@@ -51,6 +51,19 @@ export const SyntaxKind = {
   BinaryExpression: 225,
   VariableDeclaration: 260,
   Identifier: 79,
+  NumericLiteral: 8,
+  StringLiteral: 9,
+  TrueKeyword: 102,
+  FalseKeyword: 99,
+  NullKeyword: 101,
+  EqualsEqualsToken: 40,
+  EqualsEqualsEqualsToken: 41,
+  ExclamationEqualsToken: 42,
+  ExclamationEqualsEqualsToken: 43,
+  LessThanToken: 32,
+  LessThanEqualsToken: 33,
+  GreaterThanToken: 35,
+  GreaterThanEqualsToken: 36,
 } as const
 
 export interface MockNodeConfig {
@@ -413,4 +426,61 @@ export function createSourceFileWithChildren(children: Node[]): SourceFile {
     getChildren: vi.fn(() => children),
     getChildCount: vi.fn(() => children.length),
   })
+}
+
+export function createMockIdentifier(text: string, config: MockNodeConfig = {}): Identifier {
+  const node = createMockNode({
+    kind: SyntaxKind.Identifier,
+    text,
+    ...config,
+  })
+  return {
+    ...node,
+    getText: vi.fn(() => text),
+  } as unknown as Identifier
+}
+
+export function createMockNumericLiteral(value: number, config: MockNodeConfig = {}): Node {
+  const node = createMockNode({
+    kind: SyntaxKind.NumericLiteral,
+    text: String(value),
+    ...config,
+  })
+  return {
+    ...node,
+    getText: vi.fn(() => String(value)),
+  } as unknown as Node
+}
+export function createMockStringLiteral(value: string, config: MockNodeConfig = {}): Node {
+  const node = createMockNode({
+    kind: SyntaxKind.StringLiteral,
+    text: `"${value}"`,
+    ...config,
+  })
+  return {
+    ...node,
+    getText: vi.fn(() => `"${value}"`),
+  } as unknown as Node
+}
+export function createMockBooleanLiteral(value: boolean, config: MockNodeConfig = {}): Node {
+  const node = createMockNode({
+    kind: value ? SyntaxKind.TrueKeyword : SyntaxKind.FalseKeyword,
+    text: String(value),
+    ...config,
+  })
+  return {
+    ...node,
+    getText: vi.fn(() => String(value)),
+  } as unknown as Node
+}
+export function createMockNullLiteral(config: MockNodeConfig = {}): Node {
+  const node = createMockNode({
+    kind: SyntaxKind.NullKeyword,
+    text: 'null',
+    ...config,
+  })
+  return {
+    ...node,
+    getText: vi.fn(() => 'null'),
+  } as unknown as Node
 }
