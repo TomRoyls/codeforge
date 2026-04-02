@@ -398,7 +398,7 @@ export default class Analyze extends Command {
 
     const reporter = new Reporter({
       color: ciMode ? false : flags.color,
-      format: ciMode ? 'json' : format,
+      format: format as OutputFormat,
       outputPath: output,
       quiet: ciMode || flags.quiet,
       verbose: ciMode ? false : flags.verbose,
