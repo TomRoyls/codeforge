@@ -18,7 +18,7 @@ describe('prefer-readonly rule', () => {
   describe('rule metadata', () => {
     it('should have correct meta properties', () => {
       expect(preferReadonlyRule.meta.name).toBe('prefer-readonly')
-      expect(preferReadonlyRule.meta.category).toBe('best-practices')
+      expect(preferReadonlyRule.meta.category).toBe('style')
       expect(preferReadonlyRule.meta.fixable).toBe('code')
     })
 

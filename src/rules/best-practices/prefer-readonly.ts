@@ -36,7 +36,7 @@ export const preferReadonlyRule: RuleDefinition<PreferReadonlyOptions> = {
   meta: {
     name: 'prefer-readonly',
     description: 'Require readonly for arrays and objects that are never modified',
-    category: 'best-practices',
+    category: 'style',
     recommended: false,
     fixable: 'code',
   },
@@ -74,7 +74,7 @@ export const preferReadonlyRule: RuleDefinition<PreferReadonlyOptions> = {
 
           // Track modifications via assignment
           if (isAssignmentExpression(node)) {
-            const left = node.getLeft()
+            const left = (node as import("ts-morph").BinaryExpression).getLeft()
             if (Node.isIdentifier(left)) {
               modifiedVariables.add(left.getText())
             } else if (Node.isPropertyAccessExpression(left)) {
@@ -87,7 +87,7 @@ export const preferReadonlyRule: RuleDefinition<PreferReadonlyOptions> = {
 
           // Track modifications via update expressions
           if (isUpdateExpression(node)) {
-            const operand = node.getOperand()
+            const operand = (node as import("ts-morph").PrefixUnaryExpression | import("ts-morph").PostfixUnaryExpression).getOperand()
             if (Node.isIdentifier(operand)) {
               modifiedVariables.add(operand.getText())
             }
@@ -115,7 +115,7 @@ export const preferReadonlyRule: RuleDefinition<PreferReadonlyOptions> = {
           const range = getNodeRange(node)
           violations.push({
             ruleId: 'prefer-readonly',
-            severity: 'suggestion',
+            severity: 'info',
             message: `Variable '${name}' is never modified. Consider using 'const' instead of 'let'.`,
             filePath: node.getSourceFile().getFilePath(),
             range,
@@ -165,7 +165,7 @@ export function analyzePreferReadonly(
 
         // Track modifications via assignment
         if (isAssignmentExpression(node)) {
-          const left = node.getLeft()
+          const left = (node as import("ts-morph").BinaryExpression).getLeft()
           if (Node.isIdentifier(left)) {
             modifiedVariables.add(left.getText())
           } else if (Node.isPropertyAccessExpression(left)) {
@@ -178,7 +178,7 @@ export function analyzePreferReadonly(
 
         // Track modifications via update expressions
         if (isUpdateExpression(node)) {
-          const operand = node.getOperand()
+          const operand = (node as import("ts-morph").PrefixUnaryExpression | import("ts-morph").PostfixUnaryExpression).getOperand()
           if (Node.isIdentifier(operand)) {
             modifiedVariables.add(operand.getText())
           }
@@ -198,8 +198,7 @@ export function analyzePreferReadonly(
           }
         }
       },
-    },
-    { filePath: sourceFile.getFilePath() }
+    }
   )
 
   for (const [name, { node }] of declaredVariables) {
@@ -208,7 +207,7 @@ export function analyzePreferReadonly(
     const range = getNodeRange(node)
     violations.push({
       ruleId: 'prefer-readonly',
-      severity: 'suggestion',
+      severity: 'info',
       message: `Variable '${name}' is never modified. Consider using 'const' instead of 'let'.`,
       filePath: sourceFile.getFilePath(),
       range,

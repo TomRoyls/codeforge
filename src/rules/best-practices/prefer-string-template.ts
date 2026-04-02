@@ -90,7 +90,7 @@ export function analyzePreferStringTemplate(
         }
       },
     },
-    { filePath: sourceFile.getFilePath() }
+    violations,
   )
 
   return violations

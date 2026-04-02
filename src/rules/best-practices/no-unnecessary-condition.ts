@@ -88,7 +88,7 @@ function isAlwaysTrue(left: Node, operator: SyntaxKind, right: Node): boolean | 
   }
 }
 
-function checkCondition(node: Node, options: NoUnnecessaryConditionOptions): RuleViolation[] {
+function checkCondition(node: Node, _options: NoUnnecessaryConditionOptions): RuleViolation[] {
   const violations: RuleViolation[] = []
   
   if (!Node.isBinaryExpression(node)) return violations
@@ -144,7 +144,7 @@ export const noUnnecessaryConditionRule: RuleDefinition<NoUnnecessaryConditionOp
   meta: {
     name: 'no-unnecessary-condition',
     description: 'Detects unnecessary conditions that are always true or always false',
-    category: 'best-practices',
+    category: 'style',
     recommended: false,
     fixable: undefined,
   },
@@ -181,8 +181,7 @@ export function analyzeNoUnnecessaryCondition(
           violations.push(...checkCondition(node, mergedOptions))
         }
       },
-    },
-    { filePath: sourceFile.getFilePath() }
+    }
   )
 
   return violations

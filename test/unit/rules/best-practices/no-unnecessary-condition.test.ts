@@ -18,7 +18,7 @@ describe('no-unnecessary-condition rule', () => {
   describe('rule metadata', () => {
     it('should have correct meta properties', () => {
       expect(noUnnecessaryConditionRule.meta.name).toBe('no-unnecessary-condition')
-      expect(noUnnecessaryConditionRule.meta.category).toBe('best-practices')
+      expect(noUnnecessaryConditionRule.meta.category).toBe('style')
       expect(noUnnecessaryConditionRule.meta.fixable).toBeUndefined()
     })
 
