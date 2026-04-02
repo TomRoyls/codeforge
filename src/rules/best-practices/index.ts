@@ -23,3 +23,4 @@ export { preferNullishCoalescingRule, analyzePreferNullishCoalescing } from './p
 export { explicitReturnTypeRule, analyzeExplicitReturnType } from './explicit-return-type.js'
 
 export { preferReadonlyRule, analyzePreferReadonly } from './prefer-readonly.js'
+export { noUnnecessaryConditionRule, analyzeNoUnnecessaryCondition } from './no-unnecessary-condition.js'
