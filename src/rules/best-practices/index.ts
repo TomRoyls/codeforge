@@ -29,3 +29,5 @@ export { preferStringTemplateRule, analyzePreferStringTemplate } from './prefer-
 export * from './prefer-exponent-operator.js';
 
 export * from './prefer-nullish-coalescing.js';
+
+export * from './prefer-includes.js';
