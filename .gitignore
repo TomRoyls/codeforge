@@ -10,6 +10,7 @@ coverage/
 
 # Cache directories
 .cache/
+.codeforge/
 .eslintcache
 .prettiercache
 
