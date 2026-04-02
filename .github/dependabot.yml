@@ -1,0 +1,37 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'codeforge-dev/team'
+    labels:
+      - 'dependencies'
+      - 'automated'
+    commit-message:
+      prefix: 'deps'
+      include: 'scope'
+    ignore:
+      - dependency-name: 'typescript'
+        versions: ['6.x']
+      - dependency-name: 'eslint'
+        versions: ['10.x']
+      - dependency-name: 'ts-morph'
+        versions: ['26.x', '27.x']
+      - dependency-name: 'chokidar'
+        versions: ['4.x', '5.x']
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    open-pull-requests-limit: 5
+    labels:
+      - 'github-actions'
+      - 'dependencies'
+    commit-message:
+      prefix: 'ci'
