@@ -81,7 +81,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif readme && git add README.md",
+    "clean": "node bin/run.js clean",
+    "clean:cache": "node bin/run.js clean --cache",
+    "clean:dist": "node bin/run.js clean --dist"
   },
   "types": "dist/index.d.ts"
 }
