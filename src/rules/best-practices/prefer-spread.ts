@@ -12,22 +12,14 @@ interface PreferSpreadOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferSpreadOptions = {}
 
-/**
- * Check if node is a .concat() call
- */
 function isConcatCall(node: Node): { receiver: Node; args: Node[] } | null {
   if (!Node.isCallExpression(node)) return null
-  
   const concatMethod = node.getExpression()
   if (!Node.isPropertyAccessExpression(concatMethod)) return null
-  
   if (concatMethod.getName() !== 'concat') return null
-  
   const receiver = concatMethod.getExpression()
   const args = node.getArguments()
-  
   if (args.length === 0) return null
-  
   return { receiver, args: [...args] }
 }
 
@@ -38,6 +30,7 @@ export const preferSpreadRule: RuleDefinition<PreferSpreadOptions> = {
     category: 'style',
     severity: 'info',
     recommended: true,
+    fixable: true,
   },
 
   defaultOptions: DEFAULT_OPTIONS,
@@ -50,16 +43,14 @@ export const preferSpreadRule: RuleDefinition<PreferSpreadOptions> = {
         visitNode: (node: Node, _context: VisitorContext) => {
           const result = isConcatCall(node)
           if (!result) return
-
           const { receiver, args } = result
           const range = getNodeRange(node)
           
-          // Build the spread version
           const spreadParts = [receiver.getText()]
           args.forEach(arg => {
-            spreadParts.push(`...${arg.getText()}`)
+            spreadParts.push('...' + arg.getText())
           })
-          const fixText = `[${spreadParts.join(', ')}]`
+          const fixText = '[' + spreadParts.join(', ') + ']'
           
           violations.push({
             ruleId: 'prefer-spread',
@@ -88,16 +79,14 @@ export function analyzePreferSpread(
       visitNode: (node: Node, _context: VisitorContext) => {
         const result = isConcatCall(node)
         if (!result) return
-
         const { receiver, args } = result
         const range = getNodeRange(node)
         
-        // Build the spread version
         const spreadParts = [receiver.getText()]
         args.forEach(arg => {
-          spreadParts.push(`...${arg.getText()}`)
+          spreadParts.push('...' + arg.getText())
         })
-        const fixText = `[${spreadParts.join(', ')}]`
+        const fixText = '[' + spreadParts.join(', ') + ']'
         
         violations.push({
           ruleId: 'prefer-spread',
