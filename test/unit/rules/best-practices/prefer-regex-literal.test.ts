@@ -23,34 +23,34 @@ describe('rule metadata', () => {
 
 describe('detecting new RegExp()', () => {
   it('should detect new RegExp() with static pattern', () => {
-        const sourceFile = createSourceFile('const x = new RegExp(/test/)')
-        const violations = analyzePreferRegexLiteral(sourceFile)
-        expect(violations).toHaveLength(1)
-        expect(violations[0].message).toContain('regex literal')
-    })
+    const sourceFile = createSourceFile('const x = new RegExp(/test/)')
+    const violations = analyzePreferRegexLiteral(sourceFile)
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('regex literal')
+  })
 
-    it('should detect new RegExp() with flags', () => {
-        const sourceFile = createSourceFile('const x = new RegExp("test", "i")')
-        const violations = analyzePreferRegexLiteral(sourceFile)
-        expect(violations).toHaveLength(1)
-        expect(violations[0].suggestion).toContain('/test/i')
-    })
+  it('should detect new RegExp() with flags', () => {
+    const sourceFile = createSourceFile('const x = new RegExp("test", "i")')
+    const violations = analyzePreferRegexLiteral(sourceFile)
+    expect(violations).toHaveLength(1)
+    expect(violations[0].suggestion).toContain('/test/i')
+  })
 
-    it('should not flag new RegExp() with dynamic pattern', () => {
-        const sourceFile = createSourceFile('const x = new RegExp(test, flags)')
-        const violations = analyzePreferRegexLiteral(sourceFile)
-        expect(violations).toHaveLength(0)
-    })
+  it('should not flag new RegExp() with dynamic pattern', () => {
+    const sourceFile = createSourceFile('const x = new RegExp(test, flags)')
+    const violations = analyzePreferRegexLiteral(sourceFile)
+    expect(violations).toHaveLength(0)
+  })
 
-        it('should not flag new RegExp() with complex pattern', () => {
-        const sourceFile = createSourceFile('const x = new RegExp("[a-z]+",i")
-        const violations = analyzePreferRegexLiteral(sourceFile)
-        expect(violations).toHaveLength(0)
-    })
+  it('should not flag new RegExp() with complex pattern', () => {
+    const sourceFile = createSourceFile('const x = new RegExp("[a-z]+", "i")')
+    const violations = analyzePreferRegexLiteral(sourceFile)
+    expect(violations).toHaveLength(0)
+  })
 
-    it('should not flag regex literal', () => {
-        const sourceFile = createSourceFile('const x = /test/i/)
-        const violations = analyzePreferRegexLiteral(sourceFile)
-        expect(violations).toHaveLength(0)
-    })
+  it('should not flag regex literal', () => {
+    const sourceFile = createSourceFile('const x = /test/i/')
+    const violations = analyzePreferRegexLiteral(sourceFile)
+    expect(violations).toHaveLength(0)
+  })
 })

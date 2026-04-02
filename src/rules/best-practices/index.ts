@@ -43,3 +43,4 @@ export * from './prefer-regex-literal.js';
 export { preferObjectSpreadRule } from './prefer-object-spread.js'
 export { noDynamicDeleteRule } from './no-dynamic-delete.js'
 export { preferForOfRule } from './prefer-for-of.js'
+export { preferStringStartEndRule } from './prefer-string-start-end.js'
