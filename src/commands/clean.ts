@@ -1,7 +1,7 @@
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import { rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
+import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
 
 export default class Clean extends Command {
@@ -71,25 +71,30 @@ export default class Clean extends Command {
     }
 
     let cleaned = 0
-    for (const target of targets) {
+    const cleanPromises = targets.map(async (target) => {
       if (existsSync(target.path)) {
         if (flags['dry-run']) {
           this.log(chalk.cyan(`  • ${target.name}`))
-          cleaned++
-        } else {
-          try {
-            await rm(target.path, { recursive: true })
-            this.log(chalk.green(`  ✓ ${target.name}`))
-            cleaned++
-          } catch (error) {
-            const message = error instanceof Error ? error.message : 'Unknown error'
-            this.log(chalk.red(`  ✗ ${target.name}: ${message}`))
-          }
+          return 1
+        }
+
+        try {
+          await rm(target.path, { recursive: true })
+          this.log(chalk.green(`  ✓ ${target.name}`))
+          return 1
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unknown error'
+          this.log(chalk.red(`  ✗ ${target.name}: ${message}`))
+          return 0
         }
       } else {
         this.log(chalk.gray(`  - ${target.name} (not found)`))
+        return 0
       }
-    }
+    })
+
+    const results = await Promise.all(cleanPromises)
+    cleaned = results.reduce((sum: number, count: number) => sum + count, 0)
 
     this.log('')
     if (cleaned > 0) {
