@@ -31,3 +31,5 @@ export * from './prefer-exponent-operator.js';
 export * from './prefer-nullish-coalescing.js';
 
 export * from './prefer-includes.js';
+
+export * from './prefer-object-has-own.js';
