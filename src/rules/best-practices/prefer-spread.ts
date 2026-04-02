@@ -30,7 +30,7 @@ export const preferSpreadRule: RuleDefinition<PreferSpreadOptions> = {
     category: 'style',
     severity: 'info',
     recommended: true,
-    fixable: true,
+    fixable: "code",
   },
 
   defaultOptions: DEFAULT_OPTIONS,
