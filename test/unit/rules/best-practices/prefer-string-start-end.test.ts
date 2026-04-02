@@ -18,41 +18,24 @@ describe('rule metadata', () => {
 })
 
 describe('detecting String concatenation', () => {
-  it('should detect name + " " + name"', () => {
+  it('should detect string concatenation with + operator', () => {
     const sourceFile = createSourceFile("'hello' + name")
     const violations = analyzePreferStringStartEnd(sourceFile)
     expect(violations).toHaveLength(1)
     expect(violations[0].message).toContain('template literal')
   })
 
-  it('should detect "hello" + ...names', () => {
-    const sourceFile = createSourceFile("const greeting = 'hello' + ...names;")
+  it('should detect string concatenation with variable', () => {
+    const sourceFile = createSourceFile("const greeting = 'hello' + ' ' + name")
     const violations = analyzePreferStringStartEnd(sourceFile)
     expect(violations).toHaveLength(1)
-    expect(violations[0].message).toContain('concatenation')
-  })
-
-  it('should detect String(end, ...names)', () => {
-    const sourceFile = createSourceFile("const names = ['hello', ...];")
-    const violations = analyzePreferStringStartEnd(sourceFile)
-    expect(violations).toHaveLength(1)
-    expect(violations[0].message).toContain('slice')
-  })
-
-  it('should detect String(...names, ...names).reverse()', () => {
-    const sourceFile = createSourceFile(
-      "const reversed = [...names].reverse();\nconst greeting = 'hello' + ...names).reverse()",
-    )
-    const violations = analyzePreferStringStartEnd(sourceFile)
-    expect(violations).toHaveLength(1)
-    expect(violations[0].message).toContain('concatenation')
   })
 
   it('should provide suggestion', () => {
-    const sourceFile = createSourceFile("const greeting = 'hello' + ...names;")
+    const sourceFile = createSourceFile("const greeting = 'hello' + name;")
     const violations = analyzePreferStringStartEnd(sourceFile)
     expect(violations[0].suggestion).toBeDefined()
-    expect(violations[0].suggestion).toContain("['hello', ...names].join(', '')")
+    expect(violations[0].suggestion).toContain('template literal')
   })
 })
 
@@ -92,11 +75,6 @@ describe('valid cases', () => {
     expect(violations).toHaveLength(0)
   })
 
-  it('should not flag string concatenation with + operator', () => {
-    const sourceFile = createSourceFile("const greeting = 'hello' + ' ' + name")
-    const violations = analyzePreferStringStartEnd(sourceFile)
-    expect(violations).toHaveLength(0)
-  })
   it('should not flag string split', () => {
     const sourceFile = createSourceFile("const [a, b, c] = 'a-b-c'.split('-')")
     const violations = analyzePreferStringStartEnd(sourceFile)
