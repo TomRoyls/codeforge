@@ -13,6 +13,10 @@ export default class Clean extends Command {
       description: 'Clean all generated files and caches',
     },
     {
+      command: '<%= config.bin %> <%= command.id %> --dry-run',
+      description: 'Preview what would be cleaned without deleting',
+    },
+    {
       command: '<%= config.bin %> <%= command.id %> --cache',
       description: 'Clean only cache directories',
     },
@@ -30,6 +34,11 @@ export default class Clean extends Command {
     dist: Flags.boolean({
       default: false,
       description: 'Clean only dist directory',
+    }),
+    'dry-run': Flags.boolean({
+      char: 'd',
+      default: false,
+      description: 'Preview what would be cleaned without actually deleting',
     }),
   }
 
@@ -55,18 +64,27 @@ export default class Clean extends Command {
       )
     }
 
-    this.log(chalk.bold('Cleaning generated files...\n'))
+    if (flags['dry-run']) {
+      this.log(chalk.bold('Would clean the following:\n'))
+    } else {
+      this.log(chalk.bold('Cleaning generated files...\n'))
+    }
 
     let cleaned = 0
     for (const target of targets) {
       if (existsSync(target.path)) {
-        try {
-          await rm(target.path, { recursive: true })
-          this.log(chalk.green(`  ✓ ${target.name}`))
+        if (flags['dry-run']) {
+          this.log(chalk.cyan(`  • ${target.name}`))
           cleaned++
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'Unknown error'
-          this.log(chalk.red(`  ✗ ${target.name}: ${message}`))
+        } else {
+          try {
+            await rm(target.path, { recursive: true })
+            this.log(chalk.green(`  ✓ ${target.name}`))
+            cleaned++
+          } catch (error) {
+            const message = error instanceof Error ? error.message : 'Unknown error'
+            this.log(chalk.red(`  ✗ ${target.name}: ${message}`))
+          }
         }
       } else {
         this.log(chalk.gray(`  - ${target.name} (not found)`))
@@ -75,7 +93,11 @@ export default class Clean extends Command {
 
     this.log('')
     if (cleaned > 0) {
-      this.log(chalk.green(`Cleaned ${cleaned} director${cleaned === 1 ? 'y' : 'ies'}`))
+      if (flags['dry-run']) {
+        this.log(chalk.cyan(`Would clean ${cleaned} director${cleaned === 1 ? 'y' : 'ies'}`))
+      } else {
+        this.log(chalk.green(`Cleaned ${cleaned} director${cleaned === 1 ? 'y' : 'ies'}`))
+      }
     } else {
       this.log(chalk.yellow('Nothing to clean'))
     }
