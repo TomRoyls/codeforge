@@ -38,3 +38,4 @@ export * from './prefer-flat-map.js';
 
 export * from './prefer-flat-map.js';
 export * from './prefer-optional-chain.js';
+export * from './prefer-array-find.js';
