@@ -23,6 +23,8 @@ import chalk from 'chalk'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 
+import { CLIError, SystemError } from '../utils/errors.js'
+
 const execAsync = promisify(exec)
 
 interface OutdatedPackage {
@@ -117,33 +119,64 @@ export default class CheckUpdates extends Command {
 
       this.log(chalk.green('✓ Security vulnerabilities fixed!\n'))
     } catch (error) {
-      this.log(chalk.yellow('Could not fix vulnerabilities: '), (error as Error).message)
+      const err = error as Error
+      throw new SystemError('Failed to fix security vulnerabilities', {
+        cause: err,
+        code: 'E503',
+        context: { command: 'npm audit fix', errorMessage: err.message },
+      })
     }
   }
 
   private async getOutdatedPackages(): Promise<OutdatedPackage[]> {
-    const { stdout } = await execAsync('npm outdated --json || true')
-    if (!stdout.trim()) return []
+    try {
+      const { stdout } = await execAsync('npm outdated --json || true')
+      if (!stdout.trim()) return []
 
-    const data = JSON.parse(stdout)
-    return Object.entries(data).map(([name, info]) => ({
-      current: (info as { current: string }).current,
-      dependent: (info as { dependent: string }).dependent,
-      latest: (info as { latest: string }).latest,
-      name,
-      wanted: (info as { wanted: string }).wanted,
-    }))
+      const data = JSON.parse(stdout)
+      return Object.entries(data).map(([name, info]) => ({
+        current: (info as { current: string }).current,
+        dependent: (info as { dependent: string }).dependent,
+        latest: (info as { latest: string }).latest,
+        name,
+        wanted: (info as { wanted: string }).wanted,
+      }))
+    } catch (error) {
+      const err = error as Error
+      throw new SystemError('Failed to check for outdated packages', {
+        cause: err,
+        code: 'E504',
+        context: { command: 'npm outdated', errorMessage: err.message },
+      })
+    }
   }
 
   private async getSecurityAudit(): Promise<AuditMetadata> {
-    const { stdout } = await execAsync('npm audit --json 2>&1 || true')
-    const data = JSON.parse(stdout)
-    if (!data.metadata?.vulnerabilities) {
-      throw new Error('Invalid audit response format')
-    }
+    try {
+      const { stdout } = await execAsync('npm audit --json')
+      const data = JSON.parse(stdout)
+      if (!data.metadata?.vulnerabilities) {
+        throw new CLIError('Invalid audit response format: missing metadata', {
+          code: 'E004',
+          suggestions: [
+            'Ensure you are running this command in a Node.js project directory',
+            'Check that npm is properly installed',
+            'Try running "npm audit" manually to see the raw output',
+          ],
+        })
+      }
 
-    return {
-      vulnerabilities: data.metadata.vulnerabilities,
+      return {
+        vulnerabilities: data.metadata.vulnerabilities,
+      }
+    } catch (error) {
+      if (error instanceof CLIError) throw error
+      const err = error as Error
+      throw new SystemError('Failed to run security audit', {
+        cause: err,
+        code: 'E505',
+        context: { command: 'npm audit', errorMessage: err.message },
+      })
     }
   }
 
@@ -165,8 +198,17 @@ export default class CheckUpdates extends Command {
 
         this.log(chalk.dim(`\n  Run ${chalk.cyan('npm update')} to update dependencies`))
       }
-    } catch {
-      this.log(chalk.dim('Could not check for outdated dependencies (npm may not be available)'))
+    } catch (error) {
+      if (error instanceof SystemError) {
+        this.log(chalk.dim(error.message))
+        this.log(
+          chalk.dim(
+            `Could not check for outdated dependencies: ${error.cause?.message ?? 'unknown error'}`,
+          ),
+        )
+      } else {
+        throw error
+      }
     }
 
     if (includeSecurity) {
@@ -186,30 +228,44 @@ export default class CheckUpdates extends Command {
           if (info > 0) this.log(`  ${chalk.blue('Info')}: ${info}`)
           this.log(chalk.dim(`\n  Run ${chalk.cyan('npm audit fix')} to fix vulnerabilities`))
         }
-      } catch {
-        this.log(chalk.dim('Could not check for security vulnerabilities'))
+      } catch (error) {
+        if (error instanceof SystemError) {
+          this.log(chalk.dim(error.message))
+          this.log(
+            chalk.dim(
+              `Could not check for security vulnerabilities: ${error.cause?.message ?? 'unknown error'}`,
+            ),
+          )
+        } else {
+          throw error
+        }
       }
     }
   }
 
   private async runJson(includeSecurity: boolean): Promise<void> {
     const result = {
+      error: null as null | string,
       outdated: [] as OutdatedPackage[],
       security: null as AuditMetadata['vulnerabilities'] | null,
     }
 
     try {
       result.outdated = await this.getOutdatedPackages()
-    } catch {
-      // npm outdated failed
+    } catch (error) {
+      const err = error as Error
+      result.error = `Failed to check outdated packages: ${err.message}`
     }
 
     if (includeSecurity) {
       try {
         const audit = await this.getSecurityAudit()
         result.security = audit.vulnerabilities
-      } catch {
-        // npm audit failed
+      } catch (error) {
+        const err = error as Error
+        result.error = result.error
+          ? `${result.error}; Failed to check security: ${err.message}`
+          : `Failed to check security: ${err.message}`
       }
     }
 
@@ -226,7 +282,12 @@ export default class CheckUpdates extends Command {
 
       this.log(chalk.green('✓ Dependencies updated!\n'))
     } catch (error) {
-      this.log(chalk.yellow('Could not update dependencies: '), (error as Error).message)
+      const err = error as Error
+      throw new SystemError('Failed to update dependencies', {
+        cause: err,
+        code: 'E506',
+        context: { command: 'npm update', errorMessage: err.message },
+      })
     }
   }
 }
