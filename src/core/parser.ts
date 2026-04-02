@@ -1,52 +1,32 @@
 import { Project, type SourceFile } from 'ts-morph'
 import pLimit from 'p-limit'
 
+import { globalParseCache } from '../cache/parse-cache.js'
 import { logger } from '../utils/logger.js'
 
 export interface ParseResult {
   sourceFile: SourceFile
   filePath: string
   parseTime: number
+  cached: boolean
 }
 
-/**
- * Options for configuring the Parser
- * @property tsConfigFilePath - Path to the tsconfig.json file
- * @property skipFileDependencyResolution - Whether to skip resolving file dependencies
- * @property concurrency - Number of files to parse concurrently (default: 4)
- */
 export interface ParserOptions {
   tsConfigFilePath?: string
   skipFileDependencyResolution?: boolean
   concurrency?: number
 }
 
-/**
- * Parser class for parsing TypeScript source files using ts-morph
- */
 export class Parser {
   private project: Project | null = null
   private options: ParserOptions
   private concurrency: number
 
-  /**
-   * Creates a new Parser instance
-   * @param options - Configuration options for the parser
-   * @example
-   * const parser = new Parser({ tsConfigFilePath: './tsconfig.json' });
-   * const parserWithConcurrency = new Parser({ concurrency: 8 });
-   */
   constructor(options: ParserOptions = {}) {
     this.options = options
     this.concurrency = options.concurrency ?? 4
   }
 
-  /**
-   * Initializes the parser by creating a new ts-morph Project
-   * @returns Promise that resolves when initialization is complete
-   * @example
-   * await parser.initialize();
-   */
   async initialize(): Promise<void> {
     this.project = new Project({
       tsConfigFilePath: this.options.tsConfigFilePath,
@@ -59,13 +39,6 @@ export class Parser {
     })
   }
 
-  /**
-   * Parses a single TypeScript source file
-   * @param filePath - Path to the TypeScript file to parse
-   * @returns ParseResult containing the parsed source file, file path, and parse time
-   * @example
-   * const result = await parser.parseFile('./src/index.ts');
-   */
   async parseFile(filePath: string): Promise<ParseResult> {
     if (!this.project) {
       await this.initialize()
@@ -73,26 +46,34 @@ export class Parser {
 
     const startTime = performance.now()
 
+    const cachedSourceFile = globalParseCache.get(filePath)
+    if (cachedSourceFile) {
+      const parseTime = performance.now() - startTime
+      logger.debug(`Cache HIT for ${filePath}`)
+      return {
+        cached: true,
+        filePath,
+        parseTime,
+        sourceFile: cachedSourceFile,
+      }
+    }
+
+    logger.debug(`Cache MISS for ${filePath}`)
     const sourceFile = this.project!.addSourceFileAtPath(filePath)
+
+    globalParseCache.set(filePath, sourceFile)
 
     const parseTime = performance.now() - startTime
 
     return {
-      sourceFile,
+      cached: false,
       filePath,
       parseTime,
+      sourceFile,
     }
   }
 
-  /**
-   * Parses multiple TypeScript source files
-   * @param filePaths - Array of paths to TypeScript files to parse
-   * @returns Array of ParseResults for successfully parsed files (errors are logged but don't stop processing)
-   * @example
-   * const results = await parser.parseFiles(['./src/index.ts', './src/utils.ts']);
-   */
   async parseFiles(filePaths: string[]): Promise<ParseResult[]> {
-    // Ensure initialization
     if (!this.project) {
       await this.initialize()
     }
@@ -113,28 +94,13 @@ export class Parser {
       ),
     )
 
-    // Filter out null results from failed parses
     return results.filter((result): result is ParseResult => result !== null)
   }
 
-  /**
-   * Gets the underlying ts-morph Project instance
-   * @returns The Project instance or null if not initialized
-   * @example
-   * const project = parser.getProject();
-   * if (project) {
-   *   const sourceFiles = project.getSourceFiles();
-   * }
-   */
   getProject(): Project | null {
     return this.project
   }
 
-  /**
-   * Cleans up resources by clearing the project reference
-   * @example
-   * parser.dispose();
-   */
   dispose(): void {
     if (this.project) {
       this.project = null

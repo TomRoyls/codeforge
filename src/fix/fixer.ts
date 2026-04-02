@@ -1,3 +1,26 @@
+/**
+ * Fixer module - applies automatic fixes to source code violations.
+ *
+ * This module provides the core functionality for applying automatic fixes to
+ * code violations detected by rules. It handles conflict detection, range-based
+ * text manipulation, and dry-run mode for previewing changes.
+ *
+ * @module fix/fixer
+ * @example
+ * ```typescript
+ * import { applyFixesToFile, type RuleWithFix } from './fix/fixer.js'
+ *
+ * const rulesWithFixes = new Map<string, RuleWithFix>()
+ * rulesWithFixes.set('prefer-const', {
+ *   id: 'prefer-const',
+ *   fix: (context) => { ... },
+ *   priority: 1
+ * })
+ *
+ * const report = applyFixesToFile(sourceFile, violations, rulesWithFixes, false)
+ * console.log(`Applied ${report.fixesApplied} fixes`)
+ * ```
+ */
 import type { SourceFile } from 'ts-morph'
 
 import type { RuleViolation } from '../ast/visitor.js'
@@ -5,6 +28,15 @@ import type { FileFixReport, FixableViolation, FixReport, FixResult, TextChange 
 
 import { createFixContext } from './context.js'
 
+/**
+ * Function type for applying a fix to a specific violation.
+ *
+ * @param context - The fix context containing source file, violation, and node lookup
+ * @param context.sourceFile - The TypeScript source file being fixed
+ * @param context.violation - The rule violation to fix
+ * @param context.getNodeByRange - Helper to get AST node at a specific range
+ * @returns The fix result containing changes, or null if fix cannot be applied
+ */
 export type FixFunction = (context: {
   getNodeByRange: (range: {
     end: { column: number; line: number }
@@ -14,12 +46,41 @@ export type FixFunction = (context: {
   violation: RuleViolation
 }) => FixResult | null
 
+/**
+ * Represents a rule with automatic fix capability.
+ *
+ * @property id - Unique identifier for the rule
+ * @property fix - Function that applies the fix
+ * @property priority - Fix priority (lower values = higher priority)
+ */
 export interface RuleWithFix {
   fix: FixFunction
   id: string
   priority: number
 }
 
+/**
+ * Applies automatic fixes to all fixable violations in a single source file.
+ *
+ * This function:
+ * 1. Identifies which violations have associated fixes
+ * 2. Sorts fixes by priority (higher priority first)
+ * 3. Detects and skips conflicting fixes (overlapping ranges)
+ * 4. Applies non-conflicting fixes to the source file
+ *
+ * @param sourceFile - The TypeScript source file to fix
+ * @param violations - Array of violations detected in the file
+ * @param rulesWithFixes - Map of rule IDs to their fix implementations
+ * @param dryRun - If true, preview changes without modifying the file
+ * @returns A detailed report of fixes applied and conflicts detected
+ *
+ * @example
+ * ```typescript
+ * const report = applyFixesToFile(sourceFile, violations, rulesWithFixes, true)
+ * console.log(`Would apply ${report.fixesApplied} fixes`)
+ * console.log(`Skipped ${report.fixesSkipped} conflicting fixes`)
+ * ```
+ */
 export function applyFixesToFile(
   sourceFile: SourceFile,
   violations: RuleViolation[],
@@ -111,6 +172,27 @@ export function applyFixesToFile(
   }
 }
 
+/**
+ * Applies automatic fixes to violations across multiple source files.
+ *
+ * Iterates through all provided files and applies fixes using the provided
+ * rule fix implementations. Aggregates results into a comprehensive report.
+ *
+ * @param filesWithViolations - Array of source files with their violations
+ * @param rulesWithFixes - Map of rule IDs to their fix implementations
+ * @param dryRun - If true, preview changes without modifying files
+ * @returns Aggregated report of all fixes applied across files
+ *
+ * @example
+ * ```typescript
+ * const filesWithViolations = [
+ *   { sourceFile: file1, violations: violations1 },
+ *   { sourceFile: file2, violations: violations2 }
+ * ]
+ * const report = applyFixesToFiles(filesWithViolations, rulesWithFixes, false)
+ * console.log(`Processed ${report.filesProcessed} files`)
+ * ```
+ */
 export function applyFixesToFiles(
   filesWithViolations: Array<{ sourceFile: SourceFile; violations: RuleViolation[] }>,
   rulesWithFixes: Map<string, RuleWithFix>,
@@ -173,6 +255,9 @@ function applyTextChanges(sourceFile: SourceFile, changes: TextChange[]): void {
   }
 }
 
+/**
+ * Options for creating a text change in a source file.
+ */
 export interface TextChangeOptions {
   endColumn: number
   endLine: number
@@ -182,6 +267,28 @@ export interface TextChangeOptions {
   startLine: number
 }
 
+/**
+ * Creates a text change object from line/column coordinates.
+ *
+ * Converts line and column positions to numeric character positions and extracts
+ * the old text being replaced. This is useful when creating fixes that need to
+ * replace specific ranges in the source file.
+ *
+ * @param options - The change options including source file, range, and new text
+ * @returns A text change object ready to be applied to the source file
+ *
+ * @example
+ * ```typescript
+ * const change = createTextChange({
+ *   sourceFile,
+ *   startLine: 10,
+ *   startColumn: 5,
+ *   endLine: 10,
+ *   endColumn: 15,
+ *   newText: 'const'
+ * })
+ * ```
+ */
 export function createTextChange(options: TextChangeOptions): TextChange {
   const { endColumn, endLine, newText, sourceFile, startColumn, startLine } = options
   const fullText = sourceFile.getFullText()

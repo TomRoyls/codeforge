@@ -23,6 +23,7 @@ import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import { join, resolve } from 'node:path'
+import ora from 'ora'
 
 import { type RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
@@ -182,18 +183,29 @@ export default class Debt extends Command {
     const allViolations: RuleViolation[] = []
     const filesToProcess = files.slice(0, MAX_FILES_TO_PROCESS)
 
+    const spinner = ora('Analyzing technical debt...').start()
+    let completedCount = 0
+    const totalFiles = filesToProcess.length
+
     const parseResults = await Promise.all(
       filesToProcess.map(async (file) => {
         try {
-          return {
+          const result = {
             filePath: file.path,
             parseResult: await parser.parseFile(file.absolutePath),
           }
+          completedCount++
+          spinner.text = `Analyzing technical debt... (${completedCount}/${totalFiles})`
+          return result
         } catch {
+          completedCount++
+          spinner.text = `Analyzing technical debt... (${completedCount}/${totalFiles})`
           return null
         }
       }),
     )
+
+    spinner.succeed(`Analyzed ${totalFiles} files`)
 
     for (const result of parseResults) {
       if (!result) continue

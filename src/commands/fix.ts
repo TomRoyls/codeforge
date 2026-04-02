@@ -21,6 +21,7 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'
+import ora from 'ora'
 import os from 'node:os'
 import pLimit from 'p-limit'
 
@@ -44,6 +45,7 @@ interface FileFixResult {
 }
 
 interface FixFlags {
+  ci: boolean
   concurrency: number
   config: string | undefined
   'dry-run': boolean
@@ -327,10 +329,26 @@ export default class Fix extends Command {
     totalFixesSkipped: number
   }> {
     const limit = pLimit(flags.concurrency)
+    const spinner = flags.ci ? null : ora('Fixing files...').start()
+    let completedCount = 0
+    const totalFiles = discoveredFiles.length
 
     const results = await Promise.all(
-      discoveredFiles.map((file) => limit(async () => this.processFile(file, context))),
+      discoveredFiles.map((file) =>
+        limit(async () => {
+          const result = await this.processFile(file, context)
+          completedCount++
+          if (spinner) {
+            spinner.text = `Fixing files... (${completedCount}/${totalFiles})`
+          }
+          return result
+        }),
+      ),
     )
+
+    if (spinner) {
+      spinner.succeed(`Processed ${totalFiles} files`)
+    }
 
     let totalFixesApplied = 0
     let totalFixesSkipped = 0

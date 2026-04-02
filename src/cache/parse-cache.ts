@@ -1,10 +1,13 @@
+import { statSync } from 'node:fs'
+
 import { type SourceFile } from 'ts-morph'
+
 import { LRUCache } from '../utils/lru-cache.js'
 import { logger } from '../utils/logger.js'
 
 export interface CachedSourceFile {
   sourceFile: SourceFile
-  contentHash: string
+  fileStats: { mtime: number; size: number }
   timestamp: number
 }
 
@@ -23,27 +26,49 @@ export class ParseCache {
     })
   }
 
-  get(filePath: string, contentHash: string): SourceFile | undefined {
+  get(filePath: string): SourceFile | undefined {
     const cached = this.cache.get(filePath)
-
-    if (cached && cached.contentHash === contentHash) {
-      this.hits++
-      logger.debug(`Parse cache HIT for ${filePath}`)
-      return cached.sourceFile
+    if (!cached) {
+      this.misses++
+      logger.debug(`Parse cache MISS for ${filePath}`)
+      return undefined
     }
 
-    this.misses++
-    logger.debug(`Parse cache MISS for ${filePath}`)
-    return undefined
+    try {
+      const stats = statSync(filePath)
+      const currentStats = { mtime: stats.mtimeMs, size: stats.size }
+
+      if (
+        cached.fileStats.mtime === currentStats.mtime &&
+        cached.fileStats.size === currentStats.size
+      ) {
+        this.hits++
+        logger.debug(`Parse cache HIT for ${filePath}`)
+        return cached.sourceFile
+      }
+
+      this.misses++
+      logger.debug(`Parse cache MISS (stale) for ${filePath}`)
+      return undefined
+    } catch {
+      this.misses++
+      logger.debug(`Parse cache MISS (stat error) for ${filePath}`)
+      return undefined
+    }
   }
 
-  set(filePath: string, sourceFile: SourceFile, contentHash: string): void {
-    this.cache.set(filePath, {
-      sourceFile,
-      contentHash,
-      timestamp: Date.now(),
-    })
-    logger.debug(`Parse cache SET for ${filePath}`)
+  set(filePath: string, sourceFile: SourceFile): void {
+    try {
+      const stats = statSync(filePath)
+      this.cache.set(filePath, {
+        sourceFile,
+        fileStats: { mtime: stats.mtimeMs, size: stats.size },
+        timestamp: Date.now(),
+      })
+      logger.debug(`Parse cache SET for ${filePath}`)
+    } catch (error) {
+      logger.debug(`Parse cache SET failed for ${filePath}: ${error}`)
+    }
   }
 
   has(filePath: string): boolean {

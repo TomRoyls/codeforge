@@ -24,6 +24,7 @@ import { readFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
+import ora from 'ora'
 import pLimit from 'p-limit'
 
 import type { AnalysisResult, Reporter, ReporterOptions } from '../reporters/types.js'
@@ -265,6 +266,9 @@ export default class Report extends Command {
     await parser.initialize()
 
     const limit = pLimit(concurrency)
+    const spinner = ora('Analyzing files...').start()
+    let completedCount = 0
+    const totalFiles = discoveredFiles.length
 
     const fileResults = await Promise.all(
       discoveredFiles.map((file) =>
@@ -274,6 +278,9 @@ export default class Report extends Command {
           try {
             const parseResult = await parser.parseFile(file.absolutePath)
             const violations = registry.runRules(parseResult.sourceFile)
+
+            completedCount++
+            spinner.text = `Analyzing files... (${completedCount}/${totalFiles})`
 
             return {
               filePath: file.path,
@@ -295,11 +302,15 @@ export default class Report extends Command {
               })),
             }
           } catch {
+            completedCount++
+            spinner.text = `Analyzing files... (${completedCount}/${totalFiles})`
             return null
           }
         }),
       ),
     )
+
+    spinner.succeed(`Analyzed ${totalFiles} files`)
 
     parser.dispose()
 

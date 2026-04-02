@@ -151,15 +151,22 @@ export default class Score extends Command {
     const allViolations: RuleViolation[] = []
     let totalFunctions = 0
     let documentedFunctions = 0
+    let completedCount = 0
+    const totalFiles = filesToProcess.length
 
     const parseResults = await Promise.all(
       filesToProcess.map(async (file) => {
         try {
-          return {
+          const result = {
             filePath: file.path,
             parseResult: await parser.parseFile(file.absolutePath),
           }
+          completedCount++
+          spinner.text = `Processing files... (${completedCount}/${totalFiles})`
+          return result
         } catch {
+          completedCount++
+          spinner.text = `Processing files... (${completedCount}/${totalFiles})`
           return null
         }
       }),
