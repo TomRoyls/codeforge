@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/codeforge-dev/codeforge#readme
+    about: Check the documentation before opening an issue
+  - name: 💬 Discussions
+    url: https://github.com/codeforge-dev/codeforge/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🔒 Security Issues
+    url: https://github.com/codeforge-dev/codeforge/security/policy
+    about: Report security vulnerabilities privately
