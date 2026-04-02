@@ -1,3 +1,23 @@
+/**
+ * Health command - displays project health score and recommendations.
+ *
+ * Calculates an overall health score for the codebase based on multiple factors
+ * including complexity, correctness, security, documentation, and test coverage.
+ *
+ * Features:
+ * - Multi-dimensional health scoring
+ * - Letter grade assignment (A-F)
+ * - Category breakdowns
+ * - Improvement recommendations
+ * - Test coverage estimation
+ *
+ * @example
+ * ```bash
+ * codeforge health
+ * codeforge health src/
+ * codeforge health --json
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

@@ -1,3 +1,23 @@
+/**
+ * Watch command - watches files for changes and analyzes on save.
+ *
+ * Monitors source files for modifications and automatically runs CodeForge
+ * analysis when files are saved, providing real-time feedback.
+ *
+ * Features:
+ * - Real-time file monitoring
+ * - Configurable debounce time to prevent excessive analysis
+ * - Custom rule filtering
+ * - Graceful shutdown on SIGINT/SIGTERM
+ * - Violation summary per file change
+ *
+ * @example
+ * ```bash
+ * codeforge watch
+ * codeforge watch src/
+ * codeforge watch --debounce 500
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 

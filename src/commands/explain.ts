@@ -1,3 +1,22 @@
+/**
+ * Explain command - explains a specific rule in detail.
+ *
+ * Provides comprehensive documentation for individual CodeForge rules including
+ * descriptions, severity, fixable status, examples, and related rules.
+ *
+ * Features:
+ * - Rule metadata display (severity, category, recommended status)
+ * - Code examples (good and bad patterns)
+ * - Best practice guidelines
+ * - Related rule suggestions
+ * - Links to detailed documentation
+ *
+ * @example
+ * ```bash
+ * codeforge explain no-eval
+ * codeforge explain prefer-const
+ * ```
+ */
 import { Args, Command } from '@oclif/core'
 import chalk from 'chalk'
 

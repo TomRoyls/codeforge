@@ -65,7 +65,6 @@ export class Parser {
    * @returns ParseResult containing the parsed source file, file path, and parse time
    * @example
    * const result = await parser.parseFile('./src/index.ts');
-   * console.log(`Parsed in ${result.parseTime}ms`);
    */
   async parseFile(filePath: string): Promise<ParseResult> {
     if (!this.project) {
@@ -91,7 +90,6 @@ export class Parser {
    * @returns Array of ParseResults for successfully parsed files (errors are logged but don't stop processing)
    * @example
    * const results = await parser.parseFiles(['./src/index.ts', './src/utils.ts']);
-   * console.log(`Parsed ${results.length} files`);
    */
   async parseFiles(filePaths: string[]): Promise<ParseResult[]> {
     // Ensure initialization

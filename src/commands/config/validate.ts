@@ -1,3 +1,22 @@
+/**
+ * Validate command - validates CodeForge configuration file.
+ *
+ * Validates the syntax and structure of a CodeForge configuration file,
+ * checking for valid rules, file patterns, and other settings.
+ *
+ * Features:
+ * - Configuration file detection (multiple formats supported)
+ * - Rule validation against available rules
+ * - File pattern validation
+ * - Ignore pattern validation
+ * - Error reporting with suggestions
+ *
+ * @example
+ * ```bash
+ * codeforge config validate
+ * codeforge config validate --config .codeforgerc.json
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import path from 'node:path'

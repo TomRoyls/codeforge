@@ -1,3 +1,23 @@
+/**
+ * Analyze command - analyzes code for violations and issues.
+ *
+ * This is the main CodeForge command that runs analysis on source files
+ * to detect code quality issues, style violations, and potential bugs.
+ *
+ * Features:
+ * - Multi-file parallel analysis
+ * - Support for multiple output formats (console, JSON, HTML, etc.)
+ * - Auto-fix capability for certain violations
+ * - Git integration for staged file analysis
+ * - Configurable rule sets and severity levels
+ *
+ * @example
+ * ```bash
+ * codeforge analyze src/
+ * codeforge analyze --staged
+ * codeforge analyze --format json --output report.json
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'

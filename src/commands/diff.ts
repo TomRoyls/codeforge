@@ -1,3 +1,22 @@
+/**
+ * Diff command - compares violations between git branches or commits.
+ *
+ * Analyzes two git references (branches or commits) and shows how violations
+ * have changed between them, useful for code review and regression detection.
+ *
+ * Features:
+ * - Comparison between any two git refs
+ * - Added/removed/improved violation tracking
+ * - Net change calculation
+ * - Verbose mode for detailed changes
+ *
+ * @example
+ * ```bash
+ * codeforge diff
+ * codeforge diff main feature-branch
+ * codeforge diff abc123 def456
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { execSync } from 'node:child_process'

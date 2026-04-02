@@ -1,3 +1,23 @@
+/**
+ * Cache command - manages CodeForge cache.
+ *
+ * Provides cache management functionality including status display and cache clearing,
+ * with support for custom cache paths.
+ *
+ * Features:
+ * - Cache status display with size information
+ * - Cache clearing functionality
+ * - Custom cache path support
+ * - Size formatting (B, KB, MB, GB)
+ *
+ * @example
+ * ```bash
+ * codeforge cache
+ * codeforge cache status
+ * codeforge cache clear
+ * codeforge cache --path ./custom-cache
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'

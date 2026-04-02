@@ -1,3 +1,24 @@
+/**
+ * Rules command - lists all available CodeForge rules.
+ *
+ * Displays information about all available CodeForge rules, including categories,
+ * descriptions, fixable status, and recommendations.
+ *
+ * Features:
+ * - Table or JSON output formats
+ * - Category filtering
+ * - Fixable-only filtering
+ * - Keyword search in descriptions
+ * - Recommended rule highlighting
+ *
+ * @example
+ * ```bash
+ * codeforge rules
+ * codeforge rules --category complexity
+ * codeforge rules --fixable
+ * codeforge rules --search async
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 

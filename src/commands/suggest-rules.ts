@@ -1,3 +1,23 @@
+/**
+ * SuggestRules command - analyzes codebase and suggests beneficial rules.
+ *
+ * Scans source files for code patterns and suggests which CodeForge rules
+ * would be most beneficial to enable, based on detected patterns and usage.
+ *
+ * Features:
+ * - Pattern-based rule suggestion detection
+ * - Confidence and impact scoring
+ * - Estimated violation counts
+ * - Categorization and prioritization
+ * - Multiple output formats (console, JSON)
+ *
+ * @example
+ * ```bash
+ * codeforge suggest-rules
+ * codeforge suggest-rules --top 10
+ * codeforge suggest-rules --impact high
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

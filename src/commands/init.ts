@@ -1,3 +1,22 @@
+/**
+ * Init command - initializes a new CodeForge configuration file.
+ *
+ * Creates a CodeForge configuration file (.codeforgerc.json or codeforge.config.js)
+ * in the specified directory with default settings for code analysis.
+ *
+ * Features:
+ * - Interactive mode for custom rule selection
+ * - Support for both JSON and JavaScript config formats
+ * - Minimal mode for quick setup with recommended rules only
+ * - TypeScript-aware defaults
+ *
+ * @example
+ * ```bash
+ * codeforge init
+ * codeforge init --interactive
+ * codeforge init --format js
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

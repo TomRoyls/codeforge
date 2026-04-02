@@ -1,3 +1,23 @@
+/**
+ * GeneratePlugin command - generates a new CodeForge plugin scaffold.
+ *
+ * Creates a complete plugin structure with package.json, TypeScript config,
+ * sample rule implementation, tests, and documentation.
+ *
+ * Features:
+ * - TypeScript and JavaScript plugin support
+ * - Sample rule scaffolding
+ * - Complete project structure (src, test, dist)
+ * - Custom rule name specification
+ * - Readme and .gitignore generation
+ *
+ * @example
+ * ```bash
+ * codeforge generate-plugin my-plugin
+ * codeforge generate-plugin my-plugin --typescript
+ * codeforge generate-plugin my-plugin --rule custom-rule
+ * ```
+ */
 /* eslint-disable perfectionist/sort-classes */
 /* eslint-disable perfectionist/sort-objects */
 import { Args, Command, Flags } from '@oclif/core'

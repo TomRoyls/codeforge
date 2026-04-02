@@ -1,3 +1,23 @@
+/**
+ * Dependencies command - analyzes and visualizes module dependencies.
+ *
+ * Builds a dependency graph of the codebase to identify circular dependencies,
+ * external module usage, and module relationships.
+ *
+ * Features:
+ * - Circular dependency detection
+ * - External/internal module separation
+ * - Dependency tree visualization
+ * - Orphan file detection
+ * - DOT format output for GraphViz
+ *
+ * @example
+ * ```bash
+ * codeforge dependencies
+ * codeforge dependencies --circular
+ * codeforge dependencies --tree
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

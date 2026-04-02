@@ -1,3 +1,22 @@
+/**
+ * Report command - generates analysis reports in various formats.
+ *
+ * Creates formatted reports from analysis results in multiple output formats
+ * including console, HTML, JSON, JUnit, Markdown, SARIF, and GitLab.
+ *
+ * Features:
+ * - Multiple output formats (console, HTML, JSON, JUnit, Markdown, SARIF, GitLab)
+ * - Load from cached analysis JSON files
+ * - Auto-open HTML reports in browser
+ * - Parallel file processing
+ *
+ * @example
+ * ```bash
+ * codeforge report
+ * codeforge report --format html --output report.html
+ * codeforge report --format sarif --output results.sarif
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import { exec } from 'node:child_process'
 import { existsSync } from 'node:fs'

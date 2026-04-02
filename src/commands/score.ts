@@ -1,3 +1,23 @@
+/**
+ * Score command - calculates aggregate quality score for a codebase.
+ *
+ * Analyzes source files and calculates a weighted quality score based on
+ * violations across different categories: complexity, correctness, security, and patterns.
+ *
+ * Features:
+ * - Weighted scoring across multiple categories
+ * - Category-level breakdowns
+ * - Letter grade assignment (A-F)
+ * - Top problematic files identification
+ * - Improvement suggestions
+ *
+ * @example
+ * ```bash
+ * codeforge score
+ * codeforge score src/
+ * codeforge score --json
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

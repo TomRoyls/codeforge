@@ -1,3 +1,22 @@
+/**
+ * OrganizeImports command - organizes and sorts imports in TypeScript files.
+ *
+ * Analyzes import statements in TypeScript files and reorganizes them according
+ * to best practices: external imports first, then internal, then relative.
+ *
+ * Features:
+ * - Import grouping (external, internal, relative)
+ * - Alphabetical sorting within groups
+ * - Dry-run mode for previewing changes
+ * - Configurable sort and group options
+ *
+ * @example
+ * ```bash
+ * codeforge organize-imports
+ * codeforge organize-imports src/
+ * codeforge organize-imports --dry-run
+ * ```
+ */
 import type { ImportDeclaration, SourceFile } from 'ts-morph'
 
 import { Args, Command, Flags } from '@oclif/core'

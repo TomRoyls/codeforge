@@ -1,3 +1,23 @@
+/**
+ * CheckUpdates command - checks for outdated dependencies and security vulnerabilities.
+ *
+ * Analyzes project dependencies to identify outdated packages and potential
+ * security vulnerabilities, with options to update or fix automatically.
+ *
+ * Features:
+ * - Outdated package detection
+ * - Security vulnerability auditing
+ * - Automatic dependency updates
+ * - Automatic vulnerability fixes
+ * - JSON output for CI/CD integration
+ *
+ * @example
+ * ```bash
+ * codeforge check-updates
+ * codeforge check-updates --update
+ * codeforge check-updates --fix-security
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { exec } from 'node:child_process'

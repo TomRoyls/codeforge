@@ -881,7 +881,7 @@ describe('Analyze Command', () => {
   })
 
   describe('--fix flag integration', () => {
-    test.skip('applies fixes when --fix flag is set', async () => {
+    test('applies fixes when --fix flag is set', async () => {
       vi.resetModules()
 
       const mockSaveSync = vi.fn()
@@ -920,34 +920,37 @@ describe('Analyze Command', () => {
         }),
       }))
 
-      vi.doMock('../../../src/fix/fixer.js', () => ({
-        applyFixesToFile: vi.fn().mockReturnValue({
-          changes: [
-            {
-              start: 0,
-              end: 10,
-              newText: 'fixed code',
-              oldText: 'old code',
-            },
-          ],
-          conflicts: [],
-          filePath: '/test/file.ts',
+      vi.doMock('../../../src/utils/command-helpers.js', () => ({
+        setupRuleRegistry: vi.fn(() => ({
+          register: vi.fn(),
+          runRules: vi.fn().mockReturnValue([createMockViolation({ ruleId: 'fixable-rule' })]),
+          getEnabledRules: vi.fn().mockReturnValue([]),
+          getRule: vi.fn(),
+          disable: vi.fn(),
+        })),
+        applyFixesToFiles: vi.fn().mockResolvedValue({
           fixesApplied: 1,
           fixesSkipped: 0,
         }),
-      }))
-
-      const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
-      ;(RuleRegistry as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-        register: vi.fn(),
-        runRules: vi.fn().mockReturnValue([createMockViolation({ ruleId: 'fixable-rule' })]),
-        getEnabledRules: vi.fn().mockReturnValue([]),
-        getRule: vi.fn(),
-        disable: vi.fn(),
+        loadCommandConfig: vi.fn().mockResolvedValue({}),
+        normalizeFlags: (flags: unknown) => ({
+          ciMode: false,
+          concurrency: 4,
+          dryRun: false,
+          failOnWarnings: false,
+          format: flags.format ?? 'console',
+          maxWarnings: -1,
+          output: flags.output,
+          quiet: flags.quiet ?? false,
+          shouldFix: flags.fix ?? false,
+          stagedMode: false,
+          verbose: flags.verbose ?? false,
+        }),
+        filterFilesByExtension: (files: unknown) => files,
       }))
 
       const { default: AnalyzeCmd } = await import('../../../src/commands/analyze.js')
-      const { applyFixesToFile } = await import('../../../src/fix/fixer.js')
+      const { applyFixesToFiles } = await import('../../../src/utils/command-helpers.js')
 
       mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
 
@@ -980,11 +983,11 @@ describe('Analyze Command', () => {
         /* empty */
       }
 
-      expect(applyFixesToFile).toHaveBeenCalled()
+      expect(applyFixesToFiles).toHaveBeenCalled()
       expect(mockSaveSync).toHaveBeenCalled()
     })
 
-    test.skip('does not save file in dry-run mode', async () => {
+    test('does not save file in dry-run mode', async () => {
       vi.resetModules()
 
       const mockSaveSync = vi.fn()
@@ -1181,7 +1184,7 @@ describe('Analyze Command', () => {
   })
 
   describe('applyFixes with conflicts', () => {
-    test.skip('logs conflicts when verbose is true', async () => {
+    test('logs conflicts when verbose is true', async () => {
       vi.resetModules()
 
       const { logger } = await import('../../../src/utils/logger.js')
@@ -1385,7 +1388,7 @@ describe('Analyze Command', () => {
       expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('Fix conflict in'))
     })
 
-    test.skip('continues on fix error', async () => {
+    test('continues on fix error', async () => {
       vi.resetModules()
 
       const { logger } = await import('../../../src/utils/logger.js')
@@ -1474,8 +1477,7 @@ describe('Analyze Command', () => {
   })
 
   describe('--ci flag integration', () => {
-    // Skipping due to complex mock setup with vi.resetModules() that breaks mock state
-    test.skip('sets json format when ci is true and format is console', async () => {
+    test('sets json format when ci is true and format is console', async () => {
       const { Reporter } = await import('../../../src/core/reporter.js')
       mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
 
@@ -1510,8 +1512,7 @@ describe('Analyze Command', () => {
       expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ format: 'json' }))
     })
 
-    // Skipping due to complex mock setup with vi.resetModules() that breaks mock state
-    test.skip('keeps specified format when ci is true and format is not console', async () => {
+    test('keeps specified format when ci is true and format is not console', async () => {
       const { Reporter } = await import('../../../src/core/reporter.js')
       mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
 
@@ -1546,8 +1547,7 @@ describe('Analyze Command', () => {
       expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ format: 'sarif' }))
     })
 
-    // Skipping due to complex mock setup with vi.resetModules() that breaks mock state
-    test.skip('sets quiet mode when ci is true', async () => {
+    test('sets quiet mode when ci is true', async () => {
       const { Reporter } = await import('../../../src/core/reporter.js')
       mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
 
@@ -1582,8 +1582,7 @@ describe('Analyze Command', () => {
       expect(Reporter).toHaveBeenCalledWith(expect.objectContaining({ quiet: true }))
     })
 
-    // Skipping due to complex mock setup with vi.resetModules() that breaks mock state
-    test.skip('sets color false when ci is true', async () => {
+    test('sets color false when ci is true', async () => {
       const { Reporter } = await import('../../../src/core/reporter.js')
       mockDiscoverFiles.mockResolvedValue([createMockFile('test.ts')])
 

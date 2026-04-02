@@ -1,3 +1,23 @@
+/**
+ * Docs command - generates markdown documentation for all rules.
+ *
+ * Creates comprehensive markdown documentation for CodeForge rules, with options
+ * to filter by category and output to a custom directory.
+ *
+ * Features:
+ * - Per-rule documentation with examples
+ * - Category-based filtering
+ * - Badge generation (recommended, fixable, deprecated)
+ * - Index and TOC generation
+ * - Single-file or multi-file output modes
+ *
+ * @example
+ * ```bash
+ * codeforge docs
+ * codeforge docs --category complexity
+ * codeforge docs --single
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import * as fs from 'node:fs/promises'
 import { join, resolve } from 'node:path'

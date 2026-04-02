@@ -1,3 +1,23 @@
+/**
+ * Fix command - automatically fixes violations in source files.
+ *
+ * Applies automatic fixes to code violations where possible, modifying source
+ * files directly or previewing changes in dry-run mode.
+ *
+ * Features:
+ * - Automatic application of safe fixes
+ * - Dry-run mode for previewing changes
+ * - Parallel file processing
+ * - Conflict detection between rule fixes
+ * - Safe-only mode for conservative fixes
+ *
+ * @example
+ * ```bash
+ * codeforge fix
+ * codeforge fix --dry-run
+ * codeforge fix --rules prefer-const,no-eval
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'

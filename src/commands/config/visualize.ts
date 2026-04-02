@@ -1,3 +1,22 @@
+/**
+ * Visualize command - visualizes current CodeForge configuration.
+ *
+ * Displays the active CodeForge configuration as a structured tree,
+ * showing merged sources and final configuration values.
+ *
+ * Features:
+ * - Tree-structure visualization
+ * - Configuration source tracking (file, env, defaults)
+ * - JSON output format
+ * - Source-level breakdown display
+ *
+ * @example
+ * ```bash
+ * codeforge config visualize
+ * codeforge config visualize --json
+ * codeforge config visualize --sources
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 

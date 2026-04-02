@@ -1,3 +1,22 @@
+/**
+ * Precommit command - sets up git pre-commit hooks to run CodeForge.
+ *
+ * Creates or updates git pre-commit hooks that automatically run CodeForge
+ * analysis before commits, supporting both git native hooks and husky.
+ *
+ * Features:
+ * - Git native pre-commit hook support
+ * - Husky hook support
+ * - Custom command configuration
+ * - Force overwrite capability
+ *
+ * @example
+ * ```bash
+ * codeforge precommit
+ * codeforge precommit --installer husky
+ * codeforge precommit --force
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

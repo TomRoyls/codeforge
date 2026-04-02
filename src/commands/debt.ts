@@ -1,3 +1,23 @@
+/**
+ * Debt command - tracks and analyzes technical debt in a codebase.
+ *
+ * Calculates technical debt based on violations and estimates the time cost
+ * to address the debt, with trend tracking over time.
+ *
+ * Features:
+ * - Weighted debt scoring by category
+ * - Time cost estimation (hours/weeks/months)
+ * - Historical trend tracking
+ * - Improvement recommendations
+ * - Debt snapshot saving for comparison
+ *
+ * @example
+ * ```bash
+ * codeforge debt
+ * codeforge debt --history
+ * codeforge debt --save
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

@@ -1,3 +1,23 @@
+/**
+ * Stats command - displays codebase statistics and metrics.
+ *
+ * Analyzes source files to collect metrics like lines of code, complexity,
+ * file sizes, and code structure counts (classes, functions, etc.).
+ *
+ * Features:
+ * - File-by-file statistics
+ * - Aggregate metrics (LOC, complexity, size)
+ * - Code structure counting (classes, functions, interfaces, etc.)
+ * - Multiple output formats (table, JSON, CSV)
+ * - Sortable results
+ *
+ * @example
+ * ```bash
+ * codeforge stats
+ * codeforge stats --top 10
+ * codeforge stats --format json --output stats.json
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

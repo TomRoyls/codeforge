@@ -1,3 +1,22 @@
+/**
+ * Benchmark command - measures rule performance on a codebase.
+ *
+ * Runs performance analysis on CodeForge rules to identify slow or inefficient
+ * rules, helping optimize analysis speed.
+ *
+ * Features:
+ * - Measure rule execution time across multiple iterations
+ * - Compare relative performance of different rules
+ * - Warmup iterations for accurate measurements
+ * - JSON output for further analysis
+ *
+ * @example
+ * ```bash
+ * codeforge benchmark
+ * codeforge benchmark --top 10
+ * codeforge benchmark --iterations 5
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

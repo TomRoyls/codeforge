@@ -1,3 +1,20 @@
+/**
+ * Migrate command - migrates configuration from other linters to CodeForge.
+ *
+ * Converts configuration files from other linters (currently ESLint) to CodeForge
+ * format, mapping rules and settings where possible.
+ *
+ * Features:
+ * - ESLint to CodeForge configuration conversion
+ * - Rule mapping with suggestions for unmapped rules
+ * - Dry-run mode for previewing migrations
+ *
+ * @example
+ * ```bash
+ * codeforge migrate --from eslint
+ * codeforge migrate --from eslint --dry-run
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'

@@ -1,3 +1,26 @@
+/**
+ * Doctor command - diagnoses configuration and environment issues.
+ *
+ * Runs diagnostic checks on the CodeForge setup to identify potential problems
+ * with Node.js version, TypeScript installation, configuration files, and project health.
+ *
+ * Checks performed:
+ * - Node.js version compatibility
+ * - System memory availability
+ * - TypeScript installation and version
+ * - Configuration file detection and validation
+ * - Rule configuration validation
+ * - File pattern validation
+ * - Project file count assessment
+ * - tsconfig.json and package.json presence
+ *
+ * @example
+ * ```bash
+ * codeforge doctor
+ * codeforge doctor --verbose
+ * codeforge doctor --json
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'

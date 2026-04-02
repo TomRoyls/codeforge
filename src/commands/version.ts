@@ -1,3 +1,13 @@
+/**
+ * Version command - shows the current version of CodeForge.
+ *
+ * Displays the version information from package.json.
+ *
+ * @example
+ * ```bash
+ * codeforge version
+ * ```
+ */
 import { Command } from '@oclif/core'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'

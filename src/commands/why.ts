@@ -1,3 +1,21 @@
+/**
+ * Why command - explains why a specific rule violation occurs.
+ *
+ * Provides detailed explanations for specific CodeForge rules, including
+ * common violations, how to fix them, and best practices.
+ *
+ * Features:
+ * - Rule descriptions and examples
+ * - Common violation patterns
+ * - Fix recommendations
+ * - Best practice guidelines
+ *
+ * @example
+ * ```bash
+ * codeforge why max-params
+ * codeforge why no-console
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 

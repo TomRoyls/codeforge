@@ -1,3 +1,23 @@
+/**
+ * Ci command - generates CI/CD configuration files.
+ *
+ * Creates CI/CD configuration files for GitHub Actions and GitLab CI that
+ * integrate CodeForge analysis into continuous integration pipelines.
+ *
+ * Features:
+ * - GitHub Actions workflow generation
+ * - GitLab CI configuration generation
+ * - SARIF output for GitHub Code Scanning
+ * - GitLab Code Quality report generation
+ * - Multi-platform support (all, github, gitlab)
+ *
+ * @example
+ * ```bash
+ * codeforge ci
+ * codeforge ci --platform github
+ * codeforge ci --output ./ci
+ * ```
+ */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync, statSync } from 'node:fs'

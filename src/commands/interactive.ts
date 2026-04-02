@@ -1,3 +1,22 @@
+/**
+ * Interactive command - interactively reviews and fixes violations.
+ *
+ * Provides an interactive terminal-based interface for reviewing violations one-by-one
+ * and choosing whether to apply fixes, skip them, or quit.
+ *
+ * Features:
+ * - Step-by-step violation review
+ * - Fix application with confirmation
+ * - Severity filtering
+ * - Auto-safe mode for automatic safe fix application
+ *
+ * @example
+ * ```bash
+ * codeforge interactive
+ * codeforge interactive src/
+ * codeforge interactive --auto-safe
+ * ```
+ */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'

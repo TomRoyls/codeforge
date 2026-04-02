@@ -82,7 +82,6 @@ export class RuleRegistry {
    * @returns Array of enabled LoadedRule objects
    * @example
    * const enabledRules = registry.getEnabledRules();
-   * console.log(`Active rules: ${enabledRules.length}`);
    */
   getEnabledRules(): LoadedRule[] {
     if (this.enabledRulesCache !== null) {
@@ -99,7 +98,7 @@ export class RuleRegistry {
    * @example
    * const rule = registry.getRule('no-console');
    * if (rule) {
-   *   console.log('Rule is enabled:', rule.enabled);
+   *   // Rule is enabled
    * }
    */
   getRule(ruleId: string): LoadedRule | undefined {
@@ -112,7 +111,6 @@ export class RuleRegistry {
    * @returns Array of rule violations found in the source file
    * @example
    * const violations = registry.runRules(sourceFile);
-   * violations.forEach(v => console.error(`${v.message} at ${v.location}`));
    */
   runRules(sourceFile: SourceFile): RuleViolation[] {
     const allViolations: RuleViolation[] = []
