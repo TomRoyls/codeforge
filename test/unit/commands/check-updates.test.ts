@@ -145,12 +145,9 @@ describe('CheckUpdates Command', () => {
       getMockExecAsync().mockRejectedValue(new Error('npm update failed'))
       const cmd = createCommandWithMockedParse({ json: false, security: false })
 
-      await (cmd as unknown as { updateDependencies: () => Promise<void> }).updateDependencies()
-
-      expect(mockLog).toHaveBeenCalledWith(
-        expect.stringContaining('Could not update'),
-        'npm update failed',
-      )
+      await expect(
+        (cmd as unknown as { updateDependencies: () => Promise<void> }).updateDependencies(),
+      ).rejects.toThrow('Failed to update dependencies')
     })
   })
 
@@ -172,14 +169,11 @@ describe('CheckUpdates Command', () => {
       getMockExecAsync().mockRejectedValue(new Error('npm audit fix failed'))
       const cmd = createCommandWithMockedParse({ json: false, security: false })
 
-      await (
-        cmd as unknown as { fixSecurityVulnerabilities: () => Promise<void> }
-      ).fixSecurityVulnerabilities()
-
-      expect(mockLog).toHaveBeenCalledWith(
-        expect.stringContaining('Could not fix'),
-        'npm audit fix failed',
-      )
+      await expect(
+        (
+          cmd as unknown as { fixSecurityVulnerabilities: () => Promise<void> }
+        ).fixSecurityVulnerabilities(),
+      ).rejects.toThrow('Failed to fix security vulnerabilities')
     })
   })
 

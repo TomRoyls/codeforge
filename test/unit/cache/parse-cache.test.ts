@@ -35,8 +35,18 @@ describe('ParseCache', () => {
 
   describe('set and get', () => {
     test('stores and retrieves source file', async () => {
+      const { statSync } = await import('node:fs')
+      const mockStatSync = vi.mocked(statSync)
+
       const sourceFile = createMockSourceFile({})
       const filePath = '/test/file.ts'
+
+      const fixedStats = {
+        mtimeMs: 1234567890,
+        size: 100,
+      }
+
+      mockStatSync.mockReturnValue(fixedStats as any)
 
       cache.set(filePath, sourceFile)
 
