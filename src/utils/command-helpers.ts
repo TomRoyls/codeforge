@@ -113,6 +113,7 @@ export function resolvePatterns(
 }
 
 export interface NormalizedFlags {
+  cacheResults: boolean
   ciMode: boolean
   concurrency: number
   dryRun: boolean
@@ -127,6 +128,7 @@ export interface NormalizedFlags {
 }
 
 export function normalizeFlags(flags: {
+  'cache-results': boolean
   ci: boolean
   concurrency: number
   'dry-run': boolean
@@ -139,6 +141,7 @@ export function normalizeFlags(flags: {
   staged: boolean
   verbose: boolean
 }): NormalizedFlags {
+  const cacheResults = flags['cache-results']
   const ciMode = flags.ci
   const format = ciMode && flags.format === 'console' ? 'json' : flags.format
   const { output } = flags
@@ -152,6 +155,7 @@ export function normalizeFlags(flags: {
   const { concurrency } = flags
 
   return {
+    cacheResults,
     ciMode,
     concurrency,
     dryRun,

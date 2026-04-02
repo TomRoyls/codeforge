@@ -27,6 +27,7 @@ import ora, { type Ora } from 'ora'
 import pLimit from 'p-limit'
 
 import { type RuleViolation } from '../ast/visitor.js'
+import { hashFile, ResultCache } from '../cache/index.js'
 import { ConfigCache } from '../config/cache.js'
 import { type DiscoveredFile, discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
@@ -77,10 +78,12 @@ interface FixResult {
 
 interface AnalyzeFilesOptions {
   concurrency: number
+  configHash: null | string
   discoveredFiles: DiscoveredFile[]
   parseCache: Map<string, import('../core/parser.js').ParseResult>
   parser: Parser
   registry: RuleRegistry
+  resultCache: null | ResultCache
   spinner: null | Ora
   verbose: boolean
 }
@@ -167,6 +170,11 @@ export default class Analyze extends Command {
   ]
 
   static override flags = {
+    'cache-results': Flags.boolean({
+      allowNo: true,
+      default: true,
+      description: 'Enable caching of analysis results for unchanged files',
+    }),
     ci: Flags.boolean({
       default: false,
       description: 'Run in CI mode (disables colors, progress, sets JSON output)',
@@ -279,6 +287,7 @@ export default class Analyze extends Command {
 
     const normalized = normalizeFlags(flags)
     const {
+      cacheResults,
       ciMode,
       concurrency,
       dryRun,
@@ -324,6 +333,10 @@ export default class Analyze extends Command {
     const requestedRules = flags.rules
     const registry = setupRuleRegistry(requestedRules)
 
+    const resultCache = cacheResults ? new ResultCache() : null
+    const activeRuleIds = registry.getEnabledRules().map((r) => r.definition.meta.name)
+    const configHash = resultCache ? resultCache.hashConfig(activeRuleIds) : ''
+
     const parser = new Parser()
     await parser.initialize()
 
@@ -333,10 +346,12 @@ export default class Analyze extends Command {
 
     const { allViolations, fileReports } = await this.analyzeFiles({
       concurrency,
+      configHash,
       discoveredFiles: filteredFiles,
       parseCache,
       parser,
       registry,
+      resultCache,
       spinner: analysisSpinner,
       verbose,
     })
@@ -414,7 +429,17 @@ export default class Analyze extends Command {
   }
 
   private async analyzeFiles(options: AnalyzeFilesOptions): Promise<AnalysisResult> {
-    const { concurrency, discoveredFiles, parseCache, parser, registry, spinner, verbose } = options
+    const {
+      concurrency,
+      configHash,
+      discoveredFiles,
+      parseCache,
+      parser,
+      registry,
+      resultCache,
+      spinner,
+      verbose,
+    } = options
     const limit = pLimit(concurrency)
 
     const results = await Promise.all(
@@ -427,6 +452,31 @@ export default class Analyze extends Command {
           }
 
           try {
+            // Check result cache first
+            if (resultCache && configHash) {
+              try {
+                const fileHash = await hashFile(file.absolutePath)
+                const cachedViolations = await resultCache.get(
+                  file.absolutePath,
+                  fileHash,
+                  configHash,
+                )
+                if (cachedViolations) {
+                  logger.debug(`Result cache HIT for ${file.path}`)
+                  const violationsWithFilePath = cachedViolations.map((v) => ({
+                    ...v,
+                    filePath: file.path,
+                  }))
+                  return {
+                    filePath: file.path,
+                    violations: violationsWithFilePath,
+                  }
+                }
+              } catch (cacheError) {
+                logger.debug(`Result cache error for ${file.path}: ${cacheError}`)
+              }
+            }
+
             const parseResult = await parser.parseFile(file.absolutePath)
             parseCache.set(file.absolutePath, parseResult)
 
@@ -436,6 +486,16 @@ export default class Analyze extends Command {
               ...v,
               filePath: file.path,
             }))
+
+            // Cache results if caching is enabled
+            if (resultCache && configHash) {
+              try {
+                const fileHash = await hashFile(file.absolutePath)
+                await resultCache.set(file.absolutePath, fileHash, configHash, violations)
+              } catch (cacheError) {
+                logger.debug(`Failed to cache results for ${file.path}: ${cacheError}`)
+              }
+            }
 
             return {
               filePath: file.path,

@@ -217,3 +217,5 @@ export function createDefaultInvalidationManager(
 
 export { ASTCache, createDefaultASTCache } from './ast-cache.js'
 export type { CachedASTEntry, ASTCacheOptions, ASTCacheStats } from './ast-cache.js'
+export { ResultCache, createDefaultResultCache } from './result-cache.js'
+export type { CachedResultEntry, ResultCacheOptions, ResultCacheStats } from './result-cache.js'
