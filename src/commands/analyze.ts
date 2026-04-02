@@ -397,11 +397,11 @@ export default class Analyze extends Command {
     const summary = this.generateSummary(filteredViolations, filteredFiles.length, duration)
 
     const reporter = new Reporter({
-      color: flags.color && !ciMode,
-      format: format as OutputFormat,
+      color: ciMode ? false : flags.color,
+      format: ciMode ? 'json' : format,
       outputPath: output,
-      quiet,
-      verbose,
+      quiet: ciMode || flags.quiet,
+      verbose: ciMode ? false : flags.verbose,
     })
 
     await reporter.writeReport({
