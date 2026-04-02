@@ -41,3 +41,4 @@ export * from './prefer-array-find.js';
 export * from './prefer-spread.js';
 export * from './prefer-regex-literal.js';
 export { preferObjectSpreadRule } from './prefer-object-spread.js'
+export { noDynamicDeleteRule } from './no-dynamic-delete.js'
