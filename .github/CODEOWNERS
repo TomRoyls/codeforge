@@ -1,0 +1,56 @@
+# CODEOWNERS - Define code ownership for pull requests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @codeforge-dev/core-team
+
+# Core team owns all source code
+/src/ @codeforge-dev/core-team
+
+# Specific ownership by area
+/src/commands/ @codeforge-dev/core-team
+/src/rules/ @codeforge-dev/core-team
+/src/core/ @codeforge-dev/core-team
+/src/plugins/ @codeforge-dev/plugin-maintainers
+/src/cache/ @codeforge-dev/performance-team
+/src/config/ @codeforge-dev/core-team
+/src/ast/ @codeforge-dev/core-team
+/src/fix/ @codeforge-dev/core-team
+/src/reporters/ @codeforge-dev/core-team
+/src/utils/ @codeforge-dev/core-team
+
+# Tests
+/test/ @codeforge-dev/core-team @codeforge-dev/testing-team
+
+# Documentation
+/README.md @codeforge-dev/core-team @codeforge-dev/docs-team
+/CHANGELOG.md @codeforge-dev/core-team
+/CONTRIBUTING.md @codeforge-dev/core-team
+/SECURITY.md @codeforge-dev/core-team
+/docs/ @codeforge-dev/docs-team
+
+# Examples
+/examples/ @codeforge-dev/docs-team @codeforge-dev/core-team
+
+# Configuration files
+/.github/ @codeforge-dev/core-team
+/package.json @codeforge-dev/core-team
+/tsconfig.json @codeforge-dev/core-team
+/.eslintrc.* @codeforge-dev/core-team
+/.prettierrc* @codeforge-dev/core-team
+
+# Build and CI
+/.github/workflows/ @codeforge-dev/devops-team
+/vitest.config.ts @codeforge-dev/testing-team
+
+# Security sensitive files
+/src/rules/security/ @codeforge-dev/security-team
+SECURITY.md @codeforge-dev/security-team
+
+# Performance critical code
+/src/performance/ @codeforge-dev/performance-team
+/src/cache/ @codeforge-dev/performance-team
+
+# Plugin system
+/src/plugins/ @codeforge-dev/plugin-maintainers
+/src/commands/generate-plugin.ts @codeforge-dev/plugin-maintainers
