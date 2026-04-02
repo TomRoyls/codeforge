@@ -161,21 +161,25 @@ codeforge analyze src/ --ci --fail-on-warnings
 * [`codeforge analyze [PATH]`](#codeforge-analyze-path)
 * [`codeforge benchmark [PATH]`](#codeforge-benchmark-path)
 * [`codeforge cache [ACTION]`](#codeforge-cache-action)
+* [`codeforge check-updates`](#codeforge-check-updates)
 * [`codeforge ci`](#codeforge-ci)
+* [`codeforge clean`](#codeforge-clean)
 * [`codeforge config`](#codeforge-config)
 * [`codeforge config validate`](#codeforge-config-validate)
 * [`codeforge config visualize`](#codeforge-config-visualize)
 * [`codeforge debt [PATH]`](#codeforge-debt-path)
+* [`codeforge dependencies [PATH]`](#codeforge-dependencies-path)
 * [`codeforge diff [BASE] [HEAD]`](#codeforge-diff-base-head)
 * [`codeforge docs`](#codeforge-docs)
 * [`codeforge doctor`](#codeforge-doctor)
+* [`codeforge explain RULE-ID`](#codeforge-explain-rule-id)
+* [`codeforge exports [PATH]`](#codeforge-exports-path)
 * [`codeforge fix [FILES]`](#codeforge-fix-files)
 * [`codeforge generate-plugin NAME`](#codeforge-generate-plugin-name)
 * [`codeforge health [PATH]`](#codeforge-health-path)
 * [`codeforge help [COMMAND]`](#codeforge-help-command)
 * [`codeforge init`](#codeforge-init)
 * [`codeforge interactive [PATH]`](#codeforge-interactive-path)
-* [`codeforge lib _base`](#codeforge-lib-_base)
 * [`codeforge migrate`](#codeforge-migrate)
 * [`codeforge organize-imports [PATH]`](#codeforge-organize-imports-path)
 * [`codeforge plugins`](#codeforge-plugins)
@@ -191,8 +195,12 @@ codeforge analyze src/ --ci --fail-on-warnings
 * [`codeforge precommit`](#codeforge-precommit)
 * [`codeforge report [PATH]`](#codeforge-report-path)
 * [`codeforge rules`](#codeforge-rules)
+* [`codeforge score [PATH]`](#codeforge-score-path)
 * [`codeforge stats [PATH]`](#codeforge-stats-path)
+* [`codeforge suggest-rules [PATH]`](#codeforge-suggest-rules-path)
+* [`codeforge version`](#codeforge-version)
 * [`codeforge watch [FILES]`](#codeforge-watch-files)
+* [`codeforge why RULEID`](#codeforge-why-ruleid)
 
 ## `codeforge analyze [PATH]`
 
@@ -200,10 +208,10 @@ Analyze code for violations and issues
 
 ```
 USAGE
-  $ codeforge analyze [PATH] [--ci] [--color] [--concurrency <value>] [-c <value>] [--dry-run] [--ext
-    <value>] [--fail-on-warnings] [-f <value>...] [--fix] [--format console|html|json|junit|markdown|sarif|gitlab|csv]
-    [-i <value>...] [--ignore-path <value>] [--max-warnings <value>] [-o <value>] [-q] [-r <value>...] [--severity-level
-    error|info|warning] [--staged] [-v]
+  $ codeforge analyze [PATH] [--cache-results] [--ci] [--color] [--concurrency <value>] [-c <value>]
+    [--dry-run] [--ext <value>] [--fail-on-warnings] [-f <value>...] [--fix] [--format
+    console|html|json|junit|markdown|sarif|gitlab|csv] [-i <value>...] [--ignore-path <value>] [--max-warnings <value>]
+    [-o <value>] [-q] [-r <value>...] [--severity-level error|info|warning] [--staged] [-v]
 
 ARGUMENTS
   [PATH]  [default: .] Path to analyze (file or directory)
@@ -216,6 +224,7 @@ FLAGS
   -q, --quiet                    Suppress progress output
   -r, --rules=<value>...         Specific rules to run
   -v, --verbose                  Show detailed output
+      --[no-]cache-results       Enable caching of analysis results for unchanged files
       --ci                       Run in CI mode (disables colors, progress, sets JSON output)
       --[no-]color               Control color output in terminal
       --concurrency=<value>      [default: 4] Number of files to process in parallel
@@ -374,6 +383,47 @@ EXAMPLES
 
 _See code: [src/commands/cache.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/cache.ts)_
 
+## `codeforge check-updates`
+
+Check for outdated dependencies and security vulnerabilities
+
+```
+USAGE
+  $ codeforge check-updates [-f] [--json] [-s] [-u]
+
+FLAGS
+  -f, --fixSecurity    Fix security vulnerabilities automatically
+  -s, --[no-]security  Include security vulnerability checks
+  -u, --update         Update outdated dependencies to latest versions
+      --json           Output results as JSON
+
+DESCRIPTION
+  Check for outdated dependencies and security vulnerabilities
+
+EXAMPLES
+  Check for outdated dependencies
+
+    $ codeforge check-updates
+
+  Output results as JSON
+
+    $ codeforge check-updates --json
+
+  Skip security vulnerability checks
+
+    $ codeforge check-updates --no-security
+
+  Update outdated dependencies to latest versions
+
+    $ codeforge check-updates --update
+
+  Fix security vulnerabilities automatically
+
+    $ codeforge check-updates --fix-security
+```
+
+_See code: [src/commands/check-updates.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/check-updates.ts)_
+
 ## `codeforge ci`
 
 Generate CI/CD configuration files for GitHub Actions and GitLab CI
@@ -414,6 +464,42 @@ EXAMPLES
 ```
 
 _See code: [src/commands/ci.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/ci.ts)_
+
+## `codeforge clean`
+
+Clean generated files and caches
+
+```
+USAGE
+  $ codeforge clean [--cache] [--dist] [-d]
+
+FLAGS
+  -d, --dry-run  Preview what would be cleaned without actually deleting
+      --cache    Clean only cache directories
+      --dist     Clean only dist directory
+
+DESCRIPTION
+  Clean generated files and caches
+
+EXAMPLES
+  Clean all generated files and caches
+
+    $ codeforge clean
+
+  Preview what would be cleaned without deleting
+
+    $ codeforge clean --dry-run
+
+  Clean only cache directories
+
+    $ codeforge clean --cache
+
+  Clean only dist directory
+
+    $ codeforge clean --dist
+```
+
+_See code: [src/commands/clean.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/clean.ts)_
 
 ## `codeforge config`
 
@@ -535,6 +621,49 @@ EXAMPLES
 
 _See code: [src/commands/debt.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/debt.ts)_
 
+## `codeforge dependencies [PATH]`
+
+Analyze and visualize module dependencies
+
+```
+USAGE
+  $ codeforge dependencies [PATH] [-c] [-e] [-f dot|json|table] [-i <value>...] [-o <value>] [-t]
+
+ARGUMENTS
+  [PATH]  [default: .] Path to analyze
+
+FLAGS
+  -c, --circular           Only detect and show circular dependencies
+  -e, --external           Show external module dependencies
+  -f, --format=<option>    [default: table] Output format
+                           <options: dot|json|table>
+  -i, --ignore=<value>...  Patterns to ignore
+  -o, --output=<value>     Output file path
+  -t, --tree               Display dependency tree visualization
+
+DESCRIPTION
+  Analyze and visualize module dependencies
+
+EXAMPLES
+  Analyze dependencies in current directory
+
+    $ codeforge dependencies
+
+  Output dependencies as JSON
+
+    $ codeforge dependencies --format json
+
+  Only show circular dependencies
+
+    $ codeforge dependencies --circular
+
+  Display dependency tree visualization
+
+    $ codeforge dependencies --tree
+```
+
+_See code: [src/commands/dependencies.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/dependencies.ts)_
+
 ## `codeforge diff [BASE] [HEAD]`
 
 Compare violations between git branches or commits
@@ -638,6 +767,86 @@ EXAMPLES
 ```
 
 _See code: [src/commands/doctor.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/doctor.ts)_
+
+## `codeforge explain RULE-ID`
+
+Explain a specific rule in detail
+
+```
+USAGE
+  $ codeforge explain RULE-ID
+
+ARGUMENTS
+  RULE-ID  The ID of the rule to explain
+
+DESCRIPTION
+  Explain a specific rule in detail
+
+EXAMPLES
+  Explain the no-eval rule
+
+    $ codeforge explain no-eval
+
+  Explain the prefer-const rule
+
+    $ codeforge explain prefer-const
+```
+
+_See code: [src/commands/explain.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/explain.ts)_
+
+## `codeforge exports [PATH]`
+
+Analyze and list exports from TypeScript/JavaScript files
+
+```
+USAGE
+  $ codeforge exports [PATH] [--ext <value>] [-f console|json|markdown] [-i <value>...] [-o <value>] [-t
+    class|const|function|interface|type] [-u] [-v]
+
+ARGUMENTS
+  [PATH]  [default: .] Path to analyze (file or directory)
+
+FLAGS
+  -f, --format=<option>    [default: console] Output format
+                           <options: console|json|markdown>
+  -i, --ignore=<value>...  Patterns to ignore
+  -o, --output=<value>     Output file path
+  -t, --type=<option>      Filter by export type
+                           <options: class|const|function|interface|type>
+  -u, --unused             Find potentially unused exports
+  -v, --verbose            Show detailed output
+      --ext=<value>        Comma-separated file extensions to analyze (e.g., ".ts,.tsx")
+
+DESCRIPTION
+  Analyze and list exports from TypeScript/JavaScript files
+
+EXAMPLES
+  List all exports in current directory
+
+    $ codeforge exports
+
+  List exports in src directory
+
+    $ codeforge exports src/
+
+  List only function exports
+
+    $ codeforge exports --type function
+
+  Output exports as JSON
+
+    $ codeforge exports --format json
+
+  Find potentially unused exports
+
+    $ codeforge exports --unused
+
+  Analyze only TypeScript files
+
+    $ codeforge exports --ext .ts,.tsx
+```
+
+_See code: [src/commands/exports.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/exports.ts)_
 
 ## `codeforge fix [FILES]`
 
@@ -777,7 +986,7 @@ DESCRIPTION
   Display help for codeforge.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.38/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.41/src/commands/help.ts)_
 
 ## `codeforge init`
 
@@ -870,15 +1079,6 @@ EXAMPLES
 ```
 
 _See code: [src/commands/interactive.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/interactive.ts)_
-
-## `codeforge lib _base`
-
-```
-USAGE
-  $ codeforge lib _base
-```
-
-_See code: [src/commands/lib/_base.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/lib/_base.ts)_
 
 ## `codeforge migrate`
 
@@ -1383,6 +1583,40 @@ EXAMPLES
 
 _See code: [src/commands/rules.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/rules.ts)_
 
+## `codeforge score [PATH]`
+
+Calculate aggregate quality score for the codebase
+
+```
+USAGE
+  $ codeforge score [PATH] [--json] [-v]
+
+ARGUMENTS
+  [PATH]  [default: .] Path to analyze
+
+FLAGS
+  -v, --verbose  Show detailed breakdown
+      --json     Output as JSON
+
+DESCRIPTION
+  Calculate aggregate quality score for the codebase
+
+EXAMPLES
+  Show quality score for current directory
+
+    $ codeforge score
+
+  Show quality score for src directory
+
+    $ codeforge score src/
+
+  Output score as JSON
+
+    $ codeforge score --json
+```
+
+_See code: [src/commands/score.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/score.ts)_
+
 ## `codeforge stats [PATH]`
 
 Display codebase statistics and metrics
@@ -1433,6 +1667,71 @@ EXAMPLES
 
 _See code: [src/commands/stats.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/stats.ts)_
 
+## `codeforge suggest-rules [PATH]`
+
+Analyze codebase and suggest which rules would be most beneficial
+
+```
+USAGE
+  $ codeforge suggest-rules [PATH] [--format console|json] [--impact high|medium|low|] [--top <value>] [-v]
+
+ARGUMENTS
+  [PATH]  [default: .] Path to analyze for rule suggestions
+
+FLAGS
+  -v, --verbose          Show detailed analysis information
+      --format=<option>  [default: console] Output format
+                         <options: console|json>
+      --impact=<option>  Filter by impact level (high, medium, low)
+                         <options: high|medium|low|>
+      --top=<value>      [default: 15] Number of top suggestions to show
+
+DESCRIPTION
+  Analyze codebase and suggest which rules would be most beneficial
+
+EXAMPLES
+  Analyze current directory for rule suggestions
+
+    $ codeforge suggest-rules
+
+  Analyze src directory
+
+    $ codeforge suggest-rules ./src
+
+  Show top 10 suggestions
+
+    $ codeforge suggest-rules --top 10
+
+  Output suggestions as JSON
+
+    $ codeforge suggest-rules --format json
+
+  Show only high-impact suggestions
+
+    $ codeforge suggest-rules --impact high
+```
+
+_See code: [src/commands/suggest-rules.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/suggest-rules.ts)_
+
+## `codeforge version`
+
+Show current version of CodeForge
+
+```
+USAGE
+  $ codeforge version
+
+DESCRIPTION
+  Show current version of CodeForge
+
+EXAMPLES
+  Show current version
+
+    $ codeforge version
+```
+
+_See code: [src/commands/version.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/version.ts)_
+
 ## `codeforge watch [FILES]`
 
 Watch files for changes and analyze on save
@@ -1469,6 +1768,35 @@ EXAMPLES
 ```
 
 _See code: [src/commands/watch.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/watch.ts)_
+
+## `codeforge why RULEID`
+
+Explain why a specific rule violation occurs and how to fix it
+
+```
+USAGE
+  $ codeforge why RULEID [-v <value>]
+
+ARGUMENTS
+  RULEID  Rule ID to explain
+
+FLAGS
+  -v, --violation=<value>  Specific violation message to explain
+
+DESCRIPTION
+  Explain why a specific rule violation occurs and how to fix it
+
+EXAMPLES
+  Explain the max-params rule
+
+    $ codeforge why max-params
+
+  Explain the no-console rule
+
+    $ codeforge why no-console
+```
+
+_See code: [src/commands/why.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/why.ts)_
 <!-- commandsstop -->
 
 ## Contributing
