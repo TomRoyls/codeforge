@@ -24,6 +24,11 @@ group, place `[Unreleased]` next to the version number.
 - **parse-cache**: In-memory LRU cache for parse results (90-95% reduction for unchanged files)
 - **ast-cache**: Persistent disk-based AST cache (90-95% reduction for repeated runs)
 - **performance**: Centralized Performance Manager for optimization management
+- **dependabot**: Added Dependabot configuration for automated weekly dependency updates
+- **issue-templates**: Added GitHub issue templates for bug reports and feature requests
+- **pr-template**: Added GitHub pull request template with comprehensive checklist
+- **security**: Added SECURITY.md with responsible disclosure policy
+- **codeowners**: Added CODEOWNERS file to define code ownership and review responsibilities
 - **score**: Added comprehensive tests for `calculateCorrectnessScore`, `formatScore`, and edge cases
 - **analyze**: Added `--max-warnings` flag for CI threshold control
 - **analyze**: Added `--fail-on-warnings` flag for strict warning handling
