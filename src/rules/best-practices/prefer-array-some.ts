@@ -16,6 +16,20 @@ const DEFAULT_OPTIONS: PreferArraySomeOptions = {
   checkIndexOf: true,
 }
 
+function isNegativeOne(node: Node): boolean {
+  if (!Node.isPrefixUnaryExpression(node)) return false
+  const operatorToken = node.getOperatorToken()
+  if (operatorToken !== SyntaxKind.MinusToken) return false
+  const operand = node.getOperand()
+  if (!Node.isNumericLiteral(operand)) return false
+  return operand.getLiteralValue() === 1
+}
+
+function isZero(node: Node): boolean {
+  if (!Node.isNumericLiteral(node)) return false
+  return node.getLiteralValue() === 0
+}
+
 function isIndexOfCheck(node: Node): { indexOfCall: Node; comparisonType: 'exists' | 'not-exists' } | null {
   if (!Node.isBinaryExpression(node)) return null
   
@@ -33,7 +47,7 @@ function isIndexOfCheck(node: Node): { indexOfCall: Node; comparisonType: 'exist
     }
   }
   
-  // Check for arr.indexOf(x) >= 0 or arr.indexOf(x) > -1
+  // Check for arr.indexOf(x) >= 0
   if (operator === SyntaxKind.GreaterThanEqualsToken) {
     if (Node.isCallExpression(left) && isZero(right)) {
       const callee = left.getExpression()
@@ -43,6 +57,7 @@ function isIndexOfCheck(node: Node): { indexOfCall: Node; comparisonType: 'exist
     }
   }
   
+  // Check for arr.indexOf(x) > -1
   if (operator === SyntaxKind.GreaterThanToken) {
     if (Node.isCallExpression(left) && isNegativeOne(right)) {
       const callee = left.getExpression()
@@ -52,7 +67,7 @@ function isIndexOfCheck(node: Node): { indexOfCall: Node; comparisonType: 'exist
     }
   }
   
-  // Check for arr.indexOf(x) === -1 or arr.indexOf(x) == -1 (element does not exist)
+  // Check for arr.indexOf(x) === -1 or arr.indexOf(x) == -1
   if (operator === SyntaxKind.EqualsEqualsEqualsToken || operator === SyntaxKind.EqualsEqualsToken) {
     if (Node.isCallExpression(left) && isNegativeOne(right)) {
       const callee = left.getExpression()
@@ -62,7 +77,7 @@ function isIndexOfCheck(node: Node): { indexOfCall: Node; comparisonType: 'exist
     }
   }
   
-  // Check for arr.indexOf(x) < 0 (element does not exist)
+  // Check for arr.indexOf(x) < 0
   if (operator === SyntaxKind.LessThanToken) {
     if (Node.isCallExpression(left) && isZero(right)) {
       const callee = left.getExpression()
@@ -73,20 +88,6 @@ function isIndexOfCheck(node: Node): { indexOfCall: Node; comparisonType: 'exist
   }
   
   return null
-}
-
-function isNegativeOne(node: Node): boolean {
-  if (!Node.isPrefixUnaryExpression(node)) return false
-  const operatorToken = node.getOperatorToken()
-  if (operatorToken !== SyntaxKind.MinusToken) return false
-  const operand = node.getOperand()
-  if (!Node.isNumericLiteral(operand)) return false
-  return operand.getLiteralValue() === 1
-}
-
-function isZero(node: Node): boolean {
-  if (!Node.isNumericLiteral(node)) return false
-  return node.getLiteralValue() === 0
 }
 
 function checkNode(node: Node, options: PreferArraySomeOptions): RuleViolation[] {
@@ -103,7 +104,7 @@ function checkNode(node: Node, options: PreferArraySomeOptions): RuleViolation[]
   if (comparisonType === 'exists') {
     violations.push({
       ruleId: 'prefer-array-some',
-      severity: 'suggestion',
+      severity: 'info',
       message: 'Use Array.prototype.some() instead of indexOf() for checking element existence.',
       filePath: node.getSourceFile().getFilePath(),
       range,
@@ -112,7 +113,7 @@ function checkNode(node: Node, options: PreferArraySomeOptions): RuleViolation[]
   } else {
     violations.push({
       ruleId: 'prefer-array-some',
-      severity: 'suggestion',
+      severity: 'info',
       message: 'Use Array.prototype.every() or !arr.some() instead of indexOf() for checking element absence.',
       filePath: node.getSourceFile().getFilePath(),
       range,
@@ -127,7 +128,7 @@ export const preferArraySomeRule: RuleDefinition<PreferArraySomeOptions> = {
   meta: {
     name: 'prefer-array-some',
     description: 'Suggests using Array.prototype.some() instead of indexOf checks',
-    category: 'best-practices',
+    category: 'style',
     recommended: false,
     fixable: undefined,
   },
@@ -161,7 +162,7 @@ export function analyzePreferArraySome(
         violations.push(...checkNode(node, mergedOptions))
       },
     },
-    { filePath: sourceFile.getFilePath() }
+    violations,
   )
 
   return violations

@@ -18,7 +18,7 @@ describe('prefer-array-some rule', () => {
   describe('rule metadata', () => {
     it('should have correct meta properties', () => {
       expect(preferArraySomeRule.meta.name).toBe('prefer-array-some')
-      expect(preferArraySomeRule.meta.category).toBe('best-practices')
+      expect(preferArraySomeRule.meta.category).toBe('style')
       expect(preferArraySomeRule.meta.fixable).toBeUndefined()
     })
 
