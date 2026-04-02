@@ -25,3 +25,4 @@ export { explicitReturnTypeRule, analyzeExplicitReturnType } from './explicit-re
 export { preferReadonlyRule, analyzePreferReadonly } from './prefer-readonly.js'
 export { noUnnecessaryConditionRule, analyzeNoUnnecessaryCondition } from './no-unnecessary-condition.js'
 export { preferArraySomeRule, analyzePreferArraySome } from './prefer-array-some.js'
+export { preferStringTemplateRule, analyzePreferStringTemplate } from './prefer-string-template.js'
