@@ -35,3 +35,5 @@ export * from './prefer-includes.js';
 export * from './prefer-object-has-own.js';
 
 export * from './prefer-flat-map.js';
+
+export * from './prefer-flat-map.js';
