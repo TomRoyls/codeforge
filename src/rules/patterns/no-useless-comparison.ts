@@ -188,7 +188,6 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
                   ruleId: 'no-useless-comparison',
                   severity: 'warning',
                   message: getComparisonMessage(
-                    operatorToken.getText(),
                     alwaysTrue,
                     `comparing constant numbers ${leftValue} and ${rightValue}`,
                   ),
@@ -232,11 +231,7 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
                 violations.push({
                   ruleId: 'no-useless-comparison',
                   severity: 'warning',
-                  message: getComparisonMessage(
-                    operatorToken.getText(),
-                    alwaysTrue,
-                    'comparing constant strings',
-                  ),
+                  message: getComparisonMessage(alwaysTrue, 'comparing constant strings'),
                   filePath: context.getFilePath(),
                   range,
                   suggestion: alwaysTrue
@@ -264,7 +259,7 @@ export function analyzeNoUselessComparison(
   }
 
   traverseAST(sourceFile, {
-    visitNode: (node: Node, context: VisitorContext) => {
+    visitNode: (node: Node, _context: VisitorContext) => {
       if (!Node.isBinaryExpression(node)) return
 
       const operatorToken = node.getOperatorToken()
@@ -305,7 +300,6 @@ export function analyzeNoUselessComparison(
           ruleId: 'no-useless-comparison',
           severity: 'warning',
           message: getComparisonMessage(
-            operatorToken.getText(),
             !isNaNCheck,
             isNaNCheck ? 'NaN !== NaN' : 'comparing a value to itself',
           ),
@@ -337,7 +331,6 @@ export function analyzeNoUselessComparison(
           ruleId: 'no-useless-comparison',
           severity: 'warning',
           message: getComparisonMessage(
-            operatorToken.getText(),
             isNaNCheck,
             isNaNCheck ? 'NaN !== NaN is true' : 'comparing a value to itself',
           ),
@@ -390,7 +383,6 @@ export function analyzeNoUselessComparison(
               ruleId: 'no-useless-comparison',
               severity: 'warning',
               message: getComparisonMessage(
-                operatorToken.getText(),
                 alwaysTrue,
                 `comparing constant numbers ${leftValue} and ${rightValue}`,
               ),
@@ -433,11 +425,7 @@ export function analyzeNoUselessComparison(
             violations.push({
               ruleId: 'no-useless-comparison',
               severity: 'warning',
-              message: getComparisonMessage(
-                operatorToken.getText(),
-                alwaysTrue,
-                'comparing constant strings',
-              ),
+              message: getComparisonMessage(alwaysTrue, 'comparing constant strings'),
               filePath: sourceFile.getFilePath(),
               range,
               suggestion: alwaysTrue
