@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isIdentifier } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isIdentifier } from '../../utils/ast-helpers.js'
 
 const WRAPPER_TYPES = ['String', 'Number', 'Boolean', 'Symbol', 'BigInt']
 

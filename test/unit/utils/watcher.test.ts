@@ -1,10 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import {
-  FileWatcher,
-  createWatcher,
-  getDefaultWatcher,
-  resetDefaultWatcher,
-} from '../../../src/utils/watcher.js'
+import { FileWatcher, createWatcher } from '../../../src/utils/watcher.js'
 import * as fs from 'node:fs'
 
 const mockClose = vi.fn()
@@ -47,7 +42,6 @@ describe('FileWatcher', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    resetDefaultWatcher()
     watcher = new FileWatcher()
   })
 
@@ -135,32 +129,6 @@ describe('FileWatcher', () => {
       await watcher.watch('test-dir')
       await watcher.stop()
       expect(watcher.isActive()).toBe(false)
-    })
-  })
-
-  describe('factory functions', () => {
-    test('createWatcher should return new instance', () => {
-      const watcher1 = createWatcher()
-      const watcher2 = createWatcher()
-      expect(watcher1).not.toBe(watcher2)
-    })
-
-    test('createWatcher should set default watcher', () => {
-      const createdWatcher = createWatcher()
-      const defaultWatcher = getDefaultWatcher()
-      expect(defaultWatcher).toBe(createdWatcher)
-    })
-
-    test('getDefaultWatcher should return null initially after reset', () => {
-      resetDefaultWatcher()
-      expect(getDefaultWatcher()).toBeNull()
-    })
-
-    test('resetDefaultWatcher should clear default watcher', () => {
-      createWatcher()
-      expect(getDefaultWatcher()).not.toBeNull()
-      resetDefaultWatcher()
-      expect(getDefaultWatcher()).toBeNull()
     })
   })
 
@@ -346,24 +314,6 @@ describe('FileWatcher', () => {
 
       const secondWatcher = createWatcher()
       expect(secondWatcher).not.toBe(firstWatcher)
-
-      consoleDebugSpy.mockRestore()
-    })
-  })
-
-  describe('resetDefaultWatcher error handling', () => {
-    test('should handle error when stopping watcher during reset', async () => {
-      const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {})
-
-      const testWatcher = createWatcher()
-      await testWatcher.watch('test-dir')
-
-      mockClose.mockImplementationOnce(() => {
-        throw new Error('Stop failed')
-      })
-
-      expect(() => resetDefaultWatcher()).not.toThrow()
-      expect(getDefaultWatcher()).toBeNull()
 
       consoleDebugSpy.mockRestore()
     })

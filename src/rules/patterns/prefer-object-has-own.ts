@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isCallExpression, isMemberExpression } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isCallExpression, isMemberExpression } from '../../utils/ast-helpers.js'
 
 function getMethodName(node: unknown): string | null {
   if (!isMemberExpression(node)) {

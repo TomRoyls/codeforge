@@ -1,5 +1,5 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
 
 const ITERATOR_PATTERNS = new Set(['__iterator__', '__defineIterator__', '__defineSetter__'])
 

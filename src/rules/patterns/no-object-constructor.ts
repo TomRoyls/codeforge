@@ -1,11 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import {
-  extractLocation,
-  isNewExpression,
-  isIdentifier,
-  getArguments,
-  getRange,
-} from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isNewExpression, isIdentifier, getArguments, getRange } from '../../utils/ast-helpers.js'
 
 function getCalleeName(node: unknown): string | null {
   if (!isNewExpression(node)) {

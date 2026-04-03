@@ -4,7 +4,7 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
-import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
 
 interface PrivateMemberInfo {
   name: string

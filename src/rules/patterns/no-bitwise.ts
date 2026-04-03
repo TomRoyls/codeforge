@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isBinaryExpression } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isBinaryExpression } from '../../utils/ast-helpers.js'
 
 const BITWISE_OPERATORS = new Set([
   '&',

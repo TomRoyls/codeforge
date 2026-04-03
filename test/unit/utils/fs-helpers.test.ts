@@ -13,8 +13,6 @@ import {
   listFiles,
   getFileInfo,
   readJsonFile,
-  clearCache,
-  getCacheStats,
 } from '../../../src/utils/fs-helpers'
 
 describe('fs-helpers', () => {
@@ -344,75 +342,6 @@ describe('fs-helpers', () => {
       await fs.writeFile(testFile, '{}', 'utf-8')
       const result = await readJsonFile(testFile)
       expect(result).toEqual({})
-    })
-  })
-
-  describe('clearCache', () => {
-    test('clearCache function exists and can be called', () => {
-      expect(typeof clearCache).toBe('function')
-      expect(() => clearCache()).not.toThrow()
-    })
-
-    test('clearCache clears the cache', async () => {
-      const testFile = path.join(tempDir, 'cached.txt')
-      await fs.writeFile(testFile, 'content', 'utf-8')
-      await readFileSafe(testFile)
-      clearCache()
-      const stats = getCacheStats()
-      expect(stats.size).toBe(0)
-    })
-  })
-
-  describe('getCacheStats', () => {
-    test('returns cache statistics', () => {
-      clearCache()
-      const stats = getCacheStats()
-      expect(stats).toHaveProperty('size')
-      expect(stats).toHaveProperty('keys')
-      expect(Array.isArray(stats.keys)).toBe(true)
-    })
-
-    test('size increases after caching', async () => {
-      clearCache()
-      const testFile = path.join(tempDir, 'stats-test.txt')
-      await fs.writeFile(testFile, 'content', 'utf-8')
-      const beforeSize = getCacheStats().size
-      await readFileSafe(testFile)
-      const afterSize = getCacheStats().size
-      expect(afterSize).toBeGreaterThan(beforeSize)
-    })
-
-    test('keys contain cached file paths', async () => {
-      clearCache()
-      const testFile = path.join(tempDir, 'keys-test.txt')
-      await fs.writeFile(testFile, 'content', 'utf-8')
-      await readFileSafe(testFile)
-      const stats = getCacheStats()
-      const hasKey = stats.keys.some((key) => key.includes('keys-test.txt'))
-      expect(hasKey).toBe(true)
-    })
-  })
-
-  describe('cache behavior', () => {
-    test('readFileSafe uses cache on second call', async () => {
-      clearCache()
-      const testFile = path.join(tempDir, 'cache-test.txt')
-      await fs.writeFile(testFile, 'original', 'utf-8')
-      await readFileSafe(testFile)
-      await fs.writeFile(testFile, 'modified', 'utf-8')
-      const cachedContent = await readFileSafe(testFile)
-      expect(cachedContent).toBe('original')
-    })
-
-    test('fileExists caches result', async () => {
-      clearCache()
-      const testFile = path.join(tempDir, 'exists-cache.txt')
-      await fs.writeFile(testFile, 'content', 'utf-8')
-      const exists1 = await fileExists(testFile)
-      await fs.unlink(testFile)
-      const exists2 = await fileExists(testFile)
-      expect(exists1).toBe(true)
-      expect(exists2).toBe(true)
     })
   })
 })

@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isLiteral } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isLiteral } from '../../utils/ast-helpers.js'
 
 function isBooleanLiteral(node: unknown, value: boolean): boolean {
   if (!isLiteral(node)) {

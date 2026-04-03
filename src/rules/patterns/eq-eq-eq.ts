@@ -1,10 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import {
-  getRange,
-  getNodeSource,
-  extractLocation,
-  isBinaryExpression,
-} from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getRange, getNodeSource, isBinaryExpression } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isNullLiteral(node: unknown): boolean {

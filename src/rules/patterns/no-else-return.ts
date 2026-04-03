@@ -4,7 +4,8 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
-import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getRange } from '../../utils/ast-helpers.js'
 
 const DEDENT_PATTERN = /^( {1,2}|\t)(.*)$/
 const BLOCK_CONTENT_PATTERN = /^\s*\{([\s\S]*)\}\s*$/

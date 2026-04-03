@@ -26,6 +26,7 @@ import { join, resolve } from 'node:path'
 import ora from 'ora'
 
 import { type RuleViolation } from '../ast/visitor.js'
+import { type ChalkColorFunction } from '../types/chalk.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
@@ -363,7 +364,7 @@ export default class Debt extends Command {
     return colorFn(score.toString().padStart(3))
   }
 
-  private getDebtColor(score: number) {
+  private getDebtColor(score: number): ChalkColorFunction {
     if (score <= 5) return chalk.green
     if (score <= 15) return chalk.yellow
 

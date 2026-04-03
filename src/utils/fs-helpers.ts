@@ -24,17 +24,6 @@ function setCached<T>(key: string, value: T): void {
   cache.set(key, { value, timestamp: Date.now() })
 }
 
-export function clearCache(): void {
-  cache.clear()
-}
-
-export function getCacheStats(): { size: number; keys: string[] } {
-  return {
-    size: cache.size,
-    keys: Array.from(cache.keys()),
-  }
-}
-
 export interface FileInfo {
   path: string
   size: number

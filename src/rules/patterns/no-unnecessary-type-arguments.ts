@@ -1,10 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import {
-  extractLocation,
-  isNewExpression,
-  isCallExpression,
-  getIdentifierName,
-} from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isNewExpression, isCallExpression, getIdentifierName } from '../../utils/ast-helpers.js'
 
 const INFERRABLE_CONSTRUCTORS = new Set([
   'Array',

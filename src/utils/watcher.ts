@@ -224,19 +224,3 @@ export function createWatcher(options?: FileWatcherOptions): FileWatcher {
   defaultWatcher = new FileWatcher(options)
   return defaultWatcher
 }
-
-export function getDefaultWatcher(): FileWatcher | null {
-  return defaultWatcher
-}
-
-/**
- * Reset the default watcher (useful for testing)
- */
-export function resetDefaultWatcher(): void {
-  if (defaultWatcher) {
-    defaultWatcher.stop().catch((error) => {
-      logger.debug('Failed to stop watcher during reset:', error)
-    })
-  }
-  defaultWatcher = null
-}

@@ -1,5 +1,5 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
 
 const NON_CALLABLE_GLOBALS = new Set(['Math', 'JSON', 'Reflect', 'Atomics', 'Intl'])
 

@@ -1,10 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import {
-  extractLocation,
-  isNewExpression,
-  isIdentifier,
-  isLiteral,
-} from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isNewExpression, isIdentifier, isLiteral } from '../../utils/ast-helpers.js'
 
 function getLiteralValue(node: unknown): unknown {
   if (!isLiteral(node)) {

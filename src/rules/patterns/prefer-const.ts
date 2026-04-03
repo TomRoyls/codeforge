@@ -9,7 +9,8 @@ import type {
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
-import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getRange } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 

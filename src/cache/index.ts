@@ -1,5 +1,5 @@
-import { createHash, randomUUID } from 'node:crypto'
-import { createReadStream, readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { createReadStream } from 'node:fs'
 import { mkdir, readFile, writeFile, unlink, readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -23,20 +23,6 @@ export async function hashFile(filePath: string): Promise<string> {
       reject(err)
     })
   })
-}
-
-export function hashFileSync(filePath: string): string {
-  const content = readFileSync(filePath)
-  return createHash('sha256').update(content).digest('hex')
-}
-
-export function hashObject(obj: unknown): string {
-  const content = JSON.stringify(obj, Object.keys(obj as Record<string, unknown>).sort())
-  return hashContent(content)
-}
-
-export function generateRandomHash(): string {
-  return randomUUID().replace(/-/g, '')
 }
 
 export interface CacheEntry<T = unknown> {

@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isBinaryExpression, isLiteral } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isBinaryExpression, isLiteral } from '../../utils/ast-helpers.js'
 
 function isPlusOperator(node: unknown): boolean {
   if (!isBinaryExpression(node)) {

@@ -4,7 +4,8 @@
  */
 
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, getRange, getNodeText } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getRange, getNodeText } from '../../utils/ast-helpers.js'
 
 /**
  * Check if a node is a LogicalExpression with || operator

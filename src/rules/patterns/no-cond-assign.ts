@@ -1,5 +1,5 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
 
 function isIfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false

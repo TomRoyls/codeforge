@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, getIdentifierName } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getIdentifierName } from '../../utils/ast-helpers.js'
 
 function isVariableDeclaration(node: unknown): boolean {
   if (!node || typeof node !== 'object') {

@@ -10,7 +10,6 @@ import { type Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { type RuleWithFix } from '../fix/fixer.js'
 import { allRules, getRuleCategory } from '../rules/index.js'
-import { LazyRuleLoader, getRuleCategory as getLazyRuleCategory } from '../rules/lazy-loader.js'
 import { logger } from '../utils/logger.js'
 
 export function setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
@@ -34,32 +33,6 @@ export function setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
       if (!requestedSet.has(ruleId)) {
         registry.disable(ruleId)
       }
-    }
-  }
-
-  return registry
-}
-
-export async function setupRuleRegistryLazy(requestedRules?: string[]): Promise<RuleRegistry> {
-  const registry = new RuleRegistry()
-  const loader = new LazyRuleLoader()
-
-  if (requestedRules && requestedRules.length > 0) {
-    const unknownRules = requestedRules.filter((r) => !loader.hasRule(r))
-    if (unknownRules.length > 0) {
-      logger.warn(`Unknown rules will be ignored: ${unknownRules.join(', ')}`)
-    }
-
-    const validRequested = requestedRules.filter((r) => loader.hasRule(r))
-    const rules = await loader.loadRules(validRequested)
-
-    for (const [ruleId, ruleDef] of Object.entries(rules)) {
-      registry.register(ruleId, ruleDef, getLazyRuleCategory(ruleId))
-    }
-  } else {
-    const rules = await loader.loadAllRules()
-    for (const [ruleId, ruleDef] of Object.entries(rules)) {
-      registry.register(ruleId, ruleDef, getLazyRuleCategory(ruleId))
     }
   }
 

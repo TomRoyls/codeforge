@@ -25,6 +25,7 @@ import { resolve } from 'node:path'
 import ora, { type Ora } from 'ora'
 
 import { type RuleViolation } from '../ast/visitor.js'
+import { type ChalkColorFunction } from '../types/chalk.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
@@ -411,7 +412,7 @@ export default class Score extends Command {
     return '(F)'
   }
 
-  private getScoreColor(score: number) {
+  private getScoreColor(score: number): ChalkColorFunction {
     if (score >= 80) return chalk.green
     if (score >= 60) return chalk.yellow
     return chalk.red

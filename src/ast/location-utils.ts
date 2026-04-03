@@ -44,20 +44,3 @@ export function extractLocation(node: unknown, defaultLine: number = 1): SourceL
     },
   }
 }
-
-/**
- * Get the body array from an AST
- * @param ast - The AST object
- * @returns Array of body nodes
- */
-export function getASTBody(ast: unknown): unknown[] {
-  if (!ast || typeof ast !== 'object') {
-    return []
-  }
-
-  const a = ast as Record<string, unknown>
-  const body = a.body
-  const programBody = (a.program as Record<string, unknown> | undefined)?.body
-
-  return Array.isArray(body) ? body : Array.isArray(programBody) ? programBody : []
-}

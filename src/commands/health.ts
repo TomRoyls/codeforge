@@ -25,6 +25,7 @@ import { resolve } from 'node:path'
 import ora from 'ora'
 
 import { type RuleViolation } from '../ast/visitor.js'
+import { type ChalkColorFunction } from '../types/chalk.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
@@ -356,7 +357,7 @@ export default class Health extends Command {
     return recommendations.slice(0, MAX_RECOMMENDATIONS)
   }
 
-  private getScoreColor(score: number) {
+  private getScoreColor(score: number): ChalkColorFunction {
     if (score >= HEALTH_SCORE_THRESHOLD_B) return chalk.green
     if (score >= HEALTH_SCORE_THRESHOLD_D) return chalk.yellow
     return chalk.red

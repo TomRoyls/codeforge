@@ -2,12 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { SourceFile } from 'ts-morph'
 import type { RuleViolation } from '../../../src/ast/visitor.js'
 import { createFixContext } from '../../../src/fix/context.js'
-import {
-  applyFixesToFiles,
-  applyFixesToFile,
-  createTextChange,
-  type RuleWithFix,
-} from '../../../src/fix/fixer.js'
+import { applyFixesToFiles, applyFixesToFile, type RuleWithFix } from '../../../src/fix/fixer.js'
 import type { FixResult } from '../../../src/fix/types.js'
 
 function createMockSourceFile(text: string): SourceFile {
@@ -46,42 +41,6 @@ describe('Fix Context', () => {
     expect(context.violation).toBe(violation)
     expect(context.getNodeByRange).toBeDefined()
     expect(context.getNodeByPosition).toBeDefined()
-  })
-})
-
-describe('Text Change', () => {
-  it('creates text change with correct positions', () => {
-    const sourceFile = createMockSourceFile('const x = 1;')
-
-    const change = createTextChange({
-      endColumn: 12,
-      endLine: 1,
-      newText: 'let x = 1;',
-      sourceFile,
-      startColumn: 1,
-      startLine: 1,
-    })
-
-    expect(change.start).toBe(0)
-    expect(change.end).toBe(11)
-    expect(change.newText).toBe('let x = 1;')
-    expect(change.oldText).toBe('const x = 1')
-  })
-
-  it('creates text change for multi-line range', () => {
-    const sourceFile = createMockSourceFile('const x = 1;\nconst y = 2;\nconst z = 3;')
-
-    const change = createTextChange({
-      endColumn: 12,
-      endLine: 2,
-      newText: 'replaced',
-      sourceFile,
-      startColumn: 1,
-      startLine: 1,
-    })
-
-    expect(change.start).toBe(0)
-    expect(change.end).toBe(24)
   })
 })
 
@@ -638,24 +597,6 @@ describe('Apply Fixes', () => {
     expect(report.conflicts[0]?.ruleId).toBe('test-rule')
     expect(report.conflicts[0]?.conflictingRule).toBe('other-rule')
     expect(report.conflicts[0]?.reason).toBe('Custom conflict reason')
-  })
-
-  it('creates text change spanning multiple lines', () => {
-    const sourceFile = createMockSourceFile('line 1\nline 2\nline 3\nline 4')
-
-    const change = createTextChange({
-      endColumn: 6,
-      endLine: 3,
-      newText: 'REPLACED',
-      sourceFile,
-      startColumn: 1,
-      startLine: 2,
-    })
-
-    expect(change.start).toBeGreaterThan(0)
-    expect(change.end).toBeGreaterThan(change.start)
-    expect(change.newText).toBe('REPLACED')
-    expect(change.oldText).toContain('line 2')
   })
 })
 

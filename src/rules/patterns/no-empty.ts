@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getRange } from '../../utils/ast-helpers.js'
 
 function isBlockStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {

@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
 
 interface ImportInfo {
   localName: string

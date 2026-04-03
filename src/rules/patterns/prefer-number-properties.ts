@@ -1,5 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, isBinaryExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isBinaryExpression, isIdentifier } from '../../utils/ast-helpers.js'
 
 function isMemberExpression(node: unknown, objectName: string, propertyName: string): boolean {
   if (!node || typeof node !== 'object') {

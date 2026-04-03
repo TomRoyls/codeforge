@@ -28,17 +28,6 @@ function setGitCached<T>(key: string, value: T): void {
   gitCache.set(key, { value, timestamp: Date.now() })
 }
 
-export function clearGitCache(): void {
-  gitCache.clear()
-}
-
-export function getGitCacheStats(): { size: number; keys: string[] } {
-  return {
-    size: gitCache.size,
-    keys: Array.from(gitCache.keys()),
-  }
-}
-
 export function isGitRepository(cwd: string): boolean {
   const resolvedPath = path.resolve(cwd)
   const cacheKey = `isGitRepository:${resolvedPath}`

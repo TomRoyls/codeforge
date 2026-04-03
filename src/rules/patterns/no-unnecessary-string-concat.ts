@@ -1,10 +1,6 @@
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import {
-  extractLocation,
-  isCallExpression,
-  isMemberExpression,
-  isLiteral,
-} from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { isCallExpression, isMemberExpression, isLiteral } from '../../utils/ast-helpers.js'
 
 function isEmptyString(node: unknown): boolean {
   if (!isLiteral(node)) {

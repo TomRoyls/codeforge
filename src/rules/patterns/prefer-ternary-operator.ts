@@ -4,7 +4,8 @@
  */
 
 import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation, getRange } from '../../utils/ast-helpers.js'
+import { extractLocation } from '../../ast/location-utils.js'
+import { getRange } from '../../utils/ast-helpers.js'
 
 interface AssignmentInfo {
   left: { type: string; name?: string }
