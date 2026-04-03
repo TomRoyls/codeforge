@@ -91,6 +91,32 @@ Recommended configuration for Next.js projects (Pages Router, App Router, or hyb
 - Detects useless comparisons
 - Perfect for Next.js 13+ with App Router
 
+### `.codeforgerc.graphql.json`
+
+Recommended configuration for GraphQL API projects.
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files
+- Ignores `__generated__` directories (auto-generated GraphQL code)
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and delete operator
+- Perfect for GraphQL servers and resolvers
+
+### `.codeforgerc.rest-api.json`
+
+Recommended configuration for REST API projects (Express, Fastify, Koa, etc.).
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files
+- Allows `console.warn`, `console.error`, and `console.info` for API logging
+- Higher parameter limits (max 5)
+- Detects delete operator usage
+- Enables template literals for better string handling
+- Perfect for backend services and REST APIs
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
@@ -138,6 +164,12 @@ cp examples/.codeforgerc.angular.json .codeforgerc.json
 
 # For Next.js projects
 cp examples/.codeforgerc.nextjs.json .codeforgerc.json
+
+# For GraphQL projects
+cp examples/.codeforgerc.graphql.json .codeforgerc.json
+
+# For REST API projects
+cp examples/.codeforgerc.rest-api.json .codeforgerc.json
 
 # For minimal enforcement
 cp examples/.codeforgerc.minimal.json .codeforgerc.json
