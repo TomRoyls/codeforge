@@ -4,14 +4,23 @@
 
 ### Fixed
 
-- **examples**: Fixed 7 invalid JSON config files with missing commas
-  - `.codeforgerc.cli-tool.json` — missing commas in rules and output sections
-  - `.codeforgerc.eslint.json` — missing commas in files and ignore arrays
-  - `.codeforgerc.express.json` — missing comma after no-console rule
-  - `.codeforgerc.graphql.json` — missing comma in ignore array
-  - `.codeforgerc.turborepo.json` — missing comma in ignore array
-  - `.codeforgerc.typescript-strict.json` — missing commas in files/ignore arrays + extra closing brace
-  - All 36 example configs now pass JSON validation
+- **examples**: Fixed invalid `"off"` severity level in 4 example configs
+  - `.codeforgerc.cli-tool.json` — changed `"off"` to `"info"` for `no-any` and `no-console`
+  - `.codeforgerc.graphql-server.json` — changed `"off"` to `"info"` for `no-async-await`
+  - `.codeforgerc.serverless.json` — changed `"off"` to `"info"` for `no-async-await`
+  - `.codeforgerc.testing-library.json` — changed `"off"` to `"info"` for `no-console`
+  - Valid CodeForge severities are: `error`, `warning`, `info`
+  - All 40 example configs now pass `codeforge config validate`
+
+### Fixed
+
+- `.codeforgerc.cli-tool.json` — missing commas in rules and output sections
+- `.codeforgerc.eslint.json` — missing commas in files and ignore arrays
+- `.codeforgerc.express.json` — missing comma after no-console rule
+- `.codeforgerc.graphql.json` — missing comma in ignore array
+- `.codeforgerc.turborepo.json` — missing comma in ignore array
+- `.codeforgerc.typescript-strict.json` — missing commas in files/ignore arrays + extra closing brace
+- All 36 example configs now pass JSON validation
 
 - **docs**: Cleaned up `examples/README.md`
   - Removed duplicate monorepo section and duplicate Usage/Customization headers
