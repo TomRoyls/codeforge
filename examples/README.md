@@ -132,6 +132,21 @@ Recommended configuration for Express.js backend applications.
 - Prefers `const` and template literals
 - Perfect for Express.js microservices and APIs
 
+### `.codeforgerc.react-testing.json`
+
+Recommended configuration for React projects using Testing Library.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.test.ts`, `.test.tsx`, `.spec.ts`, `.spec.tsx` files
+- Includes test files in analysis for comprehensive coverage
+- Warns on `any` type usage
+- Moderate parameter limits (max 3)
+- Allows `console.warn` and `console.error` in tests
+- Enforces async/await best practices
+- Detects useless catch blocks and empty functions
+- Perfect for React applications with comprehensive test coverage
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
@@ -185,6 +200,9 @@ cp examples/.codeforgerc.graphql.json .codeforgerc.json
 
 # For REST API projects
 cp examples/.codeforgerc.rest-api.json .codeforgerc.json
+
+# For React Testing Library projects
+cp examples/.codeforgerc.react-testing.json .codeforgerc.json
 
 # For Express.js projects
 cp examples/.codeforgerc.express.json .codeforgerc.json

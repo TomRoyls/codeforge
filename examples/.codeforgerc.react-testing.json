@@ -1,0 +1,30 @@
+{
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx"
+  ],
+  "ignore": ["node_modules", "dist", "build", "coverage", ".next", "public"],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "warning",
+    "max-params": ["warning", { "max": 3 }],
+    "max-depth": ["warning", { "max": 3 }],
+    "no-console": ["warning", { "allow": ["warn", "error"] }],
+    "prefer-readonly": "warning",
+    "prefer-template": "warning",
+    "no-debugger": "error",
+    "no-alert": "warning",
+    "no-await-in-loop": "warning",
+    "prefer-promise-reject-errors": "warning",
+    "require-await": "warning",
+    "no-useless-catch": "error",
+    "no-useless-constructor": "error",
+    "no-empty-function": ["warning", { "allow": ["arrowFunctions"] }]
+  }
+}
