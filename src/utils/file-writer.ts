@@ -3,26 +3,39 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 
 export function writeToFile(outputPath: string, content: string): void {
-  const dir = path.dirname(outputPath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
+  try {
+    const dir = path.dirname(outputPath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    fs.writeFileSync(outputPath, content, 'utf8')
+  } catch (error) {
+    throw new Error(
+      `Failed to write file "${outputPath}": ${error instanceof Error ? error.message : String(error)}`,
+    )
   }
-  fs.writeFileSync(outputPath, content, 'utf8')
 }
 
 export function writeToFileAtomic(outputPath: string, content: string): void {
-  const dir = path.dirname(outputPath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-
   const tempPath = `${outputPath}.${crypto.randomBytes(8).toString('hex')}.tmp`
   try {
+    const dir = path.dirname(outputPath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
     fs.writeFileSync(tempPath, content, 'utf8')
     fs.renameSync(tempPath, outputPath)
+  } catch (error) {
+    throw new Error(
+      `Failed to write file atomically "${outputPath}": ${error instanceof Error ? error.message : String(error)}`,
+    )
   } finally {
     if (fs.existsSync(tempPath)) {
-      fs.unlinkSync(tempPath)
+      try {
+        fs.unlinkSync(tempPath)
+      } catch {
+        // Ignore if temp file cleanup fails
+      }
     }
   }
 }
@@ -58,8 +71,15 @@ export function createBackup(filePath: string): string | null {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
   const backupPath = `${filePath}.backup-${timestamp}`
 
-  fs.copyFileSync(filePath, backupPath)
-  return backupPath
+  try {
+    fs.copyFileSync(filePath, backupPath)
+    return backupPath
+  } catch (error) {
+    console.error(
+      `Warning: Failed to create backup for "${filePath}": ${error instanceof Error ? error.message : String(error)}`,
+    )
+    return null
+  }
 }
 
 export function restoreBackup(backupPath: string, originalPath: string): boolean {
@@ -67,7 +87,14 @@ export function restoreBackup(backupPath: string, originalPath: string): boolean
     return false
   }
 
-  fs.copyFileSync(backupPath, originalPath)
-  fs.unlinkSync(backupPath)
-  return true
+  try {
+    fs.copyFileSync(backupPath, originalPath)
+    fs.unlinkSync(backupPath)
+    return true
+  } catch (error) {
+    console.error(
+      `Warning: Failed to restore backup from "${backupPath}": ${error instanceof Error ? error.message : String(error)}`,
+    )
+    return false
+  }
 }

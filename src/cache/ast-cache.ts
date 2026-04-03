@@ -332,7 +332,9 @@ export class ASTCache {
         } catch {
           // Invalid cache file, remove it
           const filePath = path.join(this.cacheDir, file)
-          await unlink(filePath).catch(() => {})
+          await unlink(filePath).catch((error: Error) => {
+            logger.debug(`Failed to delete invalid cache file ${file}:`, error)
+          })
           cleaned++
         }
       }
