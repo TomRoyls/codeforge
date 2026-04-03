@@ -1,0 +1,33 @@
+# Set default behavior
+* text=auto
+* text eol=lf
+
+# Source code
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JSX
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TSX
+*.json linguist-language=JSON
+*.md linguist-language=Markdown
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
+
+# Shell scripts
+*.sh text eol=lf
+
+# Configuration files
+.editorconfig text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.eslintignore text eol=lf
+.codeforgeignore text eol=lf
+
+# Lock files
+package-lock.json -diff
+yarn.lock -diff
+
+# Generated files
+dist/** -diff
+coverage/** -diff
+.node_modules/** -diff
+.codeforge/** -diff
