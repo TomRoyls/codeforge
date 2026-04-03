@@ -81,6 +81,30 @@ codeforge analyze --rules no-console,no-debugger,no-any
 
 **Impact**: 70-90% faster for targeted checks.
 
+### 5. Framework-Specific Configurations
+
+**Problem**: Using generic rules for all project types.
+
+**Solution**: Use framework-specific example configurations:
+
+The `examples/` directory provides pre-configured `.codeforgerc.*.json` files optimized for different frameworks:
+
+```bash
+# Angular projects - ignores .spec.ts, .e2e.ts
+cp examples/.codeforgerc.angular.json .codeforgerc.json
+
+# Next.js projects - Covers app/ and pages/ directories
+cp examples/.codeforgerc.nextjs.json .codeforgerc.json
+
+# GraphQL APIs - Ignores __generated__ directories
+cp examples/.codeforgerc.graphql.json .codeforgerc.json
+
+# REST APIs - Higher parameter limits, allows console.info
+cp examples/.codeforgerc.rest-api.json .codeforgerc.json
+```
+
+**Impact**: 20-30% faster analysis by skipping framework-specific generated code.
+
 ## Advanced Optimizations
 
 ### 1. Incremental Analysis
