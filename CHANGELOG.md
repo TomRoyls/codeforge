@@ -20,9 +20,33 @@
 
 ### Added
 
-- **docs**: Added documentation landing page (`docs/README.md`)
-  - Central hub linking all 7 major guides documents
-  - Organized by category: Getting Started, Architecture, Quality, Security
+- **docs**: Added comprehensive ESLint to CodeForge Migration Guide (`docs/MIGRATION_ESLINT.md`)
+  - Rule mapping table with 30+ ESLint-to-CodeForge equivalents
+  - Configuration translation examples (.eslintrc.json to .codeforgerc.json)
+  - Migration strategies (big bang, gradual, team-by-team)
+  - CI/CD migration examples for GitHub Actions, GitLab CI, Jenkins
+  - FAQ section covering common migration questions
+
+- **docs**: Added Editor Integration Guide (`docs/EDITOR_INTEGRATION.md`)
+  - VS Code tasks.json, problem matchers, keybindings
+  - JetBrains IDEs (WebStorm, IntelliJ) configuration
+  - Vim/Neovim AsyncRun, ALE, autocmd setup
+  - Emacs compilation mode and Flycheck integration
+  - Pre-commit hooks (git native, husky, lint-staged)
+
+- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
+  - For AWS Lambda, Azure Functions, Google Cloud Functions
+  - Strict function size limits optimized for cold starts
+
+- **examples**: Added Docker configuration (`.codeforgerc.docker.json`)
+  - For containerized Node.js applications
+  - Excludes docker and scripts directories from analysis
+
+- **examples**: Added full-stack configuration (`.codeforgerc.fullstack.json`)
+  - For projects with shared frontend and backend code
+  - ERROR-level circular dependency detection for shared packages
+
+- **docs**: Updated `docs/README.md` with migration and editor integration guide links
   - Includes documentation stats and contributing guidelines
   - Improves documentation discoverability
 
