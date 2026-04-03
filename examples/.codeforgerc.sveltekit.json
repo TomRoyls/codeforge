@@ -1,0 +1,33 @@
+{
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "src/**/*.js",
+    "src/routes/**/*.ts",
+    "src/routes/**/*.svelte"
+  ],
+  "ignore": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    ".svelte-kit",
+    "**/*.test.ts",
+    "**/*.test.js",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/$types.ts"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "warning",
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 3 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "prefer-readonly": "warning",
+    "no-useless-comparison": "error",
+    "prefer-template": "warning"
+  }
+}

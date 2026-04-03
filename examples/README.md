@@ -64,6 +64,20 @@ Recommended configuration for Svelte projects.
 - Moderate parameter limits (max 4)
 - Detects useless comparisons
 
+### `.codeforgerc.sveltekit.json`
+
+Recommended configuration for SvelteKit full-stack applications.
+
+**Features**:
+
+- Analyzes `.ts`, `.svelte`, and `.js` files in `src/` and `src/routes/`
+- Ignores `.svelte-kit` build directory and `$types.ts` generated files
+- Warns on `any` type usage
+- Allows `console.warn`, `console.error`, and `console.info` for server-side logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and enforces template literals
+- Perfect for SvelteKit apps with server-side routes and API endpoints
+
 ### `.codeforgerc.angular.json`
 
 Recommended configuration for Angular projects.
@@ -202,6 +216,9 @@ cp examples/.codeforgerc.vue.json .codeforgerc.json
 
 # For Svelte projects
 cp examples/.codeforgerc.svelte.json .codeforgerc.json
+
+# For SvelteKit projects
+cp examples/.codeforgerc.sveltekit.json .codeforgerc.json
 
 # For Angular projects
 cp examples/.codeforgerc.angular.json .codeforgerc.json
