@@ -78,6 +78,22 @@ Recommended configuration for SvelteKit full-stack applications.
 - Detects useless comparisons and enforces template literals
 - Perfect for SvelteKit apps with server-side routes and API endpoints
 
+### `.codeforgerc.remix.json`
+
+Recommended configuration for Remix.run React framework projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `app/` directory
+- Covers Remix's app directory structure (routes, loaders, actions)
+- Ignores `build` and `public/build` directories
+- Warns on `any` type usage
+- Stricter parameter limits (max 3) for route loaders/actions
+- Allows `console.warn`, `console.error`, and `console.info` for server-side logging
+- Detects useless comparisons and empty functions
+- Enforces template literals for better string handling
+- Perfect for Remix apps with server-side rendering and data loading
+
 ### `.codeforgerc.angular.json`
 
 Recommended configuration for Angular projects.
@@ -219,6 +235,9 @@ cp examples/.codeforgerc.svelte.json .codeforgerc.json
 
 # For SvelteKit projects
 cp examples/.codeforgerc.sveltekit.json .codeforgerc.json
+
+# For Remix projects
+cp examples/.codeforgerc.remix.json .codeforgerc.json
 
 # For Angular projects
 cp examples/.codeforgerc.angular.json .codeforgerc.json
