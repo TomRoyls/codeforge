@@ -12,8 +12,8 @@
     "**/dist",
     "**/.next",
     "**/.turbo",
-    "**/build"
-    "**/.nuxt"
+    "**/build",
+    "**/.nuxt",
     "**/.output",
     "**/coverage",
     "**/*.spec.ts",

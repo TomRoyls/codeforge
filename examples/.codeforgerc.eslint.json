@@ -19,7 +19,7 @@
     "**/*.middleware.ts",
     "**/*.dto.ts",
     "**/*.entity.ts",
-    "**/*.decorator.ts"
+    "**/*.decorator.ts",
     "**/*.pipe.ts",
     "**/*.filter.ts",
     "**/*.gateway.ts",
@@ -33,7 +33,7 @@
     "coverage",
     "**/*.spec.ts",
     "**/*.test.ts",
-    "**/*.e2e.ts"
+    "**/*.e2e.ts",
     "**/*.spec.js",
     "**/*.test.js"
   ],

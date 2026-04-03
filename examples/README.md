@@ -287,25 +287,6 @@ Strict configuration for maximum code quality.
 - No `console` usage allowed
 - Detects deprecated APIs and `eval` usage
 
-## Usage
-
-Copy the appropriate example to your project root:
-
-### `.codeforgerc.monorepo.json`
-
-Recommended configuration for monorepo projects (Nx, Turborepo, Lerna, pnpm workspaces).
-
-**Features**:
-
-- Analyzes `packages/**/*.ts`, `.tsx`, `.js`, `.jsx` files
-- Ignores build artifacts in all packages (`**/node_modules`, `**/dist`, `**/build`)
-- Higher parameter limits (max 5) for shared code and utilities
-- Allows `console.warn`, `console.error`, and `console.info` for package scripts
-- **ERROR-level circular dependency detection** (critical for monorepo health)
-- Detects delete operator usage
-- Perfect for multi-package repositories with shared dependencies
-- Works with Nx, Turborepo, Lerna, and pnpm/yarn workspaces
-
 ### `.codeforgerc.electron.json`
 
 Recommended configuration for Electron desktop applications.
@@ -488,9 +469,46 @@ Recommended configuration for microservices architecture with multiple services.
 - Allows console for service logging
 - Perfect for microservices architecture (gRPC, REST, GraphQL services)
 
+### `.codeforgerc.deno.json`
+
+Recommended configuration for Deno runtime projects.
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files
+- Ignores test files and build artifacts
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Perfect for Deno server-side applications
+
+### `.codeforgerc.library.json`
+
+Recommended configuration for shared library packages.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
+- Ignores test and spec files
+- Warns on `any` type usage
+- Stricter parameter limits (max 3)
+- Detects circular dependencies and useless comparisons
+- Perfect for npm packages and shared libraries
+
+### `.codeforgerc.codeforge.json`
+
+Recommended configuration for CodeForge self-analysis (dogfooding).
+
+**Features**:
+
+- Analyzes `src/**/*.ts` files
+- Ignores test fixtures and mocks
+- Balanced rule set for CLI tool development
+- Perfect for CodeForge's own codebase
+
 ## Usage
 
-Then customize it for your project's specific needs.
+Copy the appropriate example to your project root and customize it for your project's specific needs.
 
 ## Customization
 

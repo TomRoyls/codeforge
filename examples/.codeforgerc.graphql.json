@@ -8,8 +8,8 @@
     "**/*.test.ts",
     "**/*.test.js",
     "**/*.spec.ts",
-    "**/*.spec.js"
-    "**/*.e2e.ts"
+    "**/*.spec.js",
+    "**/*.e2e.ts",
     "**/__generated__/**"
   ],
   "rules": {

@@ -3,12 +3,7 @@
   "name": "CLI Tool",
   "description": "Configuration for CLI tools and utilities",
   "version": "1.0.0",
-  "files": [
-    "src/**/*.ts",
-    "bin/**/*.ts",
-    "scripts/**/*.ts",
-    "cli/**/*.ts"
-  ],
+  "files": ["src/**/*.ts", "bin/**/*.ts", "scripts/**/*.ts", "cli/**/*.ts"],
   "ignore": [
     "node_modules/**",
     "dist/**",
@@ -24,7 +19,7 @@
     "prefer-const": "warning",
     "no-console": "off",
     "max-params": ["error", { "max": 3 }],
-    "max-depth": ["warning", { "max": 3 }]
+    "max-depth": ["warning", { "max": 3 }],
     "no-eval": "error",
     "no-debugger": "error",
     "prefer-template": "warning"
@@ -32,8 +27,8 @@
   "output": {
     "format": "console",
     "colors": true,
-    "progress": true
+    "progress": true,
     "verbose": false
-  }
+  },
   "timeout": 60000
 }

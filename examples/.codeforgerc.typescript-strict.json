@@ -3,8 +3,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.js",
-    "src/**/*.jsx"
-    "index.ts"
+    "src/**/*.jsx",
+    "index.ts",
     "lib/**/*.ts",
     "types/**/*.ts"
   ],
@@ -15,8 +15,8 @@
     "coverage",
     "**/*.spec.ts",
     "**/*.test.ts",
-    "**/*.spec.js"
-    "**/*.test.js"
+    "**/*.spec.js",
+    "**/*.test.js",
     "**/dist/**"
   ],
   "rules": {
@@ -30,5 +30,4 @@
     "prefer-template": "warning",
     "no-useless-comparison": "error"
   }
-}
 }
