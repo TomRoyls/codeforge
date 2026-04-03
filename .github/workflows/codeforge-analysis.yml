@@ -1,0 +1,74 @@
+name: CodeForge Analysis
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1' # Weekly on Monday at 6 AM UTC
+
+jobs:
+  analyze:
+    name: Analyze Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Full history for better analysis
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run CodeForge analysis
+        run: |
+          node dist/bin/run.js analyze \
+            --format json \
+            --output analysis-report.json \
+            --ci \
+            --fail-on-warnings \
+            --max-warnings 50
+
+      - name: Upload analysis report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: codeforge-analysis
+          path: analysis-report.json
+          retention-days: 30
+
+      - name: Comment PR with results
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('analysis-report.json', 'utf8'));
+
+            const comment = `## CodeForge Analysis Results
+
+            **Summary:**
+            - Files analyzed: ${report.summary.filesAnalyzed}
+            - Violations found: ${report.summary.totalViolations}
+              - Errors: ${report.summary.errors}
+              - Warnings: ${report.summary.warnings}
+
+            ${report.summary.totalViolations > 0 ? '⚠️ **Please review the violations above.**' : '✅ **All checks passed!**'}
+
+            [View full report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
