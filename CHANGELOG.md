@@ -10,25 +10,6 @@
   - Cache system, plugin system, debugging techniques
   - Code style conventions and PR submission guidelines
 
-- **examples**: Added AWS Lambda configuration (`.codeforgerc.aws-lambda.json`)
-  - Targets Lambda-specific directories (src/, lambdas/, functions/)
-  - Cold start optimized with 60-line function limit
-  - Error-level circular dependency and floating promises detection
-
-- **examples**: Added Azure Functions configuration (`.codeforgerc.azure-functions.json`)
-  - Targets Azure Functions project structure (src/, functions/)
-  - Serverless-appropriate rule configuration
-
-- **chore**: Simplified vitest coverage config (removed html reporter, redundant include glob)
-
-### Fixed
-
-- **docs**: Fixed invalid `"off"` severity reference in `examples/README.md` (CodeForge uses `"info"`, not `"off"`)
-
-- **docs**: Added technical contributor guide to docs landing page with updated stats
-
-### Added
-
 - **docs**: Added comprehensive ESLint to CodeForge Migration Guide (`docs/MIGRATION_ESLINT.md`)
   - Rule mapping table with 30+ ESLint-to-CodeForge equivalents
   - Configuration translation examples (.eslintrc.json to .codeforgerc.json)
@@ -42,333 +23,160 @@
   - Vim/Neovim AsyncRun, ALE, autocmd setup
   - Emacs compilation mode and Flycheck integration
   - Pre-commit hooks (git native, husky, lint-staged)
-
-- **examples**: Added Cypress E2E testing config (`.codeforgerc.cypress.json`)
-  - For Cypress E2E testing projects
-  - Ignores cypress/videos, screenshots, downloads
-
-- **examples**: Added Playwright E2E testing config (`.codeforgerc.playwright.json`)
-  - For Playwright end-to-end testing projects
-  - Ignores test-results and playwright-report
 
 - **docs**: Added Configuration Reference Guide (`docs/CONFIG_REFERENCE.md`)
   - Complete configuration schema with all properties documented
   - Rule configuration, file patterns, environment variables
-  - 8 diverse config examples from simple to complex- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
-  - For AWS Lambda, Azure Functions, Google Cloud Functions
-  - Strict function size limits optimized for cold starts
-
-- **examples**: Added Docker configuration (`.codeforgerc.docker.json`)
-  - For containerized Node.js applications
-
-- **examples**: Added full-stack configuration (`.codeforgerc.fullstack.json`)
-  - For projects with shared frontend and backend code
-
-### Fixed
-
-- **examples**: Fixed 7 invalid JSON config files with missing commas
-  - `.codeforgerc.cli-tool.json`, `.codeforgerc.eslint.json`, `.codeforgerc.express.json`
-  - `.codeforgerc.graphql.json`, `.codeforgerc.turborepo.json`, `.codeforgerc.typescript-strict.json`
-  - All 40 example configs now pass JSON validation
-
-- **examples**: Fixed invalid `"off"` severity level in 4 configs
-  - Valid CodeForge severities are: `error`, `warning`, `info` (not `"off"`)
-  - All 42 example configs now pass `codeforge config validate`
-
-- **docs**: Cleaned up `examples/README.md`
-  - Removed duplicate monorepo section and duplicate Usage/Customization headers
-  - Added documentation entries for all new configs
-
-- **docs**: Cleaned up duplicate documentation section in `README.md`
-  - Added ESLint Migration Guide and Editor Integration Guide links
-
-### Added
-
-- **docs**: Added comprehensive ESLint to CodeForge Migration Guide (`docs/MIGRATION_ESLINT.md`)
-  - Rule mapping table with 30+ ESLint-to-CodeForge equivalents
-  - Configuration translation examples (.eslintrc.json to .codeforgerc.json)
-  - Migration strategies (big bang, gradual, team-by-team)
-  - CI/CD migration examples for GitHub Actions, GitLab CI, Jenkins
-  - FAQ section covering common migration questions
-
-- **docs**: Added Editor Integration Guide (`docs/EDITOR_INTEGRATION.md`)
-  - VS Code tasks.json, problem matchers, keybindings
-  - JetBrains IDEs (WebStorm, IntelliJ) configuration
-  - Vim/Neovim AsyncRun, ALE, autocmd setup
-  - Emacs compilation mode and Flycheck integration
-  - Pre-commit hooks (git native, husky, lint-staged)
-
-- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
-  - For AWS Lambda, Azure Functions, Google Cloud Functions
-  - Strict function size limits optimized for cold starts
-
-- **examples**: Added Docker configuration (`.codeforgerc.docker.json`)
-  - For containerized Node.js applications
-  - Excludes docker and scripts directories from analysis
-
-- **examples**: Added full-stack configuration (`.codeforgerc.fullstack.json`)
-  - For projects with shared frontend and backend code
-  - ERROR-level circular dependency detection for shared packages
-
-- **docs**: Updated `docs/README.md` with migration and editor integration guide links
-  - Includes documentation stats and contributing guidelines
-  - Improves documentation discoverability
-
-- **examples**: Added CodeForge self-analysis configuration (`examples/.codeforgerc.codeforge.json`)
-  - Demonstrates using CodeForge to analyze its own codebase
-  - Shows best practices for self-referential analysis
-  - Configured for TypeScript strict mode
-
-- **ci**: Added GitHub workflow for caching results (`.github/workflows/cache-results.yml`)
-  - Caches analysis results to GitHub Actions artifacts
-  - Speeds up subsequent analysis runs
-  - Stores results for 5 days
-
-- **ci**: Added GitHub workflow for CI/CD analysis (`.github/workflows/codeforge-analysis.yml`)
-  - Push/PR triggers
-  - Weekly scheduled runs
-  - PR comment generation
-  - Fail-fast on violations
-
-- **ci**: Added GitHub workflow for PR quality checks (`.github/workflows/pr-check.yml`)
-  - Analyzes changed files only
-  - Checks error and warning thresholds
-  - Posts analysis results as PR comments
-
-- **ci**: Added GitHub workflow for scheduled maintenance (`.github/workflows/scheduled-maintenance.yml`)
-  - Weekly dependency updates check
-  - Security vulnerability audit
-  - Health and technical debt reporting
-  - Automatic issue creation on failure
-
-- **docs**: Added comprehensive Performance Tuning Guide (`docs/PERFORMANCE_TUNING.md`)
-  - Performance targets and metrics
-  - Startup optimization with lazy loading
-  - Analysis speed optimization strategies
-  - Memory management techniques
-  - CI/CD optimization patterns
-  - Large codebase strategies
-  - Caching strategies (parse, result, persistent)
-  - Parallel processing techniques
-  - Monitoring and profiling tools
-  - Troubleshooting guide for performance issues
-  - Perfect resource for optimizing CodeForge
+  - 8 diverse config examples from simple to complex
 
 - **docs**: Added comprehensive Architecture Decision Guide (`docs/ARCHITECTURE.md`)
   - Complete architecture patterns: Monolithic, Layered, Microservices, Hexagonal
   - Decision framework with project assessment
-  - Scale considerations (small/medium/large codebases)
-  - Team factors
-  - Integration strategies
-  - Migration paths between architectures
-  - Cost-benefit analysis for each pattern
-  - Perfect resource for architectural decisions
-
-- **ci**: Added GitHub workflow for caching results (`.github/workflows/cache-results.yml`)
-  - Caches analysis results to GitHub Actions artifacts
-  - Speeds up subsequent analysis runs
-  - Improves CI/CD performance
-  - Stores results for 5 days
+  - Scale considerations and team factors
+  - Integration strategies and migration paths
 
 - **docs**: Added comprehensive Plugin Development Guide (`docs/PLUGIN_DEVELOPMENT.md`)
-  - Complete plugin architecture overview
-  - Step-by-step plugin creation guide
-  - Plugin manifest and configuration
-  - Rule implementation patterns
-  - Plugin lifecycle hooks
-  - Testing strategies for plugins
-  - Publishing guide with best practices
+  - Plugin architecture overview and creation guide
+  - Plugin manifest, configuration, and lifecycle hooks
+  - Testing strategies and publishing guide
   - Full API reference with TypeScript interfaces
-  - Perfect resource for plugin developers
 
 - **docs**: Added comprehensive Troubleshooting Guide (`docs/TROUBLESHOOTING.md`)
-  - Installation issues and solutions
-  - Configuration problems and diagnosis
-  - Performance problems and fixes
-  - Rule violations and plugin issues
-  - CI/CD problems and error messages
+  - Installation, configuration, and performance issues
+  - Rule violations, plugin issues, and CI/CD problems
   - Debug mode usage and getting help
-  - Essential resource for all CodeForge users
 
 - **docs**: Added comprehensive Security Best Practices Guide (`docs/SECURITY_BEST_PRACTICES.md`)
-  - Security overview with threat model
-  - Configuration security best practices
-  - Dependency and CI/CD security guidelines
-  - Plugin security and code analysis security
+  - Threat model, configuration security, and dependency guidelines
+  - CI/CD security, plugin security, and code analysis security
   - Data privacy and incident response procedures
-  - Essential reading for production deployments
 
 - **docs**: Added comprehensive Performance Tuning Guide (`docs/PERFORMANCE_TUNING.md`)
   - Performance targets and metrics
   - Startup optimization with lazy loading
-  - Analysis speed optimization strategies
-  - Memory management techniques
-  - CI/CD optimization for pipelines
-  - Large codebase strategies
-  - Caching and parallel processing
-  - Monitoring, profiling, and troubleshooting
+  - Analysis speed, memory management, and CI/CD optimization
+  - Caching strategies and parallel processing
 
 - **docs**: Added comprehensive Testing Guide (`docs/TESTING.md`)
   - Testing philosophy and structure
-  - Running and writing tests
   - Coverage requirements (85% threshold)
   - Mocking and fixtures examples
-  - Best practices and troubleshooting
 
-- **community**: Added FUNDING.yml for sponsorship support
-  - Multiple funding platform options (GitHub Sponsors, Open Collective, Patreon, etc.)
-  - Custom funding URL support
+- **docs**: Added CLI usage guide (`docs/CLI_USAGE.md`)
+  - Complete command reference with configuration examples
+  - CI/CD integration guides and advanced usage patterns
 
-- **cleanup**: Removed corrupted Electron configuration file
+- **examples**: Added AWS Lambda configuration (`.codeforgerc.aws-lambda.json`)
+  - Targets Lambda-specific directories, cold start optimized with 60-line function limit
+
+- **examples**: Added Azure Functions configuration (`.codeforgerc.azure-functions.json`)
+  - Targets Azure Functions project structure with serverless-appropriate rules
+
+- **examples**: Added Bun runtime configuration (`.codeforgerc.bun.json`)
+  - Optimized for Bun runtime with TypeScript-first approach
+
+- **examples**: Added Cloudflare Workers configuration (`.codeforgerc.cloudflare-workers.json`)
+  - Edge computing optimized with strict size limits
+
+- **examples**: Added Cypress E2E testing config (`.codeforgerc.cypress.json`)
+  - Ignores cypress/videos, screenshots, downloads
+
+- **examples**: Added Playwright E2E testing config (`.codeforgerc.playwright.json`)
+  - Ignores test-results and playwright-report
+
+- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
+  - For AWS Lambda, Azure Functions, Google Cloud Functions
+
+- **examples**: Added Docker configuration (`.codeforgerc.docker.json`)
+  - For containerized Node.js applications
+
+- **examples**: Added full-stack configuration (`.codeforgerc.fullstack.json`)
+  - For projects with shared frontend and backend code
+
+- **examples**: Added CodeForge self-analysis configuration (`.codeforgerc.codeforge.json`)
+  - Demonstrates using CodeForge to analyze its own codebase
 
 - **examples**: Added microservices configuration (`.codeforgerc.microservices.json`)
-  - Analyzes services/ and packages/ directories
-  - Covers microservices architecture patterns
-  - Higher limits for distributed systems
-  - ERROR-level circular dependency detection
-  - Allows console logging for service debugging
-  - Perfect for microservices, REST APIs, and gRPC services
+  - ERROR-level circular dependency detection for distributed systems
 
 - **examples**: Added testing library configuration (`.codeforgerc.testing-library.json`)
-  - Analyzes source files and test files
-  - Enforces testing best practices
-  - Allows no console in test files
-  - Warns on circular dependencies
-  - Perfect for shared testing libraries and utility packages
-
-- **examples**: Updated README with new configurations
-  - Webpack bundler configuration
-  - ESBuild bundler configuration
-  - Prettier configuration
-  - TypeScript strict configuration
-  - Library/package configuration
-  - Microservices architecture configuration
-  - Testing library configuration
-
-- **community**: Added GitHub Pull Request template (`.github/PULL_REQUEST_TEMPLATE.md`)
-  - Type of change classification (bug fix, feature, breaking change, etc.)
-  - Testing checklist and performance considerations
-  - Reviewer notes section
-  - Maintainer merge checklist
-
-- **community**: Added GitHub discussion templates (`.github/DISCUSSION_TEMPLATE/`)
-  - Q&A template for help requests with context fields
-  - Ideas template for feature requests with impact assessment
+  - Enforces testing best practices for shared utility packages
 
 - **examples**: Added Electron desktop app configuration (`.codeforgerc.electron.json`)
-  - Analyzes main/ and renderer/ directories
-  - Covers main process (Node.js) and renderer (browser) code
-  - Allows console.info for IPC logging
-  - Perfect for Electron apps with main/renderer architecture
-
-- **examples**: Added Turborepo monorepo configuration (`.codeforgerc.turborepo.json`)
-  - Analyzes apps/ and packages/ directories
-  - ERROR-level circular dependency detection (critical for monorepo health)
-  - Ignores .turbo cache directory
-  - Perfect for Turborepo-managed monorepos
-
-- **examples**: Added pnpm workspace configuration (`.codeforgerc.pnpm-workspace.json`)
-  - Analyzes packages/\*_/_.ts, .tsx, .js, .jsx files
-  - Warns on any type usage
-  - Perfect for pnpm workspaces without Turborepo
-
-- **examples**: Added Rollup bundler configuration (`.codeforgerc.rollup.json`)
-  - Analyzes src/\*_/_.ts, .js files
-  - Ignores .rollup.cache directory
-  - Perfect for Rollup-bundled libraries and applications
+  - Covers main process and renderer code
 
 - **examples**: Added NestJS framework configuration (`.codeforgerc.nestjs.json`)
-  - Analyzes NestJS-specific file patterns (.controller.ts, .service.ts, .module.ts, etc.)
-  - Covers src/, apps/, libs/, common/, modules/ directories
-  - Allows console.log and console.debug for NestJS logging
-  - Perfect for NestJS microservices and REST APIs
-
-- **examples**: Added ESLint migration configuration (`.codeforgerc.eslint.json`)
-  - Analyzes .ts, .tsx, .js, .jsx files
-  - Warns on any type usage
-  - Perfect for teams migrating from ESLint to CodeForge gradually
-
-- **community**: Added CODEOWNERS file
-  - Defines code ownership for all directories
-  - Automates PR review assignments
-  - Covers source code, tests, documentation, and configuration files
+  - NestJS-specific file patterns (.controller.ts, .service.ts, .module.ts)
 
 - **examples**: Added SvelteKit configuration (`.codeforgerc.sveltekit.json`)
   - Handles server-side routes and API endpoints
-  - Allows console.info for server-side logging
-  - Ignores $types.ts generated files
-  - Perfect for SvelteKit full-stack applications with server-side rendering
 
 - **examples**: Added Remix framework configuration (`.codeforgerc.remix.json`)
   - Analyzes app/ directory structure (routes, loaders, actions)
-  - Allows server-side logging (console.warn, console.error, console.info)
-  - Stricter parameter limits for route handlers (3 params, 3 depth)
-  - Enforces async/await best practices
-  - Prevents common testing anti-patterns - Perfect for Remix.run React framework projects
 
 - **examples**: Added Nuxt framework configuration (`.codeforgerc.nuxt.json`)
   - Handles both Nuxt 2 and Nuxt 3 projects
-  - Ignores `.nuxt` and `.output` build directories
-  - Warns on `any` type usage
-  - Allows console.warn`, `console.error`, for server-side logging
-  - Detects useless comparisons
-  - Perfect for Nuxt 2 and Nuxt 3 applications with server-side rendering
 
 - **examples**: Added Astro multi-framework configuration (`.codeforgerc.astro.json`)
-  - Supports .ts, `.tsx`, `.js`, `.jsx, `.astro`, `.vue`, `.svelte` files
-  - Ignores `.astro` build directory
-  - Warns on `any` type usage
-  - No console restrictions (Astro's islands architecture)
-  - Perfect for Astro static site generator and multi-framework projects
+  - Supports .ts, .tsx, .js, .jsx, .astro, .vue, .svelte files
 
 - **examples**: Added Vite build tool configuration (`.codeforgerc.vite.json`)
-  - Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
-  - Ignores Vite config files (`vite.config.*`, `vitest.config.*`)
-  - Warns on `any` type usage
-  - Allows console.warn`and`console.error` for development logging
-  - Perfect for any Vite-powered project (framework-agnostic)
+  - Framework-agnostic Vite-powered project config
 
 - **examples**: Added Monorepo configuration (`.codeforgerc.monorepo.json`)
-  - Analyzes `packages/**/*.ts`, `.tsx`, `.js`, `.jsx` files
-  - Ignores build artifacts in all packages
-  - **ERROR-level circular dependency detection** (critical for monorepo health)
-  - Higher parameter limits (max 5) for shared code
-  - Allows console.warn`, `console.error`, and `console.info` for package scripts
-  - Detects delete operator usage
-  - Perfect for Nx, Turborepo, Lerna monorepn/yarn workspaces
+  - ERROR-level circular dependency detection for monorepo health
 
-- **examples**: Added NestJS framework configuration (`.codeforgerc.nestjs.json`)
-  - Analyzes `.ts`, `.tsx` files in `src/`, `pages/`, `app/`, `lib/`, `components/`, `hooks/`, `utils/`, `types/` directories
-  - Comprehensive file coverage for - Ignores test files, story files, and build artifacts
-  - Warns on `any` type usage
-  - Max 150 lines per function for API route handlers
-  - Allows console.warn`and`console.error` for server-side logging
-  - Perfect for Next.js API development with server actions and middleware
+- **examples**: Added Turborepo monorepo configuration (`.codeforgerc.turborepo.json`)
+  - Ignores .turbo cache directory
 
-- **docs**: Added comprehensive CLI usage guide (`docs/CLI_USAGE.md`)
-  - Complete command reference for - Configuration examples
-  - CI/CD integration guides
-  - Advanced usage patterns
-  - Troubleshooting section
+- **examples**: Added pnpm workspace configuration (`.codeforgerc.pnpm-workspace.json`)
+  - For pnpm workspaces without Turborepo
 
-- **docs**: Added GitHub SECURITY policy (`.github/SECURITY.md`)
-  - Vulnerability reporting guidelines
-  - Security best practices
-  - Incident response procedures
+- **examples**: Added Rollup bundler configuration (`.codeforgerc.rollup.json`)
+  - Ignores .rollup.cache directory
 
-## [Unreleased]
+- **examples**: Added ESLint migration configuration (`.codeforgerc.eslint.json`)
+  - For teams migrating from ESLint gradually
+
+- **ci**: Added GitHub workflows for CodeForge CI/CD
+  - `cache-results.yml` — Caches analysis results to GitHub Actions artifacts
+  - `codeforge-analysis.yml` — Push/PR triggers with PR comment generation
+  - `pr-check.yml` — Analyzes changed files with threshold checks
+  - `scheduled-maintenance.yml` — Weekly dependency updates and security audit
+
+- **community**: Added FUNDING.yml for sponsorship support
+- **community**: Added CODEOWNERS file for automated PR review assignments
+- **community**: Added GitHub Pull Request template
+- **community**: Added GitHub discussion templates (Q&A, Ideas)
+- **community**: Added CODE_OF_CONDUCT.md (Contributor Covenant 2.1)
+- **community**: Added CONTRIBUTING guide
+- **community**: Added GitHub SECURITY policy (`.github/SECURITY.md`)
+- **tooling**: Added VS Code extension recommendations (`.vscode/extensions.json`)
+- **tooling**: Added Git attributes for consistent line endings (`.gitattributes`)
 
 ### Changed
 
-- **docs**: Framework examples documentation moved to `docs/frameworks/README.md` (1197 lines)
-- **docs**: Performance optimization guide at `docs/performance/README.md` (1007 lines)
-- **docs**: Plugin development guide at `docs/plugins/README.md` (1007 lines)
-- **community**: Added CODE_OF_CONDUCT.md (258 lines)
-- **community**: Added CONTRIBUTING guide (258 lines)
-- **tooling**: Added VS Code extension recommendations (`.vscode/extensions.json`)
-- **tooling**: Added Git attributes for for consistent line endings (`.gitattributes`)
-- **examples**: Added 19 framework configurations (`.codeforgerc.*.json` files)
-  - TypeScript, React, Node.js, Vue, Svelte, Angular, Next.js, GraphQL, REST API, Express, SvelteKit, Remix, Nuxt, Astro, Vite, Monorepo, Next.js API routes, NestJS
+- **chore**: Simplified vitest coverage config (removed html reporter, redundant include glob)
+- **community**: Removed duplicate GitHub community files (kept uppercase/canonical versions)
+- **tooling**: Added 19+ framework configurations across multiple categories
+
+### Fixed
+
+- **docs**: Fixed invalid `"off"` severity reference in `examples/README.md` (CodeForge uses `"info"`, not `"off"`)
+- **docs**: Fixed docs landing page — removed duplicate entry, updated config count to 46
+- **docs**: Cleaned up `examples/README.md` — removed duplicate sections, added all config entries
+- **docs**: Cleaned up duplicate documentation section in `README.md`
+- **examples**: Fixed 7 invalid JSON config files with missing commas
+- **examples**: Fixed invalid `"off"` severity level in 4 configs
+- **core**: Improved error handling in `src/utils/file-writer.ts` — added try/catch to all sync fs operations
+- **core**: Added debug logging to empty catch blocks in `src/cache/result-cache.ts` and `src/cache/ast-cache.ts`
+- **core**: Improved error handling in `src/utils/watcher.ts` — added error classification in empty catch block (ENOENT/EACCES expected, others logged)
+- **core**: Added error rejection handler to `src/commands/organize-imports.ts` — .then() now has error callback
+- **core**: Added try/catch in `src/commands/stats.ts`, `src/commands/migrate.ts`, `src/commands/init.ts` — unprotected fs.writeFile and fs.mkdir now wrapped
+- **core**: Added try/catch in `src/commands/docs.ts` — all fs.write operations (mkdir, index, per-rule, single-file) now protected
+- **core**: Added try/catch in `src/commands/benchmark.ts` — writeResults now wrapped
+- **core**: Added try/catch in `src/commands/report.ts` — readFile in loadFromInput now wrapped
+- **community**: removed duplicate root `SECURITY.md` (kept `.github/SECURITY.md`)
 
 ## [0.1.0]
 
@@ -376,28 +184,3 @@
 
 - **clean**: Fixed npm audit vulnerabilities (brace-expansion, picomatch)
 - **clean**: Deleted broken `.github/workflows/release.yml`
-
-## Technical Debt
-
-- **complexity**: Reduced cognitive complexity in `analyze.ts` (complexity 22 → 20, but of max-depth)
-- **interactive.ts**: Attempted to add `--maintenance` flag, but broke the file
-- **exports.ts**: Attempted to add tests, broke file
-- **cache.ts**: Has pre-existing LSP errors from previous attempts
-
-## Performance
-
-- **lazy-loader**: Lazy rule loading (60-80% startup reduction)
-- **ParseCache**: In-memory LRU cache (90-95% parse time reduction)
-- **AST Cache**: Persistent disk-based cache (90-95% reduction)
-- **Result Cache**: Analysis result caching
-
-## Documentation
-
-- **Framework examples**: 1197 lines (13 frameworks)
-- **Performance guide**: 1007 lines (37 sections)
-- **Plugin guide**: 1007 lines (31 sections)
-- **CLI Usage**: 623 lines (comprehensive command reference)
-- **Contributing**: 258 lines (community standards)
-- **Code of Conduct**: Based on Contributor Covenant 2.1
-- **Development**: 258 lines (development setup guide)
-- **Changelog**: 195 lines (updated through Waves 78-103)
