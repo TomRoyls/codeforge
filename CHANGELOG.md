@@ -4,11 +4,25 @@
 
 ### Added
 
+- **docs**: Added comprehensive Performance Tuning Guide (`docs/PERFORMANCE_TUNING.md`)
+  - Performance targets and metrics
+  - Startup optimization with lazy loading
+  - Analysis speed optimization strategies
+  - Memory management techniques
+  - CI/CD optimization patterns
+  - Large codebase strategies
+  - Caching strategies (parse, result, persistent)
+  - Parallel processing techniques
+  - Monitoring and profiling tools
+  - Troubleshooting guide for performance issues
+  - Perfect resource for optimizing CodeForge
+
 - **docs**: Added comprehensive Architecture Decision Guide (`docs/ARCHITECTURE.md`)
   - Complete architecture patterns: Monolithic, Layered, Microservices, Hexagonal
-  - Decision framework with project assessment criteria
+  - Decision framework with project assessment
   - Scale considerations (small/medium/large codebases)
-  - Team factors and integration strategies
+  - Team factors
+  - Integration strategies
   - Migration paths between architectures
   - Cost-benefit analysis for each pattern
   - Perfect resource for architectural decisions
