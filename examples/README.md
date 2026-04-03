@@ -122,6 +122,20 @@ Recommended configuration for Angular projects.
 - Moderate parameter limits (max 4)
 - Detects useless comparisons and delete operator
 
+### `.codeforgerc.bun.json`
+
+Recommended configuration for Bun runtime projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores `.bun` directory
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Error-level eval detection
+- Error-level floating promises detection
+- Perfect for Bun applications and APIs
+
 ### `.codeforgerc.aws-lambda.json`
 
 Recommended configuration for AWS Lambda-specific Node.js functions.
@@ -153,6 +167,21 @@ Recommended configuration for Azure Functions Node.js applications.
 - Allows `console.warn`, `console.error`, `console.info` for Azure Functions logging
 - Error-level floating promises and empty catch detection
 - Perfect for Azure Functions with TypeScript or JavaScript
+
+### `.codeforgerc.cloudflare-workers.json`
+
+Recommended configuration for Cloudflare Workers serverless projects.
+
+**Features**:
+
+- Analyzes `src/`, `workers/`, and `functions/` directories
+- Ignores `.wrangler` directory
+- Warns on `any` type usage
+- Stricter parameter limits (max 3) for edge runtime
+- Max 50 lines per function for Workers size optimization
+- ERROR-level circular dependency detection (critical for bundle size)
+- Error-level floating promises and empty catch detection
+- Perfect for Cloudflare Workers, Pages Functions, and Durable Objects
 
 ### `.codeforgerc.nextjs.json`
 

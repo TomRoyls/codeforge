@@ -1,0 +1,59 @@
+{
+  "name": "cloudflare-workers",
+  "description": "Recommended configuration for Cloudflare Workers serverless projects",
+  "version": "1.0.0",
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "workers/**/*.ts",
+    "workers/**/*.js",
+    "functions/**/*.ts",
+    "functions/**/*.js"
+  ],
+  "ignore": [
+    "node_modules",
+    "dist",
+    "coverage",
+    ".wrangler",
+    "**/*.test.ts",
+    "**/*.test.js",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/test/**",
+    "**/__tests__/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "error",
+    "max-params": ["warning", { "max": 3 }],
+    "max-depth": ["warning", { "max": 3 }],
+    "max-lines-function": ["warning", { "max": 50 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "prefer-template": "warning",
+    "no-eval": "error",
+    "no-delete": "warning",
+    "no-useless-comparison": "warning",
+    "no-floating-promises": "error",
+    "no-empty-catch": "error"
+  },
+  "output": {
+    "format": "console",
+    "color": true
+  },
+  "cache": {
+    "enabled": true,
+    "location": ".codeforge-cache"
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 30000
+  },
+  "thresholds": {
+    "maxFiles": 300,
+    "maxFileSize": 524288,
+    "maxFileLines": 300,
+    "maxFunctionLines": 50
+  }
+}
