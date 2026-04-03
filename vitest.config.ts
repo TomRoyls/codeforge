@@ -8,9 +8,8 @@ export default defineConfig({
     exclude: ['node_modules', 'dist'],
     coverage: {
       provider: 'v8',
-      reporter: ['json', 'html', 'lcov'],
+      reporter: ['json', 'lcov'],
       reportsDirectory: './coverage',
-      include: ['src/**/*.ts'],
       exclude: ['src/**/*.d.ts', 'src/index.ts'],
       thresholds: {
         lines: 85,
