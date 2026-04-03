@@ -587,7 +587,7 @@ Copy the appropriate example to your project root and customize it for your proj
 All configurations can be customized by:
 
 1. **Adjusting file patterns**: Modify `files` and `ignore` arrays
-2. **Changing rule severity**: Switch between `"error"`, `"warning"`, or `"off"`
+2. **Changing rule severity**: Switch between `"error"`, `"warning"`, or `"info"`
 3. **Configuring rule options**: Pass options to rules using arrays: `["error", { "max": 5 }]`
 
 ## Best Practices
