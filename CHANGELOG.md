@@ -13,6 +13,46 @@ group, place `[Unreleased]` next to the version number.
 
 ### Added
 
+- **examples**: Added Angular framework configuration (`.codeforgerc.angular.json`)
+  - Ignores `*.spec.ts` and `*.e2e.ts` test files
+  - Ignores environment configuration files
+  - Warns on `any` type usage with moderate complexity limits
+
+- **examples**: Added Next.js framework configuration (`.codeforgerc.nextjs.json`)
+  - Supports App Router, Pages Router, and hybrid setups
+  - Covers `src/`, `app/`, and `pages/` directories
+  - Ignores `.next` build directory and `.out` export directory
+
+- **examples**: Added GraphQL API configuration (`.codeforgerc.graphql.json`)
+  - Ignores `__generated__` directories for auto-generated GraphQL code
+  - Optimized for GraphQL servers and resolvers
+
+- **examples**: Added REST API configuration (`.codeforgerc.rest-api.json`)
+  - Allows `console.warn`, `console.error`, and `console.info` for API logging
+  - Higher parameter limits (max 5) for backend services
+  - Enables template literals for better string handling
+
+- **docs**: Added `CODE_OF_CONDUCT.md` based on Contributor Covenant 2.1
+  - Establishes community standards and enforcement guidelines
+  - Provides clear code of conduct for all community interactions
+
+- **docs**: Added `DEVELOPMENT.md` with comprehensive development setup guide
+  - IDE setup recommendations (VS Code)
+  - Environment configuration examples
+  - Debugging workflows with VS Code and Chrome DevTools
+  - Common issue resolution guide
+
+- **deps**: Fixed security vulnerabilities
+  - Fixed brace-expansion vulnerability (moderate severity)
+  - Fixed picomatch vulnerability (high severity)
+  - Updated npm dependencies to latest secure versions
+
+- **deps**: Updated `@oclif/core` from 4.10.3 to 4.10.4
+
+## [Unreleased]
+
+### Added
+
 - **clean**: New command to clean generated files and caches (`codeforge clean`)
 - **clean**: Added `--dry-run` flag to preview what would be cleaned
 - **clean**: Added `--cache` flag to clean only cache directories
