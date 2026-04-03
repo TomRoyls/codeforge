@@ -126,8 +126,15 @@ export default class Ci extends Command {
     }
 
     const content = this.generateGitHubActionsContent()
-    await fs.mkdir(dirname(workflowPath), { recursive: true })
-    await fs.writeFile(workflowPath, content, 'utf8')
+
+    try {
+      await fs.mkdir(dirname(workflowPath), { recursive: true })
+      await fs.writeFile(workflowPath, content, 'utf8')
+    } catch (error) {
+      this.error(
+        `Failed to write GitHub Actions workflow to ${workflowPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
 
     this.log(chalk.green(`✓ Created .github/workflows/codeforge.yml`))
   }
@@ -183,8 +190,15 @@ jobs:
     }
 
     const content = this.generateGitLabCiContent()
-    await fs.mkdir(dirname(gitlabCiPath), { recursive: true })
-    await fs.writeFile(gitlabCiPath, content, 'utf8')
+
+    try {
+      await fs.mkdir(dirname(gitlabCiPath), { recursive: true })
+      await fs.writeFile(gitlabCiPath, content, 'utf8')
+    } catch (error) {
+      this.error(
+        `Failed to write GitLab CI configuration to ${gitlabCiPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
 
     this.log(chalk.green(`✓ Created .gitlab-ci.yml`))
   }

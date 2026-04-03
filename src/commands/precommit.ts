@@ -97,9 +97,15 @@ export default class Precommit extends Command {
 
     const hookContent = this.generateHookContent(options)
 
-    await fs.mkdir(hookDir, { recursive: true })
-    await fs.writeFile(hookPath, hookContent, 'utf8')
-    await fs.chmod(hookPath, 0o755)
+    try {
+      await fs.mkdir(hookDir, { recursive: true })
+      await fs.writeFile(hookPath, hookContent, 'utf8')
+      await fs.chmod(hookPath, 0o755)
+    } catch (error) {
+      this.error(
+        `Failed to create pre-commit hook at ${hookPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
 
     this.log(chalk.green(`✓ Created pre-commit hook at ${hookPath}`))
     this.log('')

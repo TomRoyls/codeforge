@@ -159,8 +159,15 @@ export default class Dependencies extends Command {
 
     if (flags.output) {
       const content = this.formatOutput(report, flags)
-      await writeFile(flags.output, content, 'utf8')
-      this.log(`Results written to ${flags.output}`)
+
+      try {
+        await writeFile(flags.output, content, 'utf8')
+        this.log(`Results written to ${flags.output}`)
+      } catch (error) {
+        this.error(
+          `Failed to write dependencies output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
     }
   }
 

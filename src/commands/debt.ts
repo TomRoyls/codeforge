@@ -452,8 +452,14 @@ export default class Debt extends Command {
       history = history.slice(-MAX_DEBT_HISTORY_ENTRIES)
     }
 
-    await fs.mkdir(historyDir, { recursive: true })
-    await fs.writeFile(historyPath, JSON.stringify(history, null, 2), 'utf8')
+    try {
+      await fs.mkdir(historyDir, { recursive: true })
+      await fs.writeFile(historyPath, JSON.stringify(history, null, 2), 'utf8')
+    } catch (error) {
+      this.warn(
+        `Failed to save debt history to ${historyPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
   }
 
   private async showHistory(targetPath: string): Promise<void> {

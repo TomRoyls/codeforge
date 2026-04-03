@@ -228,8 +228,14 @@ export default class Exports extends Command {
     })
 
     if (flags.output) {
-      await writeFile(flags.output, outputData, 'utf8')
-      this.log(`Results written to ${flags.output}`)
+      try {
+        await writeFile(flags.output, outputData, 'utf8')
+        this.log(`Results written to ${flags.output}`)
+      } catch (error) {
+        this.error(
+          `Failed to write exports output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
     } else {
       this.log(outputData)
     }
