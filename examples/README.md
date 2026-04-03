@@ -147,6 +147,20 @@ Recommended configuration for React projects using Testing Library.
 - Detects useless catch blocks and empty functions
 - Perfect for React applications with comprehensive test coverage
 
+### `.codeforgerc.jest-react.json`
+
+Recommended configuration for Jest + React Testing Library projects.
+
+**Features**:
+
+- Analyzes source files and all test/spec files
+- Enforces TypeScript best practices with strict rules
+- Warns on `any` type and circular dependencies
+- Limits function complexity (max 3 params, max 3 depth)
+- Enforces async/await best practices
+- Prevents common testing anti-patterns
+- Perfect for React applications using Jest and React Testing Library
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
