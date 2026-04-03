@@ -68,7 +68,7 @@ See the [examples/](../examples/) directory for 42 ready-to-use configuration fi
 
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
-| Total documentation    | 7,500+ lines           |
+| Total documentation    | 10,500+ lines          |
 | Example configurations | 42 files               |
 | Major guides           | 10 files               |
 | Framework guides       | 13+ frameworks covered |
