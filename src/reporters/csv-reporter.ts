@@ -46,7 +46,7 @@ export class CSVReporter implements Reporter {
     if (this.outputPath) {
       writeToFile(this.outputPath, csv)
     } else {
-      console.log(csv)
+      process.stdout.write(csv + '\n')
     }
   }
   private formatSummary(results: AnalysisResult): string {

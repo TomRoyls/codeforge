@@ -77,7 +77,7 @@ export class JSONReporter implements Reporter {
     if (this.outputPath) {
       writeToFile(this.outputPath, json)
     } else {
-      console.log(json)
+      process.stdout.write(json + '\n')
     }
   }
 

@@ -85,7 +85,7 @@ export class MarkdownReporter implements Reporter {
     if (this.outputPath) {
       writeToFile(this.outputPath, markdown)
     } else {
-      console.log(markdown)
+      process.stdout.write(markdown + '\n')
     }
   }
 

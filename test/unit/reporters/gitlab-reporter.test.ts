@@ -54,7 +54,7 @@ describe('GitLabReporter', () => {
   let fsWriteFileSyncMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
     fsExistsSyncMock = vi.mocked(fs.existsSync)
     fsMkdirSyncMock = vi.mocked(fs.mkdirSync)
     fsWriteFileSyncMock = vi.mocked(fs.writeFileSync)
@@ -177,7 +177,7 @@ describe('GitLabReporter', () => {
       })
       reporter.report(results)
       expect(consoleSpy).toHaveBeenCalled()
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(Array.isArray(output)).toBe(true)
       expect(output).toHaveLength(1)
     })
@@ -202,7 +202,7 @@ describe('GitLabReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output).toHaveLength(3)
     })
 
@@ -220,7 +220,7 @@ describe('GitLabReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       const issue = output[0]
       expect(issue.description).toBeDefined()
       expect(issue.fingerprint).toBeDefined()
@@ -248,7 +248,7 @@ describe('GitLabReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output[0].severity).toBe('major')
       expect(output[1].severity).toBe('minor')
       expect(output[2].severity).toBe('info')
@@ -270,7 +270,7 @@ describe('GitLabReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output[0].location.path).toBe('src/app.ts')
     })
 
@@ -288,7 +288,7 @@ describe('GitLabReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output[0].location.lines.begin).toBe(42)
     })
   })
@@ -526,7 +526,7 @@ describe('GitLabReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output).toEqual([])
     })
 

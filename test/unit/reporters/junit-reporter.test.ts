@@ -54,7 +54,7 @@ describe('JUnitReporter', () => {
   let fsWriteFileSyncMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
     fsExistsSyncMock = vi.mocked(fs.existsSync)
     fsMkdirSyncMock = vi.mocked(fs.mkdirSync)
     fsWriteFileSyncMock = vi.mocked(fs.writeFileSync)

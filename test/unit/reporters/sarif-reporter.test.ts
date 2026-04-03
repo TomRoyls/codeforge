@@ -42,7 +42,7 @@ describe('SARIFReporter', () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
   })
 
   afterEach(() => {
@@ -120,7 +120,7 @@ describe('SARIFReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output.$schema).toContain('sarif-schema-2.1.0')
       expect(output.version).toBe('2.1.0')
       expect(output.runs).toHaveLength(1)
@@ -130,7 +130,7 @@ describe('SARIFReporter', () => {
       const reporter = new SARIFReporter()
       const results = createMockAnalysisResult()
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string)
+      const output = JSON.parse((consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''))
       expect(output.runs[0].tool.driver.name).toBe('CodeForge')
     })
   })

@@ -54,7 +54,7 @@ describe('HTMLReporter', () => {
   let fsWriteFileSyncMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
     fsExistsSyncMock = vi.mocked(fs.existsSync)
     fsMkdirSyncMock = vi.mocked(fs.mkdirSync)
     fsWriteFileSyncMock = vi.mocked(fs.writeFileSync)
@@ -205,7 +205,7 @@ describe('HTMLReporter', () => {
       })
       fsExistsSyncMock.mockReturnValue(true)
       reporter.report(results)
-      expect(consoleSpy).toHaveBeenCalledWith('HTML report generated: ./report.html')
+      expect(consoleSpy).toHaveBeenCalledWith('HTML report generated: ./report.html\n')
     })
 
     test('should create directory if it does not exist', () => {

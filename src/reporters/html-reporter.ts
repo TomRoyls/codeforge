@@ -40,7 +40,7 @@ export class HTMLReporter implements Reporter {
   report(results: AnalysisResult): void {
     const html = this.generateHTML(results)
     writeToFile(this.outputPath, html)
-    console.log(`HTML report generated: ${this.outputPath}`)
+    process.stdout.write(`HTML report generated: ${this.outputPath}\n`)
   }
 
   private generateHTML(results: AnalysisResult): string {

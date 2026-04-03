@@ -28,7 +28,7 @@ export class JUnitReporter implements Reporter {
     if (this.outputPath) {
       writeToFile(this.outputPath, xml)
     } else {
-      console.log(xml)
+      process.stdout.write(xml + '\n')
     }
   }
 

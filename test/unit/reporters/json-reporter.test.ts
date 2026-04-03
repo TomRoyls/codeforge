@@ -58,7 +58,7 @@ describe('JSONReporter', () => {
   let fsWriteFileSyncMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
     fsExistsSyncMock = vi.mocked(fs.existsSync)
     fsMkdirSyncMock = vi.mocked(fs.mkdirSync)
     fsWriteFileSyncMock = vi.mocked(fs.writeFileSync)
@@ -210,7 +210,7 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = consoleSpy.mock.calls[0][0] as string
+      const output = (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, '')
       expect(output).not.toContain('\n')
     })
 
@@ -248,7 +248,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.version).toBe('2.0.0')
     })
 
@@ -266,7 +268,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.version).toBe('1.0.0')
     })
 
@@ -285,7 +289,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.timestamp).toBe('2024-03-15T12:30:00.000Z')
     })
 
@@ -303,7 +309,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.summary.totalFiles).toBe(10)
       expect(output.summary.filesWithViolations).toBe(3)
       expect(output.summary.errorCount).toBe(5)
@@ -329,7 +337,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.files).toHaveLength(2)
       expect(output.files[0].filePath).toBe('file1.ts')
       expect(output.files[1].filePath).toBe('file2.ts')
@@ -479,7 +489,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       const transformed = output.files[0].violations[0]
       expect(transformed.ruleId).toBe('no-unused-vars')
       expect(transformed.severity).toBe('warning')
@@ -510,7 +522,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.files[0].stats.parseTime).toBe(5)
       expect(output.files[0].stats.analysisTime).toBe(15)
       expect(output.files[0].stats.totalTime).toBe(20)
@@ -530,7 +544,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.files).toEqual([])
     })
 
@@ -556,7 +572,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.files).toHaveLength(2)
       expect(output.files[0].violations).toHaveLength(2)
       expect(output.files[1].violations).toHaveLength(1)
@@ -647,7 +665,9 @@ describe('JSONReporter', () => {
         },
       })
       reporter.report(results)
-      const output = JSON.parse(consoleSpy.mock.calls[0][0] as string) as JsonOutput
+      const output = JSON.parse(
+        (consoleSpy.mock.calls[0][0] as string).replace(/\n$/, ''),
+      ) as JsonOutput
       expect(output.files[0].violations).toEqual([])
     })
 

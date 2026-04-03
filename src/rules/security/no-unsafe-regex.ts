@@ -22,75 +22,12 @@ interface NoUnsafeRegexOptions {
 }
 
 /**
- * Patterns that indicate potential ReDoS vulnerabilities
- */
-const REDOS_PATTERNS = [
-  // Nested quantifiers: (a+)+, (a*)*, (a+)?, etc.
-  /\([^)]+[+*?][^)]*\)[+*?]/,
-  // Alternation with overlapping patterns: (a|a)
-  /\(([^|)]+)\|\1\)/,
-  // Quantified groups with overlapping character classes
-  /\[[^\]]+\][+*?]\[[^\]]+\]/,
-]
-
-/**
  * Checks if a regex pattern contains nested quantifiers
  */
 function hasNestedQuantifiers(pattern: string): boolean {
   // Match patterns like (a+)+, (a*)*, (a+)?, (a?)+
   const nestedQuantifierPattern = /\([^)]*[+*?][^)]*\)[+*?]/
   return nestedQuantifierPattern.test(pattern)
-}
-
-/**
- * Checks if a regex pattern has overlapping character classes
- */
-function hasOverlappingCharacterClasses(pattern: string): boolean {
-  // Look for character classes that might overlap
-  const charClassPattern = /\[([^\]]+)\]/g
-  const classes: string[] = []
-  let match: RegExpExecArray | null
-
-  while ((match = charClassPattern.exec(pattern)) !== null) {
-    classes.push(match[1])
-  }
-
-  // Check for potential overlaps
-  for (let i = 0; i < classes.length; i++) {
-    for (let j = i + 1; j < classes.length; j++) {
-      if (hasOverlap(classes[i], classes[j])) {
-        return true
-      }
-    }
-  }
-
-  return false
-}
-
-/**
- * Checks if two character class contents overlap
- */
-function hasOverlap(class1: string, class2: string): boolean {
-  // Simple check for common characters
-  const chars1 = new Set(class1.split(''))
-  const chars2 = new Set(class2.split(''))
-
-  for (const char of chars1) {
-    if (chars2.has(char) && char !== '-' && char !== '^') {
-      return true
-    }
-  }
-
-  return false
-}
-
-/**
- * Checks if a pattern has unbounded repetitions that could cause issues
- */
-function hasUnboundedRepetitions(pattern: string): boolean {
-  // Match patterns with large or infinite quantifiers
-  const unboundedPattern = /[+*]|\{\d+,\}/
-  return unboundedPattern.test(pattern)
 }
 
 /**
@@ -102,7 +39,7 @@ function hasComplexAlternation(pattern: string): boolean {
   let match: RegExpExecArray | null
 
   while ((match = groupPattern.exec(pattern)) !== null) {
-    const groupContent = match[1]
+    const groupContent = match[1] ?? ''
     const alternationCount = (groupContent.match(/\|/g) || []).length
     if (alternationCount > 2) {
       return true
@@ -122,16 +59,8 @@ function analyzePattern(pattern: string): string[] {
     issues.push('Contains nested quantifiers which can cause catastrophic backtracking (ReDoS)')
   }
 
-  if (hasOverlappingCharacterClasses(pattern)) {
-    issues.push('Contains overlapping character classes which can cause ambiguous matching')
-  }
-
-  if (hasUnboundedRepetitions(pattern)) {
-    issues.push('Contains unbounded repetitions which can cause performance issues')
-  }
-
   if (hasComplexAlternation(pattern)) {
-    issues.push('Contains complex alternation groups which are hard to debug and maintain')
+    issues.push('Contains complex alternation groups which can cause performance issues')
   }
 
   return issues
@@ -239,10 +168,10 @@ function isRegexNode(node: unknown): boolean {
 export const noUnsafeRegexRule: RuleDefinition = {
   meta: {
     type: 'problem',
-    severity: 'warning',
+    severity: 'warn',
     docs: {
       description:
-        'Detect potentially unsafe regular expression patterns that can cause ReDoS (catastrophic backtracking), injection vulnerabilities, or performance issues.',
+        'Detect potentially unsafe regular expression patterns that can cause ReDoS (catastrophic backtracking), injection vulnerabilities, or security issues.',
       category: 'security',
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-unsafe-regex',
