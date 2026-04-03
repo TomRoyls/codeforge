@@ -1,0 +1,33 @@
+{
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "app/**/*.ts",
+    "app/**/*.tsx"
+  ],
+  "ignore": [
+    "node_modules/**",
+    ".expo/**",
+    ".expo-shared/**",
+    "android/**",
+    "ios/**",
+    "web-build/**",
+    "*.test.*",
+    "*.spec.*"
+  ],
+  "rules": {
+    "no-console": ["warning", { "allow": ["warn", "error"] }],
+    "prefer-const": "error",
+    "no-unused-vars": "warning",
+    "no-any": "warning",
+    "no-eval": "error",
+    "no-unsafe-type-assertion": "warning",
+    "max-params": ["warning", { "max": 4 }],
+    "max-file-size": ["warning", { "maxBytes": 5242880 }],
+    "no-circular-deps": "warning",
+    "no-floating-promises": "error",
+    "no-empty-catch": "error"
+  }
+}

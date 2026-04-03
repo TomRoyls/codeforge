@@ -1,0 +1,18 @@
+{
+  "files": ["src/**/*.ts"],
+  "ignore": ["node_modules/**", "dist/**", "build/**", "*.test.*", "*.spec.*"],
+  "rules": {
+    "no-console": ["warning", { "allow": ["warn", "error"] }],
+    "prefer-const": "error",
+    "no-unused-vars": "error",
+    "no-any": "error",
+    "no-eval": "error",
+    "max-params": ["warning", { "max": 5 }],
+    "max-file-size": ["warning", { "maxBytes": 5242880 }],
+    "no-circular-deps": "error",
+    "no-floating-promises": "error",
+    "no-empty-catch": "error",
+    "prefer-readonly": "warning",
+    "no-unsafe-type-assertion": "warning"
+  }
+}
