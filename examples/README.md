@@ -398,6 +398,82 @@ Recommended configuration for projects using ESLint with CodeForge alongside.
 - Enforces `const` declarations and template literals
 - Perfect for teams migrating from ESLint to CodeForge gradually
 
+### `.codeforgerc.webpack.json`
+
+Recommended configuration for Webpack bundler projects.
+
+**Features**:
+
+- Analyzes `src/**/*.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores `webpack.config.*` files
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error` for build logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for Webpack-bundled applications
+
+### `.codeforgerc.esbuild.json`
+
+Recommended configuration for ESBuild bundler projects.
+
+**Features**:
+
+- Analyzes `src/**/*.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores ESBuild config files
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error` for build logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for ESBuild-bundled projects (extremely fast builds)
+
+### `.codeforgerc.prettier.json`
+
+Recommended configuration for projects using Prettier for code formatting.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
+- Ignores test and spec files
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error` for logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for projects using Prettier alongside CodeForge
+
+### `.codeforgerc.typescript-strict.json`
+
+Recommended configuration for projects requiring maximum TypeScript strictness.
+
+**Features**:
+
+- Analyzes `.ts` and `.tsx` files in `src/`
+- Ignores test files and common build directories
+- **ERROR-level** rules for critical issues (no warnings)
+- Warns on `any` type usage
+- No `console` usage allowed
+- Stricter parameter limits (max 3)
+- Detects useless comparisons, circular dependencies, and delete operator usage
+- Enforces `const` declarations and template literals
+- Perfect for critical TypeScript libraries and applications
+
+### `.codeforgerc.library.json`
+
+Recommended configuration for npm packages/shared libraries.
+
+**Features**:
+
+- Analyzes `src/**/*.ts` and `.tsx` files
+- Ignores test files, story files, and build artifacts
+- Warns on `any` type usage (libraries should have strong typing)
+- Allows `console.warn` and `console.error` for debugging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for npm packages and shared libraries
+
 ## Usage
 
 Then customize it for your project's specific needs.
