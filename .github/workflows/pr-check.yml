@@ -1,0 +1,95 @@
+name: CodeForge PR Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-check:
+    name: Check PR Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Tests
+        run: npm test
+        env:
+          CI: true
+
+      - name: Analyze Changed Files
+        run: |
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Analyzing changed files:"
+            echo "$CHANGED_FILES"
+            
+            # Run CodeForge on            node dist/bin/run.js analyze $CHANGED_FILES --format json --output pr-analysis.json
+          else
+            echo "No files changed"
+          fi
+
+      - name: Check Thresholds
+        run: |
+          if [ -f pr-analysis.json ]; then
+            # Extract violation counts
+            ERRORS=$(cat pr-analysis.json | jq -r '.summary.errors // empty')
+            WARNINGS=$(cat pr-analysis.json | jq -r '.summary.warnings // empty')
+            
+            # Fail if too many errors
+            if [ "$ERRORS" -gt 0 ]; then
+              echo "❌ Too many errors: $ERRORS (max: 1)"
+              exit 1
+            fi
+            
+            # Fail if too many warnings
+            if [ "$WARNINGS" -gt 5 ]; then
+              echo "❌ Too many warnings: $WARNINGS (max: 5)"
+              exit 1
+            fi
+            
+            echo "✅ All checks passed"
+          fi
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const results = fs.readFileSync('pr-analysis.json', 'utf8');
+            const analysis = JSON.parse(results);
+
+            const comment = `## CodeForge Analysis Results
+
+            ${analysis.summary.errors > 0 ? '❌' : '✅'} **Errors**: ${analysis.summary.errors}
+            ${analysis.summary.warnings > 0 ? '⚠️' : '✅'} **Warnings**: ${analysis.summary.warnings}
+            ${analysis.summary.filesAnalyzed} files analyzed
+
+            ${analysis.violations.length > 0 ? '<details><summary>View Violations</summary>' : ''}
+            ${analysis.violations.length > 0 ? '\n```\n' + analysis.violations.map(v => 
+              `${v.severity.toUpperCase()}: ${v.message} (${v.file}:${v.line}:${v.column})`
+            ).join('\n') + '\n```\n</details>' : ''}
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
