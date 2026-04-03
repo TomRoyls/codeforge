@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Testing Library",
+  "description": "Configuration for shared testing libraries and utility packages",
+  "version": "1.0.0",
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx"
+  ],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    "**/*.d.ts",
+    "**/fixtures/**",
+    "**/mocks/**",
+    "**/helpers/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "warning",
+    "no-circular-deps": "warning",
+    "max-params": ["error", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-lines": ["warning", { "max": 100 }],
+    "no-empty-function": "warning",
+    "no-useless-comparison": "warning",
+    "prefer-template": "warning",
+    "no-eval": "error",
+    "no-debugger": "error",
+    "no-console": "off"
+  },
+  "timeout": 30000,
+  "concurrency": 2
+}

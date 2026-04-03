@@ -459,20 +459,34 @@ Recommended configuration for projects requiring maximum TypeScript strictness.
 - Enforces `const` declarations and template literals
 - Perfect for critical TypeScript libraries and applications
 
-### `.codeforgerc.library.json`
+### `.codeforgerc.testing-library.json`
 
-Recommended configuration for npm packages/shared libraries.
+Recommended configuration for shared testing libraries and utility packages.
 
 **Features**:
 
-- Analyzes `src/**/*.ts` and `.tsx` files
-- Ignores test files, story files, and build artifacts
-- Warns on `any` type usage (libraries should have strong typing)
-- Allows `console.warn` and `console.error` for debugging
-- Moderate parameter limits (max 4)
-- Detects useless comparisons and circular dependencies
-- Enforces `const` declarations and template literals
-- Perfect for npm packages and shared libraries
+- Analyzes source files and all test/spec files
+- Enforces TypeScript best practices with strict rules
+- Warns on `any` type and circular dependencies
+- Limits function complexity (max 5 params, max 4 depth)
+- Enforces async/await best practices
+- Prevents common testing anti-patterns (no `console`, no `debugger`, no `eval`)
+- Perfect for shared testing utilities and Jest/Vitest helper libraries
+
+### `.codeforgerc.microservices.json`
+
+Recommended configuration for microservices architecture with multiple services.
+
+**Features**:
+
+- Analyzes `services/**/*.ts`, `.js`, `packages/**/*.ts`, `.js`, `libs/**/*.ts`, `.js` files
+- Ignores test files and build artifacts
+- Warns on `any` type usage
+- **ERROR-level circular dependency detection** (critical for microservices)
+- Higher parameter limits (max 6) for service constructors
+- Larger file size and depth limits (5242880 bytes, 60000 lines)
+- Allows console for service logging
+- Perfect for microservices architecture (gRPC, REST, GraphQL services)
 
 ## Usage
 

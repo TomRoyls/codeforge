@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Microservices",
+  "description": "Configuration for microservices architecture with multiple services",
+  "version": "1.0.0",
+  "files": [
+    "services/**/*.ts",
+    "services/**/*.js",
+    "packages/**/*.ts",
+    "packages/**/*.js",
+    "libs/**/*.ts",
+    "libs/**/*.js"
+  ],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.tsbuildinfo/**",
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/coverage/**",
+    "**/.cache/**",
+    "**/temp/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "warning",
+    "no-circular-deps": "error",
+    "max-params": ["error", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-lines-function": ["warning", { "max": 100 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info", "debug"] }],
+    "no-delete": "warning",
+    "no-eval": "error",
+    "prefer-template": "warning",
+    "no-useless-comparison": "warning",
+    "prefer-readonly": "warning",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-async-await": "warning",
+    "no-floating-promises": "error"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 6,
+    "timeout": 60000,
+    "maxFileSize": 5242880
+  },
+  "thresholds": {
+    "maxViolations": 100,
+    "maxErrors": 20,
+    "maxWarnings": 80
+  }
+}
