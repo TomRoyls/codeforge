@@ -1,14 +1,29 @@
-# These are supported funding platforms
+# GitHub Funding Configuration
+# This file enables sponsorship and funding support for the CodeForge project
 
-github: # Replace with up to 5 GitHub Sponsors-enabled usernames
-  - your_username
-  - another_username
+# Support options:
+# - GitHub Sponsors: Show sponsorship information on GitHub
+# - Open Collective: Crowdfunding for community-driven development
+# - Patreon: Monthly donations for ongoing development
+# - Ko-fi: One-time donations for coffee/support
+# - Custom URLs: Add your own funding platforms
 
-patreon: # Replace with a single Patreon username
-  - your_patreon_username
+# Primary funding platform
+github: codeforge-dev
 
-open_collective: # Replace with your Open Collective username
-  - your_open_collective_username
+# Alternative funding platforms
+open_collective: codeforge
+# patreon: # Replace with actual Patreon username if available
+# ko_fi: # Replace with actual Ko-fi username if available
+# tidelift: # Replace with actual Tidelift username if available
+# community_bridge: # Replace with actual Community Bridge project ID if available
+# liberapay: # Replace with actual Liberapay username if available
+# issuehunt: # Replace with actual IssueHunt username if available
+# lfx_crowdfunding: # Replace with actual LFX Crowdfunding username if available
+# polar: # Replace with actual Polar username if available
+# buy_me_a_coffee: # Replace with actual Buy Me a Coffee username if available
+# custom: # Replace with custom URLs
 
-ko_fi: # Replace with your Ko-fi username
-  - your_ko_fi_username
+# Additional sponsor information
+# Uncomment and fill in as needed:
+# custom: ['https://your-custom-funding-url.com']
