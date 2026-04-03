@@ -27,6 +27,12 @@
   - Cost-benefit analysis for each pattern
   - Perfect resource for architectural decisions
 
+- **ci**: Added GitHub workflow for caching results (`.github/workflows/cache-results.yml`)
+  - Caches analysis results to GitHub Actions artifacts
+  - Speeds up subsequent analysis runs
+  - Improves CI/CD performance
+  - Stores results for 5 days
+
 - **docs**: Added comprehensive Plugin Development Guide (`docs/PLUGIN_DEVELOPMENT.md`)
   - Complete plugin architecture overview
   - Step-by-step plugin creation guide
