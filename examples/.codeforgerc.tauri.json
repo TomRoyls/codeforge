@@ -1,0 +1,36 @@
+{
+  "files": ["src/**/*.{ts,tsx}"],
+  "ignore": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    ".tauri"
+  ],
+  "rules": {
+    "no-eval": "error",
+    "no-unsafe-type-assertion": "error",
+    "no-unsafe-return": "error",
+    "no-unsafe-assignment": "error",
+    "no-unsafe-member-access": "error",
+    "no-unsafe-call": "error",
+    "no-any": "error",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-console-log": "warning",
+    "explicit-module-boundary-types": "warning",
+    "no-explicit-any": "warning",
+    "no-circular-deps": ["warning", { "max": 3 }],
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-lines-per-function": ["warning", { "max": 120 }],
+    "prefer-readonly": "warning",
+    "no-useless-comparison": "error",
+    "no-floating-promises": "error",
+    "no-empty-catch": "error"
+  }
+}

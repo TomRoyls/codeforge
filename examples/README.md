@@ -686,6 +686,52 @@ Recommended configuration for Preact lightweight UI framework projects.
 - Stricter complexity limits (max 10)
 - Perfect for Preact applications (lightweight React alternative)
 
+### `.codeforgerc.tauri.json`
+
+Recommended configuration for Tauri desktop applications (Rust + web frontend).
+
+**Features**:
+
+- Analyzes `.ts` and `.tsx` files in `src/`
+- Ignores `.tauri` build directory
+- ERROR-level security rules (no-eval, no-unsafe-\* operations)
+- Warns on `any` type, `console` usage, and unsafe type assertions
+- Moderate parameter limits (max 4) for desktop app handlers
+- Detects circular dependencies and enforces module boundary types
+- Error-level floating promises and empty catch detection
+- Perfect for Tauri apps with React, Vue, Svelte, or vanilla JS frontends
+
+### `.codeforgerc.qwik.json`
+
+Recommended configuration for Qwik resumable web framework projects.
+
+**Features**:
+
+- Analyzes `.ts` and `.tsx` files in `src/`
+- Ignores test files and common build directories
+- Warns on `any` type, `console` usage, and unsafe operations
+- Enables Qwik-specific patterns: prefer-optional-chain, no-unnecessary-condition
+- Moderate parameter limits (max 4) for resumable component handlers
+- Detects circular dependencies and useless comparisons
+- Error-level floating promises and empty catch detection
+- Perfect for Qwik applications with resumable rendering and fine-grained reactivity
+
+### `.codeforgerc.capacitor.json`
+
+Recommended configuration for Capacitor cross-platform mobile app runtime projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
+- Ignores `.capacitor`, `android`, `ios` native directories
+- Warns on `any` type, `console` usage, and unsafe type assertions
+- ERROR-level eval detection for mobile security
+- Higher parameter limits (max 5) for mobile lifecycle handlers
+- Enforces object spread over Object.assign for mobile performance
+- Detects circular dependencies and useless comparisons
+- Error-level floating promises and empty catch detection
+- Perfect for Ionic, React Native Web, and vanilla web apps using Capacitor
+
 ### `.codeforgerc.medusa.json`
 
 Recommended configuration for Medusa.js ecommerce platform projects.

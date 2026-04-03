@@ -1,0 +1,36 @@
+{
+  "files": ["src/**/*.{ts,tsx,js,jsx}"],
+  "ignore": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.js",
+    "**/*.test.jsx",
+    ".capacitor",
+    "android",
+    "ios"
+  ],
+  "rules": {
+    "no-any": "error",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-console-log": "warning",
+    "no-explicit-any": "warning",
+    "no-eval": "error",
+    "no-unsafe-type-assertion": "error",
+    "prefer-object-spread": "warning",
+    "no-circular-deps": ["warning", { "max": 3 }],
+    "max-params": ["warning", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-lines-per-function": ["warning", { "max": 100 }],
+    "prefer-readonly": "warning",
+    "no-useless-comparison": "error",
+    "no-floating-promises": "error",
+    "no-empty-catch": "error"
+  }
+}

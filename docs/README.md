@@ -43,19 +43,19 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Configuration Examples
 
-See the [examples/](../examples/) directory for 51 ready-to-use configuration files:
+See the [examples/](../examples/) directory for 54 ready-to-use configuration files:
 
-| Category         | Configs                                                                 |
-| ---------------- | ----------------------------------------------------------------------- |
-| **Frontend**     | React, Vue, Svelte, SvelteKit, Angular, Astro, Remix, Nuxt              |
-| **Full-Stack**   | Next.js, Next.js Routes, Vite, Electron, Full-Stack                     |
-| **Backend**      | Node.js, Express, NestJS, GraphQL, REST API, GraphQL Server             |
-| **Build Tools**  | Webpack, ESBuild, Rollup, Vite, Turborepo                               |
-| **Architecture** | Monorepo, pnpm Workspace, Microservices, Serverless, Docker, Full-Stack |
-| **Serverless**   | AWS Lambda, Azure Functions, Cloudflare Workers, Bun, Deno              |
-| **Quality**      | TypeScript Strict, Testing Library, Prettier, ESLint                    |
-| **Testing**      | Jest React, React Testing, Testing Library, Cypress, Playwright         |
-| **Utility**      | Minimal, Strict, CLI Tool, Library, CodeForge                           |
+| Category         | Configs                                                                         |
+| ---------------- | ------------------------------------------------------------------------------- |
+| **Frontend**     | React, Vue, Svelte, SvelteKit, Angular, Astro, Remix, Nuxt, Qwik, Solid, Preact |
+| **Full-Stack**   | Next.js, Next.js Routes, Vite, Electron, Capacitor, Full-Stack                  |
+| **Backend**      | Node.js, Express, NestJS, GraphQL, REST API, GraphQL Server                     |
+| **Build Tools**  | Webpack, ESBuild, Rollup, Vite, Turborepo                                       |
+| **Architecture** | Monorepo, pnpm Workspace, Microservices, Serverless, Docker, Full-Stack         |
+| **Serverless**   | AWS Lambda, Azure Functions, Cloudflare Workers, Bun, Deno                      |
+| **Quality**      | TypeScript Strict, Testing Library, Prettier, ESLint                            |
+| **Testing**      | Jest React, React Testing, Testing Library, Cypress, Playwright                 |
+| **Utility**      | Minimal, Strict, CLI Tool, Library, CodeForge                                   |
 
 ## Contributing
 
@@ -77,7 +77,7 @@ See the [examples/](../examples/) directory for 51 ready-to-use configuration fi
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
 | Total documentation    | 12,500+ lines          |
-| Example configurations | 51 files               |
+| Example configurations | 54 files               |
 | Major guides           | 11 files               |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
