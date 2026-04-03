@@ -4,6 +4,26 @@
 
 ### Added
 
+- **docs**: Added comprehensive Testing Guide (`docs/TESTING.md`)
+  - Testing philosophy and structure
+  - Running and writing tests
+  - Coverage requirements (85% threshold)
+  - Mocking and fixtures examples
+  - Best practices and troubleshooting
+
+- **community**: Added FUNDING.yml for sponsorship support
+  - Multiple funding platform options (GitHub Sponsors, Open Collective, Patreon, etc.)
+  - Custom funding URL support
+
+- **cleanup**: Removed corrupted Electron configuration file
+
+- **examples**: Updated README with new configurations
+  - Webpack bundler configuration
+  - ESBuild bundler configuration
+  - Prettier configuration
+  - TypeScript strict configuration
+  - Library/package configuration
+
 - **community**: Added GitHub Pull Request template (`.github/PULL_REQUEST_TEMPLATE.md`)
   - Type of change classification (bug fix, feature, breaking change, etc.)
   - Testing checklist and performance considerations
