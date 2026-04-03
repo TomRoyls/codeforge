@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **examples**: Fixed 7 invalid JSON config files with missing commas
+  - `.codeforgerc.cli-tool.json` — missing commas in rules and output sections
+  - `.codeforgerc.eslint.json` — missing commas in files and ignore arrays
+  - `.codeforgerc.express.json` — missing comma after no-console rule
+  - `.codeforgerc.graphql.json` — missing comma in ignore array
+  - `.codeforgerc.turborepo.json` — missing comma in ignore array
+  - `.codeforgerc.typescript-strict.json` — missing commas in files/ignore arrays + extra closing brace
+  - All 36 example configs now pass JSON validation
+
+- **docs**: Cleaned up `examples/README.md`
+  - Removed duplicate monorepo section and duplicate Usage/Customization headers
+  - Added documentation entries for deno, library, and codeforge configs
+  - Proper single Usage → Customization → Best Practices flow
+
 ### Added
 
 - **docs**: Added documentation landing page (`docs/README.md`)
