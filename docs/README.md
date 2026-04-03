@@ -57,6 +57,12 @@ See the [examples/](../examples/) directory for 42 ready-to-use configuration fi
 | **Testing**      | Jest React, React Testing, Testing Library, Cypress, Playwright         |
 | **Utility**      | Minimal, Strict, CLI Tool, Library, Deno                                |
 
+## Contributing
+
+| Guide                                                      | Description                         | Lines |
+| ---------------------------------------------------------- | ----------------------------------- | ----- |
+| [Technical Contributor's Guide](CONTRIBUTING_TECHNICAL.md) | Contributing to CodeForge internals | 971   |
+
 ## Community
 
 | Resource                                  | Location                           |
@@ -70,9 +76,9 @@ See the [examples/](../examples/) directory for 42 ready-to-use configuration fi
 
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
-| Total documentation    | 10,500+ lines          |
-| Example configurations | 42 files               |
-| Major guides           | 10 files               |
+| Total documentation    | 11,500+ lines          |
+| Example configurations | 44 files               |
+| Major guides           | 11 files               |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
 
