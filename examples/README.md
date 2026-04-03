@@ -122,6 +122,38 @@ Recommended configuration for Angular projects.
 - Moderate parameter limits (max 4)
 - Detects useless comparisons and delete operator
 
+### `.codeforgerc.aws-lambda.json`
+
+Recommended configuration for AWS Lambda-specific Node.js functions.
+
+**Features**:
+
+- Analyzes `src/`, `lambdas/`, and `functions/` directories
+- Ignores `.serverless/`, `.webpack/`, and `layer/` directories
+- Warns on `any` type usage
+- Stricter parameter limits (max 3) for Lambda handlers
+- Max 60 lines per function for cold start optimization
+- ERROR-level circular dependency detection (critical for Lambda bundle size)
+- Allows `console.warn`, `console.error`, `console.info` for Lambda logging
+- Error-level floating promises and empty catch detection
+- Perfect for AWS Lambda functions with Serverless Framework or SAM
+
+### `.codeforgerc.azure-functions.json`
+
+Recommended configuration for Azure Functions Node.js applications.
+
+**Features**:
+
+- Analyzes `src/` and `functions/` directories
+- Ignores `.azure/` build directory
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Max 80 lines per function for Azure Functions optimization
+- ERROR-level circular dependency detection
+- Allows `console.warn`, `console.error`, `console.info` for Azure Functions logging
+- Error-level floating promises and empty catch detection
+- Perfect for Azure Functions with TypeScript or JavaScript
+
 ### `.codeforgerc.nextjs.json`
 
 Recommended configuration for Next.js projects (Pages Router, App Router, or hybrid).

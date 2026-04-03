@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Azure Functions",
+  "description": "Configuration for Azure Functions Node.js applications",
+  "version": "1.0.0",
+  "files": ["src/**/*.ts", "src/**/*.js", "functions/**/*.ts", "functions/**/*.js"],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    ".azure/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.test.js",
+    "**/*.spec.js"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-lines-function": ["warning", { "max": 80 }],
+    "no-circular-deps": "error",
+    "no-eval": "error",
+    "no-delete": "warning",
+    "prefer-template": "warning",
+    "no-floating-promises": "error",
+    "no-empty-catch": "error",
+    "no-useless-comparison": "warning"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 30000,
+    "maxFileSize": 2097152
+  },
+  "thresholds": {
+    "maxViolations": 50,
+    "maxErrors": 10,
+    "maxWarnings": 40
+  }
+}
