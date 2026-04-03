@@ -2,6 +2,7 @@ import type { RuleDefinition } from './types.js'
 
 // Best practices rules
 import {
+  noConsoleRule,
   noMagicNumbersRule,
   preferConstAssertionsRule,
   noUnnecessaryTypeAssertionRule,
@@ -36,9 +37,13 @@ import {
   noDeprecatedApiRule,
   noDynamicDeleteRule,
   noEvalRule,
+  noUnsafeRegexRule,
   noUnsafeReturnRule,
   noUnsafeTypeAssertionRule,
 } from './security/index.js'
+
+// Testing rules
+import { noSkippedTestsRule } from './testing/index.js'
 
 import { noThrowLiteralRule, noConstantBinaryExpressionRule } from './correctness/index.js'
 
@@ -336,6 +341,10 @@ const adaptedPreferTernaryOperator = adaptPluginRule(
   'prefer-ternary-operator',
 )
 
+const adaptedNoConsole = adaptPluginRule(noConsoleRule, 'no-console')
+const adaptedNoUnsafeRegex = adaptPluginRule(noUnsafeRegexRule, 'no-unsafe-regex')
+const adaptedNoSkippedTests = adaptPluginRule(noSkippedTestsRule, 'no-skipped-tests')
+
 export const allRules: Record<string, RuleDefinition> = {
   // Best practices
   'no-magic-numbers': noMagicNumbersRule,
@@ -456,6 +465,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'prefer-prototype-methods': adaptedPreferPrototypeMethods,
   'prefer-string-starts-ends-with': adaptedPreferStringStartsEndsWith,
   'prefer-ternary-operator': adaptedPreferTernaryOperator,
+  'no-console': adaptedNoConsole,
+  'no-unsafe-regex': adaptedNoUnsafeRegex,
+  'no-skipped-tests': adaptedNoSkippedTests,
 }
 
 export type RuleCategory =
@@ -465,6 +477,7 @@ export type RuleCategory =
   | 'security'
   | 'patterns'
   | 'correctness'
+  | 'testing'
 export function getRule(ruleId: string): RuleDefinition | undefined {
   return allRules[ruleId]
 }
@@ -573,6 +586,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'strict-boolean-expressions': 'patterns',
   'no-throw-literal': 'correctness',
   'no-constant-binary-expression': 'correctness',
+  'no-console': 'patterns',
+  'no-unsafe-regex': 'security',
+  'no-skipped-tests': 'testing',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'

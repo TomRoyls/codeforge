@@ -9,6 +9,7 @@ export type RuleCategory =
   | 'security'
   | 'patterns'
   | 'correctness'
+  | 'testing'
 
 export interface LoadedRule {
   category: RuleCategory
