@@ -136,6 +136,20 @@ Recommended configuration for Next.js projects (Pages Router, App Router, or hyb
 - Detects useless comparisons
 - Perfect for Next.js 13+ with App Router
 
+### `.codeforgerc.nextjs-routes.json`
+
+Recommended configuration for Next.js API routes and server-side code.
+
+**Features**:
+
+- Comprehensive file coverage: `src/`, `pages/`, `app/`, `lib/`, `components/`, `hooks/`, `utils/`, `types/`
+- Ignores test files, story files, and build artifacts
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Max 150 lines per function for API route handlers
+- Allows `console.warn` and `console.error` for server-side logging
+- Perfect for Next.js API routes, server actions, and middleware
+
 ### `.codeforgerc.graphql.json`
 
 Recommended configuration for GraphQL API projects.
@@ -235,6 +249,21 @@ Recommended configuration for Vite-based projects (vanilla JS/TS, React, Vue, Sv
 - Detects useless comparisons and circular dependencies
 - Enforces `const` declarations and template literals
 - Perfect for any Vite-powered project (framework-agnostic)
+
+### `.codeforgerc.monorepo.json`
+
+Recommended configuration for monorepo projects (Nx, Turborepo, Lerna, pnpm workspaces).
+
+**Features**:
+
+- Analyzes `packages/**/*.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores build artifacts in all packages (`**/node_modules`, `**/dist`, `**/build`)
+- Higher parameter limits (max 5) for shared code and utilities
+- Allows `console.warn`, `console.error`, and `console.info` for package scripts
+- **ERROR-level circular dependency detection** (critical for monorepo health)
+- Detects delete operator usage
+- Perfect for multi-package repositories with shared dependencies
+- Works with Nx, Turborepo, Lerna, and pnpm/yarn workspaces
 
 ### `.codeforgerc.minimal.json`
 
