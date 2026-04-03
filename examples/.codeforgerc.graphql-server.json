@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "GraphQL Server",
+  "description": "Configuration for GraphQL API servers (Apollo, Yoga, etc.)",
+  "version": "1.0.0",
+  "files": ["src/**/*.ts", "src/**/*.tsx", "schema/**/*.graphql", "resolvers/**/*.ts"],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "**/__generated__/**",
+    "**/*.generated.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "coverage/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "warning",
+    "no-circular-deps": "error",
+    "max-params": ["error", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info", "debug"] }],
+    "no-delete": "warning",
+    "no-eval": "error",
+    "prefer-template": "warning",
+    "no-useless-comparison": "warning",
+    "prefer-readonly": "warning",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-async-await": "off",
+    "no-floating-promises": "error"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 30000,
+    "maxFileSize": 2097152
+  },
+  "thresholds": {
+    "maxViolations": 50,
+    "maxErrors": 10,
+    "maxWarnings": 40
+  }
+}
