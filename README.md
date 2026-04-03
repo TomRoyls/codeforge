@@ -1808,6 +1808,19 @@ _See code: [src/commands/why.ts](https://github.com/codeforge-dev/codeforge/blob
 
 <!-- commandsstop -->
 
+## Documentation
+
+Comprehensive documentation is available:
+
+- **[Quick Start Guide](QUICKSTART.md)** - Get started in 5 minutes
+- **[CLI Usage Guide](docs/CLI_USAGE.md)** - Complete command reference (623 lines)
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - Architecture patterns and decisions (608 lines)
+- **[Plugin Development](docs/PLUGIN_DEVELOPMENT.md)** - Build custom plugins (932 lines)
+- **[Testing Guide](docs/TESTING.md)** - Test strategies and best practices (548 lines)
+- **[Performance Tuning](docs/PERFORMANCE_TUNING.md)** - Optimize performance (818 lines)
+- **[Security Best Practices](docs/SECURITY_BEST_PRACTICES.md)** - Security guidelines (583 lines)
+- **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Problem resolution (740 lines)
+
 ## Contributing
 
 Contributions are welcome! Please read our contributing guidelines before submitting a pull request.
