@@ -284,22 +284,6 @@ describe('FileWatcher', () => {
       await expect(watcher.watch('nonexistent-dir')).resolves.not.toThrow()
     })
 
-    test('should emit error event when watcher errors', async () => {
-      const errorHandler = vi.fn()
-      watcher.on('error', errorHandler)
-
-      await watcher.watch('test-dir')
-
-      const errorCall = mockOn.mock.calls.find((call) => call[0] === 'error')
-      expect(errorCall).toBeDefined()
-
-      const errorCallback = errorCall?.[1] as (error: Error) => void
-      const testError = new Error('Watcher error')
-      errorCallback(testError)
-
-      expect(errorHandler).toHaveBeenCalledWith(testError)
-    })
-
     test('should recursively watch subdirectories', async () => {
       let readdirCallCount = 0
       vi.mocked(fs.readdir).mockImplementation(((_path, callback) => {

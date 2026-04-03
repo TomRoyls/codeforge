@@ -196,9 +196,18 @@ export class FileWatcher extends EventEmitter {
           }
         }),
       )
-    } catch {
-      // Directory might not exist, be inaccessible, or watching may have been stopped
-      // This is expected behavior - not all directories are watchable
+    } catch (error) {
+      const code =
+        error instanceof Error && 'code' in error
+          ? (error as NodeJS.ErrnoException).code
+          : undefined
+      if (code === 'ENOENT' || code === 'EACCES') {
+        // Directory doesn't exist or is inaccessible — expected behavior
+      } else {
+        logger.debug(
+          `Failed to watch directory ${dirPath}: ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
     }
   }
 }
