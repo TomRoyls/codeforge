@@ -1,0 +1,79 @@
+{
+  "name": "Electron",
+  "version": "1.02. {
+    "typescript": "^4.0.0,
+    "patterns": ["no-explicit-typescript"],
+  }
+}
+}
+`` "File type": "module",
+  "source": string[] = "rules": [
+    {
+      "name": "no-explicit-typescript",
+      "description": "Check for deprecated syntax patterns in Electron apps",
+      "fileNaming": "ke omitted/ JSX-specific patterns",
+    },
+    "renderer": {
+      "react": "react-dom": "d",
+        "jsx-a11": - only: "no-explicit-typescript'
+      }
+    },
+    "react": {
+      "no-explicit": {
+        "no-explicit-typescript": {
+          "no-jsx": "jsx-a11", "jsx-a11"} else {
+          "no-jsx": "jsx-a11"
+        }
+      }
+      "no-explicit-typescript": {
+        "imports": ["no-explicit-typescript"],
+      // JSX-specific patterns - strict JSX with strict prop checks
+        const renderer: { enabled: false } =        
+        // React with fragments - checking for .jsx fragments
+        const renderer: { enabled: boolean } =        
+        // React with fragments should rule
+        "no-fragment-lifecycle"
+        const rule = {
+          "name": "no-fragment-lifecycle",
+          "patterns": ["no-explicit-typescript"],
+          "jsx-a11": - class component uses fragments
+        // Uses React.memo and useCallback for expensive re-renders
+        // Uses React.memo for React.lazy, React.useMemo, React.useCallback
+        // Uses React.lazy for React.useLayoutEffect
+        // Uses React.useRef
+        // No state, stateless functional components
+        // No complex state management
+        const renderer: { enabled: false } =        
+        // Uses React.forwardRef
+        // no complex routing - simple component architecture
+        // React.memo prevents expensive re-renders
+        // no prop drilling ( routing]( props) => no routing
+        // Render prop drilling directly
+        // No service workers - simple loading/unloading
+      // All props passed to child components
+      // children, null, undefined
+      // children, props) => props;
+      // No local state (e.g., routing state, tabs)
+      // no React portals or authentication layers
+      // no framework-specific patterns - just React with generic patterns
+      // no prop drilling (routing]( props) => any routing logic that might unnecessary
+      // No URL-based state - using React Router or navigation
+        // no query params, routing from router (react-router)
+        // no code splitting - all routes in one file
+        // no search params in URL queries
+        // no authentication/authorization checks - static
+      // no backend (e.g., Express, APIs) - all you are simple
+      // All JSX files should use `.js` extension
+        // so: `.jsx` files with clear file extension
+        
+        // jsx-specific configuration for `.jsx` pattern:
+          const handleJSPReactElement = (event: => {
+            event.preventDefaultDefault()
+          };
+        };
+
+      }
+    }
+  }
+}
+

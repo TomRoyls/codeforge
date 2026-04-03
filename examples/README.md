@@ -291,40 +291,114 @@ Strict configuration for maximum code quality.
 
 Copy the appropriate example to your project root:
 
-```bash
-# For TypeScript projects
-cp examples/.codeforgerc.typescript.json .codeforgerc.json
+### `.codeforgerc.monorepo.json`
 
-# For React projects
-cp examples/.codeforgerc.react.json .codeforgerc.json
+Recommended configuration for monorepo projects (Nx, Turborepo, Lerna, pnpm workspaces).
 
-# For Node.js projects
-cp examples/.codeforgerc.nodejs.json .codeforgerc.json
+**Features**:
 
-# For Vue.js projects
-cp examples/.codeforgerc.vue.json .codeforgerc.json
+- Analyzes `packages/**/*.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores build artifacts in all packages (`**/node_modules`, `**/dist`, `**/build`)
+- Higher parameter limits (max 5) for shared code and utilities
+- Allows `console.warn`, `console.error`, and `console.info` for package scripts
+- **ERROR-level circular dependency detection** (critical for monorepo health)
+- Detects delete operator usage
+- Perfect for multi-package repositories with shared dependencies
+- Works with Nx, Turborepo, Lerna, and pnpm/yarn workspaces
 
-# For Svelte projects
-cp examples/.codeforgerc.svelte.json .codeforgerc.json
+### `.codeforgerc.electron.json`
 
-# For SvelteKit projects
-cp examples/.codeforgerc.sveltekit.json .codeforgerc.json
+Recommended configuration for Electron desktop applications.
 
-# For Remix projects
-cp examples/.codeforgerc.remix.json .codeforgerc.json
+**Features**:
 
-# For Astro projects
-cp examples/.codeforgerc.astro.json .codeforgerc.json
+- Analyzes `main/` and `renderer/` directories
+- Covers main process (Node.js) and renderer (browser) code
+- Ignores test files and build artifacts
+- Warns on `any` type usage
+- Allows `console.warn`, `console.error`, `console.info` for IPC logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for Electron apps with main/renderer process architecture
 
-# For Vite projects
-cp examples/.codeforgerc.vite.json .codeforgerc.json
+### `.codeforgerc.turborepo.json`
 
-# For minimal enforcement
-cp examples/.codeforgerc.minimal.json .codeforgerc.json
+Recommended configuration for Turborepo monorepo build systems.
 
-# For strict enforcement
-cp examples/.codeforgerc.strict.json .codeforgerc.json
-```
+**Features**:
+
+- Analyzes `apps/` and `packages/` directories
+- Ignores `.turbo` cache directory
+- Warns on `any` type usage
+- Allows `console.warn`, `console.error`, `console.info` for build scripts
+- **ERROR-level circular dependency detection** (critical for monorepo health)
+- Detects useless comparisons
+- Enforces `const` declarations and template literals
+- Perfect for Turborepo-managed monorepos
+
+### `.codeforgerc.pnpm-workspace.json`
+
+Recommended configuration for pnpm workspace projects.
+
+**Features**:
+
+- Analyzes `packages/**/*.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores build artifacts in all packages (`**/node_modules`, `**/dist`, `**/build`)
+- Warns on `any` type usage
+- Allows `console.warn`, `console.error`, `console.info` for package scripts
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for pnpm workspaces (monorepo without Turborepo)
+
+### `.codeforgerc.rollup.json`
+
+Recommended configuration for Rollup bundler projects.
+
+**Features**:
+
+- Analyzes `src/**/*.ts`, `.js` files
+- Ignores `.rollup.cache` directory
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error` for build logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for Rollup-bundled libraries and applications
+
+### `.codeforgerc.nestjs.json`
+
+Recommended configuration for NestJS backend applications.
+
+**Features**:
+
+- Analyzes NestJS-specific file patterns (`.controller.ts`, `.service.ts`, `.module.ts`, `.guard.ts`, `.middleware.ts`, `.dto.ts`, `.entity.ts`, `.decorator.ts`, `.pipe.ts`, `.filter.ts`, `.gateway.ts`, `.interceptor.ts`, `.resolver.ts`)
+- Covers `src/`, `apps/`, `libs/`, `common/`, `modules/` directories
+- Ignores test files and e2e test files
+- Warns on `any` type usage
+- Allows `console.warn`, `console.error`, `console.log`, `console.debug` for NestJS logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons, circular dependencies, and delete operator usage
+- Enforces `const` declarations and template literals
+- Perfect for NestJS microservices and REST APIs
+
+### `.codeforgerc.eslint.json`
+
+Recommended configuration for projects using ESLint with CodeForge alongside.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files
+- Ignores test and spec files
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error` for logging
+- Moderate parameter limits (max 3)
+- Detects circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for teams migrating from ESLint to CodeForge gradually
+
+## Usage
 
 Then customize it for your project's specific needs.
 

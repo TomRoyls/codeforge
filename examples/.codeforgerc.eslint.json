@@ -1,0 +1,52 @@
+{
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "libs/**/*.ts",
+    "libs/**/*.js",
+    "common/**/*.ts",
+    "common/**/*.js",
+    "modules/**/*.ts",
+    "modules/**/*.js",
+    "**/*.controller.ts",
+    "**/*.service.ts",
+    "**/*.module.ts",
+    "**/*.guard.ts",
+    "**/*.middleware.ts",
+    "**/*.dto.ts",
+    "**/*.entity.ts",
+    "**/*.decorator.ts"
+    "**/*.pipe.ts",
+    "**/*.filter.ts",
+    "**/*.gateway.ts",
+    "**/*.interceptor.ts",
+    "**/*.resolver.ts"
+  ],
+  "ignore": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.e2e.ts"
+    "**/*.spec.js",
+    "**/*.test.js"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "warning",
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 3 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "log", "debug"] }],
+    "prefer-template": "warning",
+    "no-useless-comparison": "error",
+    "no-delete": "warning"
+  }
+}

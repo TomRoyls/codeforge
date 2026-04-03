@@ -1,0 +1,36 @@
+{
+  "files": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "apps/**/*.js",
+    "apps/**/*.jsx",
+    "packages/**/*.ts",
+    "packages/**/*.tsx"
+  ],
+  "ignore": [
+    "**/node_modules",
+    "**/dist",
+    "**/.next",
+    "**/.turbo",
+    "**/build"
+    "**/.nuxt"
+    "**/.output",
+    "**/coverage",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.js",
+    "**/*.test.js"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "error",
+    "max-params": ["warning", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "prefer-template": "warning",
+    "no-useless-comparison": "error",
+    "no-delete": "warning"
+  }
+}
