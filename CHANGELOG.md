@@ -4,6 +4,39 @@
 
 ### Added
 
+- **docs**: Added documentation landing page (`docs/README.md`)
+  - Central hub linking all 7 major guides documents
+  - Organized by category: Getting Started, Architecture, Quality, Security
+  - Includes documentation stats and contributing guidelines
+  - Improves documentation discoverability
+
+- **examples**: Added CodeForge self-analysis configuration (`examples/.codeforgerc.codeforge.json`)
+  - Demonstrates using CodeForge to analyze its own codebase
+  - Shows best practices for self-referential analysis
+  - Configured for TypeScript strict mode
+
+- **ci**: Added GitHub workflow for caching results (`.github/workflows/cache-results.yml`)
+  - Caches analysis results to GitHub Actions artifacts
+  - Speeds up subsequent analysis runs
+  - Stores results for 5 days
+
+- **ci**: Added GitHub workflow for CI/CD analysis (`.github/workflows/codeforge-analysis.yml`)
+  - Push/PR triggers
+  - Weekly scheduled runs
+  - PR comment generation
+  - Fail-fast on violations
+
+- **ci**: Added GitHub workflow for PR quality checks (`.github/workflows/pr-check.yml`)
+  - Analyzes changed files only
+  - Checks error and warning thresholds
+  - Posts analysis results as PR comments
+
+- **ci**: Added GitHub workflow for scheduled maintenance (`.github/workflows/scheduled-maintenance.yml`)
+  - Weekly dependency updates check
+  - Security vulnerability audit
+  - Health and technical debt reporting
+  - Automatic issue creation on failure
+
 - **docs**: Added comprehensive Performance Tuning Guide (`docs/PERFORMANCE_TUNING.md`)
   - Performance targets and metrics
   - Startup optimization with lazy loading
