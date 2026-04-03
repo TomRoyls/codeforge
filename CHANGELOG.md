@@ -81,6 +81,30 @@ group, place `[Unreleased]` next to the version number.
   - Best practices for performance and code quality
   - Troubleshooting guide
 
+- **examples**: Added SvelteKit framework configuration (`.codeforgerc.sveltekit.json`)
+  - Handles server-side routes and API endpoints
+  - Allows console.info for server-side logging
+  - Ignores $types.ts generated files
+  - Perfect for SvelteKit full-stack applications
+
+- **examples**: Added Remix framework configuration (`.codeforgerc.remix.json`)
+  - Analyzes app/ directory structure (routes, loaders, actions)
+  - Allows server-side logging (console.info for Remix)
+  - Stricter parameter limits for route handlers
+  - Perfect for Remix.run React framework projects
+
+- **examples**: Added Nuxt framework configuration (`.codeforgerc.nuxt.json`)
+  - Handles both Nuxt 2 and Nuxt 3 projects
+  - Ignores .nuxt and .output build directories
+  - Allows console.info for server-side logging
+  - Perfect for Vue.js meta-framework applications
+
+- **examples**: Added Astro multi-framework configuration (`.codeforgerc.astro.json`)
+  - Supports .ts, .tsx, .js, .jsx, .astro, .vue, .svelte files
+  - No console restrictions (Astro's islands architecture)
+  - Ignores .astro build directory
+  - Perfect for multi-framework static site generation
+
 ## [Unreleased]
 
 ### Added
