@@ -38,6 +38,24 @@
   - Full API reference with TypeScript interfaces
   - Perfect resource for plugin developers
 
+- **docs**: Added comprehensive Security Best Practices Guide (`docs/SECURITY_BEST_PRACTICES.md`)
+  - Security overview with threat model
+  - Configuration security best practices
+  - Dependency and CI/CD security guidelines
+  - Plugin security and code analysis security
+  - Data privacy and incident response procedures
+  - Essential reading for production deployments
+
+- **docs**: Added comprehensive Performance Tuning Guide (`docs/PERFORMANCE_TUNING.md`)
+  - Performance targets and metrics
+  - Startup optimization with lazy loading
+  - Analysis speed optimization strategies
+  - Memory management techniques
+  - CI/CD optimization for pipelines
+  - Large codebase strategies
+  - Caching and parallel processing
+  - Monitoring, profiling, and troubleshooting
+
 - **docs**: Added comprehensive Testing Guide (`docs/TESTING.md`)
   - Testing philosophy and structure
   - Running and writing tests
