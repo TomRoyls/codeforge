@@ -42,7 +42,7 @@
     "no-empty-function": "warning",
     "no-empty-catch": "error",
     "no-floating-promises": "error",
-    "no-async-await": "off"
+    "no-async-await": "info"
   },
   "output": {
     "format": "console",

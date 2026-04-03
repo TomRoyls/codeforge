@@ -14,10 +14,10 @@
     "**/mocks/**"
   ],
   "rules": {
-    "no-any": "off",
+    "no-any": "info",
     "no-unused-vars": "warning",
     "prefer-const": "warning",
-    "no-console": "off",
+    "no-console": "info",
     "max-params": ["error", { "max": 3 }],
     "max-depth": ["warning", { "max": 3 }],
     "no-eval": "error",

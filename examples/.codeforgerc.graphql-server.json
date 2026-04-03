@@ -29,7 +29,7 @@
     "prefer-readonly": "warning",
     "no-empty-function": "warning",
     "no-empty-catch": "error",
-    "no-async-await": "off",
+    "no-async-await": "info",
     "no-floating-promises": "error"
   },
   "output": {

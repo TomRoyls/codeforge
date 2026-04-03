@@ -33,7 +33,7 @@
     "prefer-template": "warning",
     "no-eval": "error",
     "no-debugger": "error",
-    "no-console": "off"
+    "no-console": "info"
   },
   "timeout": 30000,
   "concurrency": 2
