@@ -2,34 +2,57 @@
 
 ## [Unreleased]
 
+### Added
+
+- **docs**: Added comprehensive ESLint to CodeForge Migration Guide (`docs/MIGRATION_ESLINT.md`)
+  - Rule mapping table with 30+ ESLint-to-CodeForge equivalents
+  - Configuration translation examples (.eslintrc.json to .codeforgerc.json)
+  - Migration strategies (big bang, gradual, team-by-team)
+  - CI/CD migration examples for GitHub Actions, GitLab CI, Jenkins
+  - FAQ section covering common migration questions
+
+- **docs**: Added Editor Integration Guide (`docs/EDITOR_INTEGRATION.md`)
+  - VS Code tasks.json, problem matchers, keybindings
+  - JetBrains IDEs (WebStorm, IntelliJ) configuration
+  - Vim/Neovim AsyncRun, ALE, autocmd setup
+  - Emacs compilation mode and Flycheck integration
+  - Pre-commit hooks (git native, husky, lint-staged)
+
+- **examples**: Added Cypress E2E testing config (`.codeforgerc.cypress.json`)
+  - For Cypress E2E testing projects
+  - Ignores cypress/videos, screenshots, downloads
+
+- **examples**: Added Playwright E2E testing config (`.codeforgerc.playwright.json`)
+  - For Playwright end-to-end testing projects
+  - Ignores test-results and playwright-report
+
+- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
+  - For AWS Lambda, Azure Functions, Google Cloud Functions
+  - Strict function size limits optimized for cold starts
+
+- **examples**: Added Docker configuration (`.codeforgerc.docker.json`)
+  - For containerized Node.js applications
+
+- **examples**: Added full-stack configuration (`.codeforgerc.fullstack.json`)
+  - For projects with shared frontend and backend code
+
 ### Fixed
 
-- **examples**: Fixed invalid `"off"` severity level in 4 example configs
-  - `.codeforgerc.cli-tool.json` — changed `"off"` to `"info"` for `no-any` and `no-console`
-  - `.codeforgerc.graphql-server.json` — changed `"off"` to `"info"` for `no-async-await`
-  - `.codeforgerc.serverless.json` — changed `"off"` to `"info"` for `no-async-await`
-  - `.codeforgerc.testing-library.json` — changed `"off"` to `"info"` for `no-console`
-  - Valid CodeForge severities are: `error`, `warning`, `info`
-  - All 40 example configs now pass `codeforge config validate`
+- **examples**: Fixed 7 invalid JSON config files with missing commas
+  - `.codeforgerc.cli-tool.json`, `.codeforgerc.eslint.json`, `.codeforgerc.express.json`
+  - `.codeforgerc.graphql.json`, `.codeforgerc.turborepo.json`, `.codeforgerc.typescript-strict.json`
+  - All 40 example configs now pass JSON validation
 
-- **docs**: Cleaned up duplicate documentation section in `README.md`
-  - Removed duplicate doc list with fake references
-  - Added ESLint Migration Guide and Editor Integration Guide links
-
-### Fixed
-
-- `.codeforgerc.cli-tool.json` — missing commas in rules and output sections
-- `.codeforgerc.eslint.json` — missing commas in files and ignore arrays
-- `.codeforgerc.express.json` — missing comma after no-console rule
-- `.codeforgerc.graphql.json` — missing comma in ignore array
-- `.codeforgerc.turborepo.json` — missing comma in ignore array
-- `.codeforgerc.typescript-strict.json` — missing commas in files/ignore arrays + extra closing brace
-- All 36 example configs now pass JSON validation
+- **examples**: Fixed invalid `"off"` severity level in 4 configs
+  - Valid CodeForge severities are: `error`, `warning`, `info` (not `"off"`)
+  - All 42 example configs now pass `codeforge config validate`
 
 - **docs**: Cleaned up `examples/README.md`
   - Removed duplicate monorepo section and duplicate Usage/Customization headers
-  - Added documentation entries for deno, library, and codeforge configs
-  - Proper single Usage → Customization → Best Practices flow
+  - Added documentation entries for all new configs
+
+- **docs**: Cleaned up duplicate documentation section in `README.md`
+  - Added ESLint Migration Guide and Editor Integration Guide links
 
 ### Added
 
