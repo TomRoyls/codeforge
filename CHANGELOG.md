@@ -38,6 +38,15 @@
   - Full API reference with TypeScript interfaces
   - Perfect resource for plugin developers
 
+- **docs**: Added comprehensive Troubleshooting Guide (`docs/TROUBLESHOOTING.md`)
+  - Installation issues and solutions
+  - Configuration problems and diagnosis
+  - Performance problems and fixes
+  - Rule violations and plugin issues
+  - CI/CD problems and error messages
+  - Debug mode usage and getting help
+  - Essential resource for all CodeForge users
+
 - **docs**: Added comprehensive Security Best Practices Guide (`docs/SECURITY_BEST_PRACTICES.md`)
   - Security overview with threat model
   - Configuration security best practices
