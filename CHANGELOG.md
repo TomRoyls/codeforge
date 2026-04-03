@@ -2,9 +2,13 @@
 
 ## [Unreleased]
 
-### Added
-
-- **examples**: Added Fastify, Strapi, SolidJS, Preact, Medusa configurations (51 total)
+- **refactor**: Removed 18 dead exported functions across 9 source files (net reduction: ~1,188 lines)
+- **feat**: Consolidated duplicate `extractLocation` into single canonical (160+ rule files updated)
+- **feat**: Added `ChalkColorFunction` shared type for `src/types/chalk.ts`
+- **feat**: Added `codeforge ignore` command for managing ignore patterns (add/list/remove)
+- **examples**: Added Tauri, Qwik, Capacitor configurations (54 total)
+- **examples**: Added NestJS configuration (55 total)
+- **test**: Added 42 comprehensive tests for `codeforge explain` command
 - **docs**: Updated docs landing page with new config count
 
 - **docs**: Added Technical Contributor's Guide (`docs/CONTRIBUTING_TECHNICAL.md`)
