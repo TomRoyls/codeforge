@@ -36,5 +36,9 @@
 /.github/ISSUE_TEMPLATE/ @georg
 /.github/PULL_REQUEST_TEMPLATE.md @georg
 
+# Documentation
+/docs/ @georg
+CHANGELOG.md @georg
+
 # Example configurations
 /examples/ @georg
