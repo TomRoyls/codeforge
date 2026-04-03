@@ -639,6 +639,65 @@ Recommended configuration for Playwright end-to-end testing projects.
 - Error-level floating promises detection
 - Perfect for Playwright test suites
 
+### `.codeforgerc.fastify.json`
+
+Recommended configuration for Fastify high-performance web framework projects.
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files in `src/`
+- Ignores `.fastify` cache directory
+- Error-level circular dependency and floating promises detection
+- Warns on `any` type and `console` usage
+- Perfect for Fastify APIs and microservices
+
+### `.codeforgerc.strapi.json`
+
+Recommended configuration for Strapi headless CMS projects.
+
+**Features**:
+
+- Analyzes `src/` and `config/` directories
+- Ignores `.cache`, `.tmp`, `public`, and generated types
+- Error-level circular dependency detection
+- Warns on `any` type and useless comparisons
+- Perfect for Strapi CMS and content-type projects
+
+### `.codeforgerc.solid.json`
+
+Recommended configuration for SolidJS reactive UI framework projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
+- Ignores `.solid` build directory
+- Warns on `any` type, `console` usage, and circular dependencies
+- Perfect for SolidJS applications and components
+
+### `.codeforgerc.preact.json`
+
+Recommended configuration for Preact lightweight UI framework projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
+- Ignores `.preact` build directory
+- Warns on `any` type, `console` usage, and circular dependencies
+- Stricter complexity limits (max 10)
+- Perfect for Preact applications (lightweight React alternative)
+
+### `.codeforgerc.medusa.json`
+
+Recommended configuration for Medusa.js ecommerce platform projects.
+
+**Features**:
+
+- Analyzes `src/` and `packages/` directories
+- Ignores `.medusa` and `.medusa-server` directories
+- Error-level unused variables and `prefer-const` enforcement
+- Warns on `any` type and circular dependencies
+- Perfect for Medusa.js ecommerce stores and marketplaces
+
 ## Usage
 
 Copy the appropriate example to your project root and customize it for your project's specific needs.
