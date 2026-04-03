@@ -42,7 +42,7 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Configuration Examples
 
-See the [examples/](../examples/) directory for 39 ready-to-use configuration files:
+See the [examples/](../examples/) directory for 42 ready-to-use configuration files:
 
 | Category         | Configs                                                                 |
 | ---------------- | ----------------------------------------------------------------------- |
@@ -52,6 +52,7 @@ See the [examples/](../examples/) directory for 39 ready-to-use configuration fi
 | **Build Tools**  | Webpack, ESBuild, Rollup, Vite, Turborepo                               |
 | **Architecture** | Monorepo, pnpm Workspace, Microservices, Serverless, Docker, Full-Stack |
 | **Quality**      | TypeScript Strict, Testing Library, Prettier, ESLint                    |
+| **Testing**      | Jest React, React Testing, Testing Library, Cypress, Playwright         |
 | **Utility**      | Minimal, Strict, CLI Tool, Library, Deno                                |
 
 ## Community
@@ -68,7 +69,7 @@ See the [examples/](../examples/) directory for 39 ready-to-use configuration fi
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
 | Total documentation    | 7,500+ lines           |
-| Example configurations | 39 files               |
+| Example configurations | 42 files               |
 | Major guides           | 10 files               |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
