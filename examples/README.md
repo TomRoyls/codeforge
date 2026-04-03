@@ -548,6 +548,36 @@ Recommended configuration for full-stack applications with shared frontend and b
 - Error-level floating promises and empty catch detection
 - Perfect for isomorphic/universal applications with shared types and utilities
 
+### `.codeforgerc.cypress.json`
+
+Recommended configuration for Cypress E2E testing projects.
+
+**Features**:
+
+- Analyzes `cypress/` and `src/` directories
+- Ignores `cypress/videos/`, `cypress/screenshots/`, `cypress/downloads/`
+- Warns on `any` type usage
+- Moderate parameter limits (max 5) for custom commands
+- Allows `console.warn`, `console.error`, `console.info`, `console.debug` for test debugging
+- Detects useless comparisons and empty functions
+- Error-level floating promises detection
+- Perfect for Cypress E2E test suites
+
+### `.codeforgerc.playwright.json`
+
+Recommended configuration for Playwright end-to-end testing projects.
+
+**Features**:
+
+- Analyzes `tests/`, `e2e/`, and `src/` directories
+- Ignores `test-results/` and `playwright-report/` directories
+- Warns on `any` type usage
+- Moderate parameter limits (max 5) for test fixtures
+- Allows `console.warn`, `console.error`, `console.info`, `console.debug` for test debugging
+- Detects useless comparisons and empty functions
+- Error-level floating promises detection
+- Perfect for Playwright test suites
+
 ## Usage
 
 Copy the appropriate example to your project root and customize it for your project's specific needs.

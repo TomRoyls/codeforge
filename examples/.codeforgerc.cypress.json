@@ -1,0 +1,52 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Cypress E2E",
+  "description": "Configuration for Cypress E2E testing projects",
+  "version": "1.0.0",
+  "files": ["cypress/**/*.ts", "cypress/**/*.js", "cypress/**/*.tsx", "src/**/*.ts"],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    "cypress/videos/**",
+    "cypress/screenshots/**",
+    "cypress/downloads/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "max-params": ["warning", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info", "debug"] }],
+    "no-eval": "error",
+    "no-debugger": "error",
+    "prefer-template": "warning",
+    "no-useless-comparison": "error",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-floating-promises": "error",
+    "no-delete": "warning"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 60000,
+    "maxFileSize": 5242880
+  },
+  "thresholds": {
+    "maxViolations": 100,
+    "maxErrors": 20,
+    "maxWarnings": 80
+  }
+}
