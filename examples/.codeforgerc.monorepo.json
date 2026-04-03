@@ -1,0 +1,30 @@
+{
+  "files": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.js", "packages/**/*.jsx"],
+  "ignore": [
+    "**/node_modules",
+    "**/dist",
+    "**/build",
+    "**/coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.test.js",
+    "**/*.test.jsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.spec.js",
+    "**/*.spec.jsx"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "error",
+    "max-params": ["warning", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "prefer-readonly": "warning",
+    "no-useless-comparison": "error",
+    "prefer-template": "warning",
+    "no-delete": "warning"
+  }
+}
