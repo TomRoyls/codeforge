@@ -1,0 +1,17 @@
+{
+  "files": ["src/**/*.ts", "src/**/*.js", "config/**/*.ts", "config/**/*.js"],
+  "ignore": ["node_modules", "dist", "build", ".cache", ".tmp", "public", "types/generated"],
+  "rules": {
+    "max-lines": ["warning", { "max": 200 }],
+    "max-params": ["warning", { "max": 5 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-complexity": ["warning", { "max": 12 }],
+    "no-circular-deps": "error",
+    "no-console": ["info", { "allow": ["warn", "error"] }],
+    "no-floating-promises": "error",
+    "no-any": "warning",
+    "prefer-const": "warning",
+    "no-delete": "info",
+    "no-useless-comparison": "warning"
+  }
+}

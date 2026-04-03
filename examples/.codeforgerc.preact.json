@@ -1,0 +1,15 @@
+{
+  "files": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
+  "ignore": ["node_modules", "dist", "build", "coverage", ".preact"],
+  "rules": {
+    "max-lines": ["warning", { "max": 150 }],
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-complexity": ["warning", { "max": 10 }],
+    "no-circular-deps": "warning",
+    "no-console": "warning",
+    "no-any": "warning",
+    "prefer-const": "warning",
+    "no-delete": "warning"
+  }
+}
