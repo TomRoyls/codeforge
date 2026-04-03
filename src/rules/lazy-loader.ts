@@ -18,6 +18,7 @@ export type RuleCategory =
   | 'security'
   | 'patterns'
   | 'correctness'
+  | 'testing'
 
 /**
  * Rule module mapping - each entry maps a rule ID to its source module
@@ -124,6 +125,12 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
         m.noConstantBinaryExpressionRule,
         'no-constant-binary-expression',
       ),
+    })),
+
+  // Testing module
+  'no-skipped-tests': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
     })),
 
   // Patterns module (most rules are here - loaded in chunks for efficiency)
@@ -274,6 +281,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-eval': 'security',
   'no-unsafe-return': 'security',
   'no-unsafe-type-assertion': 'security',
+  // Testing
+  'no-skipped-tests': 'testing',
   // Patterns (default for most rules)
   'consistent-type-exports': 'patterns',
   'max-file-size': 'patterns',
