@@ -49,6 +49,38 @@ group, place `[Unreleased]` next to the version number.
 
 - **deps**: Updated `@oclif/core` from 4.10.3 to 4.10.4
 
+- **examples**: Added Express.js configuration (`.codeforgerc.express.json`)
+  - Express-specific patterns and - Warns on `any` type usage
+  - Moderate complexity limits
+  - Allows `console.warn` and `console.error` for logging
+
+- **cleanup**: Deleted broken `.github/workflows/release.yml`
+  - Removed malformed YAML causing issues
+  - Cleaned up technical debt
+
+- **docs**: Added comprehensive framework examples documentation (`docs/frameworks/README.md`)
+  - Documents all 13 framework configurations
+  - Usage examples and setup instructions
+  - Comparison guide with framework selection matrix
+  - Best practices for gradual adoption
+  - Troubleshooting section with common issues
+
+- **docs**: Added performance optimization guide (`docs/performance/README.md`)
+  - Caching strategies (ParseCache, AST Cache, Result Cache)
+  - Parallel processing tips
+  - Large codebase optimization
+  - Startup performance improvements
+  - Memory management strategies
+  - CI/CD optimization examples
+  - Configuration options reference
+
+- **docs**: Added plugin development guide (`docs/plugins/README.md`)
+  - Complete plugin development workflow
+  - API reference and examples
+  - Testing and publishing guide
+  - Best practices for performance and code quality
+  - Troubleshooting guide
+
 ## [Unreleased]
 
 ### Added
