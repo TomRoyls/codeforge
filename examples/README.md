@@ -28,6 +28,53 @@ Recommended configuration for React/TypeScript projects.
 - Enables `prefer-readonly` for immutability
 - Detects useless comparisons
 
+### `.codeforgerc.nodejs.json`
+
+Recommended configuration for Node.js projects (backend services, APIs).
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files
+- Allows `console.warn`, `console.error`, and `console.info`
+- Higher parameter limits (max 5)
+- Detects `delete` operator usage
+- Enables template literals over string concatenation
+
+### `.codeforgerc.vue.json`
+
+Recommended configuration for Vue.js projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.vue`, and `.js` files
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error`
+- Moderate parameter limits (max 4)
+- Detects `delete` operator usage
+
+### `.codeforgerc.svelte.json`
+
+Recommended configuration for Svelte projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.svelte`, and `.js` files
+- Ignores `.svelte-kit` directory
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Detects useless comparisons
+
+### `.codeforgerc.minimal.json`
+
+Minimal configuration for projects wanting light enforcement.
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files
+- Only warns on violations (no errors)
+- Minimal rule set: unused vars, circular deps, useless comparisons
+- Perfect for gradually introducing CodeForge
+
 ### `.codeforgerc.strict.json`
 
 Strict configuration for maximum code quality.
@@ -49,6 +96,18 @@ cp examples/.codeforgerc.typescript.json .codeforgerc.json
 
 # For React projects
 cp examples/.codeforgerc.react.json .codeforgerc.json
+
+# For Node.js projects
+cp examples/.codeforgerc.nodejs.json .codeforgerc.json
+
+# For Vue.js projects
+cp examples/.codeforgerc.vue.json .codeforgerc.json
+
+# For Svelte projects
+cp examples/.codeforgerc.svelte.json .codeforgerc.json
+
+# For minimal enforcement
+cp examples/.codeforgerc.minimal.json .codeforgerc.json
 
 # For strict enforcement
 cp examples/.codeforgerc.strict.json .codeforgerc.json

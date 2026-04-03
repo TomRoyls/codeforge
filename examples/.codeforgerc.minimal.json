@@ -1,0 +1,9 @@
+{
+  "files": ["src/**/*.ts", "src/**/*.js"],
+  "ignore": ["node_modules", "dist", "coverage"],
+  "rules": {
+    "no-unused-vars": "warning",
+    "no-circular-deps": "warning",
+    "no-useless-comparison": "warning"
+  }
+}
