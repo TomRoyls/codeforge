@@ -17,12 +17,29 @@
 
 - **cleanup**: Removed corrupted Electron configuration file
 
+- **examples**: Added microservices configuration (`.codeforgerc.microservices.json`)
+  - Analyzes services/ and packages/ directories
+  - Covers microservices architecture patterns
+  - Higher limits for distributed systems
+  - ERROR-level circular dependency detection
+  - Allows console logging for service debugging
+  - Perfect for microservices, REST APIs, and gRPC services
+
+- **examples**: Added testing library configuration (`.codeforgerc.testing-library.json`)
+  - Analyzes source files and test files
+  - Enforces testing best practices
+  - Allows no console in test files
+  - Warns on circular dependencies
+  - Perfect for shared testing libraries and utility packages
+
 - **examples**: Updated README with new configurations
   - Webpack bundler configuration
   - ESBuild bundler configuration
   - Prettier configuration
   - TypeScript strict configuration
   - Library/package configuration
+  - Microservices architecture configuration
+  - Testing library configuration
 
 - **community**: Added GitHub Pull Request template (`.github/PULL_REQUEST_TEMPLATE.md`)
   - Type of change classification (bug fix, feature, breaking change, etc.)
