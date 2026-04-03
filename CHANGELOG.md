@@ -4,6 +4,31 @@
 
 ### Added
 
+- **docs**: Added Technical Contributor's Guide (`docs/CONTRIBUTING_TECHNICAL.md`)
+  - Development environment setup and local workflow
+  - Step-by-step guides for adding rules, commands, and output formats
+  - Cache system, plugin system, debugging techniques
+  - Code style conventions and PR submission guidelines
+
+- **examples**: Added AWS Lambda configuration (`.codeforgerc.aws-lambda.json`)
+  - Targets Lambda-specific directories (src/, lambdas/, functions/)
+  - Cold start optimized with 60-line function limit
+  - Error-level circular dependency and floating promises detection
+
+- **examples**: Added Azure Functions configuration (`.codeforgerc.azure-functions.json`)
+  - Targets Azure Functions project structure (src/, functions/)
+  - Serverless-appropriate rule configuration
+
+- **chore**: Simplified vitest coverage config (removed html reporter, redundant include glob)
+
+### Fixed
+
+- **docs**: Fixed invalid `"off"` severity reference in `examples/README.md` (CodeForge uses `"info"`, not `"off"`)
+
+- **docs**: Added technical contributor guide to docs landing page with updated stats
+
+### Added
+
 - **docs**: Added comprehensive ESLint to CodeForge Migration Guide (`docs/MIGRATION_ESLINT.md`)
   - Rule mapping table with 30+ ESLint-to-CodeForge equivalents
   - Configuration translation examples (.eslintrc.json to .codeforgerc.json)
