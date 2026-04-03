@@ -1,0 +1,69 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Full-Stack",
+  "description": "Configuration for full-stack applications with shared frontend and backend code",
+  "version": "1.0.0",
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "packages/shared/**/*.ts",
+    "packages/shared/**/*.tsx",
+    "packages/server/**/*.ts",
+    "packages/client/**/*.ts",
+    "packages/client/**/*.tsx"
+  ],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    ".svelte-kit/**",
+    "coverage/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.test.tsx",
+    "**/*.spec.tsx",
+    "**/*.test.js",
+    "**/*.spec.js"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "error",
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "no-eval": "error",
+    "no-delete": "warning",
+    "prefer-template": "warning",
+    "no-useless-comparison": "error",
+    "prefer-readonly": "warning",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-floating-promises": "error"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 6,
+    "timeout": 60000,
+    "maxFileSize": 3145728
+  },
+  "thresholds": {
+    "maxViolations": 100,
+    "maxErrors": 20,
+    "maxWarnings": 80
+  }
+}

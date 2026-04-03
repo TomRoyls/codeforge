@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Docker",
+  "description": "Configuration for Docker-containerized Node.js applications",
+  "version": "1.0.0",
+  "files": ["src/**/*.ts", "src/**/*.js", "src/**/*.tsx", "src/**/*.jsx"],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.test.js",
+    "**/*.spec.js",
+    "docker/**",
+    "scripts/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "warning",
+    "max-params": ["warning", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "no-eval": "error",
+    "no-delete": "warning",
+    "prefer-template": "warning",
+    "no-useless-comparison": "error",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-floating-promises": "error"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 60000,
+    "maxFileSize": 3145728
+  },
+  "thresholds": {
+    "maxViolations": 80,
+    "maxErrors": 15,
+    "maxWarnings": 65
+  }
+}

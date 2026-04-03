@@ -1,0 +1,68 @@
+{
+  "$schema": "https://raw.githubusercontent.com/codeforge-dev/codeforge/schema.json",
+  "name": "Serverless",
+  "description": "Configuration for serverless applications (AWS Lambda, Azure Functions, Google Cloud Functions)",
+  "version": "1.0.0",
+  "files": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "functions/**/*.ts",
+    "functions/**/*.js",
+    "handlers/**/*.ts",
+    "handlers/**/*.js",
+    "lambdas/**/*.ts",
+    "lambdas/**/*.js"
+  ],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".serverless/**",
+    ".esbuild/**",
+    "coverage/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.test.js",
+    "**/*.spec.js",
+    "**/fixtures/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "no-circular-deps": "error",
+    "max-params": ["error", { "max": 4 }],
+    "max-depth": ["warning", { "max": 3 }],
+    "max-lines-function": ["error", { "max": 80 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info", "debug"] }],
+    "no-eval": "error",
+    "no-delete": "warning",
+    "prefer-template": "warning",
+    "no-useless-comparison": "error",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-floating-promises": "error",
+    "no-async-await": "off"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 30000,
+    "maxFileSize": 2097152
+  },
+  "thresholds": {
+    "maxViolations": 50,
+    "maxErrors": 10,
+    "maxWarnings": 40
+  }
+}
