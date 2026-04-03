@@ -4,12 +4,13 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Getting Started
 
-| Guide                                           | Description                        | Lines |
-| ----------------------------------------------- | ---------------------------------- | ----- |
-| [Quick Start Guide](../QUICKSTART.md)           | Get up and running in 5 minutes    | -     |
-| [CLI Usage Guide](CLI_USAGE.md)                 | Complete command reference         | 623   |
-| [Troubleshooting Guide](TROUBLESHOOTING.md)     | Diagnose and resolve common issues | 740   |
-| [Migration Guide (ESLint)](MIGRATION_ESLINT.md) | Migrate from ESLint to CodeForge   | -     |
+| Guide                                             | Description                        | Lines |
+| ------------------------------------------------- | ---------------------------------- | ----- |
+| [Quick Start Guide](../QUICKSTART.md)             | Get up and running in 5 minutes    | -     |
+| [CLI Usage Guide](CLI_USAGE.md)                   | Complete command reference         | 623   |
+| [Troubleshooting Guide](TROUBLESHOOTING.md)       | Diagnose and resolve common issues | 740   |
+| [Migration Guide (ESLint)](MIGRATION_ESLINT.md)   | Migrate from ESLint to CodeForge   | 2343  |
+| [Editor Integration Guide](EDITOR_INTEGRATION.md) | IDE and editor setup               | 1094  |
 
 ## Architecture & Design
 
@@ -41,17 +42,17 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Configuration Examples
 
-See the [examples/](../examples/) directory for 36 ready-to-use configuration files:
+See the [examples/](../examples/) directory for 39 ready-to-use configuration files:
 
-| Category         | Configs                                                     |
-| ---------------- | ----------------------------------------------------------- |
-| **Frontend**     | React, Vue, Svelte, SvelteKit, Angular, Astro, Remix, Nuxt  |
-| **Full-Stack**   | Next.js, Next.js Routes, Vite, Electron                     |
-| **Backend**      | Node.js, Express, NestJS, GraphQL, REST API, GraphQL Server |
-| **Build Tools**  | Webpack, ESBuild, Rollup, Vite, Turborepo                   |
-| **Architecture** | Monorepo, pnpm Workspace, Microservices                     |
-| **Quality**      | TypeScript Strict, Testing Library, Prettier, ESLint        |
-| **Utility**      | Minimal, Strict, CLI Tool, Library, Deno                    |
+| Category         | Configs                                                                 |
+| ---------------- | ----------------------------------------------------------------------- |
+| **Frontend**     | React, Vue, Svelte, SvelteKit, Angular, Astro, Remix, Nuxt              |
+| **Full-Stack**   | Next.js, Next.js Routes, Vite, Electron, Full-Stack                     |
+| **Backend**      | Node.js, Express, NestJS, GraphQL, REST API, GraphQL Server             |
+| **Build Tools**  | Webpack, ESBuild, Rollup, Vite, Turborepo                               |
+| **Architecture** | Monorepo, pnpm Workspace, Microservices, Serverless, Docker, Full-Stack |
+| **Quality**      | TypeScript Strict, Testing Library, Prettier, ESLint                    |
+| **Utility**      | Minimal, Strict, CLI Tool, Library, Deno                                |
 
 ## Community
 
@@ -67,8 +68,8 @@ See the [examples/](../examples/) directory for 36 ready-to-use configuration fi
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
 | Total documentation    | 7,500+ lines           |
-| Example configurations | 36 files               |
-| Major guides           | 8 files                |
+| Example configurations | 39 files               |
+| Major guides           | 10 files               |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
 

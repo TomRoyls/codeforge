@@ -506,6 +506,48 @@ Recommended configuration for CodeForge self-analysis (dogfooding).
 - Balanced rule set for CLI tool development
 - Perfect for CodeForge's own codebase
 
+### `.codeforgerc.serverless.json`
+
+Recommended configuration for serverless applications (AWS Lambda, Azure Functions, Google Cloud Functions).
+
+**Features**:
+
+- Analyzes `src/`, `functions/`, `handlers/`, `lambdas/` directories
+- Ignores `.serverless/`, `.esbuild/` directories
+- Warns on `any` type usage
+- ERROR-level circular dependency detection
+- Stricter function line limit (max 80) for cold start optimization
+- Error-level empty catch and floating promises detection
+- Perfect for AWS Lambda, Azure Functions, and Google Cloud Functions
+
+### `.codeforgerc.docker.json`
+
+Recommended configuration for Docker-containerized Node.js applications.
+
+**Features**:
+
+- Analyzes `src/` directory TypeScript and JavaScript files
+- Ignores `docker/` and `scripts/` directories
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Error-level empty catch and floating promises detection
+- Perfect for containerized applications and Docker Compose setups
+
+### `.codeforgerc.fullstack.json`
+
+Recommended configuration for full-stack applications with shared frontend and backend code.
+
+**Features**:
+
+- Analyzes `src/` and `packages/` directories (shared, server, client)
+- Ignores `.next/`, `.svelte-kit/` build directories
+- ERROR-level circular dependency detection (critical for shared code)
+- Moderate parameter limits (max 4)
+- Warns on `any` type and delete operator usage
+- Error-level floating promises and empty catch detection
+- Perfect for isomorphic/universal applications with shared types and utilities
+
 ## Usage
 
 Copy the appropriate example to your project root and customize it for your project's specific needs.
