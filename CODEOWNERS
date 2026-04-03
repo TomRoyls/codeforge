@@ -1,0 +1,40 @@
+# CODEOWNERS - Code ownership and review automation
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @georg
+
+# Source code ownership
+/src/ @georg
+/src/commands/ @georg
+/src/rules/ @georg
+/src/core/ @georg
+/src/utils/ @georg
+/src/cache/ @georg
+/src/plugins/ @georg
+
+# Test ownership
+/test/ @georg
+/test/unit/ @georg
+/test/integration/ @georg
+
+# Documentation ownership
+/docs/ @georg
+/README.md @georg
+/CHANGELOG.md @georg
+/CONTRIBUTING.md @georg
+/CODE_OF_CONDUCT.md @georg
+
+# Configuration files
+/.codeforgerc.json @georg
+/tsconfig.json @georg
+/package.json @georg
+
+# GitHub workflows and templates
+/.github/ @georg
+/.github/workflows/ @georg
+/.github/ISSUE_TEMPLATE/ @georg
+/.github/PULL_REQUEST_TEMPLATE.md @georg
+
+# Example configurations
+/examples/ @georg
