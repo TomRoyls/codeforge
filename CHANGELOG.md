@@ -12,6 +12,10 @@
   - Valid CodeForge severities are: `error`, `warning`, `info`
   - All 40 example configs now pass `codeforge config validate`
 
+- **docs**: Cleaned up duplicate documentation section in `README.md`
+  - Removed duplicate doc list with fake references
+  - Added ESLint Migration Guide and Editor Integration Guide links
+
 ### Fixed
 
 - `.codeforgerc.cli-tool.json` — missing commas in rules and output sections
