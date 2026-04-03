@@ -221,6 +221,21 @@ Recommended configuration for Astro multi-framework static site builder projects
 - Perfect for Astro projects using React, Vue, Svelte, or multiple frameworks
 - Supports component islands and static site generation
 
+### `.codeforgerc.vite.json`
+
+Recommended configuration for Vite-based projects (vanilla JS/TS, React, Vue, Svelte, etc.).
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files in `src/`
+- Ignores Vite config files (`vite.config.*`, `vitest.config.*`)
+- Warns on `any` type usage
+- Allows `console.warn` and `console.error` for development logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and circular dependencies
+- Enforces `const` declarations and template literals
+- Perfect for any Vite-powered project (framework-agnostic)
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
@@ -272,23 +287,8 @@ cp examples/.codeforgerc.remix.json .codeforgerc.json
 # For Astro projects
 cp examples/.codeforgerc.astro.json .codeforgerc.json
 
-# For Angular projects
-cp examples/.codeforgerc.angular.json .codeforgerc.json
-
-# For Next.js projects
-cp examples/.codeforgerc.nextjs.json .codeforgerc.json
-
-# For GraphQL projects
-cp examples/.codeforgerc.graphql.json .codeforgerc.json
-
-# For REST API projects
-cp examples/.codeforgerc.rest-api.json .codeforgerc.json
-
-# For React Testing Library projects
-cp examples/.codeforgerc.react-testing.json .codeforgerc.json
-
-# For Express.js projects
-cp examples/.codeforgerc.express.json .codeforgerc.json
+# For Vite projects
+cp examples/.codeforgerc.vite.json .codeforgerc.json
 
 # For minimal enforcement
 cp examples/.codeforgerc.minimal.json .codeforgerc.json
