@@ -117,6 +117,21 @@ Recommended configuration for REST API projects (Express, Fastify, Koa, etc.).
 - Enables template literals for better string handling
 - Perfect for backend services and REST APIs
 
+### `.codeforgerc.express.json`
+
+Recommended configuration for Express.js backend applications.
+
+**Features**:
+
+- Analyzes `.ts` and `.js` files
+- Ignores test and spec files
+- Warns on `any` type usage
+- Moderate parameter limits (max 3)
+- Allows `console.warn` and `console.error` for logging
+- Detects circular dependencies
+- Prefers `const` and template literals
+- Perfect for Express.js microservices and APIs
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
@@ -170,6 +185,9 @@ cp examples/.codeforgerc.graphql.json .codeforgerc.json
 
 # For REST API projects
 cp examples/.codeforgerc.rest-api.json .codeforgerc.json
+
+# For Express.js projects
+cp examples/.codeforgerc.express.json .codeforgerc.json
 
 # For minimal enforcement
 cp examples/.codeforgerc.minimal.json .codeforgerc.json
