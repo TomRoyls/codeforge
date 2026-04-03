@@ -1820,8 +1820,9 @@ Comprehensive documentation is available:
 - **[Performance Tuning](docs/PERFORMANCE_TUNING.md)** - Optimize analysis performance (818 lines)
 - **[Security Best Practices](docs/SECURITY_BEST_PRACTICES.md)** - Security guidelines (583 lines)
 - **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Problem resolution (740 lines)
-- **[ESLint Migration Guide](docs/MIGRATION_ESLINT.md)** - Migrate from ESLint to CodeForge (2343 lines)
-- **[Editor Integration Guide](docs/EDITOR_INTEGRATION.md)** - IDE and editor setup (1094 lines)
+- **[ESLint Migration Guide](docs/MIGRATION_ESLINT.md)** - Migrate from ESLint to CodeForge
+- **[Editor Integration Guide](docs/EDITOR_INTEGRATION.md)** - IDE and editor setup
+- **[Configuration Reference](docs/CONFIG_REFERENCE.md)** - Complete config option reference
 
 ## Contributing
 

@@ -11,6 +11,8 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 | [Troubleshooting Guide](TROUBLESHOOTING.md)       | Diagnose and resolve common issues | 740   |
 | [Migration Guide (ESLint)](MIGRATION_ESLINT.md)   | Migrate from ESLint to CodeForge   | 2343  |
 | [Editor Integration Guide](EDITOR_INTEGRATION.md) | IDE and editor setup               | 1094  |
+| [Configuration Reference](CONFIG_REFERENCE.md)    | Complete config option reference   | 1467  |
+| [Config Reference](CONFIG_REFERENCE.md)           | Complete configuration reference   | 1467  |
 
 ## Architecture & Design
 
