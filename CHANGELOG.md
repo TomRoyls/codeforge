@@ -4,6 +4,15 @@
 
 ### Added
 
+- **docs**: Added comprehensive Architecture Decision Guide (`docs/ARCHITECTURE.md`)
+  - Complete architecture patterns: Monolithic, Layered, Microservices, Hexagonal
+  - Decision framework with project assessment criteria
+  - Scale considerations (small/medium/large codebases)
+  - Team factors and integration strategies
+  - Migration paths between architectures
+  - Cost-benefit analysis for each pattern
+  - Perfect resource for architectural decisions
+
 - **docs**: Added comprehensive Plugin Development Guide (`docs/PLUGIN_DEVELOPMENT.md`)
   - Complete plugin architecture overview
   - Step-by-step plugin creation guide
