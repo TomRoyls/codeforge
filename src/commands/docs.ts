@@ -84,7 +84,13 @@ export default class Docs extends Command {
 
     const outputDir = resolve(flags.output)
 
-    await fs.mkdir(outputDir, { recursive: true })
+    try {
+      await fs.mkdir(outputDir, { recursive: true })
+    } catch (mkdirError) {
+      this.error(
+        `Failed to create output directory ${outputDir}: ${mkdirError instanceof Error ? mkdirError.message : String(mkdirError)}`,
+      )
+    }
 
     if (flags.single) {
       await this.generateSingleFile(filteredRules, outputDir)
@@ -121,14 +127,26 @@ export default class Docs extends Command {
       content += '\n'
     }
 
-    await fs.writeFile(join(outputDir, 'README.md'), content)
+    try {
+      await fs.writeFile(join(outputDir, 'README.md'), content)
+    } catch (writeError) {
+      this.warn(
+        `Failed to write index file: ${writeError instanceof Error ? writeError.message : String(writeError)}`,
+      )
+    }
   }
 
   private async generatePerRuleFiles(rules: RuleDoc[], outputDir: string): Promise<void> {
     await Promise.all(
       rules.map(async (rule) => {
         const content = this.generateRuleMarkdown(rule)
-        await fs.writeFile(join(outputDir, `${rule.name}.md`), content)
+        try {
+          await fs.writeFile(join(outputDir, `${rule.name}.md`), content)
+        } catch (writeError) {
+          this.warn(
+            `Failed to write doc for rule ${rule.name}: ${writeError instanceof Error ? writeError.message : String(writeError)}`,
+          )
+        }
       }),
     )
   }
@@ -215,7 +233,13 @@ ${fixableNote}`
       }
     }
 
-    await fs.writeFile(join(outputDir, 'RULES.md'), content)
+    try {
+      await fs.writeFile(join(outputDir, 'RULES.md'), content)
+    } catch (writeError) {
+      this.error(
+        `Failed to write combined rules doc: ${writeError instanceof Error ? writeError.message : String(writeError)}`,
+      )
+    }
   }
 
   private getBadges(rule: RuleDoc): string {

@@ -302,6 +302,12 @@ export default class Benchmark extends Command {
 
   private async writeResults(results: BenchmarkResult[], outputPath: string): Promise<void> {
     const { writeFile } = await import('node:fs/promises')
-    await writeFile(outputPath, JSON.stringify(results, null, 2))
+    try {
+      await writeFile(outputPath, JSON.stringify(results, null, 2))
+    } catch (error) {
+      this.error(
+        `Failed to write benchmark results to ${outputPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
   }
 }

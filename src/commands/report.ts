@@ -195,7 +195,15 @@ export default class Report extends Command {
       this.error(`Input file not found: ${inputPath}`, { exit: 1 })
     }
 
-    const content = await readFile(inputPath, 'utf8')
+    let content: string
+    try {
+      content = await readFile(inputPath, 'utf8')
+    } catch (readError) {
+      this.error(
+        `Failed to read analysis results from ${inputPath}: ${readError instanceof Error ? readError.message : String(readError)}`,
+      )
+      throw readError
+    }
 
     try {
       const data = JSON.parse(content) as AnalysisResult
