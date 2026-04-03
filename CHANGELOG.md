@@ -26,7 +26,10 @@
   - For Playwright end-to-end testing projects
   - Ignores test-results and playwright-report
 
-- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
+- **docs**: Added Configuration Reference Guide (`docs/CONFIG_REFERENCE.md`)
+  - Complete configuration schema with all properties documented
+  - Rule configuration, file patterns, environment variables
+  - 8 diverse config examples from simple to complex- **examples**: Added serverless configuration (`.codeforgerc.serverless.json`)
   - For AWS Lambda, Azure Functions, Google Cloud Functions
   - Strict function size limits optimized for cold starts
 
