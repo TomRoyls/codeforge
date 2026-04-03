@@ -94,6 +94,21 @@ Recommended configuration for Remix.run React framework projects.
 - Enforces template literals for better string handling
 - Perfect for Remix apps with server-side rendering and data loading
 
+### `.codeforgerc.nuxt.json`
+
+Recommended configuration for Nuxt.js Vue meta-framework projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.vue`, and `.js` files
+- Ignores `.nuxt` and `.output` build directories
+- Warns on `any` type usage
+- Allows `console.warn`, `console.error`, and `console.info` for server-side logging
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and delete operator usage
+- Enforces template literals for better string handling
+- Perfect for Nuxt 2 and Nuxt 3 applications with server-side rendering
+
 ### `.codeforgerc.angular.json`
 
 Recommended configuration for Angular projects.
@@ -238,6 +253,9 @@ cp examples/.codeforgerc.sveltekit.json .codeforgerc.json
 
 # For Remix projects
 cp examples/.codeforgerc.remix.json .codeforgerc.json
+
+# For Nuxt projects
+cp examples/.codeforgerc.nuxt.json .codeforgerc.json
 
 # For Angular projects
 cp examples/.codeforgerc.angular.json .codeforgerc.json
