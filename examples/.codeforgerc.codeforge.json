@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/codeforgerc.json",
+  "name": "CodeForge Self-Analysis",
+  "description": "CodeForge analyzing itself - demonstrates advanced configuration features",
+  "version": "1.0.0",
+  "files": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/.codeforge-cache/**",
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/test/**",
+    "**/docs/**",
+    "**/examples/**"
+  ],
+  "rules": {
+    "no-any": "warning",
+    "no-unused-vars": "error",
+    "prefer-const": "warning",
+    "no-circular-deps": "error",
+    "max-params": ["error", { "max": 4 }],
+    "max-depth": ["warning", { "max": 4 }],
+    "max-lines-function": ["warning", { "max": 100 }],
+    "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
+    "no-delete": "warning",
+    "no-eval": "error",
+    "prefer-template": "warning",
+    "no-useless-comparison": "warning",
+    "prefer-readonly": "warning",
+    "no-empty-function": "warning",
+    "no-empty-catch": "error",
+    "no-debugger": "error",
+    "no-floating-promises": "warning"
+  },
+  "output": {
+    "format": "console",
+    "colors": true,
+    "progress": true,
+    "verbose": false
+  },
+  "cache": {
+    "enabled": true,
+    "location": "./.codeforge-cache",
+    "ttl": 86400
+  },
+  "performance": {
+    "concurrency": 4,
+    "timeout": 30000,
+    "maxFileSize": 2097152
+  },
+  "thresholds": {
+    "maxViolations": 100,
+    "maxErrors": 20,
+    "maxWarnings": 80
+  },
+  "plugins": []
+}
