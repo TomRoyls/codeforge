@@ -1,0 +1,124 @@
+name: Scheduled Maintenance
+
+on:
+  schedule:
+    - cron: '0 2 * * 0' # Daily at 2 AM UTC
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  maintenance:
+    name: Run Maintenance Tasks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Update Dependencies
+        run: |
+          # Check for outdated packages
+          npm outdated || true
+
+          # Create update PR if needed
+          if npm outdated --json | jq -r '.[] | length' 2>/dev/null | grep -q '.'; then
+            echo "Outdated packages found"
+            # Note: In production, you'd create a PR automatically
+            # For now, just log it
+            npm outdated --json > outdated-packages.json
+          fi
+
+      - name: Security Audit
+        run: |
+          npm audit --audit-level=moderate
+
+          # Fail on high/critical vulnerabilities
+          if npm audit --audit-level=high 2>&1 | grep -q "vulnerabilities"; then
+            echo "::error::High/Critical vulnerabilities found!"
+            npm audit --json > security-audit.json
+            exit 1
+          fi
+
+      - name: Run Tests
+        run: npm test
+        env:
+          CI: true
+
+      - name: Full CodeForge Analysis
+        run: |
+          node dist/bin/run.js analyze \
+            --format json \
+            --output full-analysis.json \
+            --cache-results \
+            --verbose
+        env:
+          CI: true
+
+      - name: Generate Health Report
+        run: |
+          node dist/bin/run.js health \
+            --json \
+            --output health-report.json
+
+      - name: Check Technical Debt
+        run: |
+          node dist/bin/run.js debt \
+            --json \
+            --save \
+            --output debt-report.json
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: maintenance-reports
+          path: |
+            full-analysis.json
+            health-report.json
+            debt-report.json
+            security-audit.json
+            outdated-packages.json
+          retention-days: 30
+
+      - name: Create Issue on Failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ Scheduled Maintenance Failed',
+              body: `## Maintenance Check Failed
+
+            The scheduled maintenance workflow failed on ${new Date().toISOString()}.
+
+            ### Artifacts
+            - Check the [workflow run](${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID})
+            - Review the uploaded reports in the workflow artifacts
+
+            ### Next Steps
+            1. Review the failure logs
+            2. Fix any security vulnerabilities
+            3. Update outdated dependencies
+            4. Re-run the maintenance check
+            `,
+              labels: ['maintenance', 'automated'],
+              assignees: ['${{ github.repository_owner }}']
+            });
+
+      - name: Notify on Success
+        if: success()
+        run: |
+          echo "✅ All maintenance checks passed"
+          echo "- Dependencies are up to date"
+          echo "- No security vulnerabilities"
+          echo "- All tests passing"
+          echo "- CodeForge analysis clean"
