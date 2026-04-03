@@ -12,7 +12,6 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 | [Migration Guide (ESLint)](MIGRATION_ESLINT.md)   | Migrate from ESLint to CodeForge   | 2343  |
 | [Editor Integration Guide](EDITOR_INTEGRATION.md) | IDE and editor setup               | 1094  |
 | [Configuration Reference](CONFIG_REFERENCE.md)    | Complete config option reference   | 1467  |
-| [Config Reference](CONFIG_REFERENCE.md)           | Complete configuration reference   | 1467  |
 
 ## Architecture & Design
 
@@ -44,7 +43,7 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Configuration Examples
 
-See the [examples/](../examples/) directory for 42 ready-to-use configuration files:
+See the [examples/](../examples/) directory for 46 ready-to-use configuration files:
 
 | Category         | Configs                                                                 |
 | ---------------- | ----------------------------------------------------------------------- |
@@ -53,9 +52,10 @@ See the [examples/](../examples/) directory for 42 ready-to-use configuration fi
 | **Backend**      | Node.js, Express, NestJS, GraphQL, REST API, GraphQL Server             |
 | **Build Tools**  | Webpack, ESBuild, Rollup, Vite, Turborepo                               |
 | **Architecture** | Monorepo, pnpm Workspace, Microservices, Serverless, Docker, Full-Stack |
+| **Serverless**   | AWS Lambda, Azure Functions, Cloudflare Workers, Bun, Deno              |
 | **Quality**      | TypeScript Strict, Testing Library, Prettier, ESLint                    |
 | **Testing**      | Jest React, React Testing, Testing Library, Cypress, Playwright         |
-| **Utility**      | Minimal, Strict, CLI Tool, Library, Deno                                |
+| **Utility**      | Minimal, Strict, CLI Tool, Library, CodeForge                           |
 
 ## Contributing
 
@@ -76,8 +76,8 @@ See the [examples/](../examples/) directory for 42 ready-to-use configuration fi
 
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
-| Total documentation    | 11,500+ lines          |
-| Example configurations | 44 files               |
+| Total documentation    | 12,500+ lines          |
+| Example configurations | 46 files               |
 | Major guides           | 11 files               |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
