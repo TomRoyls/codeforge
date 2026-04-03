@@ -64,6 +64,33 @@ Recommended configuration for Svelte projects.
 - Moderate parameter limits (max 4)
 - Detects useless comparisons
 
+### `.codeforgerc.angular.json`
+
+Recommended configuration for Angular projects.
+
+**Features**:
+
+- Analyzes `.ts` and `.html` files
+- Ignores test files (`*.spec.ts`, `*.e2e.ts`)
+- Ignores environment files
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Detects useless comparisons and delete operator
+
+### `.codeforgerc.nextjs.json`
+
+Recommended configuration for Next.js projects (Pages Router, App Router, or hybrid).
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx` files
+- Covers multiple directories: `src/`, `app/`, `pages/`
+- Ignores `.next` build directory
+- Warns on `any` type usage
+- Moderate parameter limits (max 4)
+- Detects useless comparisons
+- Perfect for Next.js 13+ with App Router
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
@@ -105,6 +132,12 @@ cp examples/.codeforgerc.vue.json .codeforgerc.json
 
 # For Svelte projects
 cp examples/.codeforgerc.svelte.json .codeforgerc.json
+
+# For Angular projects
+cp examples/.codeforgerc.angular.json .codeforgerc.json
+
+# For Next.js projects
+cp examples/.codeforgerc.nextjs.json .codeforgerc.json
 
 # For minimal enforcement
 cp examples/.codeforgerc.minimal.json .codeforgerc.json
