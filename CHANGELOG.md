@@ -4,6 +4,9 @@
 
 ### Added
 
+- **examples**: Added Fastify, Strapi, SolidJS, Preact, Medusa configurations (51 total)
+- **docs**: Updated docs landing page with new config count
+
 - **docs**: Added Technical Contributor's Guide (`docs/CONTRIBUTING_TECHNICAL.md`)
   - Development environment setup and local workflow
   - Step-by-step guides for adding rules, commands, and output formats
