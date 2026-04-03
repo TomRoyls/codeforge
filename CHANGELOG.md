@@ -4,6 +4,54 @@
 
 ### Added
 
+- **community**: Added GitHub Pull Request template (`.github/PULL_REQUEST_TEMPLATE.md`)
+  - Type of change classification (bug fix, feature, breaking change, etc.)
+  - Testing checklist and performance considerations
+  - Reviewer notes section
+  - Maintainer merge checklist
+
+- **community**: Added GitHub discussion templates (`.github/DISCUSSION_TEMPLATE/`)
+  - Q&A template for help requests with context fields
+  - Ideas template for feature requests with impact assessment
+
+- **examples**: Added Electron desktop app configuration (`.codeforgerc.electron.json`)
+  - Analyzes main/ and renderer/ directories
+  - Covers main process (Node.js) and renderer (browser) code
+  - Allows console.info for IPC logging
+  - Perfect for Electron apps with main/renderer architecture
+
+- **examples**: Added Turborepo monorepo configuration (`.codeforgerc.turborepo.json`)
+  - Analyzes apps/ and packages/ directories
+  - ERROR-level circular dependency detection (critical for monorepo health)
+  - Ignores .turbo cache directory
+  - Perfect for Turborepo-managed monorepos
+
+- **examples**: Added pnpm workspace configuration (`.codeforgerc.pnpm-workspace.json`)
+  - Analyzes packages/\*_/_.ts, .tsx, .js, .jsx files
+  - Warns on any type usage
+  - Perfect for pnpm workspaces without Turborepo
+
+- **examples**: Added Rollup bundler configuration (`.codeforgerc.rollup.json`)
+  - Analyzes src/\*_/_.ts, .js files
+  - Ignores .rollup.cache directory
+  - Perfect for Rollup-bundled libraries and applications
+
+- **examples**: Added NestJS framework configuration (`.codeforgerc.nestjs.json`)
+  - Analyzes NestJS-specific file patterns (.controller.ts, .service.ts, .module.ts, etc.)
+  - Covers src/, apps/, libs/, common/, modules/ directories
+  - Allows console.log and console.debug for NestJS logging
+  - Perfect for NestJS microservices and REST APIs
+
+- **examples**: Added ESLint migration configuration (`.codeforgerc.eslint.json`)
+  - Analyzes .ts, .tsx, .js, .jsx files
+  - Warns on any type usage
+  - Perfect for teams migrating from ESLint to CodeForge gradually
+
+- **community**: Added CODEOWNERS file
+  - Defines code ownership for all directories
+  - Automates PR review assignments
+  - Covers source code, tests, documentation, and configuration files
+
 - **examples**: Added SvelteKit configuration (`.codeforgerc.sveltekit.json`)
   - Handles server-side routes and API endpoints
   - Allows console.info for server-side logging
