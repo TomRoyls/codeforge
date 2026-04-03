@@ -4,11 +4,12 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Getting Started
 
-| Guide                                       | Description                        | Lines |
-| ------------------------------------------- | ---------------------------------- | ----- |
-| [Quick Start Guide](../QUICKSTART.md)       | Get up and running in 5 minutes    | -     |
-| [CLI Usage Guide](CLI_USAGE.md)             | Complete command reference         | 623   |
-| [Troubleshooting Guide](TROUBLESHOOTING.md) | Diagnose and resolve common issues | 740   |
+| Guide                                           | Description                        | Lines |
+| ----------------------------------------------- | ---------------------------------- | ----- |
+| [Quick Start Guide](../QUICKSTART.md)           | Get up and running in 5 minutes    | -     |
+| [CLI Usage Guide](CLI_USAGE.md)                 | Complete command reference         | 623   |
+| [Troubleshooting Guide](TROUBLESHOOTING.md)     | Diagnose and resolve common issues | 740   |
+| [Migration Guide (ESLint)](MIGRATION_ESLINT.md) | Migrate from ESLint to CodeForge   | -     |
 
 ## Architecture & Design
 
@@ -40,7 +41,7 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Configuration Examples
 
-See the [examples/](../examples/) directory for 28+ ready-to-use configuration files:
+See the [examples/](../examples/) directory for 36 ready-to-use configuration files:
 
 | Category         | Configs                                                     |
 | ---------------- | ----------------------------------------------------------- |
@@ -65,9 +66,9 @@ See the [examples/](../examples/) directory for 28+ ready-to-use configuration f
 
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
-| Total documentation    | 7,000+ lines           |
-| Example configurations | 28 files               |
-| Major guides           | 7 files                |
+| Total documentation    | 7,500+ lines           |
+| Example configurations | 36 files               |
+| Major guides           | 8 files                |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
 
