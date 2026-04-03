@@ -43,7 +43,7 @@ Complete documentation for CodeForge - high-performance code analysis CLI tool.
 
 ## Configuration Examples
 
-See the [examples/](../examples/) directory for 55 ready-to-use configuration files:
+See the [examples/](../examples/) directory for 57 ready-to-use configuration files:
 
 | Category         | Configs                                                                         |
 | ---------------- | ------------------------------------------------------------------------------- |
@@ -77,7 +77,7 @@ See the [examples/](../examples/) directory for 55 ready-to-use configuration fi
 | Metric                 | Value                  |
 | ---------------------- | ---------------------- |
 | Total documentation    | 12,500+ lines          |
-| Example configurations | 55 files               |
+| Example configurations | 57 files               |
 | Major guides           | 11 files               |
 | Framework guides       | 13+ frameworks covered |
 | CI/CD workflows        | 4 templates            |
