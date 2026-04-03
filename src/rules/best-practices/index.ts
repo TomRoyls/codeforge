@@ -11,36 +11,40 @@ export {
   strictBooleanExpressionsRule,
   analyzeStrictBooleanExpressions,
 } from './strict-boolean-expressions.js'
-export {
-  preferDefaultExportRule,
-  analyzePreferDefaultExport,
-} from './prefer-default-export.js'
+export { preferDefaultExportRule, analyzePreferDefaultExport } from './prefer-default-export.js'
 
 export { preferArrowCallbackRule } from './prefer-arrow-callback.js'
 
 export { noImplicitCoercionRule, analyzeNoImplicitCoercion } from './no-implicit-coercion.js'
-export { preferNullishCoalescingRule, analyzePreferNullishCoalescing } from './prefer-nullish-coalescing.js'
+export {
+  preferNullishCoalescingRule,
+  analyzePreferNullishCoalescing,
+} from './prefer-nullish-coalescing.js'
 export { explicitReturnTypeRule, analyzeExplicitReturnType } from './explicit-return-type.js'
 
 export { preferReadonlyRule, analyzePreferReadonly } from './prefer-readonly.js'
-export { noUnnecessaryConditionRule, analyzeNoUnnecessaryCondition } from './no-unnecessary-condition.js'
+export {
+  noUnnecessaryConditionRule,
+  analyzeNoUnnecessaryCondition,
+} from './no-unnecessary-condition.js'
 export { preferArraySomeRule, analyzePreferArraySome } from './prefer-array-some.js'
 export { preferStringTemplateRule, analyzePreferStringTemplate } from './prefer-string-template.js'
-export * from './prefer-exponent-operator.js';
+export * from './prefer-exponent-operator.js'
 
-export * from './prefer-nullish-coalescing.js';
+export * from './prefer-nullish-coalescing.js'
 
-export * from './prefer-includes.js';
+export * from './prefer-includes.js'
 
-export * from './prefer-object-has-own.js';
+export * from './prefer-object-has-own.js'
 
-export * from './prefer-flat-map.js';
+export * from './prefer-flat-map.js'
 
-export * from './prefer-optional-chain.js';
-export * from './prefer-array-find.js';
-export * from './prefer-spread.js';
-export * from './prefer-regex-literal.js';
+export * from './prefer-optional-chain.js'
+export * from './prefer-array-find.js'
+export * from './prefer-spread.js'
+export * from './prefer-regex-literal.js'
 export { preferObjectSpreadRule } from './prefer-object-spread.js'
 export { noDynamicDeleteRule } from './no-dynamic-delete.js'
 export { preferForOfRule } from './prefer-for-of.js'
 export { preferStringStartEndRule } from './prefer-string-start-end.js'
+export { noConsoleRule } from './no-console.js'

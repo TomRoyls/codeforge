@@ -40,6 +40,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./best-practices/index.js').then((m) => ({
       'strict-boolean-expressions': m.strictBooleanExpressionsRule,
     })),
+  'no-console': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
+    })),
 
   // Complexity module
   'max-complexity': () =>
@@ -379,6 +383,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'prefer-ternary-operator': 'patterns',
   // Best practices rules
   'no-magic-numbers': 'patterns',
+  'no-console': 'patterns',
 }
 
 /**
