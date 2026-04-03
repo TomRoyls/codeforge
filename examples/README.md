@@ -206,6 +206,21 @@ Recommended configuration for Jest + React Testing Library projects.
 - Prevents common testing anti-patterns
 - Perfect for React applications using Jest and React Testing Library
 
+### `.codeforgerc.astro.json`
+
+Recommended configuration for Astro multi-framework static site builder projects.
+
+**Features**:
+
+- Analyzes `.ts`, `.tsx`, `.js`, `.jsx`, `.astro`, `.vue`, and `.svelte` files
+- Ignores `.astro` build directory
+- Warns on `any` type usage
+- No console warnings (Astro's islands architecture minimizes console usage)
+- Moderate parameter limits (max 4)
+- Enforces `const` declarations and template literals
+- Perfect for Astro projects using React, Vue, Svelte, or multiple frameworks
+- Supports component islands and static site generation
+
 ### `.codeforgerc.minimal.json`
 
 Minimal configuration for projects wanting light enforcement.
@@ -254,8 +269,8 @@ cp examples/.codeforgerc.sveltekit.json .codeforgerc.json
 # For Remix projects
 cp examples/.codeforgerc.remix.json .codeforgerc.json
 
-# For Nuxt projects
-cp examples/.codeforgerc.nuxt.json .codeforgerc.json
+# For Astro projects
+cp examples/.codeforgerc.astro.json .codeforgerc.json
 
 # For Angular projects
 cp examples/.codeforgerc.angular.json .codeforgerc.json
