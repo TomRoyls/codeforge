@@ -162,10 +162,17 @@ export default class OrganizeImports extends Command {
       if (organizeResult.changed) {
         if (flags.write || !flags['dry-run']) {
           writePromises.push(
-            fs.writeFile(file.absolutePath, organizeResult.organized, 'utf8').then(() => {
-              result.filesModified++
-              result.importsOrganized++
-            }),
+            fs.writeFile(file.absolutePath, organizeResult.organized, 'utf8').then(
+              () => {
+                result.filesModified++
+                result.importsOrganized++
+              },
+              (writeError) => {
+                this.warn(
+                  `Failed to write ${file.path}: ${writeError instanceof Error ? writeError.message : String(writeError)}`,
+                )
+              },
+            ),
           )
         } else {
           result.importsOrganized++

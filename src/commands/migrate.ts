@@ -148,7 +148,13 @@ export default class Migrate extends Command {
       }
     }
 
-    await fs.writeFile(outputPath, JSON.stringify(codeforgeConfig, null, 2), 'utf8')
+    try {
+      await fs.writeFile(outputPath, JSON.stringify(codeforgeConfig, null, 2), 'utf8')
+    } catch (error) {
+      this.error(
+        `Failed to write migrated config to ${outputPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
 
     this.log('')
     this.log(chalk.green(`✓ Created ${flags.output}`))

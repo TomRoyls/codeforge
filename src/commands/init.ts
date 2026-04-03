@@ -147,8 +147,14 @@ export default class Init extends Command {
     const content =
       options.format === 'js' ? this.generateJsContent(config) : this.generateJsonContent(config)
 
-    await fs.mkdir(dirname(configPath), { recursive: true })
-    await fs.writeFile(configPath, content, 'utf8')
+    try {
+      await fs.mkdir(dirname(configPath), { recursive: true })
+      await fs.writeFile(configPath, content, 'utf8')
+    } catch (error) {
+      this.error(
+        `Failed to create config file at ${configPath}: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
 
     this.log(chalk.green(`✓ Created ${configFileName} in ${configDir}`))
     this.log('')

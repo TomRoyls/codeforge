@@ -167,8 +167,14 @@ export default class Stats extends Command {
         : this.formatOutput(stats, format, flags.top)
 
     if (flags.output) {
-      await fs.writeFile(flags.output, outputData, 'utf8')
-      this.log(`Results written to ${flags.output}`)
+      try {
+        await fs.writeFile(flags.output, outputData, 'utf8')
+        this.log(`Results written to ${flags.output}`)
+      } catch (error) {
+        this.error(
+          `Failed to write stats output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
     } else if (format === 'json') {
       this.log(outputData)
     } else {
