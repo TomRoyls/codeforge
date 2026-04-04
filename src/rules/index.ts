@@ -43,9 +43,13 @@ import {
 } from './security/index.js'
 
 // Testing rules
-import { noSkippedTestsRule } from './testing/index.js'
+import { noSkippedTestsRule, noFocusedTestsRule } from './testing/index.js'
 
-import { noThrowLiteralRule, noConstantBinaryExpressionRule } from './correctness/index.js'
+import {
+  noThrowLiteralRule,
+  noConstantBinaryExpressionRule,
+  noEmptyCatchRule,
+} from './correctness/index.js'
 
 // Pattern rules
 import {
@@ -344,6 +348,8 @@ const adaptedPreferTernaryOperator = adaptPluginRule(
 const adaptedNoConsole = adaptPluginRule(noConsoleRule, 'no-console')
 const adaptedNoUnsafeRegex = adaptPluginRule(noUnsafeRegexRule, 'no-unsafe-regex')
 const adaptedNoSkippedTests = adaptPluginRule(noSkippedTestsRule, 'no-skipped-tests')
+const adaptedNoFocusedTests = adaptPluginRule(noFocusedTestsRule, 'no-focused-tests')
+const adaptedNoEmptyCatch = adaptPluginRule(noEmptyCatchRule, 'no-empty-catch')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Best practices
@@ -394,6 +400,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-throw-sync': adaptedNoThrowSync,
   'no-throw-literal': adaptedNoThrowLiteral,
   'no-constant-binary-expression': adaptedNoConstantBinaryExpression,
+  'no-empty-catch': adaptedNoEmptyCatch,
   // Patterns
   'eq-eq-eq': adaptedEqEqEq,
   'explicit-module-boundary-types': adaptedExplicitModuleBoundaryTypes,
@@ -468,6 +475,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-console': adaptedNoConsole,
   'no-unsafe-regex': adaptedNoUnsafeRegex,
   'no-skipped-tests': adaptedNoSkippedTests,
+  'no-focused-tests': adaptedNoFocusedTests,
 }
 
 export type RuleCategory =
@@ -586,9 +594,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'strict-boolean-expressions': 'patterns',
   'no-throw-literal': 'correctness',
   'no-constant-binary-expression': 'correctness',
+  'no-empty-catch': 'correctness',
   'no-console': 'patterns',
   'no-unsafe-regex': 'security',
   'no-skipped-tests': 'testing',
+  'no-focused-tests': 'testing',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'

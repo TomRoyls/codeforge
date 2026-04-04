@@ -136,6 +136,16 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./testing/index.js').then((m) => ({
       'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
     })),
+  'no-focused-tests': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
+    })),
+
+  // Correctness continued
+  'no-empty-catch': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
+    })),
 
   // Patterns module (most rules are here - loaded in chunks for efficiency)
   ...createPatternRuleLoaders(),
@@ -287,6 +297,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unsafe-type-assertion': 'security',
   // Testing
   'no-skipped-tests': 'testing',
+  'no-focused-tests': 'testing',
+  // Correctness continued
+  'no-empty-catch': 'correctness',
   // Patterns (default for most rules)
   'consistent-type-exports': 'patterns',
   'max-file-size': 'patterns',
