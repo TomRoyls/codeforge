@@ -61,6 +61,7 @@ function convertMeta(pluginMeta: PluginRuleDefinition['meta'], ruleId: string): 
     recommended: pluginMeta.docs?.recommended ?? false,
     deprecated: pluginMeta.deprecated,
     replacedBy: pluginMeta.replacedBy?.[0],
+    severity: convertSeverity(pluginMeta.severity),
     fixable:
       pluginMeta.fixable === 'code'
         ? 'code'
