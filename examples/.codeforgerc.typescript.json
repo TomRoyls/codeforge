@@ -2,7 +2,7 @@
   "files": ["src/**/*.ts"],
   "ignore": ["node_modules", "dist", "coverage", "**/*.test.ts", "**/*.spec.ts"],
   "rules": {
-    "no-any": "error",
+    "no-explicit-any": "error",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "warning",

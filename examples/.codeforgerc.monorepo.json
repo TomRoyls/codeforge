@@ -15,7 +15,7 @@
     "**/*.spec.jsx"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "error",
@@ -25,6 +25,6 @@
     "prefer-readonly": "warning",
     "no-useless-comparison": "error",
     "prefer-template": "warning",
-    "no-delete": "warning"
+    "no-dynamic-delete": "warning"
   }
 }

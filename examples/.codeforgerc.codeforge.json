@@ -17,15 +17,15 @@
     "**/examples/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "warning",
     "no-circular-deps": "error",
     "max-params": ["error", { "max": 4 }],
     "max-depth": ["warning", { "max": 4 }],
-    "max-lines-function": ["warning", { "max": 100 }],
+    "max-lines-per-function": ["warning", { "max": 100 }],
     "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "no-eval": "error",
     "prefer-template": "warning",
     "no-useless-comparison": "warning",

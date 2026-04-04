@@ -15,21 +15,21 @@
     "coverage/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "warning",
     "no-circular-deps": "error",
     "max-params": ["error", { "max": 5 }],
     "max-depth": ["warning", { "max": 4 }],
     "no-console": ["warning", { "allow": ["warn", "error", "info", "debug"] }],
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "no-eval": "error",
     "prefer-template": "warning",
     "no-useless-comparison": "warning",
     "prefer-readonly": "warning",
     "no-empty-function": "warning",
     "no-empty-catch": "error",
-    "no-async-await": "info",
+    "no-async-without-await": "info",
     "no-floating-promises": "error"
   },
   "output": {

@@ -9,9 +9,9 @@
     "no-circular-deps": "error",
     "no-console": ["info", { "allow": ["warn", "error"] }],
     "no-floating-promises": "error",
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "prefer-const": "warning",
-    "no-delete": "info",
+    "no-dynamic-delete": "info",
     "no-useless-comparison": "warning"
   }
 }

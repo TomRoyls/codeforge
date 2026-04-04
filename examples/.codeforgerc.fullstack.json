@@ -29,7 +29,7 @@
     "**/*.spec.js"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "error",
@@ -37,7 +37,7 @@
     "max-depth": ["warning", { "max": 4 }],
     "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
     "no-eval": "error",
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "prefer-template": "warning",
     "no-useless-comparison": "error",
     "prefer-readonly": "warning",

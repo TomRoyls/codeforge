@@ -21,7 +21,7 @@
     "**/helpers/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "warning",
     "no-circular-deps": "warning",

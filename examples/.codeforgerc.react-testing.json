@@ -9,7 +9,7 @@
   ],
   "ignore": ["node_modules", "dist", "build", "coverage", ".next", "public"],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "warning",

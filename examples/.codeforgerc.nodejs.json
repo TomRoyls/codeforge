@@ -19,6 +19,6 @@
     "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
     "no-useless-comparison": "error",
     "prefer-template": "warning",
-    "no-delete": "warning"
+    "no-dynamic-delete": "warning"
   }
 }

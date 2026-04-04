@@ -14,7 +14,7 @@
     "**/mocks/**"
   ],
   "rules": {
-    "no-any": "info",
+    "no-explicit-any": "info",
     "no-unused-vars": "warning",
     "prefer-const": "warning",
     "no-console": "info",

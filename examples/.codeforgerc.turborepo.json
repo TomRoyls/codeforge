@@ -22,7 +22,7 @@
     "**/*.test.js"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "error",
@@ -31,6 +31,6 @@
     "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
     "prefer-template": "warning",
     "no-useless-comparison": "error",
-    "no-delete": "warning"
+    "no-dynamic-delete": "warning"
   }
 }

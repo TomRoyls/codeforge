@@ -21,7 +21,7 @@
     "no-console": ["warning", { "allow": ["warn", "error"] }],
     "prefer-const": "error",
     "no-unused-vars": "warning",
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-eval": "error",
     "no-unsafe-type-assertion": "warning",
     "max-params": ["warning", { "max": 4 }],

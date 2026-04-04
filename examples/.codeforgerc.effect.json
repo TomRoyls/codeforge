@@ -5,7 +5,7 @@
     "no-console": ["warning", { "allow": ["warn", "error"] }],
     "prefer-const": "error",
     "no-unused-vars": "error",
-    "no-any": "error",
+    "no-explicit-any": "error",
     "no-eval": "error",
     "max-params": ["warning", { "max": 5 }],
     "max-file-size": ["warning", { "maxBytes": 5242880 }],

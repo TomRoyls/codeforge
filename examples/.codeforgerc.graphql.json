@@ -13,7 +13,7 @@
     "**/__generated__/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "warning",
@@ -22,7 +22,7 @@
     "no-console": ["warning", { "allow": ["warn", "error"] }],
     "prefer-readonly": "warning",
     "no-useless-comparison": "error",
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "prefer-template": "warning"
   }
 }

@@ -11,7 +11,7 @@
     "**/*.spec.tsx"
   ],
   "rules": {
-    "no-any": "error",
+    "no-explicit-any": "error",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "warning",

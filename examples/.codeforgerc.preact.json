@@ -8,8 +8,8 @@
     "max-complexity": ["warning", { "max": 10 }],
     "no-circular-deps": "warning",
     "no-console": "warning",
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "prefer-const": "warning",
-    "no-delete": "warning"
+    "no-dynamic-delete": "warning"
   }
 }

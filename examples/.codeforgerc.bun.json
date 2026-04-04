@@ -16,7 +16,7 @@
     "**/__tests__/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "warning",
@@ -26,7 +26,7 @@
     "prefer-readonly": "warning",
     "prefer-template": "warning",
     "no-eval": "error",
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "no-useless-comparison": "warning",
     "no-floating-promises": "error"
   },

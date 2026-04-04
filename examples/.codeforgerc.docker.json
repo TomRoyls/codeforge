@@ -17,7 +17,7 @@
     "scripts/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "warning",
@@ -25,7 +25,7 @@
     "max-depth": ["warning", { "max": 4 }],
     "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
     "no-eval": "error",
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "prefer-template": "warning",
     "no-useless-comparison": "error",
     "no-empty-function": "warning",

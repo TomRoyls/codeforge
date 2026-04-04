@@ -23,17 +23,17 @@
     "**/__tests__/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "no-circular-deps": "error",
     "max-params": ["warning", { "max": 3 }],
     "max-depth": ["warning", { "max": 3 }],
-    "max-lines-function": ["warning", { "max": 50 }],
+    "max-lines-per-function": ["warning", { "max": 50 }],
     "no-console": ["warning", { "allow": ["warn", "error", "info"] }],
     "prefer-template": "warning",
     "no-eval": "error",
-    "no-delete": "warning",
+    "no-dynamic-delete": "warning",
     "no-useless-comparison": "warning",
     "no-floating-promises": "error",
     "no-empty-catch": "error"

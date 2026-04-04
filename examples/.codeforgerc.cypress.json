@@ -13,7 +13,7 @@
     "cypress/downloads/**"
   ],
   "rules": {
-    "no-any": "warning",
+    "no-explicit-any": "warning",
     "no-unused-vars": "error",
     "prefer-const": "error",
     "max-params": ["warning", { "max": 5 }],
@@ -26,7 +26,7 @@
     "no-empty-function": "warning",
     "no-empty-catch": "error",
     "no-floating-promises": "error",
-    "no-delete": "warning"
+    "no-dynamic-delete": "warning"
   },
   "output": {
     "format": "console",
