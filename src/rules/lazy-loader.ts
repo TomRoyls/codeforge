@@ -128,6 +128,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
         'no-unsafe-member-access',
       ),
     })),
+  'no-unsafe-regex': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-regex': adaptPluginRule(m.noUnsafeRegexRule, 'no-unsafe-regex'),
+    })),
 
   'explicit-return-type': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -556,6 +560,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-useless-constructor': 'patterns',
   'no-unsafe-call': 'security',
   'no-unsafe-member-access': 'security',
+  'no-unsafe-regex': 'security',
   // Orphan rules - pattern rules
   'constructor-super': 'patterns',
   'default-case': 'patterns',
