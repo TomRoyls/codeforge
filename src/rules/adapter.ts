@@ -68,6 +68,9 @@ function convertMeta(pluginMeta: PluginRuleDefinition['meta'], ruleId: string): 
         : pluginMeta.fixable === 'whitespace'
           ? 'whitespace'
           : undefined,
+    docs: pluginMeta.docs?.url
+      ? { description: pluginMeta.docs?.description, url: pluginMeta.docs.url }
+      : undefined,
   }
 }
 
