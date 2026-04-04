@@ -86,6 +86,10 @@ function mapCategory(category: string | undefined): RuleMeta['category'] {
       return 'correctness'
     case 'complexity':
       return 'complexity'
+    case 'patterns':
+      return 'patterns'
+    case 'dependencies':
+      return 'dependencies'
     default:
       return 'style'
   }

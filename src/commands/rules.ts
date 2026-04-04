@@ -60,7 +60,15 @@ export default class Rules extends Command {
     category: Flags.string({
       char: 'c',
       description: 'Filter rules by category',
-      options: ['complexity', 'dependencies', 'performance', 'security', 'patterns'],
+      options: [
+        'complexity',
+        'correctness',
+        'dependencies',
+        'patterns',
+        'performance',
+        'security',
+        'style',
+      ],
     }),
     fixable: Flags.boolean({
       default: false,

@@ -139,7 +139,7 @@ describe('Explain Command', () => {
       const calls = logSpy.mock.calls
       const output = calls.map((call: unknown[]) => call.join(' ')).join('\n')
       expect(output).toContain('prefer-const')
-      expect(output).toContain('[style]')
+      expect(output).toContain('[patterns]')
     })
 
     test('explains no-unused-vars rule', async () => {
@@ -204,7 +204,7 @@ describe('Explain Command', () => {
       const calls = logSpy.mock.calls
       const output = calls.map((call: unknown[]) => call.join(' ')).join('\n')
       expect(output).toContain('no-console-log')
-      expect(output).toContain('[style]')
+      expect(output).toContain('[patterns]')
     })
 
     test('explains no-duplicate-imports rule', async () => {
@@ -437,7 +437,7 @@ describe('Explain Command', () => {
       expect(output).toContain('[security]')
     })
 
-    test('explains style rule (patterns category)', async () => {
+    test('explains patterns rule', async () => {
       const command = new Explain([], {} as never)
       const logSpy = vi.spyOn(command as any, 'log')
 
@@ -455,7 +455,7 @@ describe('Explain Command', () => {
       const calls = logSpy.mock.calls
       const output = calls.map((call: unknown[]) => call.join(' ')).join('\n')
       expect(output).toContain('prefer-const')
-      expect(output).toContain('[style]')
+      expect(output).toContain('[patterns]')
     })
   })
 

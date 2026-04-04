@@ -4,7 +4,7 @@
 
 | Property | Value |
 |----------|-------|
-| Category | style |
+| Category | patterns |
 | Fixable | Yes |
 | Recommended | No |
 | Deprecated | No |

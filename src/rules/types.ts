@@ -16,7 +16,14 @@ export interface RuleDocs {
 }
 
 export interface RuleMeta {
-  category: 'complexity' | 'style' | 'correctness' | 'performance' | 'security'
+  category:
+    | 'complexity'
+    | 'correctness'
+    | 'dependencies'
+    | 'patterns'
+    | 'performance'
+    | 'security'
+    | 'style'
   deprecated?: boolean
   description: string
   docs?: RuleDocs

@@ -2,7 +2,7 @@
 
 | Property | Value |
 |----------|-------|
-| Category | style |
+| Category | patterns |
 | Fixable | No |
 | Recommended | No |
 | Deprecated | No |
