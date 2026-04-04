@@ -272,6 +272,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-simplifiable-pattern',
     'no-string-concat',
     'no-throw-sync',
+    'no-unfinished-todos',
     'no-unnecessary-condition',
     'no-unnecessary-escape-in-regexp',
     'no-unnecessary-qualifier',
@@ -445,6 +446,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Testing
   'no-skipped-tests': 'testing',
   'no-focused-tests': 'testing',
+  'no-unfinished-todos': 'patterns',
   // Correctness continued
   'no-empty-catch': 'correctness',
   'no-useless-catch': 'correctness',

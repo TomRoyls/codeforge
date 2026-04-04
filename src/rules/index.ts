@@ -161,6 +161,7 @@ import {
   noUselessComparisonRule,
   noUselessConstructorRule,
   preferPromiseRejectErrorsRule,
+  noUnfinishedTodosRule,
   // Orphan pattern rules
   constructorSuperRule,
   defaultCaseRule,
@@ -453,6 +454,7 @@ const adaptedNoAlert = adaptPluginRule(noAlertRule, 'no-alert')
 const adaptedNoUselessConstructor = adaptPluginRule(noUselessConstructorRule, 'no-useless-constructor')
 const adaptedNoUnsafeCall = adaptPluginRule(noUnsafeCallRule, 'no-unsafe-call')
 const adaptedNoUnsafeMemberAccess = adaptPluginRule(noUnsafeMemberAccessRule, 'no-unsafe-member-access')
+const adaptedNoUnfinishedTodos = adaptPluginRule(noUnfinishedTodosRule, 'no-unfinished-todos')
 
 // Orphan rule adapters (plugin-type: patterns + correctness)
 const adaptedConstructorSuper = adaptPluginRule(constructorSuperRule, 'constructor-super')
@@ -662,6 +664,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-useless-constructor': adaptedNoUselessConstructor,
   'no-unsafe-call': adaptedNoUnsafeCall,
   'no-unsafe-member-access': adaptedNoUnsafeMemberAccess,
+  'no-unfinished-todos': adaptedNoUnfinishedTodos,
   // Orphan rules - best practices (native)
   'explicit-return-type': explicitReturnTypeRule,
   'prefer-array-find': preferArrayFindRule,
@@ -878,6 +881,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-useless-constructor': 'patterns',
   'no-unsafe-call': 'security',
   'no-unsafe-member-access': 'security',
+  'no-unfinished-todos': 'patterns',
   // Orphan rules
   'explicit-return-type': 'patterns',
   'prefer-array-find': 'patterns',
