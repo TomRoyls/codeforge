@@ -19,7 +19,7 @@
  * ```
  */
 import { Args, Command, Flags } from '@oclif/core'
-import { existsSync } from 'node:fs'
+import { existsSync, statSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -313,13 +313,25 @@ export default class Analyze extends Command {
 
     const spinner = quiet ? null : ora('Discovering files...').start()
 
-    const discoveredFiles = await this.discoverFiles({
-      cwd: targetPath,
-      files,
-      ignore,
-      spinner,
-      stagedMode,
-    })
+    let discoveredFiles: DiscoveredFile[]
+
+    const targetStat = statSync(targetPath)
+    if (targetStat.isFile()) {
+      discoveredFiles = [
+        {
+          path: path.relative(process.cwd(), targetPath),
+          absolutePath: targetPath,
+        },
+      ]
+    } else {
+      discoveredFiles = await this.discoverFiles({
+        cwd: targetPath,
+        files,
+        ignore,
+        spinner,
+        stagedMode,
+      })
+    }
 
     const filteredFiles = filterFilesByExtension(discoveredFiles, flags.ext)
 
