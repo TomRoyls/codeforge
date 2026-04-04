@@ -37,6 +37,8 @@ import {
   noDeprecatedApiRule,
   noDynamicDeleteRule,
   noEvalRule,
+  noUnsafeCallRule,
+  noUnsafeMemberAccessRule,
   noUnsafeRegexRule,
   noUnsafeReturnRule,
   noUnsafeTypeAssertionRule,
@@ -61,6 +63,7 @@ import {
   explicitModuleBoundaryTypesRule,
   maxFileSizeRule,
   maxUnionSizeRule,
+  noAlertRule,
   noArrayConstructorRule,
   noArrayDestructuringRule,
   noAsyncPromiseExecutorRule,
@@ -144,6 +147,7 @@ import {
   noDebuggerRule,
   noDeleteVarRule,
   noUselessComparisonRule,
+  noUselessConstructorRule,
   preferPromiseRejectErrorsRule,
 } from './patterns/index.js'
 
@@ -362,6 +366,11 @@ const adaptedNoDebugger = adaptPluginRule(noDebuggerRule, 'no-debugger')
 const adaptedNoDeleteVar = adaptPluginRule(noDeleteVarRule, 'no-delete-var')
 const adaptedPreferPromiseRejectErrors = adaptPluginRule(preferPromiseRejectErrorsRule, 'prefer-promise-reject-errors')
 
+const adaptedNoAlert = adaptPluginRule(noAlertRule, 'no-alert')
+const adaptedNoUselessConstructor = adaptPluginRule(noUselessConstructorRule, 'no-useless-constructor')
+const adaptedNoUnsafeCall = adaptPluginRule(noUnsafeCallRule, 'no-unsafe-call')
+const adaptedNoUnsafeMemberAccess = adaptPluginRule(noUnsafeMemberAccessRule, 'no-unsafe-member-access')
+
 export const allRules: Record<string, RuleDefinition> = {
   // Best practices
   'no-magic-numbers': noMagicNumbersRule,
@@ -493,6 +502,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unsafe-regex': adaptedNoUnsafeRegex,
   'no-skipped-tests': adaptedNoSkippedTests,
   'no-focused-tests': adaptedNoFocusedTests,
+  'no-alert': adaptedNoAlert,
+  'no-useless-constructor': adaptedNoUselessConstructor,
+  'no-unsafe-call': adaptedNoUnsafeCall,
+  'no-unsafe-member-access': adaptedNoUnsafeMemberAccess,
 }
 
 export type RuleCategory =
@@ -621,6 +634,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-delete-var': 'patterns',
   'no-useless-comparison': 'patterns',
   'prefer-promise-reject-errors': 'patterns',
+  'no-alert': 'patterns',
+  'no-useless-constructor': 'patterns',
+  'no-unsafe-call': 'security',
+  'no-unsafe-member-access': 'security',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'

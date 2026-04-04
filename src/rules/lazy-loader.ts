@@ -117,6 +117,17 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
         'no-unsafe-type-assertion',
       ),
     })),
+  'no-unsafe-call': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-call': adaptPluginRule(m.noUnsafeCallRule, 'no-unsafe-call'),
+    })),
+  'no-unsafe-member-access': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-member-access': adaptPluginRule(
+        m.noUnsafeMemberAccessRule,
+        'no-unsafe-member-access',
+      ),
+    })),
 
   // Correctness module
   'no-throw-literal': () =>
@@ -180,6 +191,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-array-destructuring',
     'no-async-promise-executor',
     'no-async-without-await',
+    'no-alert',
     'no-compare-neg-zero',
     'no-debugger',
     'no-delete-var',
@@ -224,6 +236,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-unused-vars',
     'no-unused-private-members',
     'no-useless-fallback-in-spread',
+    'no-useless-constructor',
     'no-var-requires',
     'no-void',
     'no-type-only-return',
@@ -418,6 +431,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-useless-comparison': 'patterns',
   'prefer-promise-reject-errors': 'patterns',
   'no-empty-function': 'correctness',
+  'no-alert': 'patterns',
+  'no-useless-constructor': 'patterns',
+  'no-unsafe-call': 'security',
+  'no-unsafe-member-access': 'security',
 }
 
 /**
