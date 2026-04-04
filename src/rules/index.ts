@@ -7,6 +7,17 @@ import {
   preferConstAssertionsRule,
   noUnnecessaryTypeAssertionRule,
   strictBooleanExpressionsRule,
+  explicitReturnTypeRule,
+  preferArrayFindRule,
+  preferArraySomeRule,
+  preferArrowCallbackRule,
+  preferDefaultExportRule,
+  preferExponentOperatorRule,
+  preferFlatMapRule,
+  preferForOfRule,
+  preferRegexLiteralRule,
+  preferStringStartEndRule,
+  preferStringTemplateRule,
 } from './best-practices/index.js'
 
 // Complexity rules
@@ -53,6 +64,7 @@ import {
   noEmptyCatchRule,
   noUselessCatchRule,
   noEmptyFunctionRule,
+  noEmptyCharacterClassRule,
 } from './correctness/index.js'
 
 // Pattern rules
@@ -149,6 +161,77 @@ import {
   noUselessComparisonRule,
   noUselessConstructorRule,
   preferPromiseRejectErrorsRule,
+  // Orphan pattern rules
+  constructorSuperRule,
+  defaultCaseRule,
+  forDirectionRule,
+  getterReturnRule,
+  noBitwiseRule,
+  noCallerRule,
+  noCaseDeclarationsRule,
+  noClassAssignRule,
+  noCondAssignRule,
+  noConstructorReturnRule,
+  noControlRegexRule,
+  noDivRegexRule,
+  noDupeArgsRule,
+  noDupeClassMembersRule,
+  noDupeKeysRule,
+  noDuplicateCaseRule,
+  noEmptyPatternRule,
+  noEmptyStaticBlockRule,
+  noExAssignRule,
+  noExtendNativeRule,
+  noExtraBooleanCastRule,
+  noFallthroughRule,
+  noFuncAssignRule,
+  noGlobalAssignRule,
+  noImportAssignRule,
+  noInvalidRegexpRule,
+  noIrregularWhitespaceRule,
+  noIteratorRule,
+  noLoopFuncRule,
+  noMisleadingCharacterClassRule,
+  noNewFuncRule,
+  noNewNativeNonconstructorRule,
+  noNewWrappersRule,
+  noNonoctalDecimalEscapeRule,
+  noObjCallsRule,
+  noOctalRule,
+  noPrototypeBuiltinsRule,
+  noRedeclareRule,
+  noRegexSpacesRule,
+  noReturnAssignRule,
+  noReturnOrAwaitRule,
+  noSelfAssignRule,
+  noSequencesRule,
+  noSetterReturnRule,
+  noShadowRestrictedNamesRule,
+  noSparseArraysRule,
+  noThenableRule,
+  noThisBeforeSuperRule,
+  noUnassignedVarsRule,
+  noUndefRule,
+  noUnexpectedMultilineRule,
+  noUnneededTernaryRule,
+  noUnreachableRule,
+  noUnsafeFinallyRule,
+  noUnsafeNegationRule,
+  noUnsafeOptionalChainingRule,
+  noUnusedExpressionsRule,
+  noUnusedLabelsRule,
+  noUselessAssignmentRule,
+  noUselessBackreferenceRule,
+  noUselessConcatRule,
+  noUselessEscapeRule,
+  noVarRule,
+  noWithRule,
+  objectShorthandRule,
+  preserveCaughtErrorRule,
+  requireYieldRule,
+  sortKeysRule,
+  useIsnanRule,
+  validTypeofRule,
 } from './patterns/index.js'
 
 import { adaptPluginRule } from './adapter.js'
@@ -371,6 +454,79 @@ const adaptedNoUselessConstructor = adaptPluginRule(noUselessConstructorRule, 'n
 const adaptedNoUnsafeCall = adaptPluginRule(noUnsafeCallRule, 'no-unsafe-call')
 const adaptedNoUnsafeMemberAccess = adaptPluginRule(noUnsafeMemberAccessRule, 'no-unsafe-member-access')
 
+// Orphan rule adapters (plugin-type: patterns + correctness)
+const adaptedConstructorSuper = adaptPluginRule(constructorSuperRule, 'constructor-super')
+const adaptedDefaultCase = adaptPluginRule(defaultCaseRule, 'default-case')
+const adaptedForDirection = adaptPluginRule(forDirectionRule, 'for-direction')
+const adaptedGetterReturn = adaptPluginRule(getterReturnRule, 'getter-return')
+const adaptedNoBitwise = adaptPluginRule(noBitwiseRule, 'no-bitwise')
+const adaptedNoCaller = adaptPluginRule(noCallerRule, 'no-caller')
+const adaptedNoCaseDeclarations = adaptPluginRule(noCaseDeclarationsRule, 'no-case-declarations')
+const adaptedNoClassAssign = adaptPluginRule(noClassAssignRule, 'no-class-assign')
+const adaptedNoCondAssign = adaptPluginRule(noCondAssignRule, 'no-cond-assign')
+const adaptedNoConstructorReturn = adaptPluginRule(noConstructorReturnRule, 'no-constructor-return')
+const adaptedNoControlRegex = adaptPluginRule(noControlRegexRule, 'no-control-regex')
+const adaptedNoDivRegex = adaptPluginRule(noDivRegexRule, 'no-div-regex')
+const adaptedNoDupeArgs = adaptPluginRule(noDupeArgsRule, 'no-dupe-args')
+const adaptedNoDupeClassMembers = adaptPluginRule(noDupeClassMembersRule, 'no-dupe-class-members')
+const adaptedNoDupeKeys = adaptPluginRule(noDupeKeysRule, 'no-dupe-keys')
+const adaptedNoDuplicateCase = adaptPluginRule(noDuplicateCaseRule, 'no-duplicate-case')
+const adaptedNoEmptyPattern = adaptPluginRule(noEmptyPatternRule, 'no-empty-pattern')
+const adaptedNoEmptyStaticBlock = adaptPluginRule(noEmptyStaticBlockRule, 'no-empty-static-block')
+const adaptedNoExAssign = adaptPluginRule(noExAssignRule, 'no-ex-assign')
+const adaptedNoExtendNative = adaptPluginRule(noExtendNativeRule, 'no-extend-native')
+const adaptedNoExtraBooleanCast = adaptPluginRule(noExtraBooleanCastRule, 'no-extra-boolean-cast')
+const adaptedNoFallthrough = adaptPluginRule(noFallthroughRule, 'no-fallthrough')
+const adaptedNoFuncAssign = adaptPluginRule(noFuncAssignRule, 'no-func-assign')
+const adaptedNoGlobalAssign = adaptPluginRule(noGlobalAssignRule, 'no-global-assign')
+const adaptedNoImportAssign = adaptPluginRule(noImportAssignRule, 'no-import-assign')
+const adaptedNoInvalidRegexp = adaptPluginRule(noInvalidRegexpRule, 'no-invalid-regexp')
+const adaptedNoIrregularWhitespace = adaptPluginRule(noIrregularWhitespaceRule, 'no-irregular-whitespace')
+const adaptedNoIterator = adaptPluginRule(noIteratorRule, 'no-iterator')
+const adaptedNoLoopFunc = adaptPluginRule(noLoopFuncRule, 'no-loop-func')
+const adaptedNoMisleadingCharacterClass = adaptPluginRule(noMisleadingCharacterClassRule, 'no-misleading-character-class')
+const adaptedNoNewFunc = adaptPluginRule(noNewFuncRule, 'no-new-func')
+const adaptedNoNewNativeNonconstructor = adaptPluginRule(noNewNativeNonconstructorRule, 'no-new-native-nonconstructor')
+const adaptedNoNewWrappers = adaptPluginRule(noNewWrappersRule, 'no-new-wrappers')
+const adaptedNoNonoctalDecimalEscape = adaptPluginRule(noNonoctalDecimalEscapeRule, 'no-nonoctal-decimal-escape')
+const adaptedNoObjCalls = adaptPluginRule(noObjCallsRule, 'no-obj-calls')
+const adaptedNoOctal = adaptPluginRule(noOctalRule, 'no-octal')
+const adaptedNoPrototypeBuiltins = adaptPluginRule(noPrototypeBuiltinsRule, 'no-prototype-builtins')
+const adaptedNoRedeclare = adaptPluginRule(noRedeclareRule, 'no-redeclare')
+const adaptedNoRegexSpaces = adaptPluginRule(noRegexSpacesRule, 'no-regex-spaces')
+const adaptedNoReturnAssign = adaptPluginRule(noReturnAssignRule, 'no-return-assign')
+const adaptedNoReturnOrAwait = adaptPluginRule(noReturnOrAwaitRule, 'no-return-or-await')
+const adaptedNoSelfAssign = adaptPluginRule(noSelfAssignRule, 'no-self-assign')
+const adaptedNoSequences = adaptPluginRule(noSequencesRule, 'no-sequences')
+const adaptedNoSetterReturn = adaptPluginRule(noSetterReturnRule, 'no-setter-return')
+const adaptedNoShadowRestrictedNames = adaptPluginRule(noShadowRestrictedNamesRule, 'no-shadow-restricted-names')
+const adaptedNoSparseArrays = adaptPluginRule(noSparseArraysRule, 'no-sparse-arrays')
+const adaptedNoThenable = adaptPluginRule(noThenableRule, 'no-thenable')
+const adaptedNoThisBeforeSuper = adaptPluginRule(noThisBeforeSuperRule, 'no-this-before-super')
+const adaptedNoUnassignedVars = adaptPluginRule(noUnassignedVarsRule, 'no-unassigned-vars')
+const adaptedNoUndef = adaptPluginRule(noUndefRule, 'no-undef')
+const adaptedNoUnexpectedMultiline = adaptPluginRule(noUnexpectedMultilineRule, 'no-unexpected-multiline')
+const adaptedNoUnneededTernary = adaptPluginRule(noUnneededTernaryRule, 'no-unneeded-ternary')
+const adaptedNoUnreachable = adaptPluginRule(noUnreachableRule, 'no-unreachable')
+const adaptedNoUnsafeFinally = adaptPluginRule(noUnsafeFinallyRule, 'no-unsafe-finally')
+const adaptedNoUnsafeNegation = adaptPluginRule(noUnsafeNegationRule, 'no-unsafe-negation')
+const adaptedNoUnsafeOptionalChaining = adaptPluginRule(noUnsafeOptionalChainingRule, 'no-unsafe-optional-chaining')
+const adaptedNoUnusedExpressions = adaptPluginRule(noUnusedExpressionsRule, 'no-unused-expressions')
+const adaptedNoUnusedLabels = adaptPluginRule(noUnusedLabelsRule, 'no-unused-labels')
+const adaptedNoUselessAssignment = adaptPluginRule(noUselessAssignmentRule, 'no-useless-assignment')
+const adaptedNoUselessBackreference = adaptPluginRule(noUselessBackreferenceRule, 'no-useless-backreference')
+const adaptedNoUselessConcat = adaptPluginRule(noUselessConcatRule, 'no-useless-concat')
+const adaptedNoUselessEscape = adaptPluginRule(noUselessEscapeRule, 'no-useless-escape')
+const adaptedNoVar = adaptPluginRule(noVarRule, 'no-var')
+const adaptedNoWith = adaptPluginRule(noWithRule, 'no-with')
+const adaptedObjectShorthand = adaptPluginRule(objectShorthandRule, 'object-shorthand')
+const adaptedPreserveCaughtError = adaptPluginRule(preserveCaughtErrorRule, 'preserve-caught-error')
+const adaptedRequireYield = adaptPluginRule(requireYieldRule, 'require-yield')
+const adaptedSortKeys = adaptPluginRule(sortKeysRule, 'sort-keys')
+const adaptedUseIsnan = adaptPluginRule(useIsnanRule, 'use-isnan')
+const adaptedValidTypeof = adaptPluginRule(validTypeofRule, 'valid-typeof')
+const adaptedNoEmptyCharacterClass = adaptPluginRule(noEmptyCharacterClassRule, 'no-empty-character-class')
+
 export const allRules: Record<string, RuleDefinition> = {
   // Best practices
   'no-magic-numbers': noMagicNumbersRule,
@@ -506,6 +662,90 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-useless-constructor': adaptedNoUselessConstructor,
   'no-unsafe-call': adaptedNoUnsafeCall,
   'no-unsafe-member-access': adaptedNoUnsafeMemberAccess,
+  // Orphan rules - best practices (native)
+  'explicit-return-type': explicitReturnTypeRule,
+  'prefer-array-find': preferArrayFindRule,
+  'prefer-array-some': preferArraySomeRule,
+  'prefer-arrow-callback': preferArrowCallbackRule,
+  'prefer-default-export': preferDefaultExportRule,
+  'prefer-exponent-operator': preferExponentOperatorRule,
+  'prefer-flat-map': preferFlatMapRule,
+  'prefer-for-of': preferForOfRule,
+  'prefer-regex-literal': preferRegexLiteralRule,
+  'prefer-string-start-end': preferStringStartEndRule,
+  'prefer-string-template': preferStringTemplateRule,
+  // Orphan pattern rules
+  'constructor-super': adaptedConstructorSuper,
+  'default-case': adaptedDefaultCase,
+  'for-direction': adaptedForDirection,
+  'getter-return': adaptedGetterReturn,
+  'no-bitwise': adaptedNoBitwise,
+  'no-caller': adaptedNoCaller,
+  'no-case-declarations': adaptedNoCaseDeclarations,
+  'no-class-assign': adaptedNoClassAssign,
+  'no-cond-assign': adaptedNoCondAssign,
+  'no-constructor-return': adaptedNoConstructorReturn,
+  'no-control-regex': adaptedNoControlRegex,
+  'no-div-regex': adaptedNoDivRegex,
+  'no-dupe-args': adaptedNoDupeArgs,
+  'no-dupe-class-members': adaptedNoDupeClassMembers,
+  'no-dupe-keys': adaptedNoDupeKeys,
+  'no-duplicate-case': adaptedNoDuplicateCase,
+  'no-empty-pattern': adaptedNoEmptyPattern,
+  'no-empty-static-block': adaptedNoEmptyStaticBlock,
+  'no-ex-assign': adaptedNoExAssign,
+  'no-extend-native': adaptedNoExtendNative,
+  'no-extra-boolean-cast': adaptedNoExtraBooleanCast,
+  'no-fallthrough': adaptedNoFallthrough,
+  'no-func-assign': adaptedNoFuncAssign,
+  'no-global-assign': adaptedNoGlobalAssign,
+  'no-import-assign': adaptedNoImportAssign,
+  'no-invalid-regexp': adaptedNoInvalidRegexp,
+  'no-irregular-whitespace': adaptedNoIrregularWhitespace,
+  'no-iterator': adaptedNoIterator,
+  'no-loop-func': adaptedNoLoopFunc,
+  'no-misleading-character-class': adaptedNoMisleadingCharacterClass,
+  'no-new-func': adaptedNoNewFunc,
+  'no-new-native-nonconstructor': adaptedNoNewNativeNonconstructor,
+  'no-new-wrappers': adaptedNoNewWrappers,
+  'no-nonoctal-decimal-escape': adaptedNoNonoctalDecimalEscape,
+  'no-obj-calls': adaptedNoObjCalls,
+  'no-octal': adaptedNoOctal,
+  'no-prototype-builtins': adaptedNoPrototypeBuiltins,
+  'no-redeclare': adaptedNoRedeclare,
+  'no-regex-spaces': adaptedNoRegexSpaces,
+  'no-return-assign': adaptedNoReturnAssign,
+  'no-return-or-await': adaptedNoReturnOrAwait,
+  'no-self-assign': adaptedNoSelfAssign,
+  'no-sequences': adaptedNoSequences,
+  'no-setter-return': adaptedNoSetterReturn,
+  'no-shadow-restricted-names': adaptedNoShadowRestrictedNames,
+  'no-sparse-arrays': adaptedNoSparseArrays,
+  'no-thenable': adaptedNoThenable,
+  'no-this-before-super': adaptedNoThisBeforeSuper,
+  'no-unassigned-vars': adaptedNoUnassignedVars,
+  'no-undef': adaptedNoUndef,
+  'no-unexpected-multiline': adaptedNoUnexpectedMultiline,
+  'no-unneeded-ternary': adaptedNoUnneededTernary,
+  'no-unreachable': adaptedNoUnreachable,
+  'no-unsafe-finally': adaptedNoUnsafeFinally,
+  'no-unsafe-negation': adaptedNoUnsafeNegation,
+  'no-unsafe-optional-chaining': adaptedNoUnsafeOptionalChaining,
+  'no-unused-expressions': adaptedNoUnusedExpressions,
+  'no-unused-labels': adaptedNoUnusedLabels,
+  'no-useless-assignment': adaptedNoUselessAssignment,
+  'no-useless-backreference': adaptedNoUselessBackreference,
+  'no-useless-concat': adaptedNoUselessConcat,
+  'no-useless-escape': adaptedNoUselessEscape,
+  'no-var': adaptedNoVar,
+  'no-with': adaptedNoWith,
+  'object-shorthand': adaptedObjectShorthand,
+  'preserve-caught-error': adaptedPreserveCaughtError,
+  'require-yield': adaptedRequireYield,
+  'sort-keys': adaptedSortKeys,
+  'use-isnan': adaptedUseIsnan,
+  'valid-typeof': adaptedValidTypeof,
+  'no-empty-character-class': adaptedNoEmptyCharacterClass,
 }
 
 export type RuleCategory =
@@ -638,6 +878,89 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-useless-constructor': 'patterns',
   'no-unsafe-call': 'security',
   'no-unsafe-member-access': 'security',
+  // Orphan rules
+  'explicit-return-type': 'patterns',
+  'prefer-array-find': 'patterns',
+  'prefer-array-some': 'patterns',
+  'prefer-arrow-callback': 'patterns',
+  'prefer-default-export': 'patterns',
+  'prefer-exponent-operator': 'patterns',
+  'prefer-flat-map': 'patterns',
+  'prefer-for-of': 'patterns',
+  'prefer-regex-literal': 'patterns',
+  'prefer-string-start-end': 'patterns',
+  'prefer-string-template': 'patterns',
+  'constructor-super': 'patterns',
+  'default-case': 'patterns',
+  'for-direction': 'patterns',
+  'getter-return': 'patterns',
+  'no-bitwise': 'patterns',
+  'no-caller': 'patterns',
+  'no-case-declarations': 'patterns',
+  'no-class-assign': 'patterns',
+  'no-cond-assign': 'patterns',
+  'no-constructor-return': 'patterns',
+  'no-control-regex': 'patterns',
+  'no-div-regex': 'patterns',
+  'no-dupe-args': 'patterns',
+  'no-dupe-class-members': 'patterns',
+  'no-dupe-keys': 'patterns',
+  'no-duplicate-case': 'patterns',
+  'no-empty-pattern': 'patterns',
+  'no-empty-static-block': 'patterns',
+  'no-ex-assign': 'patterns',
+  'no-extend-native': 'patterns',
+  'no-extra-boolean-cast': 'patterns',
+  'no-fallthrough': 'patterns',
+  'no-func-assign': 'patterns',
+  'no-global-assign': 'patterns',
+  'no-import-assign': 'patterns',
+  'no-invalid-regexp': 'patterns',
+  'no-irregular-whitespace': 'patterns',
+  'no-iterator': 'patterns',
+  'no-loop-func': 'patterns',
+  'no-misleading-character-class': 'patterns',
+  'no-new-func': 'patterns',
+  'no-new-native-nonconstructor': 'patterns',
+  'no-new-wrappers': 'patterns',
+  'no-nonoctal-decimal-escape': 'patterns',
+  'no-obj-calls': 'patterns',
+  'no-octal': 'patterns',
+  'no-prototype-builtins': 'patterns',
+  'no-redeclare': 'patterns',
+  'no-regex-spaces': 'patterns',
+  'no-return-assign': 'patterns',
+  'no-return-or-await': 'patterns',
+  'no-self-assign': 'patterns',
+  'no-sequences': 'patterns',
+  'no-setter-return': 'patterns',
+  'no-shadow-restricted-names': 'patterns',
+  'no-sparse-arrays': 'patterns',
+  'no-thenable': 'patterns',
+  'no-this-before-super': 'patterns',
+  'no-unassigned-vars': 'patterns',
+  'no-undef': 'patterns',
+  'no-unexpected-multiline': 'patterns',
+  'no-unneeded-ternary': 'patterns',
+  'no-unreachable': 'patterns',
+  'no-unsafe-finally': 'patterns',
+  'no-unsafe-negation': 'patterns',
+  'no-unsafe-optional-chaining': 'patterns',
+  'no-unused-expressions': 'patterns',
+  'no-unused-labels': 'patterns',
+  'no-useless-assignment': 'patterns',
+  'no-useless-backreference': 'patterns',
+  'no-useless-concat': 'patterns',
+  'no-useless-escape': 'patterns',
+  'no-var': 'patterns',
+  'no-with': 'patterns',
+  'object-shorthand': 'patterns',
+  'preserve-caught-error': 'patterns',
+  'require-yield': 'patterns',
+  'sort-keys': 'patterns',
+  'use-isnan': 'patterns',
+  'valid-typeof': 'patterns',
+  'no-empty-character-class': 'correctness',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
