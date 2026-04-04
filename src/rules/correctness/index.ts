@@ -3,6 +3,7 @@ import { noConstantBinaryExpressionRule } from './no-constant-binary-expression.
 import { noEmptyFunctionRule } from './no-empty-function.js'
 import { noEmptyCharacterClassRule } from './no-empty-character-class.js'
 import { noEmptyCatchRule } from './no-empty-catch.js'
+import { noUselessCatchRule } from './no-useless-catch.js'
 
 export {
   noThrowLiteralRule,
@@ -10,6 +11,7 @@ export {
   noEmptyFunctionRule,
   noEmptyCharacterClassRule,
   noEmptyCatchRule,
+  noUselessCatchRule,
 }
 
 export const correctnessRules = {
@@ -18,4 +20,5 @@ export const correctnessRules = {
   'no-empty-function': noEmptyFunctionRule,
   'no-empty-character-class': noEmptyCharacterClassRule,
   'no-empty-catch': noEmptyCatchRule,
+  'no-useless-catch': noUselessCatchRule,
 }

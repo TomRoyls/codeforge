@@ -49,6 +49,8 @@ import {
   noThrowLiteralRule,
   noConstantBinaryExpressionRule,
   noEmptyCatchRule,
+  noUselessCatchRule,
+  noEmptyFunctionRule,
 } from './correctness/index.js'
 
 // Pattern rules
@@ -139,6 +141,10 @@ import {
   restrictTemplateExpressionsRule,
   preferReadonlyParameterRule,
   noTypeOnlyReturnRule,
+  noDebuggerRule,
+  noDeleteVarRule,
+  noUselessComparisonRule,
+  preferPromiseRejectErrorsRule,
 } from './patterns/index.js'
 
 import { adaptPluginRule } from './adapter.js'
@@ -350,6 +356,11 @@ const adaptedNoUnsafeRegex = adaptPluginRule(noUnsafeRegexRule, 'no-unsafe-regex
 const adaptedNoSkippedTests = adaptPluginRule(noSkippedTestsRule, 'no-skipped-tests')
 const adaptedNoFocusedTests = adaptPluginRule(noFocusedTestsRule, 'no-focused-tests')
 const adaptedNoEmptyCatch = adaptPluginRule(noEmptyCatchRule, 'no-empty-catch')
+const adaptedNoUselessCatch = adaptPluginRule(noUselessCatchRule, 'no-useless-catch')
+const adaptedNoEmptyFunction = adaptPluginRule(noEmptyFunctionRule, 'no-empty-function')
+const adaptedNoDebugger = adaptPluginRule(noDebuggerRule, 'no-debugger')
+const adaptedNoDeleteVar = adaptPluginRule(noDeleteVarRule, 'no-delete-var')
+const adaptedPreferPromiseRejectErrors = adaptPluginRule(preferPromiseRejectErrorsRule, 'prefer-promise-reject-errors')
 
 export const allRules: Record<string, RuleDefinition> = {
   // Best practices
@@ -401,6 +412,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-throw-literal': adaptedNoThrowLiteral,
   'no-constant-binary-expression': adaptedNoConstantBinaryExpression,
   'no-empty-catch': adaptedNoEmptyCatch,
+  'no-useless-catch': adaptedNoUselessCatch,
+  'no-empty-function': adaptedNoEmptyFunction,
   // Patterns
   'eq-eq-eq': adaptedEqEqEq,
   'explicit-module-boundary-types': adaptedExplicitModuleBoundaryTypes,
@@ -472,6 +485,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'prefer-prototype-methods': adaptedPreferPrototypeMethods,
   'prefer-string-starts-ends-with': adaptedPreferStringStartsEndsWith,
   'prefer-ternary-operator': adaptedPreferTernaryOperator,
+  'no-debugger': adaptedNoDebugger,
+  'no-delete-var': adaptedNoDeleteVar,
+  'no-useless-comparison': noUselessComparisonRule,
+  'prefer-promise-reject-errors': adaptedPreferPromiseRejectErrors,
   'no-console': adaptedNoConsole,
   'no-unsafe-regex': adaptedNoUnsafeRegex,
   'no-skipped-tests': adaptedNoSkippedTests,
@@ -599,6 +616,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unsafe-regex': 'security',
   'no-skipped-tests': 'testing',
   'no-focused-tests': 'testing',
+  'no-empty-function': 'correctness',
+  'no-debugger': 'patterns',
+  'no-delete-var': 'patterns',
+  'no-useless-comparison': 'patterns',
+  'prefer-promise-reject-errors': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'

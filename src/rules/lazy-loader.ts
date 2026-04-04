@@ -130,6 +130,18 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
         'no-constant-binary-expression',
       ),
     })),
+  'no-useless-catch': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-useless-catch': adaptPluginRule(m.noUselessCatchRule, 'no-useless-catch'),
+    })),
+  'no-empty-function': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-function': adaptPluginRule(m.noEmptyFunctionRule, 'no-empty-function'),
+    })),
+  'no-useless-comparison': () =>
+    import('./patterns/index.js').then((m) => ({
+      'no-useless-comparison': m.noUselessComparisonRule,
+    })),
 
   // Testing module
   'no-skipped-tests': () =>
@@ -169,6 +181,8 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-async-promise-executor',
     'no-async-without-await',
     'no-compare-neg-zero',
+    'no-debugger',
+    'no-delete-var',
     'no-confusing-void-expression',
     'no-constant-condition',
     'no-console-log',
@@ -229,6 +243,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'prefer-numeric-literals',
     'prefer-object-has-own',
     'prefer-prototype-methods',
+    'prefer-promise-reject-errors',
     'prefer-readonly',
     'prefer-readonly-parameter',
     'prefer-regex-literals',
@@ -300,6 +315,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-focused-tests': 'testing',
   // Correctness continued
   'no-empty-catch': 'correctness',
+  'no-useless-catch': 'correctness',
   // Patterns (default for most rules)
   'consistent-type-exports': 'patterns',
   'max-file-size': 'patterns',
@@ -397,6 +413,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Best practices rules
   'no-magic-numbers': 'patterns',
   'no-console': 'patterns',
+  'no-debugger': 'patterns',
+  'no-delete-var': 'patterns',
+  'no-useless-comparison': 'patterns',
+  'prefer-promise-reject-errors': 'patterns',
+  'no-empty-function': 'correctness',
 }
 
 /**
