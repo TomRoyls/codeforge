@@ -75,6 +75,7 @@ const PROPERTY_MAP: Record<string, string> = {
   decorators: 'decorators',
   modifierFlags: 'modifierFlags',
   statements: 'body',
+  variableDeclaration: 'param',
 }
 
 const KIND_NAME_ALIASES: Record<string, string> = {
@@ -152,7 +153,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   ArrayDestructuring: 'ArrayPattern',
 }
 
-const MAX_DEPTH = 3
+const MAX_DEPTH = 5
 
 const SKIP_KEYS = new Set([
   'kind',
@@ -223,6 +224,25 @@ const OPERATOR_TOKEN_MAP: Record<string, string> = {
   InstanceOfKeyword: 'instanceof',
   OfKeyword: 'of',
 }
+
+const ASSIGNMENT_OPERATORS = new Set([
+  '=',
+  '+=',
+  '-=',
+  '*=',
+  '/=',
+  '%=',
+  '**=',
+  '&=',
+  '|=',
+  '^=',
+  '<<=',
+  '>>=',
+  '>>>=',
+  '&&=',
+  '||=',
+  '??=',
+])
 
 function convertOperatorToken(token: unknown): string {
   if (typeof token === 'string') return token
@@ -295,6 +315,21 @@ function convertRawCompilerNode(
     ) {
       const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
       result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
+    } else if (
+      key === 'variableDeclaration' &&
+      val !== null &&
+      typeof val === 'object' &&
+      typeof (val as Record<string, unknown>).kind === 'number'
+    ) {
+      const varDecl = val as Record<string, unknown>
+      if (varDecl.name && typeof varDecl.name === 'object') {
+        result[estreeName] = convertRawCompilerNode(
+          varDecl.name as Record<string, unknown>,
+          depth + 1,
+        )
+      } else {
+        result[estreeName] = null
+      }
     } else if (
       typeof val === 'object' &&
       typeof (val as Record<string, unknown>).kind === 'number'
@@ -379,6 +414,21 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
           const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
           result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
         } else if (
+          key === 'variableDeclaration' &&
+          val !== null &&
+          typeof val === 'object' &&
+          typeof (val as Record<string, unknown>).kind === 'number'
+        ) {
+          const varDecl = val as Record<string, unknown>
+          if (varDecl.name && typeof varDecl.name === 'object') {
+            result[estreeName] = convertRawCompilerNode(
+              varDecl.name as Record<string, unknown>,
+              depth + 1,
+            )
+          } else {
+            result[estreeName] = null
+          }
+        } else if (
           typeof val === 'object' &&
           typeof (val as Record<string, unknown>).kind === 'number'
         ) {
@@ -415,8 +465,9 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   const endPos = sourceFile.getLineAndColumnAtPos(end)
 
   // Base properties
+  const kindName = node.getKindName()
   const base: Record<string, unknown> = {
-    type: node.getKindName(),
+    type: KIND_NAME_ALIASES[kindName] ?? kindName,
     range: [start, end] as [number, number],
     loc: {
       start: { line: startPos.line, column: startPos.column },
@@ -561,9 +612,29 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           const kindName = node.getKindName()
           const genericNode = nodeToGeneric(node)
 
+          // Special case: ts-morph's BinaryExpression covers both binary ops and assignments.
+          // ESTree separates these into BinaryExpression and AssignmentExpression.
+          // Detect assignment operators and set the correct ESTree type.
+          if (
+            kindName === 'BinaryExpression' &&
+            ASSIGNMENT_OPERATORS.has(genericNode.operator as string)
+          ) {
+            genericNode.type = 'AssignmentExpression'
+          }
+
+          // Dispatch by ts-morph kind name (for rules registered with ts-morph names)
           const handler = pluginVisitor[kindName]
           if (handler) {
             handler(genericNode)
+          }
+
+          // Dispatch by ESTree-compatible type name if different from ts-morph kind name
+          const estreeType = genericNode.type as string
+          if (estreeType && estreeType !== kindName) {
+            const estreeHandler = pluginVisitor[estreeType]
+            if (estreeHandler) {
+              estreeHandler(genericNode)
+            }
           }
 
           const genericHandler = pluginVisitor['*'] ?? pluginVisitor['Any']

@@ -993,7 +993,7 @@ describe('nodeToGeneric (via visitor calls)', () => {
     result.visitor.visitNode?.(mockNode, createMockVisitorContext())
 
     expect(capturedNode).toBeDefined()
-    expect(capturedNode!.type).toBe('VariableDeclaration')
+    expect(capturedNode!.type).toBe('VariableDeclarator')
     expect(capturedNode!.range).toEqual([5, 15])
     expect(capturedNode!.start).toBe(5)
     expect(capturedNode!.end).toBe(15)
