@@ -99,41 +99,38 @@ npm run test:coverage
 ```
 
 <!-- toc -->
-
-- [CodeForge](#codeforge)
-- [Install globally](#install-globally)
-- [Or use with npx](#or-use-with-npx)
-- [Clone the repository](#clone-the-repository)
-- [Install dependencies](#install-dependencies)
-- [Build the project](#build-the-project)
-- [Run locally](#run-locally)
-- [Run all tests](#run-all-tests)
-- [Run tests in watch mode](#run-tests-in-watch-mode)
-- [Generate coverage report](#generate-coverage-report)
-- [Usage](#usage)
-- [Fail on any errors](#fail-on-any-errors)
-- [Fail on errors or warnings](#fail-on-errors-or-warnings)
-- [CI mode (JSON output, no colors, no progress)](#ci-mode-json-output-no-colors-no-progress)
-- [Combine CI mode with fail-on-warnings](#combine-ci-mode-with-fail-on-warnings)
-- [Commands](#commands)
+* [CodeForge](#codeforge)
+* [Install globally](#install-globally)
+* [Or use with npx](#or-use-with-npx)
+* [Clone the repository](#clone-the-repository)
+* [Install dependencies](#install-dependencies)
+* [Build the project](#build-the-project)
+* [Run locally](#run-locally)
+* [Run all tests](#run-all-tests)
+* [Run tests in watch mode](#run-tests-in-watch-mode)
+* [Generate coverage report](#generate-coverage-report)
+* [Usage](#usage)
+* [Fail on any errors](#fail-on-any-errors)
+* [Fail on errors or warnings](#fail-on-errors-or-warnings)
+* [CI mode (JSON output, no colors, no progress)](#ci-mode-json-output-no-colors-no-progress)
+* [Combine CI mode with fail-on-warnings](#combine-ci-mode-with-fail-on-warnings)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g codeforge
 $ codeforge COMMAND
 running command...
 $ codeforge (--version)
-codeforge/0.1.0 linux-x64 node-v25.8.1
+codeforge/0.1.0 linux-x64 node-v25.8.2
 $ codeforge --help [COMMAND]
 USAGE
   $ codeforge COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 ## Exit Codes
@@ -165,50 +162,50 @@ codeforge analyze src/ --ci --fail-on-warnings
 # Commands
 
 <!-- commands -->
-
-- [`codeforge analyze [PATH]`](#codeforge-analyze-path)
-- [`codeforge benchmark [PATH]`](#codeforge-benchmark-path)
-- [`codeforge cache [ACTION]`](#codeforge-cache-action)
-- [`codeforge check-updates`](#codeforge-check-updates)
-- [`codeforge ci`](#codeforge-ci)
-- [`codeforge clean`](#codeforge-clean)
-- [`codeforge config`](#codeforge-config)
-- [`codeforge config validate`](#codeforge-config-validate)
-- [`codeforge config visualize`](#codeforge-config-visualize)
-- [`codeforge debt [PATH]`](#codeforge-debt-path)
-- [`codeforge dependencies [PATH]`](#codeforge-dependencies-path)
-- [`codeforge diff [BASE] [HEAD]`](#codeforge-diff-base-head)
-- [`codeforge docs`](#codeforge-docs)
-- [`codeforge doctor`](#codeforge-doctor)
-- [`codeforge explain RULE-ID`](#codeforge-explain-rule-id)
-- [`codeforge exports [PATH]`](#codeforge-exports-path)
-- [`codeforge fix [FILES]`](#codeforge-fix-files)
-- [`codeforge generate-plugin NAME`](#codeforge-generate-plugin-name)
-- [`codeforge health [PATH]`](#codeforge-health-path)
-- [`codeforge help [COMMAND]`](#codeforge-help-command)
-- [`codeforge init`](#codeforge-init)
-- [`codeforge interactive [PATH]`](#codeforge-interactive-path)
-- [`codeforge migrate`](#codeforge-migrate)
-- [`codeforge organize-imports [PATH]`](#codeforge-organize-imports-path)
-- [`codeforge plugins`](#codeforge-plugins)
-- [`codeforge plugins add PLUGIN`](#codeforge-plugins-add-plugin)
-- [`codeforge plugins:inspect PLUGIN...`](#codeforge-pluginsinspect-plugin)
-- [`codeforge plugins install PLUGIN`](#codeforge-plugins-install-plugin)
-- [`codeforge plugins link PATH`](#codeforge-plugins-link-path)
-- [`codeforge plugins remove [PLUGIN]`](#codeforge-plugins-remove-plugin)
-- [`codeforge plugins reset`](#codeforge-plugins-reset)
-- [`codeforge plugins uninstall [PLUGIN]`](#codeforge-plugins-uninstall-plugin)
-- [`codeforge plugins unlink [PLUGIN]`](#codeforge-plugins-unlink-plugin)
-- [`codeforge plugins update`](#codeforge-plugins-update)
-- [`codeforge precommit`](#codeforge-precommit)
-- [`codeforge report [PATH]`](#codeforge-report-path)
-- [`codeforge rules`](#codeforge-rules)
-- [`codeforge score [PATH]`](#codeforge-score-path)
-- [`codeforge stats [PATH]`](#codeforge-stats-path)
-- [`codeforge suggest-rules [PATH]`](#codeforge-suggest-rules-path)
-- [`codeforge version`](#codeforge-version)
-- [`codeforge watch [FILES]`](#codeforge-watch-files)
-- [`codeforge why RULEID`](#codeforge-why-ruleid)
+* [`codeforge analyze [PATH]`](#codeforge-analyze-path)
+* [`codeforge benchmark [PATH]`](#codeforge-benchmark-path)
+* [`codeforge cache [ACTION]`](#codeforge-cache-action)
+* [`codeforge check-updates`](#codeforge-check-updates)
+* [`codeforge ci`](#codeforge-ci)
+* [`codeforge clean`](#codeforge-clean)
+* [`codeforge config`](#codeforge-config)
+* [`codeforge config validate`](#codeforge-config-validate)
+* [`codeforge config visualize`](#codeforge-config-visualize)
+* [`codeforge debt [PATH]`](#codeforge-debt-path)
+* [`codeforge dependencies [PATH]`](#codeforge-dependencies-path)
+* [`codeforge diff [BASE] [HEAD]`](#codeforge-diff-base-head)
+* [`codeforge docs`](#codeforge-docs)
+* [`codeforge doctor`](#codeforge-doctor)
+* [`codeforge explain RULE-ID`](#codeforge-explain-rule-id)
+* [`codeforge exports [PATH]`](#codeforge-exports-path)
+* [`codeforge fix [FILES]`](#codeforge-fix-files)
+* [`codeforge generate-plugin NAME`](#codeforge-generate-plugin-name)
+* [`codeforge health [PATH]`](#codeforge-health-path)
+* [`codeforge help [COMMAND]`](#codeforge-help-command)
+* [`codeforge ignore [ACTION] [PATTERN]`](#codeforge-ignore-action-pattern)
+* [`codeforge init`](#codeforge-init)
+* [`codeforge interactive [PATH]`](#codeforge-interactive-path)
+* [`codeforge migrate`](#codeforge-migrate)
+* [`codeforge organize-imports [PATH]`](#codeforge-organize-imports-path)
+* [`codeforge plugins`](#codeforge-plugins)
+* [`codeforge plugins add PLUGIN`](#codeforge-plugins-add-plugin)
+* [`codeforge plugins:inspect PLUGIN...`](#codeforge-pluginsinspect-plugin)
+* [`codeforge plugins install PLUGIN`](#codeforge-plugins-install-plugin)
+* [`codeforge plugins link PATH`](#codeforge-plugins-link-path)
+* [`codeforge plugins remove [PLUGIN]`](#codeforge-plugins-remove-plugin)
+* [`codeforge plugins reset`](#codeforge-plugins-reset)
+* [`codeforge plugins uninstall [PLUGIN]`](#codeforge-plugins-uninstall-plugin)
+* [`codeforge plugins unlink [PLUGIN]`](#codeforge-plugins-unlink-plugin)
+* [`codeforge plugins update`](#codeforge-plugins-update)
+* [`codeforge precommit`](#codeforge-precommit)
+* [`codeforge report [PATH]`](#codeforge-report-path)
+* [`codeforge rules`](#codeforge-rules)
+* [`codeforge score [PATH]`](#codeforge-score-path)
+* [`codeforge stats [PATH]`](#codeforge-stats-path)
+* [`codeforge suggest-rules [PATH]`](#codeforge-suggest-rules-path)
+* [`codeforge version`](#codeforge-version)
+* [`codeforge watch [FILES]`](#codeforge-watch-files)
+* [`codeforge why RULEID`](#codeforge-why-ruleid)
 
 ## `codeforge analyze [PATH]`
 
@@ -995,6 +992,48 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.41/src/commands/help.ts)_
+
+## `codeforge ignore [ACTION] [PATTERN]`
+
+Manage ignore patterns for CodeForge analysis
+
+```
+USAGE
+  $ codeforge ignore [ACTION] [PATTERN] [-f <value>]
+
+ARGUMENTS
+  [ACTION]   (add|list|remove) [default: list] Action to perform
+  [PATTERN]  Pattern to add or remove
+
+FLAGS
+  -f, --file=<value>  [default: .codeforgeignore] Path to ignore file
+
+DESCRIPTION
+  Manage ignore patterns for CodeForge analysis
+
+EXAMPLES
+  Add a pattern to the ignore file
+
+    $ codeforge ignore add "node_modules/**"
+
+  Remove a pattern from the ignore file
+
+    $ codeforge ignore remove "dist/**"
+
+  List current ignore patterns
+
+    $ codeforge ignore list
+
+  List current ignore patterns (default)
+
+    $ codeforge ignore
+
+  Use custom ignore file
+
+    $ codeforge ignore --file .customignore
+```
+
+_See code: [src/commands/ignore.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/ignore.ts)_
 
 ## `codeforge init`
 
@@ -1805,7 +1844,6 @@ EXAMPLES
 ```
 
 _See code: [src/commands/why.ts](https://github.com/codeforge-dev/codeforge/blob/v0.1.0/src/commands/why.ts)_
-
 <!-- commandsstop -->
 
 ## Documentation
