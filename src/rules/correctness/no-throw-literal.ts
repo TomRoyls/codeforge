@@ -43,58 +43,92 @@ function extractLocation(node: unknown): SourceLocation {
   }
 }
 
-function checkIfLiteral(node: unknown): { isLiteral: boolean; literalType: string } {
-  if (!node || typeof node !== 'object') {
-    return { isLiteral: false, literalType: '' }
-  }
+type LiteralCheckResult = { isLiteral: boolean; literalType: string }
 
-  const n = node as Record<string, unknown>
-  const argument = n.argument as Record<string, unknown> | undefined
-
+function checkIfLiteralFromAst(node: Record<string, unknown>): LiteralCheckResult {
+  const argument = node.argument as Record<string, unknown> | undefined
   if (!argument) {
     return { isLiteral: false, literalType: '' }
   }
 
   const type = argument.type as string | undefined
 
-  if (type === 'Literal') {
+  if (type === 'StringLiteral' || type === 'Literal') {
     const value = argument.value
-    if (typeof value === 'string') {
-      return { isLiteral: true, literalType: 'string' }
-    }
-    if (typeof value === 'number') {
-      return { isLiteral: true, literalType: 'number' }
-    }
-    if (value === null) {
-      return { isLiteral: true, literalType: 'null' }
-    }
-    if (typeof value === 'boolean') {
-      return { isLiteral: true, literalType: 'boolean' }
-    }
-    if (typeof value === 'bigint') {
-      return { isLiteral: true, literalType: 'bigint' }
-    }
-    if (value instanceof RegExp) {
-      return { isLiteral: true, literalType: 'regexp' }
-    }
+    if (typeof value === 'string') return { isLiteral: true, literalType: 'string' }
+    if (typeof value === 'number') return { isLiteral: true, literalType: 'number' }
+    if (value === null) return { isLiteral: true, literalType: 'null' }
+    if (typeof value === 'boolean') return { isLiteral: true, literalType: 'boolean' }
+    if (typeof value === 'bigint') return { isLiteral: true, literalType: 'bigint' }
+    if (value instanceof RegExp) return { isLiteral: true, literalType: 'regexp' }
   }
 
   if (type === 'Identifier') {
     const name = argument.name as string | undefined
-    if (name === 'undefined') {
-      return { isLiteral: true, literalType: 'undefined' }
-    }
+    if (name === 'undefined') return { isLiteral: true, literalType: 'undefined' }
   }
 
-  if (type === 'ObjectExpression') {
+  if (type === 'ObjectLiteralExpression' || type === 'ObjectExpression') {
     return { isLiteral: true, literalType: 'object' }
   }
 
-  if (type === 'ArrayExpression') {
+  if (type === 'ArrayLiteralExpression' || type === 'ArrayExpression') {
     return { isLiteral: true, literalType: 'array' }
   }
 
   return { isLiteral: false, literalType: '' }
+}
+
+/**
+ * Parse the thrown expression type from the node's text property.
+ * Used when the adapter strips child properties (argument, etc.) from the node.
+ */
+function checkIfLiteralFromText(text: string): LiteralCheckResult {
+  let thrown = text.replace(/^throw\s+/, '').trim()
+  if (thrown.endsWith(';')) thrown = thrown.slice(0, -1).trim()
+  if (!thrown) return { isLiteral: false, literalType: '' }
+
+  if (thrown.startsWith("'") || thrown.startsWith('"') || thrown.startsWith('`')) {
+    return { isLiteral: true, literalType: 'string' }
+  }
+  if (/^-?\d+(\.\d+)?$/.test(thrown)) {
+    return { isLiteral: true, literalType: 'number' }
+  }
+  if (thrown === 'null') {
+    return { isLiteral: true, literalType: 'null' }
+  }
+  if (thrown === 'undefined') {
+    return { isLiteral: true, literalType: 'undefined' }
+  }
+  if (thrown === 'true' || thrown === 'false') {
+    return { isLiteral: true, literalType: 'boolean' }
+  }
+  if (/^\/[^/]*\/[gimsuy]*$/.test(thrown)) {
+    return { isLiteral: true, literalType: 'regexp' }
+  }
+  if (thrown.startsWith('{') && thrown.endsWith('}')) {
+    return { isLiteral: true, literalType: 'object' }
+  }
+  if (thrown.startsWith('[') && thrown.endsWith(']')) {
+    return { isLiteral: true, literalType: 'array' }
+  }
+
+  return { isLiteral: false, literalType: '' }
+}
+
+function checkIfLiteral(node: unknown): LiteralCheckResult {
+  if (!node || typeof node !== 'object') {
+    return { isLiteral: false, literalType: '' }
+  }
+
+  const n = node as Record<string, unknown>
+
+  if (n.argument !== undefined) {
+    return checkIfLiteralFromAst(n)
+  }
+
+  const text = typeof n.text === 'string' ? n.text : ''
+  return checkIfLiteralFromText(text)
 }
 
 function getLiteralMessage(literalType: string): string {
@@ -169,13 +203,6 @@ export const noThrowLiteralRule: RuleDefinition = {
         }
 
         if (result.literalType === 'object' && options.allowThrowingObjects) {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const argument = n.argument as Record<string, unknown> | undefined
-
-        if (options.allowThrowingAny && argument?.type === 'TSAsExpression') {
           return
         }
 

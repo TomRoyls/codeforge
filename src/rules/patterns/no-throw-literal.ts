@@ -31,31 +31,58 @@ const INVALID_LITERAL_TYPES = new Set([
   'ThisExpression',
 ])
 
+function getTextFromThrowStatement(text: string): string {
+  let thrown = text.replace(/^throw\s+/, '').trim()
+  if (thrown.endsWith(';')) thrown = thrown.slice(0, -1).trim()
+  return thrown
+}
+
+function isInvalidThrowFromText(text: string): boolean {
+  const thrown = getTextFromThrowStatement(text)
+  if (!thrown) return false
+
+  if (thrown.startsWith('new ')) return false
+  if (
+    /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(thrown) &&
+    thrown !== 'null' &&
+    thrown !== 'undefined' &&
+    thrown !== 'true' &&
+    thrown !== 'false'
+  )
+    return false
+  if (thrown.startsWith('(')) return false
+  if (/^(?:await|void|delete|typeof|!|~|\+\+|--)/.test(thrown)) return false
+  if (
+    thrown.includes('&&') ||
+    thrown.includes('||') ||
+    thrown.includes('??') ||
+    thrown.includes('?') ||
+    thrown.includes('.')
+  )
+    return false
+
+  return true
+}
+
 function isInvalidThrowArgument(node: unknown): boolean {
   if (typeof node !== 'object' || node === null) {
     return true
   }
 
   const n = node as Record<string, unknown>
-  const type = n.type as string | undefined
 
-  if (!type) {
+  if (n.argument !== undefined && n.argument !== null) {
+    const argument = n.argument as Record<string, unknown>
+    const type = argument.type as string | undefined
+    if (!type) return false
+    if (VALID_THROW_TYPES.has(type)) return false
+    if (INVALID_LITERAL_TYPES.has(type)) return true
+    if (typeof argument.value !== 'undefined' && type.includes('Literal')) return true
     return false
   }
 
-  if (VALID_THROW_TYPES.has(type)) {
-    return false
-  }
-
-  if (INVALID_LITERAL_TYPES.has(type)) {
-    return true
-  }
-
-  if (typeof n.value !== 'undefined' && type.includes('Literal')) {
-    return true
-  }
-
-  return false
+  const text = typeof n.text === 'string' ? n.text : ''
+  return isInvalidThrowFromText(text)
 }
 
 export const noThrowLiteralRule: RuleDefinition = {
@@ -79,10 +106,7 @@ export const noThrowLiteralRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const argument = n.argument as unknown
-
-        if (argument && isInvalidThrowArgument(argument)) {
+        if (isInvalidThrowArgument(node)) {
           const location = extractLocation(node)
 
           context.report({
