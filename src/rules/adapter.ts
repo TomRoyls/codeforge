@@ -170,10 +170,68 @@ const SKIP_KEYS = new Set([
   'id',
 ])
 
+const OPERATOR_TOKEN_MAP: Record<string, string> = {
+  EqualsEqualsToken: '==',
+  EqualsEqualsEqualsToken: '===',
+  ExclamationEqualsToken: '!=',
+  ExclamationEqualsEqualsToken: '!==',
+  LessThanToken: '<',
+  LessThanEqualsToken: '<=',
+  GreaterThanToken: '>',
+  GreaterThanEqualsToken: '>=',
+  PlusToken: '+',
+  MinusToken: '-',
+  AsteriskToken: '*',
+  SlashToken: '/',
+  PercentToken: '%',
+  AsteriskAsteriskToken: '**',
+  AmpersandToken: '&',
+  BarToken: '|',
+  CaretToken: '^',
+  LessThanLessThanToken: '<<',
+  GreaterThanGreaterThanToken: '>>',
+  GreaterThanGreaterThanGreaterThanToken: '>>>',
+  EqualsToken: '=',
+  PlusEqualsToken: '+=',
+  MinusEqualsToken: '-=',
+  AsteriskEqualsToken: '*=',
+  SlashEqualsToken: '/=',
+  PercentEqualsToken: '%=',
+  AsteriskAsteriskEqualsToken: '**=',
+  AmpersandEqualsToken: '&=',
+  BarEqualsToken: '|=',
+  CaretEqualsToken: '^=',
+  LessThanLessThanEqualsToken: '<<=',
+  GreaterThanGreaterThanEqualsToken: '>>=',
+  GreaterThanGreaterThanGreaterThanEqualsToken: '>>>=',
+  AmpersandAmpersandToken: '&&',
+  BarBarToken: '||',
+  QuestionQuestionToken: '??',
+  AmpersandAmpersandEqualsToken: '&&=',
+  BarBarEqualsToken: '||=',
+  QuestionQuestionEqualsToken: '??=',
+  DotDotDotToken: '...',
+  CommaToken: ',',
+  ColonToken: ':',
+  SemicolonToken: ';',
+  ArrowToken: '=>',
+  DotToken: '.',
+  QuestionDotToken: '?.',
+  ExclamationToken: '!',
+  TildeToken: '~',
+  InKeyword: 'in',
+  InstanceOfKeyword: 'instanceof',
+  OfKeyword: 'of',
+}
+
 function convertOperatorToken(token: unknown): string {
   if (typeof token === 'string') return token
   if (token && typeof token === 'object') {
     const obj = token as Record<string, unknown>
+    if (typeof obj.type === 'string') {
+      const mapped = OPERATOR_TOKEN_MAP[obj.type]
+      if (mapped) return mapped
+    }
     if (typeof obj.getText === 'function') return (obj.getText as () => string)()
     if (obj.operator !== undefined) return String(obj.operator)
   }
@@ -229,6 +287,14 @@ function convertRawCompilerNode(
       result[estreeName] = val
     } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
       result[estreeName] = val
+    } else if (
+      key === 'operatorToken' &&
+      val !== null &&
+      typeof val === 'object' &&
+      typeof (val as Record<string, unknown>).kind === 'number'
+    ) {
+      const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
+      result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
     } else if (
       typeof val === 'object' &&
       typeof (val as Record<string, unknown>).kind === 'number'
@@ -305,10 +371,17 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
         } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
           result[estreeName] = val
         } else if (
+          key === 'operatorToken' &&
+          val !== null &&
           typeof val === 'object' &&
           typeof (val as Record<string, unknown>).kind === 'number'
         ) {
-          // Convert child compiler nodes using raw conversion
+          const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
+          result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
+        } else if (
+          typeof val === 'object' &&
+          typeof (val as Record<string, unknown>).kind === 'number'
+        ) {
           result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
         } else if (Array.isArray(val)) {
           const converted: unknown[] = []
