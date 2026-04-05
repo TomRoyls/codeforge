@@ -1,4 +1,5 @@
 import type { Node, SourceFile } from 'ts-morph'
+import { SyntaxKind } from 'ts-morph'
 import type { RuleViolation, VisitorContext, ASTVisitor } from '../ast/visitor.js'
 import type { RuleDefinition, RuleOptions, RuleMeta } from './types.js'
 import type {
@@ -8,6 +9,15 @@ import type {
   Logger,
   PluginConfig,
 } from '../plugins/types.js'
+
+// Build a clean kind-number-to-name map, filtering out range markers (First*, Last*)
+// that share enum values with actual node types
+const KIND_MAP: Record<number, string> = {}
+for (const [name, value] of Object.entries(SyntaxKind)) {
+  if (typeof value !== 'number') continue
+  if (name.startsWith('First') || name.startsWith('Last')) continue
+  KIND_MAP[value] = name
+}
 
 const silentLogger: Logger = {
   debug: () => {},
@@ -22,6 +32,308 @@ const defaultConfig: PluginConfig = {
   transforms: [],
 }
 
+const PROPERTY_MAP: Record<string, string> = {
+  block: 'body',
+  expression: 'argument',
+  expressions: 'expressions',
+  escapedText: 'name',
+  text: 'raw',
+  initializer: 'init',
+  left: 'left',
+  right: 'right',
+  test: 'test',
+  consequent: 'consequent',
+  alternate: 'alternate',
+  operatorToken: 'operator',
+  condition: 'test',
+  body: 'body',
+  thenStatement: 'consequent',
+  elseStatement: 'alternate',
+  declarationList: 'declarations',
+  declarations: 'declarations',
+  name: 'name',
+  type: 'typeAnnotation',
+  typeArguments: 'typeParameters',
+  typeParameters: 'typeParameters',
+  parameters: 'params',
+  arguments: 'arguments',
+  heritageClauses: 'heritage',
+  members: 'body',
+  elements: 'elements',
+  properties: 'properties',
+  objectLiteral: 'objectValue',
+  importClause: 'importClause',
+  moduleSpecifier: 'source',
+  namedImports: 'namedImports',
+  namespaceImport: 'namespaceImport',
+  stringLiteral: 'importPath',
+  defaultImport: 'local',
+  namedBindings: 'namedBindings',
+  importSpecifier: 'imported',
+  propertyName: 'imported',
+  externalModuleReference: 'source',
+  decorators: 'decorators',
+  modifierFlags: 'modifierFlags',
+  statements: 'body',
+}
+
+const KIND_NAME_ALIASES: Record<string, string> = {
+  Block: 'BlockStatement',
+  StringLiteral: 'Literal',
+  NumericLiteral: 'Literal',
+  BigIntLiteral: 'Literal',
+  TrueKeyword: 'Literal',
+  FalseKeyword: 'Literal',
+  NullKeyword: 'Literal',
+  RegularExpressionLiteral: 'Literal',
+  ObjectLiteralExpression: 'ObjectExpression',
+  ArrayLiteralExpression: 'ArrayExpression',
+  FunctionExpression: 'FunctionExpression',
+  ArrowFunction: 'ArrowFunctionExpression',
+  PropertyAccessExpression: 'MemberExpression',
+  ElementAccessExpression: 'MemberExpression',
+  CallExpression: 'CallExpression',
+  NewExpression: 'NewExpression',
+  BinaryExpression: 'BinaryExpression',
+  PrefixUnaryExpression: 'UnaryExpression',
+  PostfixUnaryExpression: 'UpdateExpression',
+  ConditionalExpression: 'ConditionalExpression',
+  VariableDeclaration: 'VariableDeclarator',
+  VariableDeclarationList: 'VariableDeclaration',
+  VariableStatement: 'VariableDeclaration',
+  FunctionDeclaration: 'FunctionDeclaration',
+  ClassDeclaration: 'ClassDeclaration',
+  InterfaceDeclaration: 'InterfaceDeclaration',
+  ImportDeclaration: 'ImportDeclaration',
+  ExportDeclaration: 'ExportDeclaration',
+  ReturnStatement: 'ReturnStatement',
+  ThrowStatement: 'ThrowStatement',
+  IfStatement: 'IfStatement',
+  ForStatement: 'ForStatement',
+  ForInStatement: 'ForInStatement',
+  ForOfStatement: 'ForOfStatement',
+  WhileStatement: 'WhileStatement',
+  DoStatement: 'DoWhileStatement',
+  SwitchStatement: 'SwitchStatement',
+  TryStatement: 'TryStatement',
+  ExpressionStatement: 'ExpressionStatement',
+  TypeReference: 'TSTypeReference',
+  TypeLiteral: 'TSTypeLiteral',
+  EnumDeclaration: 'TSEnumDeclaration',
+  ModuleDeclaration: 'TSModuleDeclaration',
+  ImportSpecifier: 'ImportSpecifier',
+  ExportSpecifier: 'ExportSpecifier',
+  CatchClause: 'CatchClause',
+  CaseClause: 'SwitchCase',
+  DefaultClause: 'SwitchCase',
+  PropertyDeclaration: 'PropertyDefinition',
+  PropertyAssignment: 'Property',
+  MethodDeclaration: 'MethodDefinition',
+  Constructor: 'MethodDefinition',
+  GetAccessor: 'MethodDefinition',
+  SetAccessor: 'MethodDefinition',
+  ShorthandPropertyAssignment: 'Property',
+  SpreadAssignment: 'SpreadElement',
+  SpreadElement: 'SpreadElement',
+  TemplateExpression: 'TemplateLiteral',
+  TaggedTemplateExpression: 'TaggedTemplateExpression',
+  AwaitExpression: 'AwaitExpression',
+  YieldExpression: 'YieldExpression',
+  DeleteExpression: 'UnaryExpression',
+  VoidExpression: 'UnaryExpression',
+  TypeOfExpression: 'UnaryExpression',
+  InstanceOfExpression: 'BinaryExpression',
+  InExpression: 'BinaryExpression',
+  AsExpression: 'TSAsExpression',
+  TypeAssertion: 'TSTypeAssertion',
+  NonNullExpression: 'TSNonNullExpression',
+  ParenthesizedExpression: 'SequenceExpression',
+  ObjectDestructuring: 'ObjectPattern',
+  ArrayDestructuring: 'ArrayPattern',
+}
+
+const MAX_DEPTH = 3
+
+const SKIP_KEYS = new Set([
+  'kind',
+  'pos',
+  'end',
+  'flags',
+  'modifierFlagsCache',
+  'transformFlags',
+  'parent',
+  'original',
+  'jlChildren',
+  'symbol',
+  'locals',
+  'nextContainer',
+  'id',
+])
+
+function convertOperatorToken(token: unknown): string {
+  if (typeof token === 'string') return token
+  if (token && typeof token === 'object') {
+    const obj = token as Record<string, unknown>
+    if (typeof obj.getText === 'function') return (obj.getText as () => string)()
+    if (obj.operator !== undefined) return String(obj.operator)
+  }
+  return String(token)
+}
+
+function convertRawCompilerNode(
+  raw: Record<string, unknown>,
+  depth: number,
+): Record<string, unknown> | null {
+  if (depth >= MAX_DEPTH) return null
+  if (!raw || typeof raw !== 'object') return null
+
+  const kind: number = raw.kind as number
+  const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
+
+  const result: Record<string, unknown> = {
+    type: KIND_NAME_ALIASES[kindName] ?? kindName,
+  }
+
+  // Add literal values
+  if (kindName === 'StringLiteral' && raw.text !== undefined) {
+    result.value = raw.text
+    result.raw = `"${raw.text}"`
+  } else if (
+    (kindName === 'NumericLiteral' || kindName === 'BigIntLiteral') &&
+    raw.text !== undefined
+  ) {
+    result.value = Number(raw.text)
+    result.raw = raw.text
+  } else if (kindName === 'Identifier' && raw.escapedText !== undefined) {
+    result.name = raw.escapedText
+    result.value = raw.escapedText
+  } else if (kindName === 'TrueKeyword') {
+    result.value = true
+    result.raw = 'true'
+  } else if (kindName === 'FalseKeyword') {
+    result.value = false
+    result.raw = 'false'
+  } else if (kindName === 'NullKeyword') {
+    result.value = null
+    result.raw = 'null'
+  }
+
+  // Iterate children
+  for (const [key, val] of Object.entries(raw)) {
+    if (key.startsWith('_')) continue
+    if (SKIP_KEYS.has(key)) continue
+
+    const estreeName = PROPERTY_MAP[key] ?? key
+
+    if (val === null || val === undefined) {
+      result[estreeName] = val
+    } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+      result[estreeName] = val
+    } else if (
+      typeof val === 'object' &&
+      typeof (val as Record<string, unknown>).kind === 'number'
+    ) {
+      result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
+    } else if (Array.isArray(val)) {
+      const converted: unknown[] = []
+      for (const item of val) {
+        if (
+          item &&
+          typeof item === 'object' &&
+          typeof (item as Record<string, unknown>).kind === 'number'
+        ) {
+          converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+        } else {
+          converted.push(item)
+        }
+      }
+      result[estreeName] = converted
+    }
+  }
+
+  return result
+}
+
+function convertCompilerNode(node: Node, depth: number = 0): Record<string, unknown> | null {
+  if (depth >= MAX_DEPTH) return null
+  if (!node || typeof node !== 'object') return null
+
+  let kindName: string
+  try {
+    kindName = node.getKindName()
+  } catch {
+    return null
+  }
+
+  const result: Record<string, unknown> = {
+    type: KIND_NAME_ALIASES[kindName] ?? kindName,
+  }
+
+  // Add literal value
+  if (kindName === 'StringLiteral') {
+    const text = node.getText()
+    result.value = text.slice(1, -1) // Remove quotes
+    result.raw = text
+  } else if (kindName === 'NumericLiteral' || kindName === 'BigIntLiteral') {
+    const text = node.getText()
+    result.value = Number(text)
+    result.raw = text
+  } else if (kindName === 'TrueKeyword') {
+    result.value = true
+    result.raw = 'true'
+  } else if (kindName === 'FalseKeyword') {
+    result.value = false
+    result.raw = 'false'
+  } else if (kindName === 'NullKeyword') {
+    result.value = null
+    result.raw = 'null'
+  }
+
+  // Iterate compiler node children using raw compiler node
+  // (ts-morph getter methods like getExpression() fail on detached nodes)
+  try {
+    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    if (compilerNode && typeof compilerNode === 'object') {
+      for (const [key, val] of Object.entries(compilerNode)) {
+        if (key.startsWith('_')) continue
+        if (SKIP_KEYS.has(key)) continue
+
+        const estreeName = PROPERTY_MAP[key] ?? key
+
+        if (val === null || val === undefined) {
+          result[estreeName] = val
+        } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+          result[estreeName] = val
+        } else if (
+          typeof val === 'object' &&
+          typeof (val as Record<string, unknown>).kind === 'number'
+        ) {
+          // Convert child compiler nodes using raw conversion
+          result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
+        } else if (Array.isArray(val)) {
+          const converted: unknown[] = []
+          for (const item of val) {
+            if (
+              item &&
+              typeof item === 'object' &&
+              typeof (item as Record<string, unknown>).kind === 'number'
+            ) {
+              converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+            } else {
+              converted.push(item)
+            }
+          }
+          result[estreeName] = converted
+        }
+      }
+    }
+  } catch {
+    // If compiler node access fails, just return the basic info
+  }
+
+  return result
+}
+
 function nodeToGeneric(node: Node): Record<string, unknown> {
   const sourceFile = node.getSourceFile()
   const start = node.getStart()
@@ -29,7 +341,8 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   const startPos = sourceFile.getLineAndColumnAtPos(start)
   const endPos = sourceFile.getLineAndColumnAtPos(end)
 
-  return {
+  // Base properties
+  const base: Record<string, unknown> = {
     type: node.getKindName(),
     range: [start, end] as [number, number],
     loc: {
@@ -40,6 +353,24 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     end,
     text: node.getText(),
   }
+
+  // Enhanced properties from compiler node traversal
+  const enhanced = convertCompilerNode(node, 0)
+  if (enhanced) {
+    // Merge enhanced into base, but base properties win
+    for (const [key, val] of Object.entries(enhanced)) {
+      if (!(key in base)) {
+        // Convert operator tokens
+        if (key === 'operatorToken' || key === 'operator') {
+          base[key] = convertOperatorToken(val)
+        } else {
+          base[key] = val
+        }
+      }
+    }
+  }
+
+  return base
 }
 
 function convertSeverity(severity: 'off' | 'warn' | 'error'): 'error' | 'warning' | 'info' {
