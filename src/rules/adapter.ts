@@ -655,8 +655,9 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
 
   // Base properties
   const kindName = node.getKindName()
+  const estreeType = KIND_NAME_ALIASES[kindName] ?? kindName
   const base: Record<string, unknown> = {
-    type: KIND_NAME_ALIASES[kindName] ?? kindName,
+    type: estreeType,
     range: [start, end] as [number, number],
     loc: {
       start: { line: startPos.line, column: startPos.column },
@@ -667,7 +668,22 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     text: node.getText(),
   }
 
-  // Enhanced properties from compiler node traversal
+  if (estreeType === 'MemberExpression') {
+    base.computed = kindName === 'ElementAccessExpression'
+  }
+  if (Node.isFunctionDeclaration(node)) {
+    if (node.isAsync()) base.async = true
+    if (node.isGenerator()) base.generator = true
+  }
+  if (Node.isFunctionExpression(node)) {
+    if (node.isAsync()) base.async = true
+    if (node.isGenerator()) base.generator = true
+  }
+  if (Node.isArrowFunction(node)) {
+    if (node.isAsync()) base.async = true
+  }
+
+  // Enhancement properties from compiler node traversal
   const enhanced = convertCompilerNode(node, 0)
   if (enhanced) {
     // Merge enhanced into base, but base properties win
