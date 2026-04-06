@@ -194,7 +194,7 @@ const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   FunctionDeclaration: { name: 'id' },
   ClassDeclaration: { name: 'id' },
   PropertyDeclaration: { name: 'key' },
-  PropertyAssignment: { name: 'key' },
+  PropertyAssignment: { name: 'key', initializer: 'value' },
   MethodDeclaration: { name: 'key' },
   GetAccessor: { name: 'key' },
   SetAccessor: { name: 'key' },
@@ -296,6 +296,8 @@ const ASSIGNMENT_OPERATORS = new Set([
   '||=',
   '??=',
 ])
+
+const LOGICAL_OPERATORS = new Set(['&&', '||', '??'])
 
 function convertOperatorToken(token: unknown): string {
   if (typeof token === 'string') return token
@@ -444,6 +446,11 @@ function convertRawCompilerNode(
   // BinaryExpression with assignment operator → AssignmentExpression
   if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
     result.type = 'AssignmentExpression'
+  }
+
+  // BinaryExpression with logical operator → LogicalExpression
+  if (result.type === 'BinaryExpression' && LOGICAL_OPERATORS.has(result.operator as string)) {
+    result.type = 'LogicalExpression'
   }
 
   // UnaryExpression/UpdateExpression: convert numeric operator to string
@@ -614,6 +621,10 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
     result.type = 'AssignmentExpression'
   }
 
+  if (result.type === 'BinaryExpression' && LOGICAL_OPERATORS.has(result.operator as string)) {
+    result.type = 'LogicalExpression'
+  }
+
   if (typeof result.operator === 'number') {
     const tokenName = KIND_MAP[result.operator as number] ?? ''
     result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
@@ -696,6 +707,14 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
     if (Node.isShorthandPropertyAssignment(node)) {
       base.shorthand = true
+    }
+    // Optional chaining: PropertyAccessExpression and ElementAccessExpression
+    // can have a questionDotToken (?.) — set .optional = true for ESTree
+    if (Node.isPropertyAccessExpression(node)) {
+      if ((node as any).questionDotToken) base.optional = true
+    }
+    if (Node.isElementAccessExpression(node)) {
+      if ((node as any).questionDotToken) base.optional = true
     }
   }
 
@@ -880,14 +899,18 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           // Register for child lookups
           convertedNodes.set(node, genericNode)
 
-          // Special case: ts-morph's BinaryExpression covers both binary ops and assignments.
-          // ESTree separates these into BinaryExpression and AssignmentExpression.
-          // Detect assignment operators and set the correct ESTree type.
           if (
             kindName === 'BinaryExpression' &&
             ASSIGNMENT_OPERATORS.has(genericNode.operator as string)
           ) {
             genericNode.type = 'AssignmentExpression'
+          }
+
+          if (
+            kindName === 'BinaryExpression' &&
+            LOGICAL_OPERATORS.has(genericNode.operator as string)
+          ) {
+            genericNode.type = 'LogicalExpression'
           }
 
           // Dispatch by ts-morph kind name (for rules registered with ts-morph names)
@@ -931,6 +954,13 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             ASSIGNMENT_OPERATORS.has(genericNode.operator as string)
           ) {
             genericNode.type = 'AssignmentExpression'
+          }
+
+          if (
+            kindName === 'BinaryExpression' &&
+            LOGICAL_OPERATORS.has(genericNode.operator as string)
+          ) {
+            genericNode.type = 'LogicalExpression'
           }
 
           // Dispatch exit handler by ts-morph kind name
