@@ -24,6 +24,13 @@ import chalk from 'chalk'
 
 import { allRules, getRuleCategory } from '../rules/index.js'
 
+function colorizeSeverity(sev: string): string {
+  if (sev === 'error') return chalk.red(sev)
+  if (sev === 'warning') return chalk.yellow(sev)
+  if (sev === 'info') return chalk.blue(sev)
+  return sev
+}
+
 type OutputFormat = 'json' | 'table'
 
 interface RuleInfo {
@@ -136,7 +143,7 @@ export default class Rules extends Command {
     const separator = '─'.repeat(
       nameWidth + categoryWidth + severityWidth + descWidth + fixableWidth + 16,
     )
-    this.log(chalk.gray(`\u250c${separator}\u2510`))
+    this.log(chalk.gray(`\u250C${separator}\u2510`))
     this.log(
       chalk.gray('\u2502') +
         chalk.bold(' Rule'.padEnd(nameWidth + 1)) +
@@ -150,17 +157,11 @@ export default class Rules extends Command {
         chalk.bold(' Fixable') +
         chalk.gray(' \u2502'),
     )
-    this.log(chalk.gray(`\u251c${separator}\u2510`))
+    this.log(chalk.gray(`\u251C${separator}\u2510`))
 
     for (const rule of rules) {
       const fixable = rule.fixable ? chalk.green('\u2713') : chalk.gray('\u2717')
       const recommended = rule.recommended ? chalk.cyan('\u2605') : ' '
-      const colorizeSeverity = (sev: string): string => {
-        if (sev === 'error') return chalk.red(sev)
-        if (sev === 'warning') return chalk.yellow(sev)
-        if (sev === 'info') return chalk.blue(sev)
-        return sev
-      }
       const sev = colorizeSeverity(rule.severity)
       const desc =
         rule.description.length > descWidth - 2
