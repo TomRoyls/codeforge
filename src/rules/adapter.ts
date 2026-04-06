@@ -454,9 +454,16 @@ function convertRawCompilerNode(
 
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
-    if (typeof raw.flags === 'number') {
-      const flags = raw.flags as number
-      // NodeFlags.Const = 2, NodeFlags.Let = 1
+    let flags: number | undefined = undefined
+    if (typeof raw.flags === 'number' && (raw.flags as number) & 3) {
+      flags = raw.flags as number
+    } else {
+      const declList = raw.declarationList as Record<string, unknown> | undefined
+      if (typeof declList?.flags === 'number') {
+        flags = declList.flags as number
+      }
+    }
+    if (typeof flags === 'number') {
       if (flags & 2) {
         result.kind = 'const'
       } else if (flags & 1) {
@@ -613,15 +620,25 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
   }
 
   if (result.type === 'VariableDeclaration') {
-    const rawFlags = compilerNode?.flags
-    if (typeof rawFlags === 'number') {
+    let rawFlags = compilerNode?.flags
+    if (typeof rawFlags === 'number' && rawFlags & 3) {
       // NodeFlags.Const = 2, NodeFlags.Let = 1
       if (rawFlags & 2) {
         result.kind = 'const'
-      } else if (rawFlags & 1) {
-        result.kind = 'let'
       } else {
-        result.kind = 'var'
+        result.kind = 'let'
+      }
+    } else {
+      const declList = compilerNode?.declarationList as Record<string, unknown> | undefined
+      const listFlags = declList?.flags
+      if (typeof listFlags === 'number') {
+        if (listFlags & 2) {
+          result.kind = 'const'
+        } else if (listFlags & 1) {
+          result.kind = 'let'
+        } else {
+          result.kind = 'var'
+        }
       }
     }
   }
