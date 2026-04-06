@@ -671,33 +671,32 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   if (estreeType === 'MemberExpression') {
     base.computed = kindName === 'ElementAccessExpression'
   }
-  if (Node.isFunctionDeclaration(node)) {
-    if (node.isAsync()) base.async = true
-    if (node.isGenerator()) base.generator = true
-  }
-  if (Node.isFunctionExpression(node)) {
-    if (node.isAsync()) base.async = true
-    if (node.isGenerator()) base.generator = true
-  }
-  if (Node.isArrowFunction(node)) {
-    if (node.isAsync()) base.async = true
-  }
-
-  if (Node.isPropertyDeclaration(node)) {
-    const pd = node as import('ts-morph').PropertyDeclaration
-    if (pd.isStatic()) base.static = true
-    if (pd.isReadonly()) base.readonly = true
-  }
-  if (Node.isMethodDeclaration(node)) {
-    base.method = true
-    const md = node as import('ts-morph').MethodDeclaration
-    if (md.isStatic()) base.static = true
-  }
-  if (Node.isConstructorDeclaration(node)) {
-    base.kind = 'constructor'
-  }
-  if (Node.isShorthandPropertyAssignment(node)) {
-    base.shorthand = true
+  if (typeof node.getKind === 'function') {
+    if (Node.isFunctionDeclaration(node)) {
+      if (node.isAsync()) base.async = true
+      if (node.isGenerator()) base.generator = true
+    }
+    if (Node.isFunctionExpression(node)) {
+      if (node.isAsync()) base.async = true
+      if (node.isGenerator()) base.generator = true
+    }
+    if (Node.isArrowFunction(node)) {
+      if (node.isAsync()) base.async = true
+    }
+    if (Node.isPropertyDeclaration(node)) {
+      if (node.isStatic()) base.static = true
+      if (node.isReadonly()) base.readonly = true
+    }
+    if (Node.isMethodDeclaration(node)) {
+      base.method = true
+      if (node.isStatic()) base.static = true
+    }
+    if (Node.isConstructorDeclaration(node)) {
+      base.kind = 'constructor'
+    }
+    if (Node.isShorthandPropertyAssignment(node)) {
+      base.shorthand = true
+    }
   }
 
   // Enhancement properties from compiler node traversal
