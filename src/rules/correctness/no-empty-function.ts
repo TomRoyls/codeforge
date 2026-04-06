@@ -252,16 +252,15 @@ export const noEmptyFunctionRule: RuleDefinition = {
         }
 
         const value = n.value as Record<string, unknown> | undefined
-        if (value && typeof value === 'object') {
-          const body = (value as Record<string, unknown>).body
-          if (isEmptyBlock(body)) {
-            const methodName = getFunctionName(node)
-            context.report({
-              node,
-              message: `Unexpected empty ${getFunctionType(node)}${methodName ? ` "${methodName}"` : ''}. This may indicate missing implementation.`,
-              loc: extractLocation(node),
-            })
-          }
+        const methodBody =
+          value && typeof value === 'object' ? (value as Record<string, unknown>).body : n.body
+        if (isEmptyBlock(methodBody)) {
+          const methodName = getFunctionName(node)
+          context.report({
+            node,
+            message: `Unexpected empty ${getFunctionType(node)}${methodName ? ` "${methodName}"` : ''}. This may indicate missing implementation.`,
+            loc: extractLocation(node),
+          })
         }
         return
       }
