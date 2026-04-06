@@ -139,6 +139,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   SpreadAssignment: 'SpreadElement',
   SpreadElement: 'SpreadElement',
   TemplateExpression: 'TemplateLiteral',
+  NoSubstitutionTemplateLiteral: 'TemplateLiteral',
   TaggedTemplateExpression: 'TaggedTemplateExpression',
   AwaitExpression: 'AwaitExpression',
   YieldExpression: 'YieldExpression',
