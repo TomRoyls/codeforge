@@ -1041,12 +1041,13 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     if (Node.isShorthandPropertyAssignment(node)) {
       base.shorthand = true
     }
-    // Optional chaining: PropertyAccessExpression and ElementAccessExpression
-    // can have a questionDotToken (?.) — set .optional = true for ESTree
     if (Node.isPropertyAccessExpression(node)) {
       if ((node as any).questionDotToken) base.optional = true
     }
     if (Node.isElementAccessExpression(node)) {
+      if ((node as any).questionDotToken) base.optional = true
+    }
+    if (Node.isCallExpression(node)) {
       if ((node as any).questionDotToken) base.optional = true
     }
   }
@@ -1129,6 +1130,24 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     // ESTree: body/params live on .value only
     delete base.body
     delete base.params
+  }
+
+  // Synthesize ChainExpression wrapper for optional chaining (?.)
+  if (
+    base.optional === true &&
+    (base.type === 'MemberExpression' || base.type === 'CallExpression')
+  ) {
+    const inner = { ...(base as Record<string, unknown>) }
+    const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
+    for (const key of Object.keys(base)) {
+      delete (base as any)[key]
+    }
+    base.type = 'ChainExpression'
+    base.expression = inner
+    base.range = savedRange.range
+    base.loc = savedRange.loc
+    base.start = savedRange.start
+    base.end = savedRange.end
   }
 
   return base
