@@ -65,7 +65,7 @@ function isLiteral(node: unknown): node is LiteralNode {
     return false
   }
   const n = node as Record<string, unknown>
-  return n.type === 'Literal'
+  return n.type === 'Literal' || n.type === 'RegExpLiteral'
 }
 
 function isRegExpLiteralWithGlobalFlag(node: unknown): boolean {

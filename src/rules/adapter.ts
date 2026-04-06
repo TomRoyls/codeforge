@@ -88,7 +88,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   TrueKeyword: 'Literal',
   FalseKeyword: 'Literal',
   NullKeyword: 'Literal',
-  RegularExpressionLiteral: 'Literal',
+  RegularExpressionLiteral: 'RegExpLiteral',
   ObjectLiteralExpression: 'ObjectExpression',
   ArrayLiteralExpression: 'ArrayExpression',
   FunctionExpression: 'FunctionExpression',
@@ -106,7 +106,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   VariableStatement: 'VariableDeclaration',
   FunctionDeclaration: 'FunctionDeclaration',
   ClassDeclaration: 'ClassDeclaration',
-  InterfaceDeclaration: 'InterfaceDeclaration',
+  InterfaceDeclaration: 'TSInterfaceDeclaration',
   ImportDeclaration: 'ImportDeclaration',
   ExportDeclaration: 'ExportDeclaration',
   ReturnStatement: 'ReturnStatement',
@@ -311,6 +311,139 @@ const ASSIGNMENT_OPERATORS = new Set([
 
 const LOGICAL_OPERATORS = new Set(['&&', '||', '??'])
 
+const EXPORTABLE_KINDS = new Set([
+  'FunctionDeclaration',
+  'ClassDeclaration',
+  'InterfaceDeclaration',
+  'EnumDeclaration',
+  'TypeAliasDeclaration',
+  'ModuleDeclaration',
+])
+
+function getExportInfo(node: Node): { isExported: boolean; isDefault: boolean } {
+  let isExported = false
+  let isDefault = false
+  try {
+    const n = node as unknown as { getModifiers?: () => Array<{ getKindName: () => string }> }
+    if (typeof n.getModifiers === 'function') {
+      const modifiers = n.getModifiers()
+      if (modifiers) {
+        for (const mod of modifiers) {
+          const modKind = mod.getKindName()
+          if (modKind === 'ExportKeyword') isExported = true
+          if (modKind === 'DefaultKeyword') isDefault = true
+        }
+      }
+    }
+  } catch {
+    // Not all node types support getModifiers
+  }
+  return { isExported, isDefault }
+}
+
+function extractImportSpecifiers(node: Node): unknown[] {
+  const specifiers: unknown[] = []
+  try {
+    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    if (!compilerNode) return specifiers
+    const clause = compilerNode.importClause as Record<string, unknown> | undefined
+    if (!clause) return specifiers
+
+    // Default import: import Foo from '...'
+    if (clause.name && typeof clause.name === 'object') {
+      const name = clause.name as Record<string, unknown>
+      specifiers.push({
+        type: 'ImportDefaultSpecifier',
+        local: { type: 'Identifier', name: name.text, value: name.text },
+        range: [name.pos, name.end],
+        start: name.pos,
+        end: name.end,
+      })
+    }
+
+    // Named/namespace bindings
+    if (clause.namedBindings && typeof clause.namedBindings === 'object') {
+      const bindings = clause.namedBindings as Record<string, unknown>
+
+      // import { A, B } from '...'
+      if (Array.isArray(bindings.elements)) {
+        for (const el of bindings.elements) {
+          if (!el || typeof el !== 'object') continue
+          const e = el as Record<string, unknown>
+          const spec: Record<string, unknown> = {
+            type: 'ImportSpecifier',
+            range: [e.pos, e.end],
+            start: e.pos,
+            end: e.end,
+          }
+          if (e.name && typeof e.name === 'object') {
+            const nameObj = e.name as Record<string, unknown>
+            spec.local = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+          }
+          if (e.propertyName && typeof e.propertyName === 'object') {
+            const pn = e.propertyName as Record<string, unknown>
+            spec.imported = { type: 'Identifier', name: pn.text, value: pn.text }
+          } else if (e.name && typeof e.name === 'object') {
+            const nameObj = e.name as Record<string, unknown>
+            spec.imported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+          }
+          specifiers.push(spec)
+        }
+      }
+
+      // import * as Foo from '...'
+      if (bindings.name && typeof bindings.name === 'object') {
+        const name = bindings.name as Record<string, unknown>
+        specifiers.push({
+          type: 'ImportNamespaceSpecifier',
+          local: { type: 'Identifier', name: name.text, value: name.text },
+          range: [bindings.pos ?? name.pos, bindings.end ?? name.end],
+          start: bindings.pos ?? name.pos,
+          end: bindings.end ?? name.end,
+        })
+      }
+    }
+  } catch {
+    // Compiler node not available
+  }
+  return specifiers
+}
+
+function extractExportSpecifiers(node: Node): unknown[] {
+  const specifiers: unknown[] = []
+  try {
+    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    if (!compilerNode) return specifiers
+
+    const exportClause = compilerNode.exportClause as Record<string, unknown> | undefined
+    if (exportClause && Array.isArray(exportClause.elements)) {
+      for (const el of exportClause.elements) {
+        if (!el || typeof el !== 'object') continue
+        const e = el as Record<string, unknown>
+        const spec: Record<string, unknown> = {
+          type: 'ExportSpecifier',
+          range: [e.pos, e.end],
+          start: e.pos,
+          end: e.end,
+        }
+        if (e.name && typeof e.name === 'object') {
+          const nameObj = e.name as Record<string, unknown>
+          spec.local = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+          spec.exported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+        }
+        if (e.propertyName && typeof e.propertyName === 'object') {
+          const pn = e.propertyName as Record<string, unknown>
+          spec.exported = { type: 'Identifier', name: pn.text, value: pn.text }
+        }
+        specifiers.push(spec)
+      }
+    }
+  } catch {
+    // Compiler node not available
+  }
+  return specifiers
+}
+
 function convertOperatorToken(token: unknown): string {
   if (typeof token === 'string') return token
   if (typeof token === 'number') {
@@ -371,6 +504,13 @@ function convertRawCompilerNode(
   } else if (kindName === 'NullKeyword') {
     result.value = null
     result.raw = 'null'
+  } else if (kindName === 'RegularExpressionLiteral' && raw.text !== undefined) {
+    result.raw = raw.text as string
+    const regexText = raw.text as string
+    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+    if (regexMatch) {
+      result.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+    }
   }
 
   // Iterate children
@@ -541,6 +681,13 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
   } else if (kindName === 'NullKeyword') {
     result.value = null
     result.raw = 'null'
+  } else if (kindName === 'RegularExpressionLiteral') {
+    const regexText = node.getText()
+    result.raw = regexText
+    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+    if (regexMatch) {
+      result.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+    }
   }
 
   // Iterate compiler node children using raw compiler node
@@ -716,6 +863,14 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
     if (Node.isConstructorDeclaration(node)) {
       base.kind = 'constructor'
+    }
+    if (kindName === 'RegularExpressionLiteral') {
+      const regexText = node.getText()
+      base.raw = regexText
+      const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+      if (regexMatch) {
+        base.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+      }
     }
     if (Node.isShorthandPropertyAssignment(node)) {
       base.shorthand = true
@@ -938,6 +1093,66 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             if (estreeHandler) {
               estreeHandler(genericNode)
             }
+          }
+
+          // === Export wrapper dispatch ===
+          // Declarations with export modifier → synthetic ExportNamedDeclaration/ExportDefaultDeclaration
+          if (EXPORTABLE_KINDS.has(kindName)) {
+            const { isExported, isDefault } = getExportInfo(node)
+            if (isExported) {
+              const exportWrapper: Record<string, unknown> = {
+                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
+                declaration: genericNode,
+                ...(isDefault ? {} : { specifiers: [] }),
+                source: null,
+                range: genericNode.range,
+                loc: genericNode.loc,
+              }
+              const exportType = exportWrapper.type as string
+              const exportHandler = pluginVisitor[exportType]
+              if (exportHandler) {
+                exportHandler(exportWrapper)
+              }
+            }
+          }
+
+          // ExportDeclaration → add specifiers and dispatch as ExportNamedDeclaration
+          if (kindName === 'ExportDeclaration') {
+            const exportSpecs = extractExportSpecifiers(node)
+            if (exportSpecs.length > 0) {
+              genericNode.specifiers = exportSpecs
+            }
+            const exportNamedHandler = pluginVisitor['ExportNamedDeclaration']
+            if (exportNamedHandler) {
+              const wrapper: Record<string, unknown> = {
+                type: 'ExportNamedDeclaration',
+                declaration: null,
+                specifiers: exportSpecs,
+                source: genericNode.moduleSpecifier ?? null,
+                range: genericNode.range,
+                loc: genericNode.loc,
+              }
+              exportNamedHandler(wrapper)
+            }
+          }
+
+          // ExportAssignment → dispatch as ExportDefaultDeclaration
+          if (kindName === 'ExportAssignment') {
+            const defWrapper: Record<string, unknown> = {
+              type: 'ExportDefaultDeclaration',
+              declaration: genericNode.expression ?? genericNode,
+              range: genericNode.range,
+              loc: genericNode.loc,
+            }
+            const defHandler = pluginVisitor['ExportDefaultDeclaration']
+            if (defHandler) {
+              defHandler(defWrapper)
+            }
+          }
+
+          // ImportDeclaration → add specifiers and source
+          if (kindName === 'ImportDeclaration') {
+            genericNode.specifiers = extractImportSpecifiers(node)
           }
 
           const genericHandler = pluginVisitor['*'] ?? pluginVisitor['Any']
