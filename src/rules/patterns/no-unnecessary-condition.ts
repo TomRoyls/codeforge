@@ -76,6 +76,10 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
     return { isUnnecessary: true, reason: 'Unnecessary condition: always falsy (null)' }
   }
 
+  if (t.type === 'RegExpLiteral') {
+    return { isUnnecessary: true, reason: 'Unnecessary condition: always truthy (regexp)' }
+  }
+
   if (isUnaryExpression(testNode)) {
     const operator = t.operator as string
     const argument = t.argument

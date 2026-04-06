@@ -68,6 +68,13 @@ function isConstantCondition(testNode: unknown): { isConstant: boolean; descript
     }
   }
 
+  if (t.type === 'RegExpLiteral') {
+    return {
+      isConstant: true,
+      description: 'Unexpected constant condition: always truthy (regexp)',
+    }
+  }
+
   // Check for NumericLiteral (SWC-specific)
   if (isNumericLiteral(testNode)) {
     const value = t.value as number

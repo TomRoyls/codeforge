@@ -1205,6 +1205,61 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
+          // === Export wrapper exit dispatch ===
+          // Declarations with export modifier → synthetic ExportNamedDeclaration/ExportDefaultDeclaration exit
+          if (EXPORTABLE_KINDS.has(kindName)) {
+            const { isExported, isDefault } = getExportInfo(node)
+            if (isExported) {
+              const exportWrapper: Record<string, unknown> = {
+                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
+                declaration: genericNode,
+                ...(isDefault ? {} : { specifiers: [] }),
+                source: null,
+                range: genericNode.range,
+                loc: genericNode.loc,
+              }
+              const exportType = exportWrapper.type as string
+              const exportExitHandler = pluginVisitor[exportType + ':exit']
+              if (exportExitHandler) {
+                exportExitHandler(exportWrapper)
+              }
+            }
+          }
+
+          // ExportDeclaration → dispatch ExportNamedDeclaration:exit
+          if (kindName === 'ExportDeclaration') {
+            const exportSpecs = (genericNode as Record<string, unknown>).specifiers as
+              | unknown[]
+              | undefined
+            const specsToUse = exportSpecs && exportSpecs.length > 0 ? exportSpecs : []
+            const exportNamedExitHandler = pluginVisitor['ExportNamedDeclaration:exit']
+            if (exportNamedExitHandler) {
+              const wrapper: Record<string, unknown> = {
+                type: 'ExportNamedDeclaration',
+                declaration: null,
+                specifiers: specsToUse,
+                source: genericNode.moduleSpecifier ?? null,
+                range: genericNode.range,
+                loc: genericNode.loc,
+              }
+              exportNamedExitHandler(wrapper)
+            }
+          }
+
+          // ExportAssignment → dispatch ExportDefaultDeclaration:exit
+          if (kindName === 'ExportAssignment') {
+            const defWrapper: Record<string, unknown> = {
+              type: 'ExportDefaultDeclaration',
+              declaration: genericNode.expression ?? genericNode,
+              range: genericNode.range,
+              loc: genericNode.loc,
+            }
+            const defExitHandler = pluginVisitor['ExportDefaultDeclaration:exit']
+            if (defExitHandler) {
+              defExitHandler(defWrapper)
+            }
+          }
+
           // SourceFile exit → also dispatch Program:exit
           if (Node.isSourceFile(node)) {
             const programExitHandler = pluginVisitor['Program:exit']

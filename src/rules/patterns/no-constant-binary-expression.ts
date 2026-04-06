@@ -14,6 +14,12 @@ function isLiteral(node: unknown): boolean {
 }
 
 function isUselessOperator(left: unknown, operator: string): boolean {
+  if (left && typeof left === 'object') {
+    const n = left as Record<string, unknown>
+    if (n.type === 'RegExpLiteral') {
+      if (operator === '||' || operator === '??') return true
+    }
+  }
   if (operator === '||' || operator === '??') {
     if (isLiteral(left)) {
       const l = left as Record<string, unknown>
