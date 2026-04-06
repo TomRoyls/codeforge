@@ -14,9 +14,19 @@ interface VariableInfo {
   kind: 'var' | 'let' | 'const' | 'function' | 'parameter' | 'import'
 }
 
+function getEndKey(node: unknown): string | undefined {
+  if (!node || typeof node !== 'object') return undefined
+  const n = node as Record<string, unknown>
+  if (Array.isArray(n.range) && typeof n.range[1] === 'number') {
+    return String(n.range[1])
+  }
+  return undefined
+}
+
 class Scope {
   private variables: Map<string, VariableInfo> = new Map()
   private parent: Scope | null
+  private declarationEnds: Map<string, Set<string>> = new Map()
 
   constructor(parent: Scope | null = null) {
     this.parent = parent
@@ -30,6 +40,31 @@ class Scope {
       location,
       kind,
     })
+  }
+
+  declareWithRange(
+    name: string,
+    location: SourceLocation,
+    kind: VariableInfo['kind'],
+    identifierNode: unknown,
+  ): void {
+    this.declare(name, location, kind)
+    const endKey = getEndKey(identifierNode)
+    if (endKey) {
+      let ends = this.declarationEnds.get(name)
+      if (!ends) {
+        ends = new Set()
+        this.declarationEnds.set(name, ends)
+      }
+      ends.add(endKey)
+    }
+  }
+
+  isDeclarationSite(name: string, endKey: string | undefined): boolean {
+    if (!endKey) return false
+    const ends = this.declarationEnds.get(name)
+    if (ends?.has(endKey)) return true
+    return this.parent?.isDeclarationSite(name, endKey) ?? false
   }
 
   use(name: string): void {
@@ -58,6 +93,21 @@ function isIdentifier(node: unknown): node is { type: 'Identifier'; name: string
     typeof node === 'object' &&
     (node as Record<string, unknown>).type === 'Identifier'
   )
+}
+
+function extractParamInfo(param: unknown): { name: string; idNode: unknown } | null {
+  if (!param || typeof param !== 'object') return null
+  const p = param as Record<string, unknown>
+  if (p.type === 'Identifier' && typeof p.name === 'string') {
+    return { name: p.name, idNode: param }
+  }
+  if (p.type === 'Parameter' && p.name && typeof p.name === 'object') {
+    const inner = p.name as Record<string, unknown>
+    if (inner.type === 'Identifier' && typeof inner.name === 'string') {
+      return { name: inner.name, idNode: p.name }
+    }
+  }
+  return null
 }
 
 export const noUnusedVarsRule: RuleDefinition = {
@@ -101,6 +151,21 @@ export const noUnusedVarsRule: RuleDefinition = {
       }
     }
 
+    function declareParams(params: unknown): void {
+      if (!Array.isArray(params)) return
+      for (const param of params) {
+        const info = extractParamInfo(param)
+        if (info) {
+          currentScope().declareWithRange(
+            info.name,
+            extractLocation(param),
+            'parameter',
+            info.idNode,
+          )
+        }
+      }
+    }
+
     return {
       Program(): void {
         pushScope()
@@ -116,17 +181,10 @@ export const noUnusedVarsRule: RuleDefinition = {
         }
         const n = node as Record<string, unknown>
         if (isIdentifier(n.id)) {
-          currentScope().declare(n.id.name, extractLocation(node), 'function')
+          currentScope().declareWithRange(n.id.name, extractLocation(node), 'function', n.id)
         }
         pushScope()
-        const params = n.params as unknown[]
-        if (Array.isArray(params)) {
-          for (const param of params) {
-            if (isIdentifier(param)) {
-              currentScope().declare(param.name, extractLocation(param), 'parameter')
-            }
-          }
-        }
+        declareParams(n.params)
       },
 
       'FunctionDeclaration:exit'(): void {
@@ -138,15 +196,7 @@ export const noUnusedVarsRule: RuleDefinition = {
           return
         }
         pushScope()
-        const n = node as Record<string, unknown>
-        const params = n.params as unknown[]
-        if (Array.isArray(params)) {
-          for (const param of params) {
-            if (isIdentifier(param)) {
-              currentScope().declare(param.name, extractLocation(param), 'parameter')
-            }
-          }
-        }
+        declareParams((node as Record<string, unknown>).params)
       },
 
       'FunctionExpression:exit'(): void {
@@ -158,15 +208,7 @@ export const noUnusedVarsRule: RuleDefinition = {
           return
         }
         pushScope()
-        const n = node as Record<string, unknown>
-        const params = n.params as unknown[]
-        if (Array.isArray(params)) {
-          for (const param of params) {
-            if (isIdentifier(param)) {
-              currentScope().declare(param.name, extractLocation(param), 'parameter')
-            }
-          }
-        }
+        declareParams((node as Record<string, unknown>).params)
       },
 
       'ArrowFunctionExpression:exit'(): void {
@@ -181,12 +223,16 @@ export const noUnusedVarsRule: RuleDefinition = {
         if (isIdentifier(n.id)) {
           const parent = n.parent as Record<string, unknown> | undefined
           const kind = (parent?.kind as VariableInfo['kind']) || 'let'
-          currentScope().declare(n.id.name, extractLocation(n.id), kind)
+          currentScope().declareWithRange(n.id.name, extractLocation(n.id), kind, n.id)
         }
       },
 
       Identifier(node: unknown): void {
         if (!isIdentifier(node)) {
+          return
+        }
+        const endKey = getEndKey(node)
+        if (currentScope().isDeclarationSite(node.name, endKey)) {
           return
         }
         currentScope().use(node.name)

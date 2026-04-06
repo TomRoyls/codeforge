@@ -1,4 +1,4 @@
-import type { Node, SourceFile } from 'ts-morph'
+import { Node, type SourceFile } from 'ts-morph'
 import { SyntaxKind } from 'ts-morph'
 import type { RuleViolation, VisitorContext, ASTVisitor } from '../ast/visitor.js'
 import type { RuleDefinition, RuleOptions, RuleMeta } from './types.js'
@@ -831,15 +831,46 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             genericHandler(genericNode)
           }
         },
+
+        exitNode(node: Node, _context: VisitorContext) {
+          const kindName = node.getKindName()
+          const genericNode = nodeToGeneric(node)
+
+          if (
+            kindName === 'BinaryExpression' &&
+            ASSIGNMENT_OPERATORS.has(genericNode.operator as string)
+          ) {
+            genericNode.type = 'AssignmentExpression'
+          }
+
+          // Dispatch exit handler by ts-morph kind name
+          const exitHandler = pluginVisitor[kindName + ':exit']
+          if (exitHandler) {
+            exitHandler(genericNode)
+          }
+
+          // Dispatch by ESTree-compatible type name if different
+          const estreeType = genericNode.type as string
+          if (estreeType && estreeType !== kindName) {
+            const estreeExitHandler = pluginVisitor[estreeType + ':exit']
+            if (estreeExitHandler) {
+              estreeExitHandler(genericNode)
+            }
+          }
+
+          // SourceFile exit → also dispatch Program:exit
+          if (Node.isSourceFile(node)) {
+            const programExitHandler = pluginVisitor['Program:exit']
+            if (programExitHandler) {
+              programExitHandler(genericNode)
+            }
+          }
+        },
       }
 
       return {
         visitor,
         onComplete: () => {
-          const exitHandler = pluginVisitor['Program:exit']
-          if (exitHandler) {
-            exitHandler({})
-          }
           return violations
         },
       }
