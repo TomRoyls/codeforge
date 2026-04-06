@@ -1118,6 +1118,30 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
+          // === Synthetic ClassBody dispatch ===
+          // ts-morph classes contain members directly; ESTree wraps them in a ClassBody node
+          if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
+            const body = genericNode.body
+            if (Array.isArray(body)) {
+              const classBodyNode: Record<string, unknown> = {
+                type: 'ClassBody',
+                body,
+                range: genericNode.range,
+                loc: genericNode.loc,
+                parent: genericNode,
+              }
+              for (const member of body) {
+                if (member && typeof member === 'object') {
+                  ;(member as Record<string, unknown>).parent = classBodyNode
+                }
+              }
+              const classBodyHandler = pluginVisitor['ClassBody']
+              if (classBodyHandler) {
+                classBodyHandler(classBodyNode)
+              }
+            }
+          }
+
           // === Export wrapper dispatch ===
           // Declarations with export modifier → synthetic ExportNamedDeclaration/ExportDefaultDeclaration
           if (EXPORTABLE_KINDS.has(kindName)) {
@@ -1225,6 +1249,24 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             const estreeExitHandler = pluginVisitor[estreeType + ':exit']
             if (estreeExitHandler) {
               estreeExitHandler(genericNode)
+            }
+          }
+
+          // === Synthetic ClassBody exit dispatch ===
+          if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
+            const body = genericNode.body
+            if (Array.isArray(body)) {
+              const classBodyNode: Record<string, unknown> = {
+                type: 'ClassBody',
+                body,
+                range: genericNode.range,
+                loc: genericNode.loc,
+                parent: genericNode,
+              }
+              const classBodyExitHandler = pluginVisitor['ClassBody:exit']
+              if (classBodyExitHandler) {
+                classBodyExitHandler(classBodyNode)
+              }
             }
           }
 
