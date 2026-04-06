@@ -771,6 +771,33 @@ function mapCategory(category: string | undefined): RuleMeta['category'] {
   }
 }
 
+function setParentRefs(
+  node: Record<string, unknown>,
+  parent: Record<string, unknown> | null = null,
+): void {
+  if (parent !== null) {
+    node.parent = parent
+  }
+  for (const val of Object.values(node)) {
+    if (val && typeof val === 'object') {
+      if (Array.isArray(val)) {
+        for (const item of val) {
+          if (
+            item &&
+            typeof item === 'object' &&
+            !Array.isArray(item) &&
+            (item as Record<string, unknown>).type
+          ) {
+            setParentRefs(item as Record<string, unknown>, node)
+          }
+        }
+      } else if ((val as Record<string, unknown>).type) {
+        setParentRefs(val as Record<string, unknown>, node)
+      }
+    }
+  }
+}
+
 export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string): RuleDefinition {
   return {
     meta: convertMeta(pluginRule.meta, ruleId),
@@ -780,6 +807,8 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
       let violations: RuleViolation[] = []
       let sourceFile: SourceFile | null = null
       let sourceText = ''
+
+      const convertedNodes = new WeakMap<Node, Record<string, unknown>>()
 
       const pluginContext: PluginRuleContext = {
         logger: silentLogger,
@@ -818,9 +847,13 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           sourceText = node.getFullText()
           violations = []
 
+          const genericNode = nodeToGeneric(node)
+          setParentRefs(genericNode)
+          convertedNodes.set(node, genericNode)
+
           const handler = pluginVisitor['SourceFile'] ?? pluginVisitor['Program']
           if (handler) {
-            handler(nodeToGeneric(node))
+            handler(genericNode)
           }
         },
 
@@ -832,6 +865,20 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
 
           const kindName = node.getKindName()
           const genericNode = nodeToGeneric(node)
+
+          // Set parent references within the converted subtree
+          setParentRefs(genericNode)
+
+          // Link to parent from previously converted ancestor
+          try {
+            const tsParent = node.getParent()
+            if (tsParent && convertedNodes.has(tsParent)) {
+              genericNode.parent = convertedNodes.get(tsParent)!
+            }
+          } catch {}
+
+          // Register for child lookups
+          convertedNodes.set(node, genericNode)
 
           // Special case: ts-morph's BinaryExpression covers both binary ops and assignments.
           // ESTree separates these into BinaryExpression and AssignmentExpression.
@@ -867,6 +914,17 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
         exitNode(node: Node, _context: VisitorContext) {
           const kindName = node.getKindName()
           const genericNode = nodeToGeneric(node)
+
+          // Set parent references within the converted subtree
+          setParentRefs(genericNode)
+
+          // Link to parent from previously converted ancestor
+          try {
+            const tsParent = node.getParent()
+            if (tsParent && convertedNodes.has(tsParent)) {
+              genericNode.parent = convertedNodes.get(tsParent)!
+            }
+          } catch {}
 
           if (
             kindName === 'BinaryExpression' &&
