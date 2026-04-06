@@ -541,6 +541,80 @@ function convertRawCompilerNode(
       continue
     }
 
+    // Special: TemplateExpression → synthesize quasis[] and expressions[]
+    if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
+      if (!result.quasis && !result.expressions) {
+        const quasis: unknown[] = []
+        const expressions: unknown[] = []
+
+        // head → first TemplateElement (tail=false)
+        const head = raw.head as Record<string, unknown> | undefined
+        if (head && typeof head.kind === 'number') {
+          quasis.push({
+            type: 'TemplateElement',
+            value: {
+              raw: (head.rawText ?? head.text) as string,
+              cooked: (head.text ?? head.rawText) as string,
+            },
+            tail: false,
+            range:
+              typeof head.pos === 'number' && typeof head.end === 'number'
+                ? [head.pos as number, head.end as number]
+                : undefined,
+          })
+        }
+
+        // templateSpans → alternating expression + TemplateElement
+        const spans = raw.templateSpans as Array<Record<string, unknown>> | undefined
+        if (Array.isArray(spans)) {
+          for (let i = 0; i < spans.length; i++) {
+            const span = spans[i]! as Record<string, unknown>
+            const spanExpr = span['expression'] as Record<string, unknown> | undefined
+            if (spanExpr && typeof spanExpr.kind === 'number') {
+              expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
+            }
+            const lit = span.literal as Record<string, unknown> | undefined
+            if (lit && typeof lit.kind === 'number') {
+              const isTail = i === spans.length - 1
+              quasis.push({
+                type: 'TemplateElement',
+                value: {
+                  raw: (lit.rawText ?? lit.text) as string,
+                  cooked: (lit.text ?? lit.rawText) as string,
+                },
+                tail: isTail,
+                range:
+                  typeof lit.pos === 'number' && typeof lit.end === 'number'
+                    ? [lit.pos as number, lit.end as number]
+                    : undefined,
+              })
+            }
+          }
+        }
+
+        result.quasis = quasis
+        result.expressions = expressions
+      }
+      continue
+    }
+
+    // Special: NoSubstitutionTemplateLiteral → single quasi with tail=true
+    if (kindName === 'NoSubstitutionTemplateLiteral' && key === 'text') {
+      if (!result.quasis) {
+        const rawText = (raw.rawText ?? raw.text) as string
+        const cookedText = (raw.text ?? raw.rawText) as string
+        result.quasis = [
+          {
+            type: 'TemplateElement',
+            value: { raw: rawText, cooked: cookedText },
+            tail: true,
+          },
+        ]
+        result.expressions = []
+      }
+      continue
+    }
+
     if (val === null || val === undefined) {
       result[estreeName] = val
     } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
