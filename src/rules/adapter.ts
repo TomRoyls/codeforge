@@ -163,6 +163,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   LabeledStatement: 'LabeledStatement',
   ClassExpression: 'ClassExpression',
   Identifier: 'Identifier',
+  PrivateIdentifier: 'PrivateIdentifier',
   TSAnyKeyword: 'TSAnyKeyword',
   TSArrayType: 'TSArrayType',
   TSUnionType: 'TSUnionType',
