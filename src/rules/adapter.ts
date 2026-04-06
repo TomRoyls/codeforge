@@ -869,6 +869,11 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
     if (Node.isConstructorDeclaration(node)) {
       base.kind = 'constructor'
+      base.method = true
+      if ((node as any).getAccessibility) {
+        const acc = (node as any).getAccessibility()
+        if (acc) base.accessibility = acc
+      }
     }
     if (Node.isGetAccessorDeclaration(node)) {
       base.kind = 'get'
@@ -922,6 +927,25 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
           base[key] = val
         }
       }
+    }
+  }
+
+  // Synthesize .value FunctionExpression for method-like nodes
+  if (base.method === true && base.type === 'MethodDefinition' && !base.value) {
+    const funcBody = base.body
+    const funcParams = base.params
+    const isAsync = base.async === true
+    const isGenerator = base.generator === true
+    base.value = {
+      type: 'FunctionExpression',
+      id: null,
+      params: funcParams ?? [],
+      body: funcBody ?? { type: 'BlockStatement', body: [] },
+      async: isAsync,
+      generator: isGenerator,
+      range: base.range,
+      loc: base.loc,
+      parent: base,
     }
   }
 
