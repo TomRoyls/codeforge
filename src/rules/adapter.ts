@@ -157,6 +157,18 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   DefaultKeyword: 'Literal',
   SuperKeyword: 'Super',
   ThisKeyword: 'ThisExpression',
+  BreakStatement: 'BreakStatement',
+  ContinueStatement: 'ContinueStatement',
+  DebuggerStatement: 'DebuggerStatement',
+  LabeledStatement: 'LabeledStatement',
+  ClassExpression: 'ClassExpression',
+  Identifier: 'Identifier',
+  TSAnyKeyword: 'TSAnyKeyword',
+  TSArrayType: 'TSArrayType',
+  TSUnionType: 'TSUnionType',
+  TSEnumMember: 'TSEnumMember',
+  TSInterfaceDeclaration: 'TSInterfaceDeclaration',
+  StaticBlock: 'StaticBlock',
 }
 
 const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
