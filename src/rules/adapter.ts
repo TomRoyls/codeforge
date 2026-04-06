@@ -10,6 +10,41 @@ import type {
   PluginConfig,
 } from '../plugins/types.js'
 
+// Module-level source text for trivia skipping in convertRawCompilerNode
+let _rangeSourceText = ''
+
+function skipTrivia(pos: number): number {
+  const text = _rangeSourceText
+  if (!text) return pos
+  let i = pos
+  while (i < text.length) {
+    const ch = text.charCodeAt(i)
+    if (ch === 0x20 || ch === 0x09 || ch === 0x0a || ch === 0x0d) {
+      i++
+      continue
+    }
+    if (ch === 0x2f && i + 1 < text.length) {
+      const next = text.charCodeAt(i + 1)
+      if (next === 0x2f) {
+        while (i < text.length && text.charCodeAt(i) !== 0x0a) i++
+        continue
+      }
+      if (next === 0x2a) {
+        i += 2
+        while (
+          i + 1 < text.length &&
+          !(text.charCodeAt(i) === 0x2a && text.charCodeAt(i + 1) === 0x2f)
+        )
+          i++
+        i += 2
+        continue
+      }
+    }
+    break
+  }
+  return i
+}
+
 // Build a clean kind-number-to-name map, filtering out range markers (First*, Last*)
 // that share enum values with actual node types
 const KIND_MAP: Record<number, string> = {}
@@ -170,6 +205,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   TSUnionType: 'TSUnionType',
   TSEnumMember: 'TSEnumMember',
   TSInterfaceDeclaration: 'TSInterfaceDeclaration',
+  TSInterfaceBody: 'TSInterfaceBody',
   StaticBlock: 'StaticBlock',
 }
 
@@ -476,10 +512,10 @@ function convertRawCompilerNode(
   const kindMap = KIND_SPECIFIC_MAP[kindName]
 
   const result: Record<string, unknown> = {}
-  // Add source position metadata from raw compiler node
   if (typeof raw.pos === 'number' && typeof raw.end === 'number') {
-    result.range = [raw.pos, raw.end] as [number, number]
-    result.start = raw.pos
+    const startPos = skipTrivia(raw.pos as number)
+    result.range = [startPos, raw.end] as [number, number]
+    result.start = startPos
     result.end = raw.end
   }
   result.type = KIND_NAME_ALIASES[kindName] ?? kindName
@@ -687,6 +723,19 @@ function convertRawCompilerNode(
     result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
   }
 
+  // PrefixUnaryExpression: ++/-- → UpdateExpression with prefix:true
+  if (kindName === 'PrefixUnaryExpression') {
+    const op = result.operator as string
+    if (op === '++' || op === '--') {
+      result.type = 'UpdateExpression'
+      result.prefix = true
+    }
+  }
+  // PostfixUnaryExpression: always UpdateExpression with prefix:false
+  if (kindName === 'PostfixUnaryExpression') {
+    result.prefix = false
+  }
+
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
     let flags: number | undefined = undefined
@@ -731,10 +780,10 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
 
   const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
   if (compilerNode && typeof compilerNode === 'object') {
-    // Add source position metadata
     if (typeof compilerNode.pos === 'number' && typeof compilerNode.end === 'number') {
-      result.range = [compilerNode.pos, compilerNode.end] as [number, number]
-      result.start = compilerNode.pos
+      const startPos = skipTrivia(compilerNode.pos as number)
+      result.range = [startPos, compilerNode.end] as [number, number]
+      result.start = startPos
       result.end = compilerNode.end
     }
   }
@@ -863,6 +912,19 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
   if (typeof result.operator === 'number') {
     const tokenName = KIND_MAP[result.operator as number] ?? ''
     result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
+  }
+
+  // PrefixUnaryExpression: ++/-- → UpdateExpression with prefix:true
+  if (kindName === 'PrefixUnaryExpression') {
+    const op = result.operator as string
+    if (op === '++' || op === '--') {
+      result.type = 'UpdateExpression'
+      result.prefix = true
+    }
+  }
+  // PostfixUnaryExpression: always UpdateExpression with prefix:false
+  if (kindName === 'PostfixUnaryExpression') {
+    result.prefix = false
   }
 
   if (result.type === 'VariableDeclaration') {
@@ -1022,6 +1084,9 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       loc: base.loc,
       parent: base,
     }
+    // ESTree: body/params live on .value only
+    delete base.body
+    delete base.params
   }
 
   return base
@@ -1170,6 +1235,7 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           if (!sourceFile) {
             sourceFile = node.getSourceFile()
             sourceText = sourceFile.getFullText()
+            _rangeSourceText = sourceText
           }
 
           const kindName = node.getKindName()
@@ -1203,6 +1269,39 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             genericNode.type = 'LogicalExpression'
           }
 
+          if (kindName === 'PrefixUnaryExpression') {
+            const op = genericNode.operator as string
+            if (op === '++' || op === '--') {
+              genericNode.type = 'UpdateExpression'
+              genericNode.prefix = true
+            } else {
+              genericNode.type = 'UnaryExpression'
+            }
+          }
+          if (kindName === 'PostfixUnaryExpression') {
+            genericNode.prefix = false
+          }
+
+          // === Export wrapper dispatch (before declaration handler for ESTree traversal order) ===
+          if (EXPORTABLE_KINDS.has(kindName)) {
+            const { isExported, isDefault } = getExportInfo(node)
+            if (isExported) {
+              const exportWrapper: Record<string, unknown> = {
+                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
+                declaration: genericNode,
+                ...(isDefault ? {} : { specifiers: [] }),
+                source: null,
+                range: genericNode.range,
+                loc: genericNode.loc,
+              }
+              const exportType = exportWrapper.type as string
+              const exportHandler = pluginVisitor[exportType]
+              if (exportHandler) {
+                exportHandler(exportWrapper)
+              }
+            }
+          }
+
           // Dispatch by ts-morph kind name (for rules registered with ts-morph names)
           const handler = pluginVisitor[kindName]
           if (handler) {
@@ -1219,7 +1318,6 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           }
 
           // === Synthetic ClassBody dispatch ===
-          // ts-morph classes contain members directly; ESTree wraps them in a ClassBody node
           if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
             const body = genericNode.body
             if (Array.isArray(body)) {
@@ -1238,27 +1336,6 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
               const classBodyHandler = pluginVisitor['ClassBody']
               if (classBodyHandler) {
                 classBodyHandler(classBodyNode)
-              }
-            }
-          }
-
-          // === Export wrapper dispatch ===
-          // Declarations with export modifier → synthetic ExportNamedDeclaration/ExportDefaultDeclaration
-          if (EXPORTABLE_KINDS.has(kindName)) {
-            const { isExported, isDefault } = getExportInfo(node)
-            if (isExported) {
-              const exportWrapper: Record<string, unknown> = {
-                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
-                declaration: genericNode,
-                ...(isDefault ? {} : { specifiers: [] }),
-                source: null,
-                range: genericNode.range,
-                loc: genericNode.loc,
-              }
-              const exportType = exportWrapper.type as string
-              const exportHandler = pluginVisitor[exportType]
-              if (exportHandler) {
-                exportHandler(exportWrapper)
               }
             }
           }
@@ -1347,6 +1424,19 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             LOGICAL_OPERATORS.has(genericNode.operator as string)
           ) {
             genericNode.type = 'LogicalExpression'
+          }
+
+          if (kindName === 'PrefixUnaryExpression') {
+            const op = genericNode.operator as string
+            if (op === '++' || op === '--') {
+              genericNode.type = 'UpdateExpression'
+              genericNode.prefix = true
+            } else {
+              genericNode.type = 'UnaryExpression'
+            }
+          }
+          if (kindName === 'PostfixUnaryExpression') {
+            genericNode.prefix = false
           }
 
           // Dispatch exit handler by ts-morph kind name
