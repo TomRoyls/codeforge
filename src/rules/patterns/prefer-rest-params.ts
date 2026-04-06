@@ -35,19 +35,23 @@ export const preferRestParamsRule: RuleDefinition = {
     let functionDepth = 0
     let argumentsDeclared = false
 
-    return {
-      ':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'(
-        _node: unknown,
-      ): void {
-        functionDepth++
-      },
+    function enterFunction(): void {
+      functionDepth++
+    }
 
-      ':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression):exit'(
-        _node: unknown,
-      ): void {
-        functionDepth--
-        argumentsDeclared = false
-      },
+    function exitFunction(): void {
+      functionDepth--
+      argumentsDeclared = false
+    }
+
+    return {
+      FunctionDeclaration: enterFunction,
+      FunctionExpression: enterFunction,
+      ArrowFunctionExpression: enterFunction,
+
+      'FunctionDeclaration:exit': exitFunction,
+      'FunctionExpression:exit': exitFunction,
+      'ArrowFunctionExpression:exit': exitFunction,
 
       VariableDeclarator(node: unknown): void {
         if (functionDepth > 0 && isVariableDeclaratorWithIdentifier(node, 'arguments')) {

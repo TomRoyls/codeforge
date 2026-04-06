@@ -133,9 +133,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(1)
@@ -146,9 +144,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionExpression(),
-      )
+      visitor.FunctionDeclaration(createFunctionExpression())
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(1)
@@ -159,9 +155,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createArrowFunctionExpression(),
-      )
+      visitor.FunctionDeclaration(createArrowFunctionExpression())
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(1)
@@ -172,9 +166,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments', 1, 10))
       visitor.Identifier(createIdentifier('arguments', 1, 25))
 
@@ -208,9 +200,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('foo'))
       visitor.Identifier(createIdentifier('bar'))
       visitor.Identifier(createIdentifier('args'))
@@ -224,9 +214,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.VariableDeclarator(createVariableDeclarator('arguments'))
       visitor.Identifier(createIdentifier('arguments'))
 
@@ -237,9 +225,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.VariableDeclarator(createVariableDeclarator('arguments'))
       visitor.Identifier(createIdentifier('foo'))
       visitor.Identifier(createIdentifier('arguments'))
@@ -251,9 +237,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.VariableDeclarator(createVariableDeclarator('foo'))
       visitor.Identifier(createIdentifier('arguments'))
 
@@ -264,18 +248,12 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test1'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test1'))
       visitor.VariableDeclarator(createVariableDeclarator('arguments'))
       visitor.Identifier(createIdentifier('arguments'))
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression):exit'](
-        createFunctionDeclaration('test1'),
-      )
+      visitor['FunctionDeclaration:exit'](createFunctionDeclaration('test1'))
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test2'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test2'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(1)
@@ -287,14 +265,10 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('outer'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
       visitor.Identifier(createIdentifier('arguments'))
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('inner'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('inner'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(2)
@@ -304,14 +278,10 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('outer'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
       visitor.Identifier(createIdentifier('arguments'))
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('inner'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('inner'))
       visitor.VariableDeclarator(createVariableDeclarator('arguments'))
       visitor.Identifier(createIdentifier('arguments'))
 
@@ -346,9 +316,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
 
       const node = {
         type: 'Identifier',
@@ -363,9 +331,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments', 10, 5))
 
       expect(reports[0].loc?.start.line).toBe(10)
@@ -376,9 +342,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext({})
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(1)
@@ -411,9 +375,7 @@ describe('prefer-rest-params rule', () => {
 
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
 
       expect(() => visitor.Identifier(createIdentifier('arguments'))).not.toThrow()
       expect(reports.length).toBe(1)
@@ -423,29 +385,17 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('decl'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('decl'))
       visitor.Identifier(createIdentifier('arguments'))
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression):exit'](
-        createFunctionDeclaration('decl'),
-      )
+      visitor['FunctionDeclaration:exit'](createFunctionDeclaration('decl'))
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionExpression(),
-      )
+      visitor.FunctionDeclaration(createFunctionExpression())
       visitor.Identifier(createIdentifier('arguments'))
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression):exit'](
-        createFunctionExpression(),
-      )
+      visitor['FunctionDeclaration:exit'](createFunctionExpression())
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createArrowFunctionExpression(),
-      )
+      visitor.FunctionDeclaration(createArrowFunctionExpression())
       visitor.Identifier(createIdentifier('arguments'))
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression):exit'](
-        createArrowFunctionExpression(),
-      )
+      visitor['FunctionDeclaration:exit'](createArrowFunctionExpression())
 
       expect(reports.length).toBe(3)
     })
@@ -456,9 +406,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports[0].message.toLowerCase()).toContain('rest parameters')
@@ -468,9 +416,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports[0].message).toContain('arguments')
@@ -480,9 +426,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports[0].message).toBe("Use rest parameters (...args) instead of 'arguments'.")
@@ -519,9 +463,7 @@ describe('prefer-rest-params rule', () => {
 
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments'))
 
       expect(reports.length).toBe(1)
@@ -532,9 +474,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('obj'))
 
       expect(reports.length).toBe(0)
@@ -544,9 +484,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments', 1, 10))
       visitor.Identifier(createIdentifier('arguments', 1, 30))
       visitor.Identifier(createIdentifier('arguments', 2, 15))
@@ -560,9 +498,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments', 1, 10, [10, 19]))
 
       expect(reports.length).toBe(1)
@@ -575,9 +511,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
       visitor.Identifier(createIdentifier('arguments', 1, 10, [10, 19]))
       visitor.Identifier(createIdentifier('arguments', 1, 30, [30, 39]))
 
@@ -590,9 +524,7 @@ describe('prefer-rest-params rule', () => {
       const { context, reports } = createMockContext()
       const visitor = preferRestParamsRule.create(context)
 
-      visitor[':matches(FunctionDeclaration, FunctionExpression, ArrowFunctionExpression)'](
-        createFunctionDeclaration('test'),
-      )
+      visitor.FunctionDeclaration(createFunctionDeclaration('test'))
 
       const nodeWithoutRange = {
         type: 'Identifier',
