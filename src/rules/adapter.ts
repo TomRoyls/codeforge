@@ -205,7 +205,7 @@ const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   VariableDeclaration: { name: 'id' },
   FunctionDeclaration: { name: 'id' },
   ClassDeclaration: { name: 'id' },
-  PropertyDeclaration: { name: 'key' },
+  PropertyDeclaration: { name: 'key', initializer: 'value' },
   PropertyAssignment: { name: 'key', initializer: 'value' },
   MethodDeclaration: { name: 'key' },
   GetAccessor: { name: 'key' },
@@ -859,10 +859,33 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
     if (Node.isMethodDeclaration(node)) {
       base.method = true
+      base.kind = 'method'
       if (node.isStatic()) base.static = true
+      if ((node as any).getAccessibility) {
+        const acc = (node as any).getAccessibility()
+        if (acc) base.accessibility = acc
+      }
     }
     if (Node.isConstructorDeclaration(node)) {
       base.kind = 'constructor'
+    }
+    if (Node.isGetAccessorDeclaration(node)) {
+      base.kind = 'get'
+      base.method = true
+      if (node.isStatic()) base.static = true
+      if ((node as any).getAccessibility) {
+        const acc = (node as any).getAccessibility()
+        if (acc) base.accessibility = acc
+      }
+    }
+    if (Node.isSetAccessorDeclaration(node)) {
+      base.kind = 'set'
+      base.method = true
+      if (node.isStatic()) base.static = true
+      if ((node as any).getAccessibility) {
+        const acc = (node as any).getAccessibility()
+        if (acc) base.accessibility = acc
+      }
     }
     if (kindName === 'RegularExpressionLiteral') {
       const regexText = node.getText()
