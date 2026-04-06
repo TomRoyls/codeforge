@@ -51,6 +51,19 @@ function getInitType(node: unknown): string | undefined {
   if (initType === 'BooleanLiteral') {
     return 'boolean'
   }
+  if (initType === 'Literal') {
+    const value = init.value
+    if (typeof value === 'string') return 'string'
+    if (typeof value === 'number') return 'number'
+    if (typeof value === 'boolean') return 'boolean'
+  }
+
+  if (initType === 'Literal') {
+    const value = init.value
+    if (typeof value === 'string') return 'string'
+    if (typeof value === 'number') return 'number'
+    if (typeof value === 'boolean') return 'boolean'
+  }
 
   return undefined
 }
