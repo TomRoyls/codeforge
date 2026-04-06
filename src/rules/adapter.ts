@@ -1067,6 +1067,48 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
   }
 
+  // Synthesize RestElement / AssignmentPattern for function parameters
+  if (base.type === 'Parameter') {
+    const hasRest = base.dotDotDotToken != null
+    const hasInit = base.init != null
+    if (hasRest) {
+      base.type = 'RestElement'
+      base.argument = base.name
+      delete base.name
+      delete base.init
+      delete base.dotDotDotToken
+      delete base.questionToken
+      delete base.typeAnnotation
+      delete base.modifiers
+    } else if (hasInit) {
+      base.type = 'AssignmentPattern'
+      base.left = base.name
+      base.right = base.init
+      delete base.name
+      delete base.init
+      delete base.dotDotDotToken
+      delete base.questionToken
+      delete base.typeAnnotation
+      delete base.modifiers
+    } else {
+      // Simple parameter — flatten to the name node (Identifier / ObjectPattern / ArrayPattern)
+      const nameNode = base.name as Record<string, unknown> | undefined
+      if (nameNode && typeof nameNode === 'object') {
+        const saved = { range: base.range, loc: base.loc, start: base.start, end: base.end }
+        for (const key of Object.keys(base)) {
+          delete (base as any)[key]
+        }
+        Object.assign(base, nameNode)
+        if ((nameNode as any).range == null) {
+          base.range = saved.range
+          base.loc = saved.loc
+          base.start = saved.start
+          base.end = saved.end
+        }
+      }
+    }
+  }
+
   // Synthesize .value FunctionExpression for method-like nodes
   if (base.method === true && base.type === 'MethodDefinition' && !base.value) {
     const funcBody = base.body
