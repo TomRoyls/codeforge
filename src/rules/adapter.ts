@@ -162,12 +162,19 @@ const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   CaseClause: { expression: 'test', statements: 'consequent' },
   DefaultClause: { statements: 'consequent' },
   TryStatement: { tryBlock: 'block', catchClause: 'handler', finallyBlock: 'finalizer' },
+  IfStatement: { expression: 'test', thenStatement: 'consequent', elseStatement: 'alternate' },
+  ForStatement: {
+    initializer: 'init',
+    condition: 'test',
+    incrementor: 'update',
+    statement: 'body',
+  },
+  ForInStatement: { expression: 'right', initializer: 'left', statement: 'body' },
+  ForOfStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   LabeledStatement: { statement: 'body' },
   WithStatement: { statement: 'body' },
-  ForInStatement: { expression: 'right', initializer: 'left' },
-  ForOfStatement: { expression: 'right', initializer: 'left' },
-  DoStatement: { expression: 'test' },
-  WhileStatement: { expression: 'test' },
+  DoStatement: { expression: 'test', statement: 'body' },
+  WhileStatement: { expression: 'test', statement: 'body' },
   CallExpression: { expression: 'callee' },
   NewExpression: { expression: 'callee' },
   PropertyAccessExpression: { expression: 'object', name: 'property' },
@@ -412,13 +419,25 @@ function convertRawCompilerNode(
           typeof item === 'object' &&
           typeof (item as Record<string, unknown>).kind === 'number'
         ) {
-          converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+          // OmittedExpression (sparse array hole) → null
+          const itemKind = (item as Record<string, unknown>).kind as number
+          const itemKindName = KIND_MAP[itemKind] ?? ''
+          if (itemKindName === 'OmittedExpression') {
+            converted.push(null)
+          } else {
+            converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+          }
         } else {
           converted.push(item)
         }
       }
       result[estreeName] = converted
     }
+  }
+
+  // BinaryExpression with assignment operator → AssignmentExpression
+  if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
+    result.type = 'AssignmentExpression'
   }
 
   return result
@@ -541,7 +560,12 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
               typeof item === 'object' &&
               typeof (item as Record<string, unknown>).kind === 'number'
             ) {
-              converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+              const itemKindName = KIND_MAP[(item as Record<string, unknown>).kind as number] ?? ''
+              if (itemKindName === 'OmittedExpression') {
+                converted.push(null)
+              } else {
+                converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+              }
             } else {
               converted.push(item)
             }
@@ -550,8 +574,10 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
         }
       }
     }
-  } catch {
-    // If compiler node access fails, just return the basic info
+  } catch {}
+
+  if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
+    result.type = 'AssignmentExpression'
   }
 
   return result
