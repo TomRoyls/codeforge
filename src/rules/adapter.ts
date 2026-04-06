@@ -151,6 +151,50 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   ParenthesizedExpression: 'SequenceExpression',
   ObjectDestructuring: 'ObjectPattern',
   ArrayDestructuring: 'ArrayPattern',
+  ComputedPropertyName: 'Literal',
+  DefaultKeyword: 'Literal',
+  SuperKeyword: 'Super',
+  ThisKeyword: 'ThisExpression',
+}
+
+const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
+  SwitchStatement: { expression: 'discriminant', caseBlock: 'cases' },
+  CaseClause: { expression: 'test', statements: 'consequent' },
+  DefaultClause: { statements: 'consequent' },
+  TryStatement: { tryBlock: 'block', catchClause: 'handler', finallyBlock: 'finalizer' },
+  LabeledStatement: { statement: 'body' },
+  WithStatement: { statement: 'body' },
+  ForInStatement: { expression: 'right', initializer: 'left' },
+  ForOfStatement: { expression: 'right', initializer: 'left' },
+  DoStatement: { expression: 'test' },
+  WhileStatement: { expression: 'test' },
+  CallExpression: { expression: 'callee' },
+  NewExpression: { expression: 'callee' },
+  PropertyAccessExpression: { expression: 'object', name: 'property' },
+  ElementAccessExpression: { expression: 'object', argumentExpression: 'property' },
+  ThrowStatement: { expression: 'argument' },
+  ReturnStatement: { expression: 'argument' },
+  DeleteExpression: { expression: 'argument' },
+  VoidExpression: { expression: 'argument' },
+  TypeOfExpression: { expression: 'argument' },
+  AwaitExpression: { expression: 'argument' },
+  YieldExpression: { expression: 'argument' },
+  PrefixUnaryExpression: { operand: 'argument' },
+  PostfixUnaryExpression: { operand: 'argument' },
+  VariableDeclaration: { name: 'id' },
+  FunctionDeclaration: { name: 'id' },
+  ClassDeclaration: { name: 'id' },
+  PropertyDeclaration: { name: 'key' },
+  PropertyAssignment: { name: 'key' },
+  MethodDeclaration: { name: 'key' },
+  GetAccessor: { name: 'key' },
+  SetAccessor: { name: 'key' },
+  ImportSpecifier: { name: 'local', propertyName: 'imported' },
+  ExportSpecifier: { name: 'exported', propertyName: 'imported' },
+  ParenthesizedExpression: { expression: 'expression' },
+  SpreadElement: { expression: 'argument' },
+  SpreadAssignment: { expression: 'argument' },
+  TaggedTemplateExpression: { template: 'quasi' },
 }
 
 const MAX_DEPTH = 5
@@ -267,6 +311,7 @@ function convertRawCompilerNode(
 
   const kind: number = raw.kind as number
   const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
+  const kindMap = KIND_SPECIFIC_MAP[kindName]
 
   const result: Record<string, unknown> = {
     type: KIND_NAME_ALIASES[kindName] ?? kindName,
@@ -301,7 +346,26 @@ function convertRawCompilerNode(
     if (key.startsWith('_')) continue
     if (SKIP_KEYS.has(key)) continue
 
-    const estreeName = PROPERTY_MAP[key] ?? key
+    const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
+
+    // Special: caseBlock → extract clauses array as ESTree cases
+    if (key === 'caseBlock' && val && typeof val === 'object') {
+      const cb = val as Record<string, unknown>
+      if (Array.isArray(cb.clauses)) {
+        const converted: unknown[] = []
+        for (const clause of cb.clauses) {
+          if (
+            clause &&
+            typeof clause === 'object' &&
+            typeof (clause as Record<string, unknown>).kind === 'number'
+          ) {
+            converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
+          }
+        }
+        result[estreeName] = converted
+      }
+      continue
+    }
 
     if (val === null || val === undefined) {
       result[estreeName] = val
@@ -366,6 +430,8 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
     return null
   }
 
+  const kindMap = KIND_SPECIFIC_MAP[kindName]
+
   const result: Record<string, unknown> = {
     type: KIND_NAME_ALIASES[kindName] ?? kindName,
   }
@@ -399,7 +465,26 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
         if (key.startsWith('_')) continue
         if (SKIP_KEYS.has(key)) continue
 
-        const estreeName = PROPERTY_MAP[key] ?? key
+        const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
+
+        // Special: caseBlock -> extract clauses array as ESTree cases
+        if (key === 'caseBlock' && val && typeof val === 'object') {
+          const cb = val as Record<string, unknown>
+          if (Array.isArray(cb.clauses)) {
+            const converted: unknown[] = []
+            for (const clause of cb.clauses) {
+              if (
+                clause &&
+                typeof clause === 'object' &&
+                typeof (clause as Record<string, unknown>).kind === 'number'
+              ) {
+                converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
+              }
+            }
+            result[estreeName] = converted
+          }
+          continue
+        }
 
         if (val === null || val === undefined) {
           result[estreeName] = val
