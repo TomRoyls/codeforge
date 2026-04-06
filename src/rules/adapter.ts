@@ -313,9 +313,14 @@ function convertRawCompilerNode(
   const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
   const kindMap = KIND_SPECIFIC_MAP[kindName]
 
-  const result: Record<string, unknown> = {
-    type: KIND_NAME_ALIASES[kindName] ?? kindName,
+  const result: Record<string, unknown> = {}
+  // Add source position metadata from raw compiler node
+  if (typeof raw.pos === 'number' && typeof raw.end === 'number') {
+    result.range = [raw.pos, raw.end] as [number, number]
+    result.start = raw.pos
+    result.end = raw.end
   }
+  result.type = KIND_NAME_ALIASES[kindName] ?? kindName
 
   // Add literal values
   if (kindName === 'StringLiteral' && raw.text !== undefined) {
@@ -434,6 +439,16 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
 
   const result: Record<string, unknown> = {
     type: KIND_NAME_ALIASES[kindName] ?? kindName,
+  }
+
+  const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+  if (compilerNode && typeof compilerNode === 'object') {
+    // Add source position metadata
+    if (typeof compilerNode.pos === 'number' && typeof compilerNode.end === 'number') {
+      result.range = [compilerNode.pos, compilerNode.end] as [number, number]
+      result.start = compilerNode.pos
+      result.end = compilerNode.end
+    }
   }
 
   // Add literal value
