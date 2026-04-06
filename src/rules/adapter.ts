@@ -1300,6 +1300,18 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           // ImportDeclaration → add specifiers and source
           if (kindName === 'ImportDeclaration') {
             genericNode.specifiers = extractImportSpecifiers(node)
+            for (const spec of genericNode.specifiers as unknown[]) {
+              if (spec && typeof spec === 'object') {
+                const specRec = spec as Record<string, unknown>
+                const specType = specRec.type as string
+                if (specType) {
+                  const specHandler = pluginVisitor[specType]
+                  if (specHandler) {
+                    specHandler(spec)
+                  }
+                }
+              }
+            }
           }
 
           const genericHandler = pluginVisitor['*'] ?? pluginVisitor['Any']
@@ -1349,6 +1361,24 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             const estreeExitHandler = pluginVisitor[estreeType + ':exit']
             if (estreeExitHandler) {
               estreeExitHandler(genericNode)
+            }
+          }
+
+          // ImportDeclaration → dispatch specifier exit handlers
+          if (kindName === 'ImportDeclaration') {
+            const specs = (genericNode as Record<string, unknown>).specifiers as unknown[]
+            if (Array.isArray(specs)) {
+              for (const spec of specs) {
+                if (spec && typeof spec === 'object') {
+                  const specType = (spec as Record<string, unknown>).type as string
+                  if (specType) {
+                    const specExitHandler = pluginVisitor[specType + ':exit']
+                    if (specExitHandler) {
+                      specExitHandler(spec)
+                    }
+                  }
+                }
+              }
             }
           }
 
