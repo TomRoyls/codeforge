@@ -67,6 +67,11 @@ export const noExtraBooleanCastRule: RuleDefinition = {
             message: 'Redundant boolean cast.',
             loc: extractLocation(node),
           })
+        } else if (isDoubleBang(node)) {
+          context.report({
+            message: 'Redundant double negation.',
+            loc: extractLocation(node),
+          })
         }
       },
     }

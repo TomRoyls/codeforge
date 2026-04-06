@@ -76,6 +76,8 @@ const PROPERTY_MAP: Record<string, string> = {
   modifierFlags: 'modifierFlags',
   statements: 'body',
   variableDeclaration: 'param',
+  operand: 'argument',
+  operator: 'operator',
 }
 
 const KIND_NAME_ALIASES: Record<string, string> = {
@@ -297,6 +299,10 @@ const ASSIGNMENT_OPERATORS = new Set([
 
 function convertOperatorToken(token: unknown): string {
   if (typeof token === 'string') return token
+  if (typeof token === 'number') {
+    const tokenName = KIND_MAP[token as number] ?? ''
+    return (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(token)
+  }
   if (token && typeof token === 'object') {
     const obj = token as Record<string, unknown>
     if (typeof obj.type === 'string') {
@@ -440,6 +446,27 @@ function convertRawCompilerNode(
     result.type = 'AssignmentExpression'
   }
 
+  // UnaryExpression/UpdateExpression: convert numeric operator to string
+  if (typeof result.operator === 'number') {
+    const tokenName = KIND_MAP[result.operator as number] ?? ''
+    result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
+  }
+
+  // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
+  if (result.type === 'VariableDeclaration') {
+    if (typeof raw.flags === 'number') {
+      const flags = raw.flags as number
+      // NodeFlags.Const = 2, NodeFlags.Let = 1
+      if (flags & 2) {
+        result.kind = 'const'
+      } else if (flags & 1) {
+        result.kind = 'let'
+      } else {
+        result.kind = 'var'
+      }
+    }
+  }
+
   return result
 }
 
@@ -578,6 +605,25 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
 
   if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
     result.type = 'AssignmentExpression'
+  }
+
+  if (typeof result.operator === 'number') {
+    const tokenName = KIND_MAP[result.operator as number] ?? ''
+    result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
+  }
+
+  if (result.type === 'VariableDeclaration') {
+    const rawFlags = compilerNode?.flags
+    if (typeof rawFlags === 'number') {
+      // NodeFlags.Const = 2, NodeFlags.Let = 1
+      if (rawFlags & 2) {
+        result.kind = 'const'
+      } else if (rawFlags & 1) {
+        result.kind = 'let'
+      } else {
+        result.kind = 'var'
+      }
+    }
   }
 
   return result
@@ -772,7 +818,13 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
 
       return {
         visitor,
-        onComplete: () => violations,
+        onComplete: () => {
+          const exitHandler = pluginVisitor['Program:exit']
+          if (exitHandler) {
+            exitHandler({})
+          }
+          return violations
+        },
       }
     },
   }
