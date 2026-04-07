@@ -143,6 +143,8 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   ClassDeclaration: 'ClassDeclaration',
   InterfaceDeclaration: 'TSInterfaceDeclaration',
   ImportDeclaration: 'ImportDeclaration',
+  ImportEqualsDeclaration: 'TSImportEqualsDeclaration',
+  ImportExpression: 'Import',
   ExportDeclaration: 'ExportDeclaration',
   ReturnStatement: 'ReturnStatement',
   ThrowStatement: 'ThrowStatement',
@@ -216,6 +218,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   ObjectKeyword: 'TSObjectKeyword',
   CallSignature: 'TSCallSignatureDeclaration',
   TypeAliasDeclaration: 'TSTypeAliasDeclaration',
+  ExternalModuleReference: 'TSExternalModuleReference',
 }
 
 const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
