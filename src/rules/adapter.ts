@@ -215,6 +215,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   UnknownKeyword: 'TSUnknownKeyword',
   ObjectKeyword: 'TSObjectKeyword',
   CallSignature: 'TSCallSignatureDeclaration',
+  TypeAliasDeclaration: 'TSTypeAliasDeclaration',
 }
 
 const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
@@ -1454,23 +1455,44 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
-          // ExportDeclaration → add specifiers and dispatch as ExportNamedDeclaration
+          // ExportDeclaration → dispatch as ExportNamedDeclaration or ExportAllDeclaration
           if (kindName === 'ExportDeclaration') {
             const exportSpecs = extractExportSpecifiers(node)
             if (exportSpecs.length > 0) {
               genericNode.specifiers = exportSpecs
             }
-            const exportNamedHandler = pluginVisitor['ExportNamedDeclaration']
-            if (exportNamedHandler) {
-              const wrapper: Record<string, unknown> = {
-                type: 'ExportNamedDeclaration',
-                declaration: null,
-                specifiers: exportSpecs,
-                source: genericNode.moduleSpecifier ?? null,
-                range: genericNode.range,
-                loc: genericNode.loc,
+            const sourceValue = (genericNode.source as string) ?? null
+            const sourceLiteral = sourceValue
+              ? { type: 'Literal', value: sourceValue, range: genericNode.range, loc: genericNode.loc }
+              : null
+
+            if (exportSpecs.length === 0 && sourceValue) {
+              const exportAllHandler = pluginVisitor['ExportAllDeclaration']
+              if (exportAllHandler) {
+                const wrapper: Record<string, unknown> = {
+                  type: 'ExportAllDeclaration',
+                  source: sourceLiteral,
+                  exported: null,
+                  exportKind: genericNode.exportKind ?? 'value',
+                  range: genericNode.range,
+                  loc: genericNode.loc,
+                }
+                exportAllHandler(wrapper)
               }
-              exportNamedHandler(wrapper)
+            } else {
+              const exportNamedHandler = pluginVisitor['ExportNamedDeclaration']
+              if (exportNamedHandler) {
+                const wrapper: Record<string, unknown> = {
+                  type: 'ExportNamedDeclaration',
+                  declaration: null,
+                  specifiers: exportSpecs,
+                  source: sourceLiteral,
+                  exportKind: genericNode.exportKind ?? 'value',
+                  range: genericNode.range,
+                  loc: genericNode.loc,
+                }
+                exportNamedHandler(wrapper)
+              }
             }
           }
 
@@ -1625,23 +1647,44 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
-          // ExportDeclaration → dispatch ExportNamedDeclaration:exit
+          // ExportDeclaration → dispatch ExportNamedDeclaration:exit or ExportAllDeclaration:exit
           if (kindName === 'ExportDeclaration') {
             const exportSpecs = (genericNode as Record<string, unknown>).specifiers as
               | unknown[]
               | undefined
             const specsToUse = exportSpecs && exportSpecs.length > 0 ? exportSpecs : []
-            const exportNamedExitHandler = pluginVisitor['ExportNamedDeclaration:exit']
-            if (exportNamedExitHandler) {
-              const wrapper: Record<string, unknown> = {
-                type: 'ExportNamedDeclaration',
-                declaration: null,
-                specifiers: specsToUse,
-                source: genericNode.moduleSpecifier ?? null,
-                range: genericNode.range,
-                loc: genericNode.loc,
+            const sourceValue = (genericNode.source as string) ?? null
+            const sourceLiteral = sourceValue
+              ? { type: 'Literal', value: sourceValue, range: genericNode.range, loc: genericNode.loc }
+              : null
+
+            if (specsToUse.length === 0 && sourceValue) {
+              const exportAllExitHandler = pluginVisitor['ExportAllDeclaration:exit']
+              if (exportAllExitHandler) {
+                const wrapper: Record<string, unknown> = {
+                  type: 'ExportAllDeclaration',
+                  source: sourceLiteral,
+                  exported: null,
+                  exportKind: genericNode.exportKind ?? 'value',
+                  range: genericNode.range,
+                  loc: genericNode.loc,
+                }
+                exportAllExitHandler(wrapper)
               }
-              exportNamedExitHandler(wrapper)
+            } else {
+              const exportNamedExitHandler = pluginVisitor['ExportNamedDeclaration:exit']
+              if (exportNamedExitHandler) {
+                const wrapper: Record<string, unknown> = {
+                  type: 'ExportNamedDeclaration',
+                  declaration: null,
+                  specifiers: specsToUse,
+                  source: sourceLiteral,
+                  exportKind: genericNode.exportKind ?? 'value',
+                  range: genericNode.range,
+                  loc: genericNode.loc,
+                }
+                exportNamedExitHandler(wrapper)
+              }
             }
           }
 
