@@ -120,8 +120,8 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   StringLiteral: 'Literal',
   NumericLiteral: 'Literal',
   BigIntLiteral: 'Literal',
-  TrueKeyword: 'Literal',
-  FalseKeyword: 'Literal',
+  TrueKeyword: 'BooleanLiteral',
+  FalseKeyword: 'BooleanLiteral',
   NullKeyword: 'Literal',
   RegularExpressionLiteral: 'RegExpLiteral',
   ObjectLiteralExpression: 'ObjectExpression',
@@ -249,8 +249,10 @@ const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   YieldExpression: { expression: 'argument' },
   PrefixUnaryExpression: { operand: 'argument' },
   PostfixUnaryExpression: { operand: 'argument' },
-  VariableDeclaration: { name: 'id' },
-  FunctionDeclaration: { name: 'id' },
+  VariableDeclaration: { name: 'id', type: 'typeAnnotation' },
+  FunctionDeclaration: { name: 'id', type: 'returnType' },
+  FunctionExpression: { type: 'returnType' },
+  ArrowFunction: { type: 'returnType' },
   ClassDeclaration: { name: 'id' },
   PropertyDeclaration: { name: 'key', initializer: 'value' },
   PropertyAssignment: { name: 'key', initializer: 'value' },
@@ -1463,7 +1465,12 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
             const sourceValue = (genericNode.source as string) ?? null
             const sourceLiteral = sourceValue
-              ? { type: 'Literal', value: sourceValue, range: genericNode.range, loc: genericNode.loc }
+              ? {
+                  type: 'Literal',
+                  value: sourceValue,
+                  range: genericNode.range,
+                  loc: genericNode.loc,
+                }
               : null
 
             if (exportSpecs.length === 0 && sourceValue) {
@@ -1655,7 +1662,12 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             const specsToUse = exportSpecs && exportSpecs.length > 0 ? exportSpecs : []
             const sourceValue = (genericNode.source as string) ?? null
             const sourceLiteral = sourceValue
-              ? { type: 'Literal', value: sourceValue, range: genericNode.range, loc: genericNode.loc }
+              ? {
+                  type: 'Literal',
+                  value: sourceValue,
+                  range: genericNode.range,
+                  loc: genericNode.loc,
+                }
               : null
 
             if (specsToUse.length === 0 && sourceValue) {
