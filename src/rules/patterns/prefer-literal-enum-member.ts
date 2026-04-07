@@ -30,7 +30,7 @@ function isLiteralLike(node: unknown): boolean {
     }
   }
 
-  if (type === 'ParenthesizedExpression') {
+  if (type === 'ParenthesizedExpression' || type === 'SequenceExpression') {
     return isLiteralLike(n.expression)
   }
 
