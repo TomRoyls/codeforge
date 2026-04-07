@@ -42,27 +42,17 @@ function getInitType(node: unknown): string | undefined {
 
   const initType = init.type as string | undefined
 
-  if (initType === 'StringLiteral') {
-    return 'string'
-  }
-  if (initType === 'NumericLiteral') {
-    return 'number'
+  if (initType === 'Literal' || initType === 'StringLiteral' || initType === 'NumericLiteral') {
+    const value = init.value
+    if (typeof value === 'string') return 'string'
+    if (typeof value === 'number') return 'number'
+    if (typeof value === 'boolean') return 'boolean'
+    // Fallback for ts-morph path where StringLiteral/NumericLiteral may not have a value property
+    if (initType === 'StringLiteral') return 'string'
+    if (initType === 'NumericLiteral') return 'number'
   }
   if (initType === 'BooleanLiteral') {
     return 'boolean'
-  }
-  if (initType === 'Literal') {
-    const value = init.value
-    if (typeof value === 'string') return 'string'
-    if (typeof value === 'number') return 'number'
-    if (typeof value === 'boolean') return 'boolean'
-  }
-
-  if (initType === 'Literal') {
-    const value = init.value
-    if (typeof value === 'string') return 'string'
-    if (typeof value === 'number') return 'number'
-    if (typeof value === 'boolean') return 'boolean'
   }
 
   return undefined

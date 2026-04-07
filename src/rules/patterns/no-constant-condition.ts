@@ -17,7 +17,7 @@ function isNumericLiteral(node: unknown): boolean {
     return false
   }
   const n = node as Record<string, unknown>
-  return n.type === 'NumericLiteral'
+  return (n.type === 'Literal' || n.type === 'NumericLiteral') && typeof n.value === 'number'
 }
 
 function isLiteral(node: unknown): boolean {

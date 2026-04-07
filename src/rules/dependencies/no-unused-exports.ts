@@ -337,7 +337,10 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
         arguments_.length > 0
       ) {
         const arg0 = arguments_[0] as Record<string, unknown> | undefined
-        if (arg0?.type === 'StringLiteral' && typeof arg0.value === 'string') {
+        if (
+          (arg0?.type === 'Literal' || arg0?.type === 'StringLiteral') &&
+          typeof arg0.value === 'string'
+        ) {
           imports.push({
             name: '*',
             sourceFile: filePath,

@@ -45,7 +45,7 @@ function hasTypeArguments(node: unknown): boolean {
     return false
   }
   const n = node as Record<string, unknown>
-  const typeArgs = n.typeArguments as Record<string, unknown> | undefined
+  const typeArgs = (n.typeParameters ?? n.typeArguments) as Record<string, unknown> | undefined
   const params = typeArgs?.params as unknown[] | undefined
   return Array.isArray(params) && params.length > 0
 }

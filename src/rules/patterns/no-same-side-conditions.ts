@@ -27,13 +27,13 @@ function getNodeKey(node: unknown): string | null {
     return `BooleanLiteral:${n.value}`
   }
 
-  // Handle NumericLiteral (SWC-specific)
-  if (n.type === 'NumericLiteral') {
+  // Handle NumericLiteral (SWC-specific / adapter-converted)
+  if ((n.type === 'Literal' || n.type === 'NumericLiteral') && typeof n.value === 'number') {
     return `NumericLiteral:${n.value}`
   }
 
-  // Handle StringLiteral (SWC-specific)
-  if (n.type === 'StringLiteral' && typeof n.value === 'string') {
+  // Handle StringLiteral (SWC-specific / adapter-converted)
+  if ((n.type === 'Literal' || n.type === 'StringLiteral') && typeof n.value === 'string') {
     return `StringLiteral:${n.value}`
   }
 

@@ -318,7 +318,11 @@ function getDynamicImportArgument(node: unknown): string | null {
       ? (arguments_[0] as Record<string, unknown> | undefined)
       : undefined
 
-  if (arg0?.type === 'StringLiteral' && arg0.value && typeof arg0.value === 'string') {
+  if (
+    (arg0?.type === 'Literal' || arg0?.type === 'StringLiteral') &&
+    arg0.value &&
+    typeof arg0.value === 'string'
+  ) {
     return arg0.value
   }
 
