@@ -219,6 +219,8 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   CallSignature: 'TSCallSignatureDeclaration',
   TypeAliasDeclaration: 'TSTypeAliasDeclaration',
   ExternalModuleReference: 'TSExternalModuleReference',
+  ExportKeyword: 'TSExportKeyword',
+  TypeAnnotation: 'TSTypeAnnotation',
 }
 
 const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
