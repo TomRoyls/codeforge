@@ -212,6 +212,7 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   NumberKeyword: 'TSNumberKeyword',
   StringKeyword: 'TSStringKeyword',
   VoidKeyword: 'TSVoidKeyword',
+  UnknownKeyword: 'TSUnknownKeyword',
   ObjectKeyword: 'TSObjectKeyword',
   CallSignature: 'TSCallSignatureDeclaration',
 }
@@ -1075,6 +1076,31 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
   }
 
+  // Detect parameter properties for TSParameterProperty synthesis
+  let isParamProp = false
+  let paramPropAccessibility: string | null = null
+  let paramPropReadonly = false
+  let paramPropOverride = false
+  if (base.type === 'Parameter') {
+    try {
+      if (Node.isParameterDeclaration(node) && (node as any).isParameterProperty?.()) {
+        isParamProp = true
+        if (typeof (node as any).getAccessibility === 'function') {
+          const acc = (node as any).getAccessibility()
+          paramPropAccessibility = acc || null
+        }
+        if (typeof (node as any).isReadonly === 'function') {
+          paramPropReadonly = (node as any).isReadonly()
+        }
+        if (typeof (node as any).hasOverrideKeyword === 'function') {
+          paramPropOverride = (node as any).hasOverrideKeyword()
+        }
+      }
+    } catch {
+      /* not a parameter property */
+    }
+  }
+
   // Synthesize RestElement / AssignmentPattern for function parameters
   if (base.type === 'Parameter') {
     const hasRest = base.dotDotDotToken != null
@@ -1115,6 +1141,26 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
         }
       }
     }
+  }
+
+  // Wrap parameter properties in TSParameterProperty node
+  if (isParamProp) {
+    const inner = { ...(base as Record<string, unknown>) }
+    const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
+    for (const key of Object.keys(base)) {
+      delete (base as any)[key]
+    }
+    base.type = 'TSParameterProperty'
+    base.parameter = inner
+    base.accessibility = paramPropAccessibility
+    base.readonly = paramPropReadonly
+    base.override = paramPropOverride
+    base.static = false
+    base.decorators = []
+    base.range = savedRange.range
+    base.loc = savedRange.loc
+    base.start = savedRange.start
+    base.end = savedRange.end
   }
 
   // Synthesize .value FunctionExpression for method-like nodes
