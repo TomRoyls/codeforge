@@ -207,6 +207,13 @@ const KIND_NAME_ALIASES: Record<string, string> = {
   TSInterfaceDeclaration: 'TSInterfaceDeclaration',
   TSInterfaceBody: 'TSInterfaceBody',
   StaticBlock: 'StaticBlock',
+  AnyKeyword: 'TSAnyKeyword',
+  BooleanKeyword: 'TSBooleanKeyword',
+  NumberKeyword: 'TSNumberKeyword',
+  StringKeyword: 'TSStringKeyword',
+  VoidKeyword: 'TSVoidKeyword',
+  ObjectKeyword: 'TSObjectKeyword',
+  CallSignature: 'TSCallSignatureDeclaration',
 }
 
 const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
