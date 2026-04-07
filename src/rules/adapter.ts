@@ -436,6 +436,8 @@ function extractImportSpecifiers(node: Node): unknown[] {
             const nameObj = e.name as Record<string, unknown>
             spec.imported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
           }
+          spec.importKind =
+            typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
           specifiers.push(spec)
         }
       }
@@ -484,6 +486,8 @@ function extractExportSpecifiers(node: Node): unknown[] {
           const pn = e.propertyName as Record<string, unknown>
           spec.exported = { type: 'Identifier', name: pn.text, value: pn.text }
         }
+        spec.exportKind =
+          typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
         specifiers.push(spec)
       }
     }
@@ -1060,6 +1064,21 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     }
     if (Node.isCallExpression(node)) {
       if ((node as any).questionDotToken) base.optional = true
+    }
+    // Extract exportKind/importKind for type-only imports/exports
+    if (Node.isExportDeclaration(node)) {
+      try {
+        if (typeof (node as any).isTypeOnly === 'function') {
+          base.exportKind = (node as any).isTypeOnly() ? 'type' : 'value'
+        }
+      } catch {}
+    }
+    if (Node.isImportDeclaration(node)) {
+      try {
+        if (typeof (node as any).isTypeOnly === 'function') {
+          base.importKind = (node as any).isTypeOnly() ? 'type' : 'value'
+        }
+      } catch {}
     }
   }
 
