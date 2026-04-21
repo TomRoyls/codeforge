@@ -484,3 +484,367 @@ export function createMockNullLiteral(config: MockNodeConfig = {}): Node {
     getText: vi.fn(() => 'null'),
   } as unknown as Node
 }
+
+export interface ReportDescriptor {
+  message: string
+  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
+  fix?: { range: [number, number]; text: string }
+  severity?: string
+  ruleId?: string
+}
+
+export interface MockContextOptions {
+  source?: string
+  options?: unknown[]
+  filePath?: string
+}
+
+export function createMockRuleContext(overrides: MockContextOptions = {}): {
+  context: import('../../src/plugins/types.js').RuleContext
+  reports: ReportDescriptor[]
+} {
+  const { source = 'const x = 1;', options = [], filePath = '/src/file.ts' } = overrides
+  const reports: ReportDescriptor[] = []
+
+  const context = {
+    report: (descriptor: ReportDescriptor) => {
+      reports.push({
+        message: descriptor.message,
+        loc: descriptor.loc,
+        fix: descriptor.fix,
+        severity: descriptor.severity,
+        ruleId: descriptor.ruleId,
+      })
+    },
+    getFilePath: () => filePath,
+    getAST: () => null,
+    getSource: () => source,
+    getTokens: () => [],
+    getComments: () => [],
+    config: { options },
+    logger: {
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    },
+    workspaceRoot: '/src',
+  } as unknown as import('../../src/plugins/types.js').RuleContext
+
+  return { context, reports }
+}
+
+export function createSimpleIdentifier(name: string, line = 1, column = 0): unknown {
+  return {
+    type: 'Identifier',
+    name,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + name.length },
+    },
+  }
+}
+
+export function createSimpleLiteral(value: unknown, line = 1, column = 0): unknown {
+  return {
+    type: 'Literal',
+    value,
+    raw: String(value),
+    loc: {
+      start: { line, column },
+      end: { line, column: column + String(value).length },
+    },
+  }
+}
+
+export function createSimpleMemberExpression(
+  object: unknown,
+  property: unknown,
+  computed = false,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'MemberExpression',
+    object,
+    property,
+    computed,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleCallExpression(
+  callee: unknown,
+  args: unknown[] = [],
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'CallExpression',
+    callee,
+    arguments: args,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleBinaryExpression(
+  left: unknown,
+  operator: string,
+  right: unknown,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'BinaryExpression',
+    left,
+    operator,
+    right,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleLogicalExpression(
+  left: unknown,
+  operator: string,
+  right: unknown,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'LogicalExpression',
+    left,
+    operator,
+    right,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleUnaryExpression(
+  operator: string,
+  argument: unknown,
+  prefix = true,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'UnaryExpression',
+    operator,
+    argument,
+    prefix,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 10 },
+    },
+  }
+}
+
+export function createSimpleAssignmentExpression(
+  left: unknown,
+  operator: string,
+  right: unknown,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'AssignmentExpression',
+    left,
+    operator,
+    right,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleConditionalExpression(
+  test: unknown,
+  consequent: unknown,
+  alternate: unknown,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'ConditionalExpression',
+    test,
+    consequent,
+    alternate,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 30 },
+    },
+  }
+}
+
+export function createSimpleExpressionStatement(
+  expression: unknown,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'ExpressionStatement',
+    expression,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleBlockStatement(body: unknown[] = [], line = 1, column = 0): unknown {
+  return {
+    type: 'BlockStatement',
+    body,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 10 },
+    },
+  }
+}
+
+export function createSimpleReturnStatement(
+  argument: unknown = null,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'ReturnStatement',
+    argument,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 10 },
+    },
+  }
+}
+
+export function createSimpleFunctionDeclaration(
+  name: string,
+  params: unknown[] = [],
+  body: unknown = null,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'FunctionDeclaration',
+    id: { type: 'Identifier', name },
+    params,
+    body,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + name.length + 20 },
+    },
+  }
+}
+
+export function createSimpleFunctionExpression(
+  params: unknown[] = [],
+  body: unknown = null,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'FunctionExpression',
+    id: null,
+    params,
+    body,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 15 },
+    },
+  }
+}
+
+export function createSimpleArrowFunctionExpression(
+  params: unknown[] = [],
+  body: unknown = null,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'ArrowFunctionExpression',
+    params,
+    body,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 10 },
+    },
+  }
+}
+
+export function createSimpleNewExpression(
+  callee: unknown,
+  args: unknown[] = [],
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'NewExpression',
+    callee,
+    arguments: args,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleTemplateLiteral(
+  quasis: unknown[],
+  expressions: unknown[],
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'TemplateLiteral',
+    quasis,
+    expressions,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleObjectExpression(
+  properties: unknown[] = [],
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'ObjectExpression',
+    properties,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + 20 },
+    },
+  }
+}
+
+export function createSimpleVariableDeclarator(
+  name: string,
+  init: unknown = null,
+  line = 1,
+  column = 0,
+): unknown {
+  return {
+    type: 'VariableDeclarator',
+    id: { type: 'Identifier', name },
+    init,
+    loc: {
+      start: { line, column },
+      end: { line, column: column + name.length + 10 },
+    },
+  }
+}
