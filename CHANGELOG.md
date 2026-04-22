@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+- **refactor**: Reduced cyclomatic complexity in `analyze` command (23→≤20) by extracting helper methods
+- **refactor**: Decomposed `nodeToGeneric` (complexity 70→≤20) into focused helper functions
+- **refactor**: Removed all 26 `as any` casts from `adapter.ts` using proper ts-morph API methods
+- **refactor**: Removed all `as any` casts from `adapter-node-converter.ts` with `ModifierableNode` type narrowing
+- **refactor**: Fixed 87 ESLint errors in `adapter-node-converter.ts` (sort rules, eqeqeq, blank lines)
+- **perf**: Added line split caching in fixer module to avoid repeated `string.split()` per violation
+- **feat**: Added `plugins` array validation in config validator
+- **refactor**: Migrated 105 pattern test files to shared `createMockRuleContext` helper (174 total)
+- **fix**: Registered orphan rules `no-label-var` and `no-useless-undefined` in rule registries
+- **fix**: Fixed suggestion key names (`noCurly`→`curly`, `noFinishedTodos`→`noUnfinishedTodos`)
+- **feat**: Added `clearCache()` and `getCacheStats()` functions to fs/git helpers
+
 - **feat**: Added `no-unsafe-regex` security rule detecting ReDoS vulnerabilities (nested quantifiers, complex alternation, dynamic RegExp injection)
 - **refactor**: Migrated 7 reporter files from `console.log` to `process.stdout.write` for proper non-Command stdout handling
 - **test**: Added 63 comprehensive tests for `no-unsafe-regex` rule
