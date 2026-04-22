@@ -71,6 +71,7 @@
   "repository": "codeforge-dev/codeforge",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
