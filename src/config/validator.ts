@@ -37,6 +37,10 @@ export function validateConfig(config: unknown): CodeForgeConfig {
     result.ignore = validateFilesArray(cfg.ignore, 'ignore')
   }
 
+  if ('plugins' in cfg) {
+    result.plugins = validateFilesArray(cfg.plugins, 'plugins')
+  }
+
   if ('rules' in cfg) {
     result.rules = validateRules(cfg.rules)
   }

@@ -774,17 +774,16 @@ describe('validateConfig', () => {
       expect(result).not.toHaveProperty('extra')
     })
 
-    test('plugins field is ignored (not in validator)', () => {
+    test('validates plugins field as string array', () => {
       const config = {
         files: ['src/**/*.ts'],
         plugins: ['plugin-a', 'plugin-b'],
       }
       const result = validateConfig(config)
-      expect(result).toEqual({ files: ['src/**/*.ts'] })
-      expect(result).not.toHaveProperty('plugins')
+      expect(result).toEqual({ files: ['src/**/*.ts'], plugins: ['plugin-a', 'plugin-b'] })
     })
 
-    test('plugins field is stripped alongside valid fields', () => {
+    test('plugins field is stripped alongside valid fields when invalid', () => {
       const config = {
         files: ['src/**/*.ts'],
         ignore: ['dist/**'],
@@ -795,15 +794,15 @@ describe('validateConfig', () => {
       expect(result).toEqual({
         files: ['src/**/*.ts'],
         ignore: ['dist/**'],
+        plugins: ['my-plugin'],
         rules: { 'no-eval': 'error' },
       })
-      expect(result).not.toHaveProperty('plugins')
     })
 
-    test('config with only plugins returns empty object', () => {
+    test('config with only plugins returns object with plugins', () => {
       const config = { plugins: ['plugin'] }
       const result = validateConfig(config)
-      expect(result).toEqual({})
+      expect(result).toEqual({ plugins: ['plugin'] })
     })
 
     test('strips unknown props from complete config', () => {
