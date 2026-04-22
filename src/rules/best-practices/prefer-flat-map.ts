@@ -33,15 +33,15 @@ function isReduceConcatPattern(node: Node): { array: Node } | null {
 
   // Look for acc.concat(val) or [...acc, val] pattern in return statement
   const bodyText = body.getText()
-  
+
   // Check for common concat patterns
   const concatPatterns = [
-    /accs*.s*concats*(s*vals*)/,
-    /[s*...s*accs*,s*vals*]/,
-    /[s*...s*accs*]s*.s*concats*(s*vals*)/,
+    /\w+\s*\.\s*concat\s*\(/,
+    /\[\s*\.\.\.\s*\w+\s*,/,
+    /\[\s*\.\.\.\s*\w+\s*\]\s*\.\s*concat\s*\(/,
   ]
 
-  const hasConcatPattern = concatPatterns.some(pattern => pattern.test(bodyText))
+  const hasConcatPattern = concatPatterns.some((pattern) => pattern.test(bodyText))
   if (!hasConcatPattern) return null
 
   const array = expression.getExpression()
@@ -51,7 +51,8 @@ function isReduceConcatPattern(node: Node): { array: Node } | null {
 export const preferFlatMapRule: RuleDefinition<PreferFlatMapOptions> = {
   meta: {
     name: 'prefer-flat-map',
-    description: 'Enforce using .flat() instead of .reduce((acc, val) => acc.concat(val), []) for flattening arrays',
+    description:
+      'Enforce using .flat() instead of .reduce((acc, val) => acc.concat(val), []) for flattening arrays',
     category: 'style',
     recommended: false,
     fixable: 'code',
@@ -72,7 +73,7 @@ export const preferFlatMapRule: RuleDefinition<PreferFlatMapOptions> = {
           violations.push({
             ruleId: 'prefer-flat-map',
             severity: 'info',
-            message: "Use .flat() instead of .reduce() for flattening arrays.",
+            message: 'Use .flat() instead of .reduce() for flattening arrays.',
             filePath: node.getSourceFile().getFilePath(),
             range,
             suggestion: 'Replace with: ' + arrayText + '.flat()',
@@ -90,27 +91,24 @@ export function analyzePreferFlatMap(
 ): RuleViolation[] {
   const violations: RuleViolation[] = []
 
-  traverseAST(
-    sourceFile,
-    {
-      visitNode: (node: Node, _context: VisitorContext) => {
-        const result = isReduceConcatPattern(node)
-        if (!result) return
+  traverseAST(sourceFile, {
+    visitNode: (node: Node, _context: VisitorContext) => {
+      const result = isReduceConcatPattern(node)
+      if (!result) return
 
-        const range = getNodeRange(node)
-        const arrayText = result.array.getText()
+      const range = getNodeRange(node)
+      const arrayText = result.array.getText()
 
-        violations.push({
-          ruleId: 'prefer-flat-map',
-          severity: 'info',
-          message: "Use .flat() instead of .reduce() for flattening arrays.",
-          filePath: sourceFile.getFilePath(),
-          range,
-          suggestion: 'Replace with: ' + arrayText + '.flat()',
-        })
-      },
-    }
-  )
+      violations.push({
+        ruleId: 'prefer-flat-map',
+        severity: 'info',
+        message: 'Use .flat() instead of .reduce() for flattening arrays.',
+        filePath: sourceFile.getFilePath(),
+        range,
+        suggestion: 'Replace with: ' + arrayText + '.flat()',
+      })
+    },
+  })
 
   return violations
 }

@@ -313,25 +313,21 @@ export default class Analyze extends Command {
 
     const spinner = quiet ? null : ora('Discovering files...').start()
 
-    let discoveredFiles: DiscoveredFile[]
-
     const targetStat = statSync(targetPath)
-    if (targetStat.isFile()) {
-      discoveredFiles = [
-        {
-          path: path.relative(process.cwd(), targetPath),
-          absolutePath: targetPath,
-        },
-      ]
-    } else {
-      discoveredFiles = await this.discoverFiles({
-        cwd: targetPath,
-        files,
-        ignore,
-        spinner,
-        stagedMode,
-      })
-    }
+    const discoveredFiles: DiscoveredFile[] = targetStat.isFile()
+      ? [
+          {
+            absolutePath: targetPath,
+            path: path.relative(process.cwd(), targetPath),
+          },
+        ]
+      : await this.discoverFiles({
+          cwd: targetPath,
+          files,
+          ignore,
+          spinner,
+          stagedMode,
+        })
 
     const filteredFiles = filterFilesByExtension(discoveredFiles, flags.ext)
 

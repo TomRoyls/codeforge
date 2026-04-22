@@ -1,0 +1,25 @@
+
+import { describe, expect, test } from 'vitest'
+
+import {
+  deduplicateCycles,
+  detectCircularDependencies,
+  detectCyclesFromNode,
+  finishNodeVisit,
+  normalizeCycle,
+  processDependency,
+  recordCycle,
+} from '../../../src/commands/dependencies-cycle-helpers.js'
+import type {
+  CircularDependency,
+  CycleDetectionContext,
+  DependencyGraph,
+  DependencyNode,
+  ImportInfo,
+} from '../../../src/commands/dependencies-helpers.js'
+
+describe('simple test', () => {
+  test('should run', () => {
+    expect(1 + 1).toBe(2)
+  })
+})

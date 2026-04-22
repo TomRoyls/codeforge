@@ -187,6 +187,10 @@ export class Parser {
     }
   }
 
+  releaseFile(filePath: string): void {
+    globalParseCache.delete(filePath)
+  }
+
   dispose(): void {
     if (this.project) {
       this.project = null

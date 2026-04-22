@@ -26,11 +26,11 @@ import { join, resolve } from 'node:path'
 import ora from 'ora'
 
 import { type RuleViolation } from '../ast/visitor.js'
-import { type ChalkColorFunction } from '../types/chalk.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { allRules, getRuleCategory } from '../rules/index.js'
+import { type ChalkColorFunction } from '../types/chalk.js'
 import {
   DATE_FIELD_WIDTH,
   DEBT_COMPLEXITY_THRESHOLD_HIGH,

@@ -90,11 +90,13 @@ export default class Ignore extends Command {
       if (!options.pattern) {
         this.error(chalk.red('Pattern is required for add action'))
       }
+
       await this.addPattern(options.file, options.pattern)
     } else if (options.action === 'remove') {
       if (!options.pattern) {
         this.error(chalk.red('Pattern is required for remove action'))
       }
+
       await this.removePattern(options.file, options.pattern)
     } else {
       await this.listPatterns(options.file)
@@ -124,6 +126,13 @@ export default class Ignore extends Command {
       const message = error instanceof Error ? error.message : 'Unknown error'
       this.error(chalk.red(`Failed to add pattern: ${message}`))
     }
+  }
+
+  private extractPatterns(content: string): string[] {
+    return content
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line !== '' && !line.startsWith('#'))
   }
 
   private async listPatterns(filePath: string): Promise<void> {
@@ -201,15 +210,9 @@ export default class Ignore extends Command {
       if (error instanceof Error && error.message.includes('not found')) {
         throw error
       }
+
       const message = error instanceof Error ? error.message : 'Unknown error'
       this.error(chalk.red(`Failed to remove pattern: ${message}`))
     }
-  }
-
-  private extractPatterns(content: string): string[] {
-    return content
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line !== '' && !line.startsWith('#'))
   }
 }

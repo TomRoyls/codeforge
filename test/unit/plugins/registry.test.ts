@@ -1194,4 +1194,816 @@ describe('PLUGIN_PATTERNS', () => {
   test('scoped pattern rejects non-plugin scoped packages', () => {
     expect(PLUGIN_PATTERNS.scoped.test('@scope/other-package')).toBe(false)
   })
+
+  test('scoped pattern rejects unscoped names', () => {
+    expect(PLUGIN_PATTERNS.scoped.test('codeforge-plugin-test')).toBe(false)
+  })
+
+  test('scoped pattern rejects empty string', () => {
+    expect(PLUGIN_PATTERNS.scoped.test('')).toBe(false)
+  })
+
+  test('scoped pattern matches with hyphenated scope', () => {
+    expect(PLUGIN_PATTERNS.scoped.test('@my-scope/codeforge-plugin-test')).toBe(true)
+  })
+
+  test('scoped pattern matches double-slash in path', () => {
+    expect(PLUGIN_PATTERNS.scoped.test('@scope//codeforge-plugin-test')).toBe(false)
+  })
+})
+
+describe('PluginLoadError', () => {
+  test('has correct name property', () => {
+    const error = new PluginLoadError('test-plugin', 'test message')
+    expect(error.name).toBe('PluginLoadError')
+  })
+
+  test('stores plugin name', () => {
+    const error = new PluginLoadError('my-plugin', 'something failed')
+    expect(error.pluginName).toBe('my-plugin')
+  })
+
+  test('stores cause when provided', () => {
+    const cause = new Error('root cause')
+    const error = new PluginLoadError('my-plugin', 'something failed', cause)
+    expect(error.cause).toBe(cause)
+  })
+
+  test('has undefined cause when not provided', () => {
+    const error = new PluginLoadError('my-plugin', 'something failed')
+    expect(error.cause).toBeUndefined()
+  })
+
+  test('includes plugin name in message', () => {
+    const error = new PluginLoadError('my-plugin', 'load failed')
+    expect(error.message).toContain('my-plugin')
+  })
+
+  test('has PLUGIN_LOAD_ERROR code', () => {
+    const error = new PluginLoadError('my-plugin', 'load failed')
+    expect(error.code).toBe('PLUGIN_LOAD_ERROR')
+  })
+
+  test('is instance of Error', () => {
+    const error = new PluginLoadError('my-plugin', 'load failed')
+    expect(error).toBeInstanceOf(Error)
+  })
+})
+
+describe('PluginRegistry additional register', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('register plugin with description property', () => {
+    const plugin = createMockPlugin({ name: 'desc-plugin', description: 'A test plugin' })
+    registry.register(plugin)
+    const retrieved = registry.get('desc-plugin')
+    expect(retrieved?.description).toBe('A test plugin')
+  })
+
+  test('register plugin with empty string name throws', () => {
+    const plugin = createMockPlugin({ name: '' })
+    expect(() => registry.register(plugin)).toThrow(PluginLoadError)
+  })
+
+  test('register plugin with whitespace-only name succeeds', () => {
+    const plugin = createMockPlugin({ name: '   ' })
+    registry.register(plugin)
+    expect(registry.has('   ')).toBe(true)
+  })
+
+  test('register plugin with special characters in name', () => {
+    const plugin = createMockPlugin({ name: '@scope/codeforge-plugin-foo' })
+    registry.register(plugin)
+    expect(registry.has('@scope/codeforge-plugin-foo')).toBe(true)
+  })
+
+  test('register plugin with very long version string', () => {
+    const longVersion = '1.0.0-beta.0+build.1234567890.abcdefghij'
+    const plugin = createMockPlugin({ name: 'long-ver', version: longVersion })
+    registry.register(plugin)
+    expect(registry.get('long-ver')?.version).toBe(longVersion)
+  })
+
+  test('register throws PluginLoadError for null name via falsy check', () => {
+    // null is falsy, so !plugin.name is true
+    const plugin = { name: null as unknown as string, version: '1.0.0' }
+    expect(() => registry.register(plugin as Plugin)).toThrow(PluginLoadError)
+  })
+
+  test('register throws PluginLoadError for null version via falsy check', () => {
+    const plugin = { name: 'null-ver', version: null as unknown as string }
+    expect(() => registry.register(plugin as Plugin)).toThrow(PluginLoadError)
+  })
+
+  test('register then unregister then re-register works', () => {
+    const plugin = createMockPlugin()
+    registry.register(plugin)
+    registry.unregister('test-plugin')
+    expect(() => registry.register(plugin)).not.toThrow()
+    expect(registry.size).toBe(1)
+  })
+
+  test('register returns void', () => {
+    const plugin = createMockPlugin()
+    const result = registry.register(plugin)
+    expect(result).toBeUndefined()
+  })
+
+  test('register many plugins increments size correctly', () => {
+    for (let i = 0; i < 50; i++) {
+      registry.register(createMockPlugin({ name: `plugin-${i}` }))
+    }
+    expect(registry.size).toBe(50)
+  })
+})
+
+describe('PluginRegistry additional unregister', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('unregister returns void', () => {
+    registry.register(createMockPlugin())
+    const result = registry.unregister('test-plugin')
+    expect(result).toBeUndefined()
+  })
+
+  test('unregister then getNames no longer includes name', () => {
+    registry.register(createMockPlugin({ name: 'to-remove' }))
+    expect(registry.getNames()).toContain('to-remove')
+    registry.unregister('to-remove')
+    expect(registry.getNames()).not.toContain('to-remove')
+  })
+
+  test('unregister one of many preserves others', () => {
+    registry.register(createMockPlugin({ name: 'a' }))
+    registry.register(createMockPlugin({ name: 'b' }))
+    registry.register(createMockPlugin({ name: 'c' }))
+    registry.unregister('b')
+    expect(registry.has('a')).toBe(true)
+    expect(registry.has('c')).toBe(true)
+    expect(registry.size).toBe(2)
+  })
+
+  test('unregister non-existent plugin error is PluginLoadError', () => {
+    expect(() => registry.unregister('ghost')).toThrow(PluginLoadError)
+  })
+
+  test('unregister error has plugin name in message', () => {
+    try {
+      registry.unregister('vanish')
+      expect.unreachable('Should have thrown')
+    } catch (error) {
+      expect(error).toBeInstanceOf(PluginLoadError)
+      expect((error as PluginLoadError).pluginName).toBe('vanish')
+    }
+  })
+})
+
+describe('PluginRegistry additional get', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('get returns plugin with correct version', () => {
+    const plugin = createMockPlugin({ version: '3.2.1' })
+    registry.register(plugin)
+    expect(registry.get('test-plugin')?.version).toBe('3.2.1')
+  })
+
+  test('get returns plugin with correct description', () => {
+    const plugin = createMockPlugin({ description: 'hello world' })
+    registry.register(plugin)
+    expect(registry.get('test-plugin')?.description).toBe('hello world')
+  })
+
+  test('get with whitespace-padded name returns undefined', () => {
+    registry.register(createMockPlugin())
+    expect(registry.get(' test-plugin')).toBeUndefined()
+    expect(registry.get('test-plugin ')).toBeUndefined()
+  })
+
+  test('get is case-sensitive', () => {
+    registry.register(createMockPlugin({ name: 'Case-Sensitive' }))
+    expect(registry.get('case-sensitive')).toBeUndefined()
+    expect(registry.get('Case-Sensitive')).toBeDefined()
+  })
+})
+
+describe('PluginRegistry additional has', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('has is case-sensitive', () => {
+    registry.register(createMockPlugin({ name: 'MyPlugin' }))
+    expect(registry.has('MyPlugin')).toBe(true)
+    expect(registry.has('myplugin')).toBe(false)
+  })
+
+  test('has returns false for similar but different names', () => {
+    registry.register(createMockPlugin({ name: 'plugin-a' }))
+    expect(registry.has('plugin-a-extra')).toBe(false)
+    expect(registry.has('plugin-')).toBe(false)
+    expect(registry.has('plugin')).toBe(false)
+  })
+
+  test('has returns true after clear then re-register', () => {
+    registry.register(createMockPlugin())
+    registry.clear()
+    expect(registry.has('test-plugin')).toBe(false)
+    registry.register(createMockPlugin())
+    expect(registry.has('test-plugin')).toBe(true)
+  })
+})
+
+describe('PluginRegistry additional getAll', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('getAll after register and unregister returns remaining', () => {
+    const p1 = createMockPlugin({ name: 'keep' })
+    const p2 = createMockPlugin({ name: 'remove' })
+    registry.register(p1)
+    registry.register(p2)
+    registry.unregister('remove')
+    const all = registry.getAll()
+    expect(all).toHaveLength(1)
+    expect(all[0]).toBe(p1)
+  })
+
+  test('getAll does not mutate when external array is modified', () => {
+    registry.register(createMockPlugin())
+    const all = registry.getAll()
+    all.push(createMockPlugin({ name: 'injected' }))
+    expect(registry.size).toBe(1)
+  })
+
+  test('getAll with many plugins returns all', () => {
+    const plugins = Array.from({ length: 20 }, (_, i) => createMockPlugin({ name: `p-${i}` }))
+    for (const p of plugins) registry.register(p)
+    expect(registry.getAll()).toHaveLength(20)
+  })
+})
+
+describe('PluginRegistry additional getNames', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('getNames returns new array each call', () => {
+    registry.register(createMockPlugin())
+    const names1 = registry.getNames()
+    const names2 = registry.getNames()
+    expect(names1).not.toBe(names2)
+    expect(names1).toEqual(names2)
+  })
+
+  test('getNames after unregister excludes removed name', () => {
+    registry.register(createMockPlugin({ name: 'stay' }))
+    registry.register(createMockPlugin({ name: 'go-away' }))
+    registry.unregister('go-away')
+    expect(registry.getNames()).toEqual(['stay'])
+  })
+
+  test('getNames after clear returns empty', () => {
+    registry.register(createMockPlugin({ name: 'a' }))
+    registry.register(createMockPlugin({ name: 'b' }))
+    registry.clear()
+    expect(registry.getNames()).toEqual([])
+  })
+})
+
+describe('PluginRegistry additional clear', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('clear returns void', () => {
+    const result = registry.clear()
+    expect(result).toBeUndefined()
+  })
+
+  test('clear twice does not throw', () => {
+    registry.register(createMockPlugin())
+    registry.clear()
+    expect(() => registry.clear()).not.toThrow()
+  })
+
+  test('clear allows registering previously duplicate name', () => {
+    const plugin = createMockPlugin({ name: 'dup' })
+    registry.register(plugin)
+    registry.clear()
+    expect(() => registry.register(plugin)).not.toThrow()
+  })
+})
+
+describe('PluginRegistry additional discover', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('discover returns empty for readdir returning files only', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-file1', isDirectory: () => false } as never,
+      { name: 'codeforge-plugin-file2', isDirectory: () => false } as never,
+    ])
+    const result = await registry.discover('/workspace')
+    expect(result).toEqual([])
+  })
+
+  test('discover skips non-plugin prefixed directories', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'some-other-package', isDirectory: () => true } as never,
+      { name: 'lodash', isDirectory: () => true } as never,
+      { name: 'codeforge-plugin-real', isDirectory: () => true } as never,
+    ])
+    const result = await registry.discover('/workspace')
+    expect(result).toEqual(['codeforge-plugin-real'])
+  })
+
+  test('discover skips scoped packages without plugin prefix', async () => {
+    vi.mocked(readdir)
+      .mockResolvedValueOnce([{ name: '@scope', isDirectory: () => true } as never])
+      .mockResolvedValueOnce([
+        { name: 'some-other-pkg', isDirectory: () => true } as never,
+        { name: 'codeforge-plugin-scoped', isDirectory: () => true } as never,
+      ])
+    const result = await registry.discover('/workspace')
+    expect(result).toContain('@scope/codeforge-plugin-scoped')
+    expect(result).not.toContain('@scope/some-other-pkg')
+  })
+
+  test('discover handles scoped directory with no plugin entries', async () => {
+    vi.mocked(readdir)
+      .mockResolvedValueOnce([{ name: '@scope', isDirectory: () => true } as never])
+      .mockResolvedValueOnce([{ name: 'not-a-plugin', isDirectory: () => true } as never])
+    const result = await registry.discover('/workspace')
+    expect(result).toEqual([])
+  })
+
+  test('discover handles error on scoped subdirectory read', async () => {
+    vi.mocked(readdir)
+      .mockResolvedValueOnce([{ name: '@scope', isDirectory: () => true } as never])
+      .mockRejectedValueOnce(new Error('EACCES'))
+    const result = await registry.discover('/workspace')
+    // The error from the scoped readdir propagates up to the outer catch
+    expect(result).toEqual([])
+  })
+
+  test('discover includes multiple plugins from different scopes', async () => {
+    vi.mocked(readdir)
+      .mockResolvedValueOnce([
+        { name: '@scope1', isDirectory: () => true } as never,
+        { name: '@scope2', isDirectory: () => true } as never,
+      ])
+      .mockResolvedValueOnce([{ name: 'codeforge-plugin-a', isDirectory: () => true } as never])
+      .mockResolvedValueOnce([{ name: 'codeforge-plugin-b', isDirectory: () => true } as never])
+    const result = await registry.discover('/workspace')
+    expect(result).toContain('@scope1/codeforge-plugin-a')
+    expect(result).toContain('@scope2/codeforge-plugin-b')
+  })
+
+  test('discover handles scoped directory with files inside', async () => {
+    vi.mocked(readdir)
+      .mockResolvedValueOnce([{ name: '@scope', isDirectory: () => true } as never])
+      .mockResolvedValueOnce([
+        { name: 'codeforge-plugin-file', isDirectory: () => false } as never,
+        { name: 'codeforge-plugin-dir', isDirectory: () => true } as never,
+      ])
+    const result = await registry.discover('/workspace')
+    expect(result).toContain('@scope/codeforge-plugin-dir')
+    expect(result).not.toContain('@scope/codeforge-plugin-file')
+  })
+
+  test('discover excludes multiple already registered plugins', async () => {
+    registry.register(createMockPlugin({ name: 'codeforge-plugin-a' }))
+    registry.register(createMockPlugin({ name: 'codeforge-plugin-b' }))
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-a', isDirectory: () => true } as never,
+      { name: 'codeforge-plugin-b', isDirectory: () => true } as never,
+      { name: 'codeforge-plugin-c', isDirectory: () => true } as never,
+    ])
+    const result = await registry.discover('/workspace')
+    expect(result).toEqual(['codeforge-plugin-c'])
+  })
+})
+
+describe('PluginRegistry additional discoverAndValidate', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('returns empty valid and invalid when no plugins found', async () => {
+    vi.mocked(readdir).mockResolvedValue([])
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.valid).toEqual([])
+    expect(result.invalid).toEqual([])
+  })
+
+  test('returns invalid for manifest with empty name string', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({ name: '', version: '1.0.0', main: 'index.js' }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid).toHaveLength(1)
+    expect(result.valid).toHaveLength(0)
+  })
+
+  test('returns invalid for manifest with empty version string', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({ name: 'codeforge-plugin-test', version: '', main: 'index.js' }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid).toHaveLength(1)
+  })
+
+  test('returns invalid for manifest with empty main string', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({ name: 'codeforge-plugin-test', version: '1.0.0', main: '' }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid).toHaveLength(1)
+  })
+
+  test('returns invalid for manifest with numeric name', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({ name: 123, version: '1.0.0', main: 'index.js' }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid).toHaveLength(1)
+  })
+
+  test('returns invalid for manifest with numeric version', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({ name: 'codeforge-plugin-test', version: 1, main: 'index.js' }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid).toHaveLength(1)
+  })
+
+  test('returns invalid for manifest with numeric main', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({ name: 'codeforge-plugin-test', version: '1.0.0', main: 42 }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid).toHaveLength(1)
+  })
+
+  test('returns valid for manifest with all required fields', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockResolvedValue(
+      JSON.stringify({
+        name: 'codeforge-plugin-test',
+        version: '2.0.0',
+        main: 'dist/index.js',
+      }),
+    )
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.valid).toContain('codeforge-plugin-test')
+    expect(result.invalid).toEqual([])
+  })
+
+  test('invalid entry includes reason string', async () => {
+    vi.mocked(readdir).mockResolvedValue([
+      { name: 'codeforge-plugin-test', isDirectory: () => true } as never,
+    ])
+    vi.mocked(readFile).mockRejectedValue(new Error('permission denied'))
+    const result = await registry.discoverAndValidate('/workspace')
+    expect(result.invalid[0].reason).toContain('permission denied')
+  })
+})
+
+describe('PluginRegistry additional validateImportedPlugin', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('accepts plugin with only name and version', () => {
+    const minimal = { name: 'min', version: '1.0.0' }
+    expect(() => (registry as any).validateImportedPlugin(minimal, 'min')).not.toThrow()
+  })
+
+  test('accepts plugin with hooks property', () => {
+    const plugin = {
+      name: 'hooks-plugin',
+      version: '1.0.0',
+      hooks: {
+        onLoad: vi.fn(),
+        onUnload: vi.fn(),
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'hooks-plugin')).not.toThrow()
+  })
+
+  test('accepts plugin with dependencies array', () => {
+    const plugin = {
+      name: 'deps-plugin',
+      version: '1.0.0',
+      dependencies: ['dep-a', 'dep-b'],
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'deps-plugin')).not.toThrow()
+  })
+
+  test('accepts plugin with engines object', () => {
+    const plugin = {
+      name: 'engines-plugin',
+      version: '1.0.0',
+      engines: { codeforge: '^1.0.0' },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'engines-plugin')).not.toThrow()
+  })
+
+  test('rejects boolean true', () => {
+    expect(() => (registry as any).validateImportedPlugin(true, 'test')).toThrow(PluginLoadError)
+  })
+
+  test('rejects boolean false', () => {
+    expect(() => (registry as any).validateImportedPlugin(false, 'test')).toThrow(PluginLoadError)
+  })
+
+  test('rejects empty rules object does not throw', () => {
+    const plugin = { name: 'empty-rules', version: '1.0.0', rules: {} }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'empty-rules')).not.toThrow()
+  })
+
+  test('rejects empty transforms object does not throw', () => {
+    const plugin = { name: 'empty-transforms', version: '1.0.0', transforms: {} }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'empty-transforms')).not.toThrow()
+  })
+
+  test('accepts plugin with valid single rule', () => {
+    const plugin = {
+      name: 'single-rule',
+      version: '1.0.0',
+      rules: {
+        'my-rule': {
+          meta: { type: 'problem' as const, severity: 'error' as const },
+          create: () => ({ Identifier: vi.fn() }),
+        },
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'single-rule')).not.toThrow()
+  })
+
+  test('accepts plugin with valid single transform', () => {
+    const plugin = {
+      name: 'single-transform',
+      version: '1.0.0',
+      transforms: {
+        'my-transform': {
+          name: 'my-transform',
+          transform: (src: string) => src.toUpperCase(),
+        },
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'single-transform')).not.toThrow()
+  })
+
+  test('accepts rules as empty array (arrays are objects in JS)', () => {
+    const plugin = { name: 'array-rules', version: '1.0.0', rules: [] }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'array-rules')).not.toThrow()
+  })
+
+  test('accepts transforms as empty array (arrays are objects in JS)', () => {
+    const plugin = { name: 'array-transforms', version: '1.0.0', transforms: [] }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'array-transforms')).not.toThrow()
+  })
+
+  test('rejects multiple invalid rules - reports first', () => {
+    const plugin = {
+      name: 'multi-bad',
+      version: '1.0.0',
+      rules: {
+        'bad-1': 'string',
+        'bad-2': 42,
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'multi-bad')).toThrow(/bad-1/)
+  })
+
+  test('rejects multiple invalid transforms - reports first', () => {
+    const plugin = {
+      name: 'multi-bad-t',
+      version: '1.0.0',
+      transforms: {
+        'bad-t1': 'string',
+        'bad-t2': 42,
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'multi-bad-t')).toThrow(/bad-t1/)
+  })
+
+  test('rejects rule with create as number', () => {
+    const plugin = {
+      name: 'num-create',
+      version: '1.0.0',
+      rules: {
+        'bad-rule': { meta: { type: 'problem' }, create: 42 },
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'num-create')).toThrow(
+      PluginLoadError,
+    )
+  })
+
+  test('rejects transform with transform as number', () => {
+    const plugin = {
+      name: 'num-transform',
+      version: '1.0.0',
+      transforms: {
+        'bad-t': { transform: 42 },
+      },
+    }
+    expect(() => (registry as any).validateImportedPlugin(plugin, 'num-transform')).toThrow(
+      PluginLoadError,
+    )
+  })
+})
+
+describe('PluginRegistry additional extractPluginFromModule', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('returns default export when plugin export is undefined', () => {
+    const plugin = createMockPlugin()
+    const mod = { default: plugin, plugin: undefined }
+    expect((registry as any).extractPluginFromModule(mod, 'test')).toBe(plugin)
+  })
+
+  test('returns named export when default is undefined', () => {
+    const plugin = createMockPlugin()
+    const mod = { default: undefined, plugin: plugin }
+    expect((registry as any).extractPluginFromModule(mod, 'test')).toBe(plugin)
+  })
+
+  test('returns named export when default is missing key', () => {
+    const plugin = createMockPlugin()
+    const mod = { plugin: plugin }
+    expect((registry as any).extractPluginFromModule(mod, 'test')).toBe(plugin)
+  })
+
+  test('throws PluginLoadError when module is empty object', () => {
+    expect(() => (registry as any).extractPluginFromModule({}, 'empty-mod')).toThrow(
+      PluginLoadError,
+    )
+  })
+
+  test('error includes module name context', () => {
+    expect(() => (registry as any).extractPluginFromModule({}, 'my-module')).toThrow(/my-module/)
+  })
+})
+
+describe('isPluginName additional', () => {
+  test('returns true for hyphenated plugin name', () => {
+    expect(isPluginName('codeforge-plugin-my-cool-tool')).toBe(true)
+  })
+
+  test('returns false for codeforge-plugin- without suffix', () => {
+    expect(isPluginName('codeforge-plugin-')).toBe(true)
+  })
+
+  test('returns false for plugin prefix only', () => {
+    expect(isPluginName('plugin-test')).toBe(false)
+  })
+
+  test('returns true for scoped with multi-part scope', () => {
+    expect(isPluginName('@my-company/codeforge-plugin-foo')).toBe(true)
+  })
+
+  test('returns false for double-at scope', () => {
+    expect(isPluginName('@@scope/codeforge-plugin-test')).toBe(true)
+  })
+
+  test('returns false for numeric package', () => {
+    expect(isPluginName('123-package')).toBe(false)
+  })
+
+  test('returns false for underscore prefix', () => {
+    expect(isPluginName('_codeforge-plugin-test')).toBe(false)
+  })
+})
+
+describe('parsePluginName additional', () => {
+  test('parses codeforge-plugin- prefix name', () => {
+    const result = parsePluginName('codeforge-plugin-test')
+    expect(result.scope).toBeNull()
+    expect(result.name).toBe('codeforge-plugin-test')
+  })
+
+  test('parses simple non-plugin name', () => {
+    const result = parsePluginName('my-package')
+    expect(result.scope).toBeNull()
+    expect(result.name).toBe('my-package')
+  })
+
+  test('parses single char name', () => {
+    const result = parsePluginName('a')
+    expect(result.scope).toBeNull()
+    expect(result.name).toBe('a')
+  })
+
+  test('throws for scope with empty package', () => {
+    expect(() => parsePluginName('@scope/')).toThrow(PluginLoadError)
+  })
+
+  test('error message includes the problematic name', () => {
+    expect(() => parsePluginName('@bad')).toThrow(/@bad/)
+  })
+
+  test('parses deeply scoped name', () => {
+    const result = parsePluginName('@my-long-org-name/codeforge-plugin-deep-feature')
+    expect(result.scope).toBe('@my-long-org-name')
+    expect(result.name).toBe('codeforge-plugin-deep-feature')
+  })
+})
+
+describe('PluginRegistry size edge cases', () => {
+  let registry: PluginRegistry
+
+  beforeEach(() => {
+    registry = new PluginRegistry()
+    vi.clearAllMocks()
+  })
+
+  test('size returns correct count after register-unregister-register cycle', () => {
+    registry.register(createMockPlugin({ name: 'p1' }))
+    expect(registry.size).toBe(1)
+    registry.unregister('p1')
+    expect(registry.size).toBe(0)
+    registry.register(createMockPlugin({ name: 'p1' }))
+    expect(registry.size).toBe(1)
+  })
+
+  test('size stays 0 when clear called on empty registry', () => {
+    registry.clear()
+    expect(registry.size).toBe(0)
+  })
+
+  test('size reflects only currently registered plugins', () => {
+    for (let i = 0; i < 10; i++) {
+      registry.register(createMockPlugin({ name: `p-${i}` }))
+    }
+    for (let i = 0; i < 5; i++) {
+      registry.unregister(`p-${i}`)
+    }
+    expect(registry.size).toBe(5)
+  })
 })

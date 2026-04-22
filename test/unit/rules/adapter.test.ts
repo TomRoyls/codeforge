@@ -35,6 +35,7 @@ function createMockNode(
     getEnd: () => overrides.end ?? 11,
     getText: () => overrides.text ?? 'const x = 1;',
     getKindName: () => overrides.kindName ?? 'VariableDeclaration',
+    getKind: () => 0,
   } as Node
 }
 
@@ -1110,5 +1111,2264 @@ describe('edge cases', () => {
       const adapted = adaptPluginRule(pluginRule, `${input}-rule`)
       expect(adapted.meta.category).toBe(expected)
     })
+  })
+})
+
+describe('comprehensive adapter tests', () => {
+  test('handles rule ID with hyphens', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, 'my-rule-name-with-hyphens')
+    expect(adapted.meta.name).toBe('my-rule-name-with-hyphens')
+  })
+
+  test('handles rule ID with underscores', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, 'my_rule_name_with_underscores')
+    expect(adapted.meta.name).toBe('my_rule_name_with_underscores')
+  })
+
+  test('handles rule ID with dots', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, 'my.rule.name.with.dots')
+    expect(adapted.meta.name).toBe('my.rule.name.with.dots')
+  })
+
+  test('handles rule ID starting with digit', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, '1st-rule')
+    expect(adapted.meta.name).toBe('1st-rule')
+  })
+
+  test('handles rule ID ending with digit', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, 'rule-2')
+    expect(adapted.meta.name).toBe('rule-2')
+  })
+
+  test('handles rule ID with mixed case', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, 'MyRuleName')
+    expect(adapted.meta.name).toBe('MyRuleName')
+  })
+
+  test('handles all meta fields together', () => {
+    const pluginRule: PluginRuleDefinition = {
+      meta: {
+        type: 'suggestion',
+        severity: 'warn',
+        docs: {
+          description: 'Full rule',
+          url: 'https://example.com/full',
+          recommended: true,
+        },
+        fixable: 'code',
+        deprecated: true,
+        replacedBy: ['new-full-rule', 'even-newer-rule'],
+      },
+      create: () => ({}),
+    }
+
+    const adapted = adaptPluginRule(pluginRule, 'full-meta-rule')
+
+    expect(adapted.meta.severity).toBe('warning')
+    expect(adapted.meta.description).toBe('Full rule')
+    expect(adapted.meta.recommended).toBe(true)
+    expect(adapted.meta.fixable).toBe('code')
+    expect(adapted.meta.deprecated).toBe(true)
+    expect(adapted.meta.replacedBy).toBe('new-full-rule')
+    expect(adapted.meta.docs).toEqual({
+      description: 'Full rule',
+      url: 'https://example.com/full',
+    })
+  })
+
+  test('handles report with minimal data', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({ message: 'Minimal report' })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'minimal-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations).toHaveLength(1)
+    expect(violations![0].message).toBe('Minimal report')
+  })
+
+  test('handles report with custom location', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Custom location',
+            loc: {
+              start: { line: 42, column: 10 },
+              end: { line: 42, column: 25 },
+            },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'custom-loc-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations).toHaveLength(1)
+    expect(violations![0].range).toEqual({
+      start: { line: 42, column: 10 },
+      end: { line: 42, column: 25 },
+    })
+  })
+
+  test('handles suggestion with full data', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Full suggestion',
+            suggest: [
+              {
+                desc: 'Replace with const',
+                message: 'Use const',
+                fix: { range: [0, 3], text: 'const' },
+              },
+            ],
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'full-suggest-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].suggestion).toBe('Replace with const')
+  })
+
+  test('handles empty suggestion', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({ message: 'Empty suggestion', suggest: [] })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'empty-suggest-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].suggestion).toBeUndefined()
+  })
+
+  test('handles multiple reports from different handlers', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({ message: 'From SourceFile' })
+        },
+        Identifier: () => {
+          context.report({ message: 'From Identifier' })
+        },
+        StringLiteral: () => {
+          context.report({ message: 'From StringLiteral' })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'multi-report-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+
+    const idNode = createMockNode({ kindName: 'Identifier' })
+    const stringNode = createMockNode({ kindName: 'StringLiteral' })
+    result.visitor.visitNode?.(idNode, createMockVisitorContext())
+    result.visitor.visitNode?.(stringNode, createMockVisitorContext())
+
+    const violations = result.onComplete?.()
+
+    expect(violations).toHaveLength(3)
+    expect(violations!.map((v) => v.message)).toEqual([
+      'From SourceFile',
+      'From Identifier',
+      'From StringLiteral',
+    ])
+  })
+
+  test('handles violation with zero column', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Zero column',
+            loc: {
+              start: { line: 1, column: 0 },
+              end: { line: 1, column: 1 },
+            },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'zero-col-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].range.start.column).toBe(0)
+    expect(violations![0].range.end.column).toBe(1)
+  })
+
+  test('handles very large line number', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Large line',
+            loc: {
+              start: { line: 99999, column: 5 },
+              end: { line: 99999, column: 10 },
+            },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'large-line-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].range.start.line).toBe(99999)
+  })
+
+  test('handles very large column number', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Large column',
+            loc: {
+              start: { line: 1, column: 99999 },
+              end: { line: 1, column: 100000 },
+            },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'large-col-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].range.start.column).toBe(99999)
+    expect(violations![0].range.end.column).toBe(100000)
+  })
+
+  test('handles multi-line location', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Multi-line',
+            loc: {
+              start: { line: 10, column: 0 },
+              end: { line: 20, column: 30 },
+            },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'multiline-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].range).toEqual({
+      start: { line: 10, column: 0 },
+      end: { line: 20, column: 30 },
+    })
+  })
+
+  test('handles suggestion with message field', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'Message suggestion',
+            suggest: [
+              {
+                desc: 'Fix it',
+                message: 'Replace with better code',
+              },
+            ],
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'msg-suggest-rule')
+    const result = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    const violations = result.onComplete?.()
+
+    expect(violations![0].suggestion).toBe('Fix it')
+  })
+
+  test('handles rule with whitespace fixable', () => {
+    const pluginRule = createMockPluginRule({ fixable: 'whitespace' })
+    const adapted = adaptPluginRule(pluginRule, 'whitespace-fixable-rule')
+    expect(adapted.meta.fixable).toBe('whitespace')
+  })
+
+  test('handles rule without fixable', () => {
+    const pluginRule = createMockPluginRule({})
+    const adapted = adaptPluginRule(pluginRule, 'no-fixable-rule')
+    expect(adapted.meta.fixable).toBeUndefined()
+  })
+
+  test('handles deprecated with replacedBy', () => {
+    const pluginRule = createMockPluginRule({
+      deprecated: true,
+      replacedBy: ['replacement-1', 'replacement-2'],
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'deprecated-replaced-rule')
+
+    expect(adapted.meta.deprecated).toBe(true)
+    expect(adapted.meta.replacedBy).toBe('replacement-1')
+  })
+
+  test('handles recommended true', () => {
+    const pluginRule = createMockPluginRule({ recommended: true })
+    const adapted = adaptPluginRule(pluginRule, 'recommended-true-rule')
+    expect(adapted.meta.recommended).toBe(true)
+  })
+
+  test('handles recommended false', () => {
+    const pluginRule = createMockPluginRule({ recommended: false })
+    const adapted = adaptPluginRule(pluginRule, 'recommended-false-rule')
+    expect(adapted.meta.recommended).toBe(false)
+  })
+
+  test('handles all severity types', () => {
+    const severities: Array<'off' | 'warn' | 'error'> = ['off', 'warn', 'error']
+
+    for (const severity of severities) {
+      const pluginRule = createMockPluginRule({ severity })
+      const adapted = adaptPluginRule(pluginRule, `severity-${severity}-rule`)
+
+      if (severity === 'error') {
+        expect(adapted.meta.severity).toBe('error')
+      } else if (severity === 'warn') {
+        expect(adapted.meta.severity).toBe('warning')
+      } else {
+        expect(adapted.meta.severity).toBe('info')
+      }
+    }
+  })
+
+  test('handles all rule types with appropriate severity', () => {
+    const types: Array<'problem' | 'suggestion' | 'layout'> = ['problem', 'suggestion', 'layout']
+
+    for (const type of types) {
+      const pluginRule = createMockPluginRule({ type })
+      const adapted = adaptPluginRule(pluginRule, `type-${type}-rule`)
+      expect(adapted.meta.description).toBe('Test rule description')
+    }
+  })
+
+  test('handles all seven categories', () => {
+    const categories = [
+      'performance',
+      'security',
+      'style',
+      'correctness',
+      'complexity',
+      'patterns',
+      'dependencies',
+    ]
+
+    for (const category of categories) {
+      const pluginRule = createMockPluginRule({ category })
+      const adapted = adaptPluginRule(pluginRule, `category-${category}-rule`)
+      expect(adapted.meta.category).toBe(category)
+    }
+  })
+
+  test('handles unknown category', () => {
+    const pluginRule = createMockPluginRule({ category: 'UnknownCategory' })
+    const adapted = adaptPluginRule(pluginRule, 'unknown-category-rule')
+    expect(adapted.meta.category).toBe('style')
+  })
+
+  test('handles empty category', () => {
+    const pluginRule = createMockPluginRule({ category: '' })
+    const adapted = adaptPluginRule(pluginRule, 'empty-category-rule')
+    expect(adapted.meta.category).toBe('style')
+  })
+
+  test('handles docs with URL only', () => {
+    const pluginRule: PluginRuleDefinition = {
+      meta: {
+        type: 'problem',
+        severity: 'error',
+        docs: {
+          url: 'https://example.com/rule',
+        },
+      },
+      create: () => ({}),
+    }
+
+    const adapted = adaptPluginRule(pluginRule, 'url-only-rule')
+
+    expect(adapted.meta.docs).toEqual({
+      url: 'https://example.com/rule',
+    })
+  })
+
+  test('handles docs with description only', () => {
+    const pluginRule = createMockPluginRule({
+      description: 'Rule with description only',
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'desc-only-rule')
+
+    expect(adapted.meta.docs).toBeUndefined()
+  })
+
+  test('handles multiple violations across source files', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({ message: 'Violation 1' })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'multi-file-rule')
+    const result = adapted.create({})
+    const mockSourceFile1 = createMockSourceFile({ filePath: '/path/to/file1.ts' })
+    const mockSourceFile2 = createMockSourceFile({ filePath: '/path/to/file2.ts' })
+
+    result.visitor.visitSourceFile?.(mockSourceFile1, createMockVisitorContext())
+    const violations1 = result.onComplete?.()
+
+    result.visitor.visitSourceFile?.(mockSourceFile2, createMockVisitorContext())
+    const violations2 = result.onComplete?.()
+
+    expect(violations1![0].message).toBe('Violation 1')
+    expect(violations2![0].message).toBe('Violation 1')
+  })
+})
+
+describe('exit handlers', () => {
+  test('calls :exit handler for kind name', () => {
+    const exitHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        'Identifier:exit': exitHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'exit-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'Identifier' })
+
+    result.visitor.exitNode?.(mockNode, createMockVisitorContext())
+
+    expect(exitHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('calls :exit handler for ESTree type when different from kind name', () => {
+    const exitHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        'VariableDeclarator:exit': exitHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'estree-exit-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'VariableDeclaration' })
+
+    result.visitor.exitNode?.(mockNode, createMockVisitorContext())
+
+    expect(exitHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('does not call exit handler for non-matching kind', () => {
+    const exitHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        'Identifier:exit': exitHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'non-exit-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'StringLiteral' })
+
+    result.visitor.exitNode?.(mockNode, createMockVisitorContext())
+
+    expect(exitHandler).not.toHaveBeenCalled()
+  })
+
+  test('Program:exit is called on SourceFile exit', () => {
+    const programExitHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        'Program:exit': programExitHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'program-exit-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    const SourceFileKind = 307
+    const sfNode = {
+      getSourceFile: () => sf,
+      getStart: () => 0,
+      getEnd: () => 11,
+      getText: () => 'const x = 1;',
+      getKindName: () => 'SourceFile',
+      getKind: () => SourceFileKind,
+    } as Node
+
+    result.visitor.exitNode?.(sfNode, createMockVisitorContext())
+
+    expect(programExitHandler).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('ESTree type alias dispatch', () => {
+  test('dispatches by ESTree alias for VariableDeclaration -> VariableDeclarator', () => {
+    const estreeHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        VariableDeclarator: estreeHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'estree-var-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'VariableDeclaration' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(estreeHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('dispatches by ESTree alias for StringLiteral -> Literal', () => {
+    const literalHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Literal: literalHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'literal-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'StringLiteral' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(literalHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('dispatches by ESTree alias for ObjectLiteralExpression -> ObjectExpression', () => {
+    const objExprHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ObjectExpression: objExprHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'obj-expr-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'ObjectLiteralExpression' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(objExprHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('dispatches by ESTree alias for PropertyAccessExpression -> MemberExpression', () => {
+    const memberHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        MemberExpression: memberHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'member-expr-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'PropertyAccessExpression' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(memberHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('dispatches by ESTree alias for InterfaceDeclaration -> TSInterfaceDeclaration', () => {
+    const tsInterfaceHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        TSInterfaceDeclaration: tsInterfaceHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'ts-interface-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'InterfaceDeclaration' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(tsInterfaceHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('dispatches both ts-morph kind name and ESTree alias', () => {
+    const kindHandler = vi.fn()
+    const estreeHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        PropertyAccessExpression: kindHandler,
+        MemberExpression: estreeHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'dual-dispatch-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'PropertyAccessExpression' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(kindHandler).toHaveBeenCalledTimes(1)
+    expect(estreeHandler).toHaveBeenCalledTimes(1)
+  })
+
+  test('does not double-dispatch when kind name equals ESTree type', () => {
+    const handler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: handler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'no-double-dispatch-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'Identifier' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    // Identifier -> Identifier (no alias), so only called once
+    expect(handler).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('create() independence', () => {
+  test('multiple create() calls produce independent violations', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({ message: 'V' })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'independent-rule')
+    const result1 = adapted.create({})
+    const result2 = adapted.create({})
+    const mockSourceFile = createMockSourceFile()
+
+    result1.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+    result2.visitor.visitSourceFile?.(mockSourceFile, createMockVisitorContext())
+
+    const violations1 = result1.onComplete?.()
+    const violations2 = result2.onComplete?.()
+
+    expect(violations1).toHaveLength(1)
+    expect(violations2).toHaveLength(1)
+    expect(violations1).not.toBe(violations2)
+  })
+
+  test('each create() has its own source file state', () => {
+    const adapted = adaptPluginRule(
+      createMockPluginRule({
+        createVisitor: (context) => ({
+          SourceFile: () => {
+            context.report({ message: context.getFilePath() })
+          },
+        }),
+      }),
+      'state-rule',
+    )
+
+    const result1 = adapted.create({})
+    const result2 = adapted.create({})
+
+    const sf1 = createMockSourceFile({ filePath: '/a.ts' })
+    const sf2 = createMockSourceFile({ filePath: '/b.ts' })
+
+    result1.visitor.visitSourceFile?.(sf1, createMockVisitorContext())
+    result2.visitor.visitSourceFile?.(sf2, createMockVisitorContext())
+
+    expect(result1.onComplete?.()![0].filePath).toBe('/a.ts')
+    expect(result2.onComplete?.()![0].filePath).toBe('/b.ts')
+  })
+
+  test('violations do not leak between create() calls', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({ message: 'Leak test' })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'leak-rule')
+    const result1 = adapted.create({})
+
+    result1.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    const result2 = adapted.create({})
+    const violations2 = result2.onComplete?.()
+
+    expect(violations2).toHaveLength(0)
+  })
+})
+
+describe('generic handler variations', () => {
+  test('* handler is called for every node', () => {
+    const starHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({ '*': starHandler }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'star-all-rule')
+    const result = adapted.create({})
+
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'IfStatement' }),
+      createMockVisitorContext(),
+    )
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ReturnStatement' }),
+      createMockVisitorContext(),
+    )
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'Identifier' }),
+      createMockVisitorContext(),
+    )
+
+    expect(starHandler).toHaveBeenCalledTimes(3)
+  })
+
+  test('Any handler is called for every node', () => {
+    const anyHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({ Any: anyHandler }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'any-all-rule')
+    const result = adapted.create({})
+
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'IfStatement' }),
+      createMockVisitorContext(),
+    )
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ReturnStatement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(anyHandler).toHaveBeenCalledTimes(2)
+  })
+
+  test('* handler receives converted node with type', () => {
+    let receivedNode: Record<string, unknown> | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        '*': (node) => {
+          receivedNode = node as Record<string, unknown>
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'star-type-rule')
+    const result = adapted.create({})
+
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'Identifier' }),
+      createMockVisitorContext(),
+    )
+
+    expect(receivedNode).toBeDefined()
+    expect(receivedNode!.type).toBe('Identifier')
+  })
+})
+
+describe('context.getSource()', () => {
+  test('returns source text after visiting source file', () => {
+    let capturedSource: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          capturedSource = context.getSource()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'source-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ fullText: 'const x = 42;' })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(capturedSource).toBe('const x = 42;')
+  })
+
+  test('returns source text after visiting node when source file not yet set', () => {
+    let capturedSource: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        Identifier: () => {
+          capturedSource = context.getSource()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'source-node-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ fullText: 'let y = 2;' })
+    const node = createMockNode({ kindName: 'Identifier', sourceFile: sf })
+
+    result.visitor.visitNode?.(node, createMockVisitorContext())
+
+    expect(capturedSource).toBe('let y = 2;')
+  })
+
+  test('returns empty string before any visit', () => {
+    let capturedSource: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        capturedSource = context.getSource()
+        return {}
+      },
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'source-early-rule')
+    adapted.create({})
+
+    expect(capturedSource).toBe('')
+  })
+})
+
+describe('context.getFilePath()', () => {
+  test('returns file path after visiting source file', () => {
+    let capturedPath: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          capturedPath = context.getFilePath()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'path-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ filePath: '/custom/path.ts' })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(capturedPath).toBe('/custom/path.ts')
+  })
+
+  test('returns node source file path when no source file visited yet', () => {
+    let capturedPath: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        Identifier: () => {
+          capturedPath = context.getFilePath()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'path-node-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ filePath: '/from/node.ts' })
+    const node = createMockNode({ kindName: 'Identifier', sourceFile: sf })
+
+    result.visitor.visitNode?.(node, createMockVisitorContext())
+
+    expect(capturedPath).toBe('/from/node.ts')
+  })
+})
+
+describe('violation severity mapping', () => {
+  test('error severity produces error violations', () => {
+    const pluginRule = createMockPluginRule({
+      severity: 'error',
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: 'err' }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'sev-err')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].severity).toBe('error')
+  })
+
+  test('warn severity produces warning violations', () => {
+    const pluginRule = createMockPluginRule({
+      severity: 'warn',
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: 'warn' }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'sev-warn')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].severity).toBe('warning')
+  })
+
+  test('off severity produces info violations', () => {
+    const pluginRule = createMockPluginRule({
+      severity: 'off',
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: 'info' }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'sev-off')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].severity).toBe('info')
+  })
+})
+
+describe('node type conversion', () => {
+  test('Block becomes BlockStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        BlockStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'block-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(createMockNode({ kindName: 'Block' }), createMockVisitorContext())
+
+    expect(capturedType).toBe('BlockStatement')
+  })
+
+  test('NumericLiteral becomes Literal', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Literal: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'num-lit-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'NumericLiteral' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('Literal')
+  })
+
+  test('ArrowFunction becomes ArrowFunctionExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ArrowFunctionExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'arrow-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ArrowFunction' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('ArrowFunctionExpression')
+  })
+
+  test('ArrayLiteralExpression becomes ArrayExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ArrayExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'array-expr-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ArrayLiteralExpression' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('ArrayExpression')
+  })
+
+  test('IfStatement stays IfStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        IfStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'if-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'IfStatement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('IfStatement')
+  })
+
+  test('ReturnStatement stays ReturnStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ReturnStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'return-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ReturnStatement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('ReturnStatement')
+  })
+
+  test('EnumDeclaration becomes TSEnumDeclaration', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        TSEnumDeclaration: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'enum-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'EnumDeclaration' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('TSEnumDeclaration')
+  })
+
+  test('ClassExpression stays ClassExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ClassExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'class-expr-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ClassExpression' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('ClassExpression')
+  })
+
+  test('BreakStatement stays BreakStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        BreakStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'break-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'BreakStatement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('BreakStatement')
+  })
+
+  test('ContinueStatement stays ContinueStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ContinueStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'continue-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ContinueStatement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('ContinueStatement')
+  })
+
+  test('ThrowStatement stays ThrowStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ThrowStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'throw-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ThrowStatement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('ThrowStatement')
+  })
+
+  test('AwaitExpression stays AwaitExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        AwaitExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'await-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'AwaitExpression' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('AwaitExpression')
+  })
+
+  test('SpreadElement stays SpreadElement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        SpreadElement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'spread-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'SpreadElement' }),
+      createMockVisitorContext(),
+    )
+
+    expect(capturedType).toBe('SpreadElement')
+  })
+})
+
+describe('adaptPluginRules additional coverage', () => {
+  test('adapts a single rule correctly', () => {
+    const rules: Record<string, PluginRuleDefinition> = {
+      'single-rule': createMockPluginRule({ description: 'Single' }),
+    }
+
+    const adapted = adaptPluginRules(rules)
+
+    expect(Object.keys(adapted)).toHaveLength(1)
+    expect(adapted['single-rule'].meta.name).toBe('single-rule')
+    expect(adapted['single-rule'].meta.description).toBe('Single')
+  })
+
+  test('handles many rules efficiently', () => {
+    const rules: Record<string, PluginRuleDefinition> = {}
+    for (let i = 0; i < 50; i++) {
+      rules[`rule-${i}`] = createMockPluginRule({ description: `Rule ${i}` })
+    }
+
+    const adapted = adaptPluginRules(rules)
+
+    expect(Object.keys(adapted)).toHaveLength(50)
+    expect(adapted['rule-0'].meta.description).toBe('Rule 0')
+    expect(adapted['rule-49'].meta.description).toBe('Rule 49')
+  })
+
+  test('each rule has correct meta', () => {
+    const rules: Record<string, PluginRuleDefinition> = {
+      'rule-a': createMockPluginRule({ category: 'Security', severity: 'error' }),
+      'rule-b': createMockPluginRule({ category: 'Performance', severity: 'warn' }),
+    }
+
+    const adapted = adaptPluginRules(rules)
+
+    expect(adapted['rule-a'].meta.category).toBe('security')
+    expect(adapted['rule-b'].meta.category).toBe('performance')
+    expect(adapted['rule-a'].meta.severity).toBe('error')
+    expect(adapted['rule-b'].meta.severity).toBe('warning')
+  })
+})
+
+describe('node properties', () => {
+  test('converted node has range as array', () => {
+    let capturedNode: Record<string, unknown> | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: (node) => {
+          capturedNode = node as Record<string, unknown>
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'range-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'Identifier', start: 3, end: 8 })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(Array.isArray(capturedNode!.range)).toBe(true)
+    expect(capturedNode!.range).toEqual([3, 8])
+  })
+
+  test('converted node has loc object', () => {
+    let capturedNode: Record<string, unknown> | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: (node) => {
+          capturedNode = node as Record<string, unknown>
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'loc-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'Identifier', start: 0, end: 5 })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(capturedNode!.loc).toBeDefined()
+    const loc = capturedNode!.loc as {
+      start: { line: number; column: number }
+      end: { line: number; column: number }
+    }
+    expect(loc.start.line).toBeDefined()
+    expect(loc.start.column).toBeDefined()
+    expect(loc.end.line).toBeDefined()
+    expect(loc.end.column).toBeDefined()
+  })
+
+  test('converted node has start and end numbers', () => {
+    let capturedNode: Record<string, unknown> | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: (node) => {
+          capturedNode = node as Record<string, unknown>
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'start-end-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'Identifier', start: 10, end: 20 })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(typeof capturedNode!.start).toBe('number')
+    expect(typeof capturedNode!.end).toBe('number')
+    expect(capturedNode!.start).toBe(10)
+    expect(capturedNode!.end).toBe(20)
+  })
+
+  test('converted node has text property', () => {
+    let capturedNode: Record<string, unknown> | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: (node) => {
+          capturedNode = node as Record<string, unknown>
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'text-rule')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'Identifier', text: 'myVar' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(capturedNode!.text).toBe('myVar')
+  })
+
+  test('source file node has body property', () => {
+    let capturedNode: Record<string, unknown> | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        SourceFile: (node) => {
+          capturedNode = node as Record<string, unknown>
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'sf-body-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ fullText: 'const x = 1;' })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(capturedNode).toBeDefined()
+    expect(capturedNode!.type).toBeDefined()
+  })
+})
+
+describe('report edge cases', () => {
+  test('report preserves ruleId from adaptPluginRule', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: 'check id' }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'my-special-rule-id')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].ruleId).toBe('my-special-rule-id')
+  })
+
+  test('report preserves filePath from source file', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: 'path' }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'fp-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ filePath: '/deep/nested/module.ts' })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].filePath).toBe('/deep/nested/module.ts')
+  })
+
+  test('report preserves message exactly', () => {
+    const longMessage =
+      'This is a very long violation message that contains special characters: <>&"\' and unicode: \u00e9\u00e0\u00fc'
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: longMessage }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'msg-rule')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].message).toBe(longMessage)
+  })
+
+  test('report with single-item suggest array', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'fix',
+            suggest: [{ desc: 'Fix it', message: 'fix', fix: { range: [0, 1], text: 'x' } }],
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'single-suggest-rule')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].suggestion).toBe('Fix it')
+  })
+
+  test('report picks first suggestion from multiple', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'multi',
+            suggest: [
+              { desc: 'First', message: 'a', fix: { range: [0, 1], text: 'a' } },
+              { desc: 'Second', message: 'b', fix: { range: [0, 1], text: 'b' } },
+            ],
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'multi-suggest-rule')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    expect(result.onComplete?.()![0].suggestion).toBe('First')
+  })
+
+  test('many reports accumulate correctly', () => {
+    const count = 50
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          for (let i = 0; i < count; i++) {
+            context.report({ message: `violation-${i}` })
+          }
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'many-report-rule')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    const violations = result.onComplete?.()
+    expect(violations).toHaveLength(count)
+    expect(violations![0].message).toBe('violation-0')
+    expect(violations![49].message).toBe('violation-49')
+  })
+
+  test('location with same start and end line', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'same line',
+            loc: { start: { line: 5, column: 0 }, end: { line: 5, column: 10 } },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'same-line-rule')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    const v = result.onComplete?.()![0]
+    expect(v.range.start.line).toBe(v.range.end.line)
+  })
+
+  test('location spanning multiple lines', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          context.report({
+            message: 'span',
+            loc: { start: { line: 1, column: 0 }, end: { line: 100, column: 50 } },
+          })
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'span-rule')
+    const result = adapted.create({})
+    result.visitor.visitSourceFile?.(createMockSourceFile(), createMockVisitorContext())
+
+    const v = result.onComplete?.()![0]
+    expect(v.range.end.line - v.range.start.line).toBe(99)
+  })
+})
+
+describe('adaptPluginRule with different plugin meta shapes', () => {
+  test('handles meta with all optional fields undefined', () => {
+    const pluginRule: PluginRuleDefinition = {
+      meta: {
+        type: 'problem',
+        severity: 'error',
+      },
+      create: () => ({}),
+    }
+
+    const adapted = adaptPluginRule(pluginRule, 'minimal-meta')
+
+    expect(adapted.meta.deprecated).toBeUndefined()
+    expect(adapted.meta.replacedBy).toBeUndefined()
+    expect(adapted.meta.fixable).toBeUndefined()
+    expect(adapted.meta.docs).toBeUndefined()
+  })
+
+  test('handles layout type rule', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ type: 'layout' }), 'layout-rule')
+    expect(adapted.meta.description).toBe('Test rule description')
+    expect(adapted.meta.category).toBe('style')
+  })
+
+  test('handles suggestion type rule', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ type: 'suggestion' }), 'suggestion-rule')
+    expect(adapted.meta.description).toBe('Test rule description')
+    expect(adapted.meta.category).toBe('style')
+  })
+
+  test('handles category patterns', () => {
+    const pluginRule = createMockPluginRule({ category: 'patterns' })
+    const adapted = adaptPluginRule(pluginRule, 'patterns-rule')
+    expect(adapted.meta.category).toBe('patterns')
+  })
+
+  test('handles category dependencies', () => {
+    const pluginRule = createMockPluginRule({ category: 'dependencies' })
+    const adapted = adaptPluginRule(pluginRule, 'deps-rule')
+    expect(adapted.meta.category).toBe('dependencies')
+  })
+
+  test('handles docs with both description and url', () => {
+    const pluginRule: PluginRuleDefinition = {
+      meta: {
+        type: 'problem',
+        severity: 'error',
+        docs: {
+          description: 'Rule with docs',
+          url: 'https://example.com/rule-docs',
+        },
+      },
+      create: () => ({}),
+    }
+
+    const adapted = adaptPluginRule(pluginRule, 'docs-both-rule')
+
+    expect(adapted.meta.docs).toEqual({
+      description: 'Rule with docs',
+      url: 'https://example.com/rule-docs',
+    })
+    expect(adapted.meta.description).toBe('Rule with docs')
+  })
+})
+
+describe('visitor.dispatch order', () => {
+  test('kind handler is called before generic handler', () => {
+    const callOrder: string[] = []
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: () => callOrder.push('kind'),
+        '*': () => callOrder.push('generic'),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'order-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'Identifier' }),
+      createMockVisitorContext(),
+    )
+
+    expect(callOrder).toEqual(['kind', 'generic'])
+  })
+
+  test('no handlers called when visitor has no matching keys', () => {
+    const handlerA = vi.fn()
+    const handlerB = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Identifier: handlerA,
+        StringLiteral: handlerB,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'no-match-rule')
+    const result = adapted.create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'NumericLiteral' }),
+      createMockVisitorContext(),
+    )
+
+    expect(handlerA).not.toHaveBeenCalled()
+    expect(handlerB).not.toHaveBeenCalled()
+  })
+})
+
+describe('source file handling details', () => {
+  test('visiting same source file twice resets violations', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => context.report({ message: 'dup' }),
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'reset-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile()
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(result.onComplete?.()).toHaveLength(1)
+  })
+
+  test('visiting different source files tracks correct file path', () => {
+    let capturedPath: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          capturedPath = context.getFilePath()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'path-track-rule')
+    const result = adapted.create({})
+    const sf1 = createMockSourceFile({ filePath: '/first.ts' })
+    const sf2 = createMockSourceFile({ filePath: '/second.ts' })
+
+    result.visitor.visitSourceFile?.(sf1, createMockVisitorContext())
+    expect(capturedPath).toBe('/first.ts')
+
+    result.visitor.visitSourceFile?.(sf2, createMockVisitorContext())
+    expect(capturedPath).toBe('/second.ts')
+  })
+
+  test('node visit after source file visit uses source file path', () => {
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        Identifier: () => {
+          // After source file visit, getFilePath should return the source file path
+          expect(context.getFilePath()).toBe('/src/module.ts')
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'sf-then-node-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ filePath: '/src/module.ts' })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'Identifier' }),
+      createMockVisitorContext(),
+    )
+  })
+
+  test('empty source text is handled', () => {
+    let capturedSource: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          capturedSource = context.getSource()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'empty-source-rule')
+    const result = adapted.create({})
+    const sf = createMockSourceFile({ fullText: '' })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(capturedSource).toBe('')
+  })
+
+  test('source text with special characters', () => {
+    let capturedSource: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => ({
+        SourceFile: () => {
+          capturedSource = context.getSource()
+        },
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'special-source-rule')
+    const result = adapted.create({})
+    const special = 'const s = "\u00e9\u00e0\u00fc";\n// comment\n'
+    const sf = createMockSourceFile({ fullText: special })
+
+    result.visitor.visitSourceFile?.(sf, createMockVisitorContext())
+
+    expect(capturedSource).toBe(special)
+  })
+})
+
+describe('additional category mappings', () => {
+  test('maps lowercase performance', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ category: 'performance' }), 'lp')
+    expect(adapted.meta.category).toBe('performance')
+  })
+
+  test('maps lowercase security', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ category: 'security' }), 'ls')
+    expect(adapted.meta.category).toBe('security')
+  })
+
+  test('maps lowercase correctness', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ category: 'correctness' }), 'lc')
+    expect(adapted.meta.category).toBe('correctness')
+  })
+
+  test('maps lowercase complexity', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ category: 'complexity' }), 'lx')
+    expect(adapted.meta.category).toBe('complexity')
+  })
+
+  test('maps mixed case PerForMance', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ category: 'PerForMance' }), 'mc')
+    expect(adapted.meta.category).toBe('performance')
+  })
+
+  test('maps mixed case SeCurIty', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ category: 'SeCurIty' }), 'ms')
+    expect(adapted.meta.category).toBe('security')
+  })
+})
+
+describe('rule meta field combinations', () => {
+  test('deprecated true with no replacedBy', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ deprecated: true }), 'dep-no-rep')
+    expect(adapted.meta.deprecated).toBe(true)
+    expect(adapted.meta.replacedBy).toBeUndefined()
+  })
+
+  test('deprecated false is falsy', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ deprecated: false }), 'dep-false')
+    expect(adapted.meta.deprecated).toBeFalsy()
+  })
+
+  test('fixable code is preserved', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ fixable: 'code' }), 'fix-code')
+    expect(adapted.meta.fixable).toBe('code')
+  })
+
+  test('fixable whitespace is preserved', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ fixable: 'whitespace' }), 'fix-ws')
+    expect(adapted.meta.fixable).toBe('whitespace')
+  })
+
+  test('severity error maps to error', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ severity: 'error' }), 'sev-e')
+    expect(adapted.meta.severity).toBe('error')
+  })
+
+  test('severity warn maps to warning', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ severity: 'warn' }), 'sev-w')
+    expect(adapted.meta.severity).toBe('warning')
+  })
+
+  test('severity off maps to info', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ severity: 'off' }), 'sev-o')
+    expect(adapted.meta.severity).toBe('info')
+  })
+
+  test('type problem produces error severity by default', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ type: 'problem' }), 'tp')
+    expect(adapted.meta.severity).toBe('error')
+  })
+
+  test('type suggestion with warn severity', () => {
+    const adapted = adaptPluginRule(
+      createMockPluginRule({ type: 'suggestion', severity: 'warn' }),
+      'ts',
+    )
+    expect(adapted.meta.severity).toBe('warning')
+  })
+
+  test('type layout with off severity', () => {
+    const adapted = adaptPluginRule(createMockPluginRule({ type: 'layout', severity: 'off' }), 'tl')
+    expect(adapted.meta.severity).toBe('info')
+  })
+})
+
+describe('PluginRuleContext methods', () => {
+  test('getAST always returns null', () => {
+    let result: unknown
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        result = context.getAST()
+        return {}
+      },
+    })
+
+    adaptPluginRule(pluginRule, 'ast-ctx').create({})
+    expect(result).toBeNull()
+  })
+
+  test('getTokens always returns empty array', () => {
+    let result: unknown
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        result = context.getTokens()
+        return {}
+      },
+    })
+
+    adaptPluginRule(pluginRule, 'tokens-ctx').create({})
+    expect(result).toEqual([])
+  })
+
+  test('getComments always returns empty array', () => {
+    let result: unknown
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        result = context.getComments()
+        return {}
+      },
+    })
+
+    adaptPluginRule(pluginRule, 'comments-ctx').create({})
+    expect(result).toEqual([])
+  })
+
+  test('config has options, rules, and transforms', () => {
+    let config: unknown
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        config = context.config
+        return {}
+      },
+    })
+
+    adaptPluginRule(pluginRule, 'config-ctx').create({})
+    expect(config).toEqual({ options: {}, rules: {}, transforms: [] })
+  })
+
+  test('workspaceRoot is process.cwd()', () => {
+    let root: unknown
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        root = context.workspaceRoot
+        return {}
+      },
+    })
+
+    adaptPluginRule(pluginRule, 'cwd-ctx').create({})
+    expect(root).toBe(process.cwd())
+  })
+
+  test('logger methods do not throw', () => {
+    let logger: unknown
+    const pluginRule = createMockPluginRule({
+      createVisitor: (context) => {
+        logger = context.logger
+        return {}
+      },
+    })
+
+    adaptPluginRule(pluginRule, 'logger-ctx').create({})
+    const l = logger as Record<string, () => void>
+    expect(() => l.debug('a')).not.toThrow()
+    expect(() => l.info('b')).not.toThrow()
+    expect(() => l.warn('c')).not.toThrow()
+    expect(() => l.error('d')).not.toThrow()
+  })
+})
+
+describe('more ESTree type conversions', () => {
+  test('ElementAccessExpression becomes MemberExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        MemberExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'elem-access').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ElementAccessExpression' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('MemberExpression')
+  })
+
+  test('BinaryExpression stays BinaryExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        BinaryExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'bin-expr').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'BinaryExpression' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('BinaryExpression')
+  })
+
+  test('CallExpression stays CallExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        CallExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'call-expr').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'CallExpression' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('CallExpression')
+  })
+
+  test('NewExpression stays NewExpression', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        NewExpression: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'new-expr').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'NewExpression' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('NewExpression')
+  })
+
+  test('SwitchStatement stays SwitchStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        SwitchStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'switch-rule').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'SwitchStatement' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('SwitchStatement')
+  })
+
+  test('TryStatement stays TryStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        TryStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'try-rule').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'TryStatement' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('TryStatement')
+  })
+
+  test('ForStatement stays ForStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ForStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'for-rule').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ForStatement' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('ForStatement')
+  })
+
+  test('WhileStatement stays WhileStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        WhileStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'while-rule').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'WhileStatement' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('WhileStatement')
+  })
+
+  test('FunctionDeclaration stays FunctionDeclaration', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        FunctionDeclaration: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'func-decl').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'FunctionDeclaration' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('FunctionDeclaration')
+  })
+
+  test('ClassDeclaration stays ClassDeclaration', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ClassDeclaration: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'class-decl').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ClassDeclaration' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('ClassDeclaration')
+  })
+
+  test('ImportDeclaration stays ImportDeclaration', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ImportDeclaration: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'import-decl').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ImportDeclaration' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('ImportDeclaration')
+  })
+
+  test('TemplateExpression becomes TemplateLiteral', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        TemplateLiteral: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'tpl-lit').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'TemplateExpression' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('TemplateLiteral')
+  })
+
+  test('ExpressionStatement stays ExpressionStatement', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ExpressionStatement: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'expr-stmt').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'ExpressionStatement' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('ExpressionStatement')
+  })
+
+  test('CatchClause stays CatchClause', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        CatchClause: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'catch-rule').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'CatchClause' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('CatchClause')
+  })
+
+  test('PropertyDeclaration becomes PropertyDefinition', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        PropertyDefinition: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'prop-def').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'PropertyDeclaration' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('PropertyDefinition')
+  })
+
+  test('PrivateIdentifier stays PrivateIdentifier', () => {
+    let capturedType: string | undefined
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        PrivateIdentifier: (node) => {
+          capturedType = (node as Record<string, unknown>).type as string
+        },
+      }),
+    })
+
+    const result = adaptPluginRule(pluginRule, 'priv-id').create({})
+    result.visitor.visitNode?.(
+      createMockNode({ kindName: 'PrivateIdentifier' }),
+      createMockVisitorContext(),
+    )
+    expect(capturedType).toBe('PrivateIdentifier')
+  })
+})
+
+describe('adaptPluginRule returns correct structure', () => {
+  test('has meta property', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'struct-rule')
+    expect(adapted).toHaveProperty('meta')
+  })
+
+  test('has create property', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'struct-rule')
+    expect(adapted).toHaveProperty('create')
+  })
+
+  test('has defaultOptions property', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'struct-rule')
+    expect(adapted).toHaveProperty('defaultOptions')
+  })
+
+  test('meta has required fields', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'fields-rule')
+    expect(adapted.meta).toHaveProperty('name')
+    expect(adapted.meta).toHaveProperty('description')
+    expect(adapted.meta).toHaveProperty('category')
+    expect(adapted.meta).toHaveProperty('recommended')
+  })
+
+  test('create returns object with visitor', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'visitor-rule')
+    const result = adapted.create({})
+    expect(result).toHaveProperty('visitor')
+  })
+
+  test('create returns object with onComplete', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'complete-rule')
+    const result = adapted.create({})
+    expect(result).toHaveProperty('onComplete')
+  })
+
+  test('visitor has visitSourceFile method', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'vsf-rule')
+    const result = adapted.create({})
+    expect(typeof result.visitor.visitSourceFile).toBe('function')
+  })
+
+  test('visitor has visitNode method', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'vn-rule')
+    const result = adapted.create({})
+    expect(typeof result.visitor.visitNode).toBe('function')
+  })
+
+  test('visitor has exitNode method', () => {
+    const adapted = adaptPluginRule(createMockPluginRule(), 'en-rule')
+    const result = adapted.create({})
+    expect(typeof result.visitor.exitNode).toBe('function')
   })
 })

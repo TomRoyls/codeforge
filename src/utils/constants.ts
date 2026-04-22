@@ -167,3 +167,19 @@ export const RANDOM_BYTES_LENGTH = 8
 
 /** File permission for executable scripts (rwxr-xr-x) */
 export const FILE_PERMISSION_EXECUTABLE = 0o755
+
+// ============================================================================
+// DEFAULT PATTERNS
+// ============================================================================
+
+export const DEFAULT_IGNORE_PATTERNS = [
+  'node_modules/**',
+  'dist/**',
+  'coverage/**',
+  '.git/**',
+  '*.min.js',
+  '*.min.ts',
+  'vendor/**',
+]
+
+export const DEFAULT_FILE_PATTERNS = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx']

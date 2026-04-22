@@ -10,6 +10,7 @@ import { type Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { type RuleWithFix } from '../fix/fixer.js'
 import { allRules, getRuleCategory } from '../rules/index.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { logger } from '../utils/logger.js'
 
 export function setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
@@ -169,6 +170,7 @@ export function filterFilesByExtension(
 export interface ApplyFixesResult {
   fixesApplied: number
   fixesSkipped: number
+  fileFixReports?: import('../fix/types.js').FileFixReport[]
 }
 
 export interface ApplyFixesOptions {
@@ -197,4 +199,66 @@ export async function applyFixesToFiles(
   const fixResult = await applyFixesFn({ ...applyFixesOptions, allViolations, dryRun, quiet })
 
   return fixResult
+}
+
+export async function setupRuleRegistryLazy(requestedRules?: string[]): Promise<RuleRegistry> {
+  const registry = new RuleRegistry()
+  const loadedRules = await lazyRuleLoader.loadAllRules()
+
+  for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
+    registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
+  }
+
+  if (requestedRules && requestedRules.length > 0) {
+    const validRuleIds = new Set(Object.keys(loadedRules))
+    const unknownRules = requestedRules.filter((r) => !validRuleIds.has(r))
+
+    if (unknownRules.length > 0) {
+      logger.warn(`Unknown rules will be ignored: ${unknownRules.join(', ')}`)
+    }
+
+    const requestedSet = new Set(requestedRules)
+
+    for (const [ruleId] of Object.entries(loadedRules)) {
+      if (!requestedSet.has(ruleId)) {
+        registry.disable(ruleId)
+      }
+    }
+  }
+
+  return registry
+}
+
+const PROFILE_SEVERITY_OVERRIDES: Record<string, Record<string, 'error' | 'info' | 'warning'>> = {
+  lenient: {
+    'max-complexity': 'info',
+    'max-depth': 'info',
+    'max-file-size': 'info',
+    'max-lines': 'info',
+    'max-params': 'info',
+    'no-console': 'info',
+    'no-magic-numbers': 'info',
+  },
+  moderate: {
+    'max-complexity': 'warning',
+    'max-depth': 'warning',
+    'max-file-size': 'warning',
+    'no-console': 'warning',
+    'no-magic-numbers': 'warning',
+  },
+  strict: {
+    'no-console': 'error',
+    'no-debugger': 'error',
+    'no-eval': 'error',
+    'no-explicit-any': 'error',
+    'no-implicit-coercion': 'error',
+    'no-unused-vars': 'error',
+    'prefer-const': 'error',
+  },
+}
+
+export function getProfileSeverityOverrides(
+  profile: 'lenient' | 'moderate' | 'strict',
+): Record<string, 'error' | 'info' | 'warning'> {
+  return PROFILE_SEVERITY_OVERRIDES[profile] ?? {}
 }

@@ -753,3 +753,1681 @@ describe('combined skip options', () => {
     expect(violations).toHaveLength(0)
   })
 })
+
+describe('maxLinesRule meta expanded', () => {
+  test('meta has fixable property set to code', () => {
+    expect(maxLinesRule.meta.fixable).toBe('code')
+  })
+
+  test('meta name is a string', () => {
+    expect(typeof maxLinesRule.meta.name).toBe('string')
+  })
+
+  test('meta description mentions file', () => {
+    expect(maxLinesRule.meta.description).toContain('file')
+  })
+
+  test('meta description mentions maximum', () => {
+    expect(maxLinesRule.meta.description).toContain('maximum')
+  })
+
+  test('meta category is complexity', () => {
+    expect(maxLinesRule.meta.category).toBe('complexity')
+  })
+
+  test('defaultOptions has max property', () => {
+    expect(maxLinesRule.defaultOptions).toHaveProperty('max')
+  })
+
+  test('defaultOptions has skipBlankLines property', () => {
+    expect(maxLinesRule.defaultOptions).toHaveProperty('skipBlankLines')
+  })
+
+  test('defaultOptions has skipComments property', () => {
+    expect(maxLinesRule.defaultOptions).toHaveProperty('skipComments')
+  })
+})
+
+describe('maxLinesPerFunctionRule meta expanded', () => {
+  test('meta has fixable property set to code', () => {
+    expect(maxLinesPerFunctionRule.meta.fixable).toBe('code')
+  })
+
+  test('meta name is a string', () => {
+    expect(typeof maxLinesPerFunctionRule.meta.name).toBe('string')
+  })
+
+  test('meta description mentions function', () => {
+    expect(maxLinesPerFunctionRule.meta.description).toContain('function')
+  })
+
+  test('meta description mentions maximum', () => {
+    expect(maxLinesPerFunctionRule.meta.description).toContain('maximum')
+  })
+
+  test('meta category is complexity', () => {
+    expect(maxLinesPerFunctionRule.meta.category).toBe('complexity')
+  })
+
+  test('defaultOptions has max property', () => {
+    expect(maxLinesPerFunctionRule.defaultOptions).toHaveProperty('max')
+  })
+
+  test('defaultOptions has skipBlankLines property', () => {
+    expect(maxLinesPerFunctionRule.defaultOptions).toHaveProperty('skipBlankLines')
+  })
+
+  test('defaultOptions has skipComments property', () => {
+    expect(maxLinesPerFunctionRule.defaultOptions).toHaveProperty('skipComments')
+  })
+})
+
+describe('maxLinesRule create expanded', () => {
+  test('create returns object with visitor property', () => {
+    const instance = maxLinesRule.create({})
+    expect(instance).toHaveProperty('visitor')
+  })
+
+  test('create returns object with onComplete property', () => {
+    const instance = maxLinesRule.create({})
+    expect(instance).toHaveProperty('onComplete')
+  })
+
+  test('visitor does not have visitFunction', () => {
+    const instance = maxLinesRule.create({})
+    expect(instance.visitor.visitFunction).toBeUndefined()
+  })
+
+  test('onComplete returns array when called without visit', () => {
+    const instance = maxLinesRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    const violations = instance.onComplete!()
+    expect(Array.isArray(violations)).toBe(true)
+  })
+
+  test('multiple source file visits accumulate violations', () => {
+    const sf1 = createMockSourceFileWithLines(150)
+    const ctx1 = createMockVisitorContext(sf1)
+    const sf2 = createMockSourceFileWithLines(200)
+    const ctx2 = createMockVisitorContext(sf2)
+    const instance = maxLinesRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitSourceFile!(sf1, ctx1)
+    instance.visitor.visitSourceFile!(sf2, ctx2)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(2)
+  })
+})
+
+describe('maxLinesPerFunctionRule create expanded', () => {
+  test('create returns object with visitor property', () => {
+    const instance = maxLinesPerFunctionRule.create({})
+    expect(instance).toHaveProperty('visitor')
+  })
+
+  test('create returns object with onComplete property', () => {
+    const instance = maxLinesPerFunctionRule.create({})
+    expect(instance).toHaveProperty('onComplete')
+  })
+
+  test('visitor does not have visitSourceFile', () => {
+    const instance = maxLinesPerFunctionRule.create({})
+    expect(instance.visitor.visitSourceFile).toBeUndefined()
+  })
+
+  test('onComplete returns array when called without visit', () => {
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    const violations = instance.onComplete!()
+    expect(Array.isArray(violations)).toBe(true)
+  })
+
+  test('multiple function visits accumulate violations', () => {
+    const fn1 = createMockFunctionWithLines(1, 60, 'func1')
+    const fn2 = createMockFunctionWithLines(1, 70, 'func2')
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn1, ctx)
+    instance.visitor.visitFunction!(fn2, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(2)
+  })
+})
+
+describe('file under max lines - various counts', () => {
+  test('1-line file with max 10 has no violation', () => {
+    const sf = createMockSourceFileWithLines(1)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 10, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('5-line file with max 10 has no violation', () => {
+    const sf = createMockSourceFileWithLines(5)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 10, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('50-line file with max 100 has no violation', () => {
+    const sf = createMockSourceFileWithLines(50)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('99-line file with max 100 has no violation', () => {
+    const sf = createMockSourceFileWithLines(99)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('250-line file with max 300 has no violation', () => {
+    const sf = createMockSourceFileWithLines(250)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 300, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('299-line file with max 300 has no violation', () => {
+    const sf = createMockSourceFileWithLines(299)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 300, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('2-line file with max 2 has no violation', () => {
+    const sf = createMockSourceFileWithLines(2)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('10-line file with max 10 has no violation', () => {
+    const sf = createMockSourceFileWithLines(10)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 10, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('file at exactly max lines', () => {
+  test('100-line file at max 100 has no violation', () => {
+    const sf = createMockSourceFileWithLines(100)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('1-line file at max 1 has no violation', () => {
+    const sf = createMockSourceFileWithLines(1)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('300-line file at max 300 has no violation', () => {
+    const sf = createMockSourceFileWithLines(300)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 300, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('50-line file at max 50 has no violation', () => {
+    const sf = createMockSourceFileWithLines(50)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 50, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('500-line file at max 500 has no violation', () => {
+    const sf = createMockSourceFileWithLines(500)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 500, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('file over max lines - various counts', () => {
+  test('11-line file with max 10 has violation', () => {
+    const sf = createMockSourceFileWithLines(11)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 10, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('11 lines')
+  })
+
+  test('200-line file with max 100 has violation', () => {
+    const sf = createMockSourceFileWithLines(200)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('200 lines')
+  })
+
+  test('301-line file with max 300 has violation', () => {
+    const sf = createMockSourceFileWithLines(301)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 300, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('301 lines')
+  })
+
+  test('2-line file with max 1 has violation', () => {
+    const sf = createMockSourceFileWithLines(2)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('101-line file with max 100 has violation message with max', () => {
+    const sf = createMockSourceFileWithLines(101)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].message).toContain('100')
+  })
+
+  test('5000-line file with max 100 has violation', () => {
+    const sf = createMockSourceFileWithLines(5000)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('5000 lines')
+  })
+
+  test('51-line file with max 50 has violation', () => {
+    const sf = createMockSourceFileWithLines(51)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 50, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('102-line file with max 1 has violation showing 102 lines', () => {
+    const sf = createMockSourceFileWithLines(102)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].message).toContain('102 lines')
+  })
+
+  test('150-line file violation message mentions maximum', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].message).toContain('Maximum allowed')
+  })
+
+  test('violation message includes max threshold value', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 42, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].message).toContain('42')
+  })
+})
+
+describe('function under max lines - various counts', () => {
+  test('5-line function with max 50 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 5)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('25-line function with max 50 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 25)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('49-line function with max 50 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 49)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('1-line function with max 1 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 1)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('10-line function with max 10 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 10)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 10,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function starting at line 10 ending at line 20 with max 11 has no violation', () => {
+    const fn = createMockFunctionWithLines(10, 20)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 11,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('3-line function with max 5 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 3)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 5,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('20-line function with max 20 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 20)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 20,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('function at exactly max lines', () => {
+  test('50-line function at max 50 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 50)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('100-line function at max 100 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 100)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('1-line function at max 1 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 1)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function starting at line 5 ending at line 15 at max 11 has no violation', () => {
+    const fn = createMockFunctionWithLines(5, 15)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 11,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('200-line function at max 200 has no violation', () => {
+    const fn = createMockFunctionWithLines(1, 200)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 200,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('function over max lines - various counts', () => {
+  test('51-line function with max 50 has violation', () => {
+    const fn = createMockFunctionWithLines(1, 51)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('100-line function with max 50 has violation showing 100 lines', () => {
+    const fn = createMockFunctionWithLines(1, 100)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].message).toContain('100 lines')
+  })
+
+  test('2-line function with max 1 has violation', () => {
+    const fn = createMockFunctionWithLines(1, 2)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('11-line function with max 10 has violation', () => {
+    const fn = createMockFunctionWithLines(1, 11)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 10,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('function starting at line 10 ending at 20 with max 10 has violation', () => {
+    const fn = createMockFunctionWithLines(10, 20)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 10,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('violation message includes function name', () => {
+    const fn = createMockFunctionWithLines(1, 60, 'namedFunc')
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].message).toContain("'namedFunc'")
+  })
+
+  test('violation message includes line count', () => {
+    const fn = createMockFunctionWithLines(1, 75)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].message).toContain('75 lines')
+  })
+
+  test('violation message includes max value', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 30,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].message).toContain('30')
+  })
+
+  test('200-line function with max 10 has violation', () => {
+    const fn = createMockFunctionWithLines(1, 200)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 10,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+    expect(instance.onComplete!()[0].message).toContain('200 lines')
+  })
+
+  test('violation message says Maximum allowed', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].message).toContain('Maximum allowed')
+  })
+})
+
+describe('skipBlankLines for file - expanded', () => {
+  test('skipBlankLines=true does not count blank lines toward total', () => {
+    const text = 'a\n\n\nb'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: true, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipBlankLines=false counts all lines including blank', () => {
+    const text = 'a\n\n\nb'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 3, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('skipBlankLines=true with all blank lines except one', () => {
+    const text = '\n\n\na\n\n'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: true, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipBlankLines=false with all blank lines triggers violation', () => {
+    const text = '\n\n\n\n'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 3, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('skipBlankLines=true with all blank lines passes', () => {
+    const text = '\n\n\n\n'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: true, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipBlankLines=false with many blank lines has correct line count', () => {
+    const text = 'a\n\n\n\n\n\nb'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 5, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('7 lines')
+  })
+})
+
+describe('skipBlankLines for function - expanded', () => {
+  test('skipBlankLines=true skips blank lines in function', () => {
+    const text = 'code\n\n\ncode2'
+    const sfWithText = {
+      ...createMockSourceFile(),
+      getFullText: () => text,
+      getDescendants: () => [],
+    }
+    const fn = {
+      ...createMockFunctionDeclaration({ functionName: 'blankFn' }),
+      getSourceFile: () => sfWithText,
+      getStartLineNumber: () => 1,
+      getEndLineNumber: () => 4,
+      getDescendants: () => [],
+    }
+    const ctx = createMockVisitorContext(sfWithText as unknown as SourceFile)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 2,
+      skipBlankLines: true,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn as unknown as FunctionLikeNode, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipBlankLines=false counts blank lines in function', () => {
+    const text = 'code\n\n\ncode2'
+    const sfWithText = {
+      ...createMockSourceFile(),
+      getFullText: () => text,
+      getDescendants: () => [],
+    }
+    const fn = {
+      ...createMockFunctionDeclaration({ functionName: 'blankFn' }),
+      getSourceFile: () => sfWithText,
+      getStartLineNumber: () => 1,
+      getEndLineNumber: () => 4,
+      getDescendants: () => [],
+    }
+    const ctx = createMockVisitorContext(sfWithText as unknown as SourceFile)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 2,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn as unknown as FunctionLikeNode, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('skipBlankLines=true with function containing only blank lines passes', () => {
+    const text = '\n\n\n'
+    const sfWithText = {
+      ...createMockSourceFile(),
+      getFullText: () => text,
+      getDescendants: () => [],
+    }
+    const fn = {
+      ...createMockFunctionDeclaration({ functionName: 'blankFn' }),
+      getSourceFile: () => sfWithText,
+      getStartLineNumber: () => 1,
+      getEndLineNumber: () => 3,
+      getDescendants: () => [],
+    }
+    const ctx = createMockVisitorContext(sfWithText as unknown as SourceFile)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: true,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn as unknown as FunctionLikeNode, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('skipComments for file - expanded', () => {
+  test('skipComments=true with only comment lines passes', () => {
+    const text = '// comment 1\n// comment 2'
+    const mockCommentRange = {
+      getPos: () => 0,
+      getEnd: () => 12,
+    }
+    const mockCommentRange2 = {
+      getPos: () => 13,
+      getEnd: () => 25,
+    }
+    const mockNode = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockCommentRange, mockCommentRange2],
+    }
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => [mockNode]),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: false, skipComments: true })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipComments=false with comment lines counts them', () => {
+    const text = '// comment 1\n// comment 2\n// comment 3'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('skipComments=true with mixed code and comments', () => {
+    const text = 'code1\n// comment\ncode2'
+    const mockRange = {
+      getPos: () => 6,
+      getEnd: () => 16,
+    }
+    const mockNode = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockRange],
+    }
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => [mockNode]),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: true })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipComments=true with trailing comment', () => {
+    const text = 'code1 // inline comment\ncode2'
+    const mockRange = {
+      getPos: () => 6,
+      getEnd: () => 23,
+    }
+    const mockNode = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockRange],
+    }
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => [mockNode]),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: true })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('skipComments for function - expanded', () => {
+  test('skipComments=true skips comment lines in function', () => {
+    const text = 'code\n// comment\ncode2\n// comment2\ncode3'
+    const mockRange = {
+      getPos: () => 5,
+      getEnd: () => 15,
+    }
+    const mockRange2 = {
+      getPos: () => 22,
+      getEnd: () => 33,
+    }
+    const mockChild = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockRange, mockRange2],
+    }
+    const sfWithText = {
+      ...createMockSourceFile(),
+      getFullText: () => text,
+      getDescendants: () => [],
+    }
+    const fn = {
+      ...createMockFunctionDeclaration({ functionName: 'commentFn' }),
+      getSourceFile: () => sfWithText,
+      getStartLineNumber: () => 1,
+      getEndLineNumber: () => 5,
+      getDescendants: () => [mockChild],
+    }
+    const ctx = createMockVisitorContext(sfWithText as unknown as SourceFile)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 3,
+      skipBlankLines: false,
+      skipComments: true,
+    })
+    instance.visitor.visitFunction!(fn as unknown as FunctionLikeNode, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipComments=false counts comment lines in function', () => {
+    const text = 'code\n// comment\ncode2\n// comment2\ncode3'
+    const sfWithText = {
+      ...createMockSourceFile(),
+      getFullText: () => text,
+      getDescendants: () => [],
+    }
+    const fn = {
+      ...createMockFunctionDeclaration({ functionName: 'commentFn' }),
+      getSourceFile: () => sfWithText,
+      getStartLineNumber: () => 1,
+      getEndLineNumber: () => 5,
+      getDescendants: () => [],
+    }
+    const ctx = createMockVisitorContext(sfWithText as unknown as SourceFile)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 4,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn as unknown as FunctionLikeNode, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+})
+
+describe('combined skip options - expanded', () => {
+  test('skipBlankLines=true and skipComments=false with blank lines only', () => {
+    const text = 'a\n\nb'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: true, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipBlankLines=false and skipComments=true with comments only', () => {
+    const text = 'a\n// comment\nb'
+    const mockRange = {
+      getPos: () => 2,
+      getEnd: () => 12,
+    }
+    const mockNode = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockRange],
+    }
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => [mockNode]),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: true })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('skipBlankLines=false and skipComments=false counts everything', () => {
+    const text = 'a\n\n// comment\nb'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 3, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('skipBlankLines=true and skipComments=true with mixed content passes', () => {
+    const text = 'code\n\n// comment\n\ncode2'
+    const mockRange = {
+      getPos: () => 6,
+      getEnd: () => 16,
+    }
+    const mockNode = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockRange],
+    }
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => [mockNode]),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: true, skipComments: true })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('custom max option - file rule', () => {
+  test('max=1 triggers on 2-line file', () => {
+    const sf = createMockSourceFileWithLines(2)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('max=500 does not trigger on 100-line file', () => {
+    const sf = createMockSourceFileWithLines(100)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 500, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('max=1000 does not trigger on 1000-line file', () => {
+    const sf = createMockSourceFileWithLines(1000)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 1000, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('max=1000 triggers on 1001-line file', () => {
+    const sf = createMockSourceFileWithLines(1001)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 1000, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('max=5 triggers on 6-line file', () => {
+    const sf = createMockSourceFileWithLines(6)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 5, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+})
+
+describe('custom max option - function rule', () => {
+  test('max=1 triggers on 2-line function', () => {
+    const fn = createMockFunctionWithLines(1, 2)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('max=100 does not trigger on 50-line function', () => {
+    const fn = createMockFunctionWithLines(1, 50)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('max=100 does not trigger on 100-line function', () => {
+    const fn = createMockFunctionWithLines(1, 100)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('max=100 triggers on 101-line function', () => {
+    const fn = createMockFunctionWithLines(1, 101)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('max=5 triggers on 6-line function', () => {
+    const fn = createMockFunctionWithLines(1, 6)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 5,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('max=200 does not trigger on 200-line function', () => {
+    const fn = createMockFunctionWithLines(1, 200)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 200,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+})
+
+describe('violation properties - file rule', () => {
+  test('violation has filePath property', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const v = instance.onComplete!()[0]
+    expect(v).toHaveProperty('filePath')
+    expect(v.filePath).toBeDefined()
+  })
+
+  test('violation has range property', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const v = instance.onComplete!()[0]
+    expect(v).toHaveProperty('range')
+    expect(v.range).toBeDefined()
+  })
+
+  test('violation has message property', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const v = instance.onComplete!()[0]
+    expect(v).toHaveProperty('message')
+    expect(typeof v.message).toBe('string')
+  })
+
+  test('violation has suggestion property', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const v = instance.onComplete!()[0]
+    expect(v).toHaveProperty('suggestion')
+    expect(typeof v.suggestion).toBe('string')
+  })
+
+  test('violation has severity warning', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].severity).toBe('warning')
+  })
+
+  test('violation suggestion mentions splitting', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].suggestion).toContain('splitting')
+  })
+})
+
+describe('violation properties - function rule', () => {
+  test('violation has filePath property', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    const v = instance.onComplete!()[0]
+    expect(v).toHaveProperty('filePath')
+  })
+
+  test('violation has range property', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    const v = instance.onComplete!()[0]
+    expect(v).toHaveProperty('range')
+  })
+
+  test('violation has suggestion mentioning smaller functions', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].suggestion).toContain('smaller')
+  })
+
+  test('violation has severity warning', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].severity).toBe('warning')
+  })
+
+  test('violation message includes single quotes around function name', () => {
+    const fn = createMockFunctionWithLines(1, 60, 'myFunc')
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].message).toContain("'myFunc'")
+  })
+
+  test('violation has ruleId max-lines-per-function', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 50,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()[0].ruleId).toBe('max-lines-per-function')
+  })
+})
+
+describe('analyzeMaxLines standalone - expanded', () => {
+  test('returns empty for file with 10 lines and max 100', () => {
+    const sf = createMockSourceFileWithLines(10)
+    expect(analyzeMaxLines(sf, 100, {})).toHaveLength(0)
+  })
+
+  test('returns violation for file with 200 lines and max 100', () => {
+    const sf = createMockSourceFileWithLines(200)
+    const violations = analyzeMaxLines(sf, 100, {})
+    expect(violations).toHaveLength(1)
+  })
+
+  test('returns empty for file at exact limit', () => {
+    const sf = createMockSourceFileWithLines(100)
+    expect(analyzeMaxLines(sf, 100, {})).toHaveLength(0)
+  })
+
+  test('returns violation with correct ruleId', () => {
+    const sf = createMockSourceFileWithLines(200)
+    expect(analyzeMaxLines(sf, 100, {})[0].ruleId).toBe('max-lines')
+  })
+
+  test('returns violation with warning severity', () => {
+    const sf = createMockSourceFileWithLines(200)
+    expect(analyzeMaxLines(sf, 100, {})[0].severity).toBe('warning')
+  })
+
+  test('returns violation with suggestion', () => {
+    const sf = createMockSourceFileWithLines(200)
+    expect(analyzeMaxLines(sf, 100, {})[0].suggestion).toBeDefined()
+  })
+
+  test('uses default max of 300 when maxLines not specified', () => {
+    const sf = createMockSourceFileWithLines(50)
+    expect(analyzeMaxLines(sf)).toHaveLength(0)
+  })
+
+  test('uses default max of 300 - triggers on 301', () => {
+    const sf = createMockSourceFileWithLines(301)
+    const violations = analyzeMaxLines(sf)
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('301 lines')
+  })
+
+  test('respects skipBlankLines option', () => {
+    const text = 'a\n\n\nb'
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => []),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const violations = analyzeMaxLines(sf as unknown as SourceFile, 2, { skipBlankLines: true })
+    expect(violations).toHaveLength(0)
+  })
+
+  test('respects skipComments option', () => {
+    const text = 'a\n// comment\nb'
+    const mockRange = {
+      getPos: () => 2,
+      getEnd: () => 12,
+    }
+    const mockNode = {
+      getLeadingCommentRanges: () => [],
+      getTrailingCommentRanges: () => [mockRange],
+    }
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => text),
+      getDescendants: vi.fn(() => [mockNode]),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const violations = analyzeMaxLines(sf as unknown as SourceFile, 2, { skipComments: true })
+    expect(violations).toHaveLength(0)
+  })
+
+  test('violation message contains line count', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const violations = analyzeMaxLines(sf, 100, {})
+    expect(violations[0].message).toContain('150 lines')
+  })
+
+  test('violation message contains max threshold', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const violations = analyzeMaxLines(sf, 100, {})
+    expect(violations[0].message).toContain('100')
+  })
+})
+
+describe('analyzeMaxLinesPerFunction standalone - expanded', () => {
+  test('returns empty for source file with small function', () => {
+    const fn = createMockFunctionWithLines(1, 10)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    expect(analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})).toHaveLength(0)
+  })
+
+  test('returns violation for source file with large function', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    const violations = analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})
+    expect(violations).toHaveLength(1)
+  })
+
+  test('returns violation with correct ruleId', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    expect(analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})[0].ruleId).toBe(
+      'max-lines-per-function',
+    )
+  })
+
+  test('returns violation with warning severity', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    expect(analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})[0].severity).toBe(
+      'warning',
+    )
+  })
+
+  test('returns violation with suggestion', () => {
+    const fn = createMockFunctionWithLines(1, 60)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    expect(
+      analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})[0].suggestion,
+    ).toBeDefined()
+  })
+
+  test('uses default max of 50', () => {
+    const fn = createMockFunctionWithLines(1, 10)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    expect(analyzeMaxLinesPerFunction(sf as unknown as SourceFile)).toHaveLength(0)
+  })
+
+  test('uses default max of 50 - triggers on 51-line function', () => {
+    const fn = createMockFunctionWithLines(1, 51)
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn)
+      },
+    }
+    expect(analyzeMaxLinesPerFunction(sf as unknown as SourceFile)).toHaveLength(1)
+  })
+
+  test('returns empty for source file with no children', () => {
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (_cb: (node: unknown) => void) => {},
+    }
+    expect(analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})).toHaveLength(0)
+  })
+
+  test('finds multiple violating functions', () => {
+    const fn1 = createMockFunctionWithLines(1, 60, 'func1')
+    const fn2 = createMockFunctionWithLines(1, 70, 'func2')
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn1)
+        cb(fn2)
+      },
+    }
+    const violations = analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})
+    expect(violations).toHaveLength(2)
+  })
+
+  test('skips functions within limit', () => {
+    const fn1 = createMockFunctionWithLines(1, 10, 'small')
+    const fn2 = createMockFunctionWithLines(1, 60, 'large')
+    const sf = {
+      ...createMockSourceFile(),
+      getKind: () => SyntaxKind.SourceFile,
+      forEachChild: (cb: (node: unknown) => void) => {
+        cb(fn1)
+        cb(fn2)
+      },
+    }
+    const violations = analyzeMaxLinesPerFunction(sf as unknown as SourceFile, 50, {})
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain("'large'")
+  })
+})
+
+describe('edge cases - expanded', () => {
+  test('empty string file has no violation with max 1', () => {
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => ''),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('single newline file has 1 line', () => {
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => '\n'),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function spanning single line at max 1 passes', () => {
+    const fn = createMockFunctionWithLines(5, 5)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function spanning 2 lines at max 1 fails', () => {
+    const fn = createMockFunctionWithLines(5, 6)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('very large file with 10000 lines triggers violation', () => {
+    const sf = createMockSourceFileWithLines(10000)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('10000 lines')
+  })
+
+  test('function starting at line 100 ending at 200 with max 101 passes', () => {
+    const fn = createMockFunctionWithLines(100, 200)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 101,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function starting at line 100 ending at 200 with max 100 fails', () => {
+    const fn = createMockFunctionWithLines(100, 200)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('function at very high line numbers', () => {
+    const fn = createMockFunctionWithLines(5000, 5100)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 100,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(1)
+  })
+
+  test('empty file with skipBlankLines true has no violation', () => {
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => ''),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: true, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('file with only newlines and skipBlankLines=true passes', () => {
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => '\n\n\n\n\n'),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 1, skipBlankLines: true, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('single newline counted as 2 lines with skipBlankLines=false', () => {
+    const sf = createMockSourceFile({
+      getFullText: vi.fn(() => '\n'),
+    })
+    ;(sf as { getKind: () => number }).getKind = () => SyntaxKind.SourceFile
+    const ctx = createMockVisitorContext(sf as unknown as SourceFile)
+    const instance = maxLinesRule.create({ max: 2, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf as unknown as SourceFile, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function with same start and end line counted as 1', () => {
+    const fn = createMockFunctionWithLines(42, 42)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 1,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    expect(instance.onComplete!()).toHaveLength(0)
+  })
+
+  test('function with same start and end line at max 0 triggers violation', () => {
+    const fn = createMockFunctionWithLines(42, 42)
+    const sf = createMockSourceFile()
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesPerFunctionRule.create({
+      max: 0,
+      skipBlankLines: false,
+      skipComments: false,
+    })
+    instance.visitor.visitFunction!(fn, ctx)
+    const violations = instance.onComplete!()
+    expect(violations).toHaveLength(1)
+    expect(violations[0].message).toContain('1 lines')
+  })
+
+  test('max-lines violation filePath matches sourceFile path', () => {
+    const sf = createMockSourceFileWithLines(150)
+    const ctx = createMockVisitorContext(sf)
+    const instance = maxLinesRule.create({ max: 100, skipBlankLines: false, skipComments: false })
+    instance.visitor.visitSourceFile!(sf, ctx)
+    expect(instance.onComplete!()[0].filePath).toBe(sf.getFilePath())
+  })
+})

@@ -139,6 +139,48 @@ export class RuleRegistry {
 
     return allViolations
   }
+
+  /**
+   * Runs all enabled rules against a source file with batched processing.
+   * Processes rules in batches to limit memory usage during analysis.
+   * @param sourceFile - The TypeScript source file to analyze
+   * @param batchSize - Number of rules to process in each batch
+   * @returns Array of rule violations found in the source file
+   */
+  runRulesBatched(sourceFile: SourceFile, batchSize: number): RuleViolation[] {
+    const enabledRules = this.getEnabledRules()
+    const allViolations: RuleViolation[] = []
+
+    for (let i = 0; i < enabledRules.length; i += batchSize) {
+      const batch = enabledRules.slice(i, i + batchSize)
+      const visitors: ASTVisitor[] = []
+      const onCompleteCallbacks: (() => RuleViolation[])[] = []
+
+      for (const loadedRule of batch) {
+        const { definition, options } = loadedRule
+        const { visitor, onComplete } = definition.create(options)
+        visitors.push(visitor)
+        if (onComplete) onCompleteCallbacks.push(onComplete)
+      }
+
+      traverseASTMultiple(sourceFile, visitors, allViolations)
+
+      for (const onComplete of onCompleteCallbacks) {
+        const violations = onComplete()
+        allViolations.push(...violations)
+      }
+    }
+
+    return allViolations
+  }
+
+  /**
+   * Gets all registered rules (both enabled and disabled)
+   * @returns Array of all LoadedRule objects
+   */
+  getAllRules(): LoadedRule[] {
+    return Array.from(this.rules.values())
+  }
 }
 
 /**

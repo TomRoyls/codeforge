@@ -286,9 +286,12 @@ export class ResultCache {
       for (const file of files) {
         try {
           const content = await readFile(path.join(this.cacheDir, file), 'utf-8')
-          const entry: CachedResultEntry = JSON.parse(content)
+          const raw = JSON.parse(content) as { value?: CachedResultEntry }
 
-          if (entry.filePath === filePath) {
+          const entry: CachedResultEntry | undefined =
+            raw.value ?? (raw as unknown as CachedResultEntry)
+
+          if (entry?.filePath === filePath) {
             await unlink(path.join(this.cacheDir, file))
             deleted++
           }
