@@ -123,7 +123,7 @@ describe('max-file-size rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       expect(visitor).toHaveProperty('Program')
@@ -131,7 +131,7 @@ describe('max-file-size rule', () => {
     })
 
     test('should not report small files', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -156,11 +156,11 @@ describe('max-file-size rule', () => {
 
     test('should report file exceeding maxCharacters', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -170,14 +170,14 @@ describe('max-file-size rule', () => {
     })
 
     test('should handle null node gracefully in Program', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       expect(() => visitor.Program(null)).not.toThrow()
     })
 
     test('should handle Program:exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -203,13 +203,13 @@ describe('max-file-size rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
       expect(visitor).not.toBeNull()
     })
 
     test('should return visitor as object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
       expect(typeof visitor).toBe('object')
     })
@@ -221,19 +221,19 @@ describe('max-file-size rule', () => {
     })
 
     test('should return visitor with Program as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
       expect(typeof visitor.Program).toBe('function')
     })
 
     test('should return visitor with Program:exit as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
       expect(typeof visitor['Program:exit']).toBe('function')
     })
 
     test('should handle undefined node in Program', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
       expect(() => visitor.Program(undefined)).not.toThrow()
     })
@@ -270,11 +270,11 @@ describe('max-file-size rule', () => {
 
     test('should respect ignoreComments option', () => {
       const source = '// comment\n'.repeat(100) + 'const x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 50, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 50, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -284,11 +284,11 @@ describe('max-file-size rule', () => {
 
     test('should respect ignoreBlankLines option', () => {
       const source = '\n'.repeat(100) + 'const x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 50, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 50, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -298,11 +298,11 @@ describe('max-file-size rule', () => {
 
     test('should respect exclude option with exact match', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['/src/file.ts'] },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['/src/file.ts'] }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       if (visitor.Program) {
@@ -314,11 +314,11 @@ describe('max-file-size rule', () => {
 
     test('should respect exclude option with glob pattern', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['**/*.test.ts'] },
-        '/src/file.test.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['**/*.test.ts'] }],
+        filePath: '/src/file.test.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       if (visitor.Program) {
@@ -329,7 +329,7 @@ describe('max-file-size rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -423,11 +423,11 @@ describe('max-file-size rule', () => {
 
     test('should not report when character count equals maxCharacters', () => {
       const source = createLargeCharacterSource(1000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 1000 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 1000 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -451,11 +451,11 @@ describe('max-file-size rule', () => {
 
     test('should report when character count is one over maxCharacters', () => {
       const source = createLargeCharacterSource(1001)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 1000 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 1000 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -592,11 +592,11 @@ describe('max-file-size rule', () => {
 
     test('should count characters including newlines', () => {
       const source = 'a\nb\nc'
-      const { context, reports } = createMockContext(
-        { maxCharacters: source.length },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: source.length }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -620,11 +620,11 @@ describe('max-file-size rule', () => {
 
     test('should handle very large character count', () => {
       const source = createLargeCharacterSource(100000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -634,11 +634,11 @@ describe('max-file-size rule', () => {
 
     test('should count unicode characters', () => {
       const source = '🎉'.repeat(50)
-      const { context, reports } = createMockContext(
-        { maxCharacters: source.length },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: source.length }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -648,11 +648,11 @@ describe('max-file-size rule', () => {
 
     test('should count whitespace characters', () => {
       const source = '     '.repeat(20)
-      const { context, reports } = createMockContext(
-        { maxCharacters: source.length },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: source.length }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -662,11 +662,11 @@ describe('max-file-size rule', () => {
 
     test('should count tab characters', () => {
       const source = '\t\t\t'.repeat(20)
-      const { context, reports } = createMockContext(
-        { maxCharacters: source.length },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: source.length }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -717,11 +717,11 @@ describe('max-file-size rule', () => {
   describe('comment handling', () => {
     test('should remove single-line comments when ignoreComments is true', () => {
       const source = '// comment line 1\n// comment line 2\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -732,11 +732,11 @@ describe('max-file-size rule', () => {
 
     test('should remove multi-line comments when ignoreComments is true', () => {
       const source = '/* comment\nline 2\nline 3 */\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -746,11 +746,11 @@ describe('max-file-size rule', () => {
 
     test('should count comments as lines when ignoreComments is false', () => {
       const source = '// comment line\n'.repeat(20) + 'const x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 10, ignoreComments: false },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10, ignoreComments: false }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -760,7 +760,11 @@ describe('max-file-size rule', () => {
 
     test('should count comments as lines when ignoreComments is not set', () => {
       const source = '// comment line\n'.repeat(20) + 'const x = 1;'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -770,11 +774,11 @@ describe('max-file-size rule', () => {
 
     test('should handle inline comments after code', () => {
       const source = 'const x = 1; // inline comment\n'.repeat(5)
-      const { context, reports } = createMockContext(
-        { maxLines: 10, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -784,11 +788,11 @@ describe('max-file-size rule', () => {
 
     test('should handle multiple multi-line comments', () => {
       const source = '/* a */\n/* b */\n/* c */\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -798,11 +802,11 @@ describe('max-file-size rule', () => {
 
     test('should handle nested-like comments gracefully', () => {
       const source = '/* outer /* inner */ end */\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -813,11 +817,11 @@ describe('max-file-size rule', () => {
 
     test('should handle comment-only file with ignoreComments', () => {
       const source = '// only comments\n// more comments\n// and more'
-      const { context, reports } = createMockContext(
-        { maxLines: 1, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -828,11 +832,11 @@ describe('max-file-size rule', () => {
 
     test('should handle JSDoc-style comments', () => {
       const source = '/**\n * JSDoc comment\n * @param x\n * @returns\n */\nfunction f() {}'
-      const { context, reports } = createMockContext(
-        { maxLines: 10, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -844,11 +848,11 @@ describe('max-file-size rule', () => {
   describe('blank line handling', () => {
     test('should ignore blank lines when ignoreBlankLines is true', () => {
       const source = '\n\n\n\n\nconst x = 1;\n\n\n\n\n'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -858,11 +862,11 @@ describe('max-file-size rule', () => {
 
     test('should count blank lines when ignoreBlankLines is false', () => {
       const source = '\n\n\n\n\n\n\n\n\n\n\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreBlankLines: false },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreBlankLines: false }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -872,7 +876,11 @@ describe('max-file-size rule', () => {
 
     test('should count blank lines when ignoreBlankLines is not set', () => {
       const source = '\n\n\n\n\n\n\n\n\n\n\nconst x = 1;'
-      const { context, reports } = createMockContext({ maxLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -882,11 +890,11 @@ describe('max-file-size rule', () => {
 
     test('should treat whitespace-only lines as blank', () => {
       const source = '   \n   \n   \n   \n   \nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -896,11 +904,11 @@ describe('max-file-size rule', () => {
 
     test('should treat tab-only lines as blank', () => {
       const source = '\t\n\t\n\t\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -910,11 +918,11 @@ describe('max-file-size rule', () => {
 
     test('should not treat lines with code as blank', () => {
       const source = 'const a = 1;\nconst b = 2;\nconst c = 3;'
-      const { context, reports } = createMockContext(
-        { maxLines: 2, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 2, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -924,11 +932,11 @@ describe('max-file-size rule', () => {
 
     test('should handle file with only blank lines and ignoreBlankLines', () => {
       const source = '\n\n\n\n\n'
-      const { context, reports } = createMockContext(
-        { maxLines: 1, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -939,11 +947,11 @@ describe('max-file-size rule', () => {
 
     test('should handle mixed blank and code lines with ignoreBlankLines', () => {
       const source = 'const a = 1;\n\nconst b = 2;\n\nconst c = 3;'
-      const { context, reports } = createMockContext(
-        { maxLines: 3, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 3, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -954,11 +962,11 @@ describe('max-file-size rule', () => {
 
     test('should handle mixed blank and code lines without ignoreBlankLines', () => {
       const source = 'const a = 1;\n\nconst b = 2;\n\nconst c = 3;'
-      const { context, reports } = createMockContext(
-        { maxLines: 3, ignoreBlankLines: false },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 3, ignoreBlankLines: false }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -971,11 +979,11 @@ describe('max-file-size rule', () => {
   describe('exclude patterns', () => {
     test('should exclude exact file path match', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['/src/file.ts'] },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['/src/file.ts'] }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       if (visitor.Program) {
@@ -987,11 +995,11 @@ describe('max-file-size rule', () => {
 
     test('should exclude glob pattern with double star', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['**/*.test.ts'] },
-        '/src/file.test.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['**/*.test.ts'] }],
+        filePath: '/src/file.test.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       if (visitor.Program) {
@@ -1003,11 +1011,11 @@ describe('max-file-size rule', () => {
 
     test('should exclude with partial path match', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['generated'] },
-        '/src/generated/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['generated'] }],
+        filePath: '/src/generated/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       if (visitor.Program) {
@@ -1033,11 +1041,11 @@ describe('max-file-size rule', () => {
 
     test('should handle multiple exclude patterns', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['/src/generated', '**/*.test.ts', '/src/vendor'] },
-        '/src/vendor/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['/src/generated', '**/*.test.ts', '/src/vendor'] }],
+        filePath: '/src/vendor/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       // Should be excluded due to /src/vendor match
@@ -1046,11 +1054,11 @@ describe('max-file-size rule', () => {
 
     test('should match first exclude pattern in list', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['/src/file.ts', '/src/other.ts'] },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['/src/file.ts', '/src/other.ts'] }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(0)
@@ -1058,11 +1066,11 @@ describe('max-file-size rule', () => {
 
     test('should match second exclude pattern in list', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['/src/first.ts', '/src/second.ts'] },
-        '/src/second.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['/src/first.ts', '/src/second.ts'] }],
+        filePath: '/src/second.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(0)
@@ -1070,11 +1078,11 @@ describe('max-file-size rule', () => {
 
     test('should handle empty exclude array', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: [] },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: [] }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1084,11 +1092,11 @@ describe('max-file-size rule', () => {
 
     test('should handle glob with single star', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['*.ts'] },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['*.ts'] }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       // *.ts matches file.ts substring via includes or glob
@@ -1097,11 +1105,11 @@ describe('max-file-size rule', () => {
 
     test('should handle glob with question mark', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['file?.ts'] },
-        '/src/file1.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['file?.ts'] }],
+        filePath: '/src/file1.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       // ? matches single char
@@ -1110,11 +1118,11 @@ describe('max-file-size rule', () => {
 
     test('should handle nested directory exclude', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['**/node_modules/**'] },
-        '/src/node_modules/package/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['**/node_modules/**'] }],
+        filePath: '/src/node_modules/package/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(0)
@@ -1122,11 +1130,11 @@ describe('max-file-size rule', () => {
 
     test('should be case sensitive for exclude', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['/src/Generated'] },
-        '/src/generated/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['/src/Generated'] }],
+        filePath: '/src/generated/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1137,11 +1145,11 @@ describe('max-file-size rule', () => {
 
     test('should handle exclude with file extension pattern', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['.generated.'] },
-        '/src/file.generated.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['.generated.'] }],
+        filePath: '/src/file.generated.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(0)
@@ -1165,11 +1173,11 @@ describe('max-file-size rule', () => {
 
     test('should include loc in character violation report', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1296,11 +1304,11 @@ describe('max-file-size rule', () => {
 
     test('should include actual character count in message', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1310,11 +1318,11 @@ describe('max-file-size rule', () => {
 
     test('should include max characters limit in message', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1338,11 +1346,11 @@ describe('max-file-size rule', () => {
 
     test('should mention splitting in character violation message', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1366,11 +1374,11 @@ describe('max-file-size rule', () => {
 
     test('should mention exceeds in character violation message', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1443,11 +1451,11 @@ describe('max-file-size rule', () => {
 
     test('should say File has in character violation message', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1459,11 +1467,11 @@ describe('max-file-size rule', () => {
   describe('combined options', () => {
     test('should report both line and character violations', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 100, maxCharacters: 100 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 100, maxCharacters: 100 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1476,11 +1484,11 @@ describe('max-file-size rule', () => {
 
     test('should combine ignoreComments and ignoreBlankLines', () => {
       const source = '// comment\n\n\nconst x = 1;\n\n// another'
-      const { context, reports } = createMockContext(
-        { maxLines: 1, ignoreComments: true, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1, ignoreComments: true, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1491,11 +1499,11 @@ describe('max-file-size rule', () => {
 
     test('should use ignoreBlankLines with maxLines', () => {
       const source = 'a\n\n\n\n\n\n\n\n\nb'
-      const { context, reports } = createMockContext(
-        { maxLines: 2, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 2, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1506,11 +1514,11 @@ describe('max-file-size rule', () => {
 
     test('should use ignoreComments with maxLines', () => {
       const source = '// comment\n'.repeat(10) + 'const x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1521,11 +1529,13 @@ describe('max-file-size rule', () => {
 
     test('should handle all options together', () => {
       const source = '// comment\n\nconst x = 1;\n'
-      const { context, reports } = createMockContext(
-        { maxLines: 100, maxCharacters: 50000, ignoreComments: true, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [
+          { maxLines: 100, maxCharacters: 50000, ignoreComments: true, ignoreBlankLines: true },
+        ],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1535,11 +1545,11 @@ describe('max-file-size rule', () => {
 
     test('should handle exclude with other options', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 100, maxCharacters: 100, exclude: ['/src/file.ts'] },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 100, maxCharacters: 100, exclude: ['/src/file.ts'] }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       // Excluded, so no reports regardless of other options
@@ -1633,7 +1643,11 @@ describe('max-file-size rule', () => {
 
     test('should calculate critical threshold based on custom maxLines', () => {
       const largeSource = createLargeSource(250)
-      const { context, reports } = createMockContext({ maxLines: 100 }, '/src/file.ts', largeSource)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 100 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1646,7 +1660,11 @@ describe('max-file-size rule', () => {
 
     test('should not report critical when below 2x threshold', () => {
       const largeSource = createLargeSource(150)
-      const { context, reports } = createMockContext({ maxLines: 100 }, '/src/file.ts', largeSource)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 100 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1660,7 +1678,7 @@ describe('max-file-size rule', () => {
 
   describe('edge cases', () => {
     test('should handle empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/file.ts', source: '' })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1669,7 +1687,10 @@ describe('max-file-size rule', () => {
     })
 
     test('should handle single line source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1678,7 +1699,10 @@ describe('max-file-size rule', () => {
     })
 
     test('should handle source with only whitespace', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '   \n   \n   ')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/file.ts',
+        source: '   \n   \n   ',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1705,7 +1729,10 @@ const y = 2;
     })
 
     test('should handle file path with special characters', () => {
-      const { context, reports } = createMockContext({}, '/src/[test]/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/[test]/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1730,11 +1757,11 @@ const y = 2;
 
     test('should report correct character count in message', () => {
       const largeSource = createLargeCharacterSource(60000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1745,11 +1772,11 @@ const y = 2;
 
     test('should handle exclude with partial path match', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, exclude: ['generated'] },
-        '/src/generated/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['generated'] }],
+        filePath: '/src/generated/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       if (visitor.Program) {
@@ -1761,11 +1788,11 @@ const y = 2;
 
     test('should handle both line and character limits', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 500, maxCharacters: 50000 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500, maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1777,7 +1804,11 @@ const y = 2;
 
     test('should handle source with only newlines', () => {
       const source = '\n\n\n\n\n'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1787,7 +1818,11 @@ const y = 2;
 
     test('should handle source with carriage returns', () => {
       const source = 'line1\r\nline2\r\nline3'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1798,11 +1833,11 @@ const y = 2;
 
     test('should handle very long single line', () => {
       const source = 'x'.repeat(100000)
-      const { context, reports } = createMockContext(
-        { maxCharacters: 50000 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 50000 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1811,7 +1846,10 @@ const y = 2;
     })
 
     test('should handle file path with unicode', () => {
-      const { context, reports } = createMockContext({}, '/src/文件.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/文件.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1820,11 +1858,10 @@ const y = 2;
     })
 
     test('should handle deeply nested file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/a/b/c/d/e/f/g/h/i/j/file.ts',
-        'const x = 1;',
-      )
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/a/b/c/d/e/f/g/h/i/j/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1834,7 +1871,11 @@ const y = 2;
 
     test('should handle source with tabs and spaces', () => {
       const source = '\t\tconst x = 1;\n    const y = 2;'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1857,7 +1898,7 @@ const y = 2;
     })
 
     test('should handle Program:exit without Program', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       visitor['Program:exit']?.(undefined)
@@ -1867,7 +1908,11 @@ const y = 2;
 
     test('should handle source with special regex characters', () => {
       const source = 'const x = /regex/g;'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1876,11 +1921,10 @@ const y = 2;
     })
 
     test('should handle file path with dots', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.name.with.dots.ts',
-        'const x = 1;',
-      )
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/file.name.with.dots.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1889,7 +1933,11 @@ const y = 2;
     })
 
     test('should handle source with only a newline', () => {
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', '\n')
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: '\n',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -1994,7 +2042,10 @@ const y = 2;
 
   describe('file path handling', () => {
     test('should use file path from context', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/custom/path.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2003,7 +2054,10 @@ const y = 2;
     })
 
     test('should handle root path', () => {
-      const { context, reports } = createMockContext({}, '/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2012,7 +2066,10 @@ const y = 2;
     })
 
     test('should handle relative-looking path', () => {
-      const { context, reports } = createMockContext({}, 'src/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: 'src/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2021,7 +2078,10 @@ const y = 2;
     })
 
     test('should handle path with hash character', () => {
-      const { context, reports } = createMockContext({}, '/src/#issue/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/#issue/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2030,7 +2090,10 @@ const y = 2;
     })
 
     test('should handle path with spaces', () => {
-      const { context, reports } = createMockContext({}, '/src/my project/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/my project/file.ts',
+        source: 'const x = 1;',
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2041,7 +2104,7 @@ const y = 2;
 
   describe('Program:exit', () => {
     test('should not report for small files on exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2066,14 +2129,14 @@ const y = 2;
     })
 
     test('should accept undefined argument in exit', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       expect(() => visitor['Program:exit']?.(undefined)).not.toThrow()
     })
 
     test('should accept no argument in exit', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = maxFileSizeRule.create(context)
 
       expect(() => visitor['Program:exit']?.()).not.toThrow()
@@ -2099,7 +2162,11 @@ const y = 2;
   describe('boundary tests', () => {
     test('should not report at exactly maxLines boundary', () => {
       const source = createLargeSource(200)
-      const { context, reports } = createMockContext({ maxLines: 200 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 200 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2109,7 +2176,11 @@ const y = 2;
 
     test('should report one over maxLines boundary', () => {
       const source = createLargeSource(201)
-      const { context, reports } = createMockContext({ maxLines: 200 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 200 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2119,7 +2190,11 @@ const y = 2;
 
     test('should not report at exactly maxCharacters boundary', () => {
       const source = 'a'.repeat(200)
-      const { context, reports } = createMockContext({ maxCharacters: 200 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 200 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2129,7 +2204,11 @@ const y = 2;
 
     test('should report one over maxCharacters boundary', () => {
       const source = 'a'.repeat(201)
-      const { context, reports } = createMockContext({ maxCharacters: 200 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 200 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2170,7 +2249,11 @@ const y = 2;
 
     test('should handle maxLines of 1 with 2-line file', () => {
       const source = 'a\nb'
-      const { context, reports } = createMockContext({ maxLines: 1 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2180,7 +2263,11 @@ const y = 2;
 
     test('should handle maxCharacters of 1 with 2-char file', () => {
       const source = 'ab'
-      const { context, reports } = createMockContext({ maxCharacters: 1 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxCharacters: 1 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2192,11 +2279,11 @@ const y = 2;
   describe('ignoreComments edge cases', () => {
     test('should handle comment at end of file', () => {
       const source = 'const x = 1;\n// end comment'
-      const { context, reports } = createMockContext(
-        { maxLines: 10, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2206,11 +2293,11 @@ const y = 2;
 
     test('should handle multiple inline comments', () => {
       const source = 'const a = 1; // first\nconst b = 2; // second'
-      const { context, reports } = createMockContext(
-        { maxLines: 10, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2220,11 +2307,11 @@ const y = 2;
 
     test('should handle comment with leading whitespace', () => {
       const source = '  // indented comment\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 10, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2234,11 +2321,11 @@ const y = 2;
 
     test('should handle block comment spanning multiple lines', () => {
       const source = '/* line1\nline2\nline3\nline4\nline5 */\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 5, ignoreComments: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 5, ignoreComments: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2250,11 +2337,11 @@ const y = 2;
   describe('ignoreBlankLines edge cases', () => {
     test('should handle alternating blank and code lines', () => {
       const source = 'a\n\nb\n\nc'
-      const { context, reports } = createMockContext(
-        { maxLines: 3, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 3, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2265,11 +2352,11 @@ const y = 2;
 
     test('should handle file starting with blank lines', () => {
       const source = '\n\n\nconst x = 1;'
-      const { context, reports } = createMockContext(
-        { maxLines: 1, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2280,11 +2367,11 @@ const y = 2;
 
     test('should handle file ending with blank lines', () => {
       const source = 'const x = 1;\n\n\n'
-      const { context, reports } = createMockContext(
-        { maxLines: 1, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2295,11 +2382,11 @@ const y = 2;
 
     test('should handle file with only blank lines', () => {
       const source = '\n\n\n\n\n'
-      const { context, reports } = createMockContext(
-        { maxLines: 1, ignoreBlankLines: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 1, ignoreBlankLines: true }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2323,11 +2410,11 @@ const y = 2;
   describe('multiple violations', () => {
     test('should produce separate reports for lines and characters', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports } = createMockContext(
-        { maxLines: 100, maxCharacters: 100 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 100, maxCharacters: 100 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2342,11 +2429,11 @@ const y = 2;
 
     test('should produce three reports for critically large file exceeding both limits', () => {
       const largeSource = createLargeSource(1200)
-      const { context, reports } = createMockContext(
-        { maxLines: 100, maxCharacters: 100 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 100, maxCharacters: 100 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2359,18 +2446,18 @@ const y = 2;
   describe('glob caching', () => {
     test('should handle multiple files with same exclude pattern', () => {
       const largeSource = createLargeSource(600)
-      const { context: ctx1, reports: r1 } = createMockContext(
-        { maxLines: 500, exclude: ['**/*.gen.ts'] },
-        '/src/a.gen.ts',
-        largeSource,
-      )
+      const { context: ctx1, reports: r1 } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['**/*.gen.ts'] }],
+        filePath: '/src/a.gen.ts',
+        source: largeSource,
+      })
       const v1 = maxFileSizeRule.create(ctx1)
 
-      const { context: ctx2, reports: r2 } = createMockContext(
-        { maxLines: 500, exclude: ['**/*.gen.ts'] },
-        '/src/b.gen.ts',
-        largeSource,
-      )
+      const { context: ctx2, reports: r2 } = createMockRuleContext({
+        options: [{ maxLines: 500, exclude: ['**/*.gen.ts'] }],
+        filePath: '/src/b.gen.ts',
+        source: largeSource,
+      })
       const v2 = maxFileSizeRule.create(ctx2)
 
       expect(Object.keys(v1)).toHaveLength(0)
@@ -2381,7 +2468,11 @@ const y = 2;
   describe('source with CRLF', () => {
     test('should handle CRLF line endings', () => {
       const source = 'a\r\nb\r\nc\r\nd\r\ne'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2391,7 +2482,11 @@ const y = 2;
 
     test('should handle mixed LF and CRLF line endings', () => {
       const source = 'a\nb\r\nc\nd\r\ne'
-      const { context, reports } = createMockContext({ maxLines: 10 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 10 }],
+        filePath: '/src/file.ts',
+        source: source,
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())
@@ -2403,19 +2498,19 @@ const y = 2;
   describe('idempotency', () => {
     test('should produce same results on repeated create calls', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports: reports1 } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports: reports1 } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor1 = maxFileSizeRule.create(context)
       visitor1.Program(createProgramNode())
 
-      const { context: ctx2, reports: reports2 } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       const visitor2 = maxFileSizeRule.create(ctx2)
       visitor2.Program(createProgramNode())
 
@@ -2424,18 +2519,18 @@ const y = 2;
 
     test('should produce consistent report messages', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports: r1 } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports: r1 } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       maxFileSizeRule.create(context).Program(createProgramNode())
 
-      const { context: ctx2, reports: r2 } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context: ctx2, reports: r2 } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       maxFileSizeRule.create(ctx2).Program(createProgramNode())
 
       expect(r1[0].message).toBe(r2[0].message)
@@ -2443,29 +2538,29 @@ const y = 2;
 
     test('should produce consistent report locations', () => {
       const largeSource = createLargeSource(600)
-      const { context, reports: r1 } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context, reports: r1 } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       maxFileSizeRule.create(context).Program(createProgramNode())
 
-      const { context: ctx2, reports: r2 } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        largeSource,
-      )
+      const { context: ctx2, reports: r2 } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: largeSource,
+      })
       maxFileSizeRule.create(ctx2).Program(createProgramNode())
 
       expect(r1[0].loc).toEqual(r2[0].loc)
     })
 
     test('should handle multiple sequential Program calls consistently', () => {
-      const { context, reports } = createMockContext(
-        { maxLines: 500 },
-        '/src/file.ts',
-        createLargeSource(600),
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ maxLines: 500 }],
+        filePath: '/src/file.ts',
+        source: createLargeSource(600),
+      })
       const visitor = maxFileSizeRule.create(context)
 
       visitor.Program(createProgramNode())

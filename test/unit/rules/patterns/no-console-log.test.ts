@@ -232,8 +232,8 @@ describe('no-console-log rule', () => {
     })
 
     test('create should return same visitor shape for different contexts', () => {
-      const { context: ctx1 } = createMockContext({ allow: ['warn'] })
-      const { context: ctx2 } = createMockContext({ allow: ['error'] })
+      const { context: ctx1 } = createMockRuleContext({ options: [{ allow: ['warn'] }] })
+      const { context: ctx2 } = createMockRuleContext({ options: [{ allow: ['error'] }] })
 
       const visitor1 = noConsoleLogRule.create(ctx1)
       const visitor2 = noConsoleLogRule.create(ctx2)
@@ -766,7 +766,7 @@ describe('no-console-log rule', () => {
 
   describe('options - allow', () => {
     test('should allow console.warn when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['warn'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['warn'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('warn'))
@@ -775,7 +775,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.error when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['error'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['error'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('error'))
@@ -784,7 +784,9 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow multiple methods', () => {
-      const { context, reports } = createMockContext({ allow: ['warn', 'error'] })
+      const { context, reports } = createMockRuleContext({
+        options: [{ allow: ['warn', 'error'] }],
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('warn'))
@@ -794,7 +796,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should still report non-allowed methods', () => {
-      const { context, reports } = createMockContext({ allow: ['warn'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['warn'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -803,7 +805,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.log when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['log'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['log'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -812,7 +814,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.info when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['info'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['info'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('info'))
@@ -821,7 +823,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.debug when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['debug'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['debug'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('debug'))
@@ -830,7 +832,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.trace when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['trace'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['trace'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('trace'))
@@ -839,7 +841,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.table when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['table'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['table'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('table'))
@@ -848,7 +850,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.dir when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['dir'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['dir'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('dir'))
@@ -857,7 +859,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.time when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['time'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['time'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('time'))
@@ -866,7 +868,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.timeEnd when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['timeEnd'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['timeEnd'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('timeEnd'))
@@ -875,7 +877,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.group when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['group'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['group'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('group'))
@@ -884,7 +886,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.groupEnd when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['groupEnd'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['groupEnd'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('groupEnd'))
@@ -893,7 +895,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.clear when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['clear'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['clear'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('clear'))
@@ -902,7 +904,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.count when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['count'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['count'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('count'))
@@ -911,7 +913,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.countReset when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['countReset'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['countReset'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('countReset'))
@@ -920,7 +922,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.assert when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['assert'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['assert'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('assert'))
@@ -929,7 +931,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.profile when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['profile'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['profile'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('profile'))
@@ -938,7 +940,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.profileEnd when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['profileEnd'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['profileEnd'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('profileEnd'))
@@ -947,7 +949,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow console.timestamp when specified', () => {
-      const { context, reports } = createMockContext({ allow: ['timestamp'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['timestamp'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('timestamp'))
@@ -956,27 +958,31 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow all console methods at once', () => {
-      const { context, reports } = createMockContext({
-        allow: [
-          'log',
-          'warn',
-          'error',
-          'info',
-          'debug',
-          'trace',
-          'table',
-          'dir',
-          'time',
-          'timeEnd',
-          'group',
-          'groupEnd',
-          'clear',
-          'count',
-          'countReset',
-          'assert',
-          'profile',
-          'profileEnd',
-          'timestamp',
+      const { context, reports } = createMockRuleContext({
+        options: [
+          {
+            allow: [
+              'log',
+              'warn',
+              'error',
+              'info',
+              'debug',
+              'trace',
+              'table',
+              'dir',
+              'time',
+              'timeEnd',
+              'group',
+              'groupEnd',
+              'clear',
+              'count',
+              'countReset',
+              'assert',
+              'profile',
+              'profileEnd',
+              'timestamp',
+            ],
+          },
         ],
       })
       const visitor = noConsoleLogRule.create(context)
@@ -1010,7 +1016,9 @@ describe('no-console-log rule', () => {
     })
 
     test('should only allow specified methods, reporting others', () => {
-      const { context, reports } = createMockContext({ allow: ['warn', 'error'] })
+      const { context, reports } = createMockRuleContext({
+        options: [{ allow: ['warn', 'error'] }],
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1024,7 +1032,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should handle empty allow array', () => {
-      const { context, reports } = createMockContext({ allow: [] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: [] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1033,7 +1041,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should allow with single-element array', () => {
-      const { context, reports } = createMockContext({ allow: ['log'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['log'] }] })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1184,7 +1192,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1694,7 +1702,7 @@ describe('no-console-log rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/helper.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/utils/helper.ts' })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1703,11 +1711,10 @@ describe('no-console-log rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'console.log("hello", "world");',
-      )
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/file.ts',
+        source: 'console.log("hello", "world");',
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1716,7 +1723,7 @@ describe('no-console-log rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/file.ts', source: '' })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1725,7 +1732,9 @@ describe('no-console-log rule', () => {
     })
 
     test('should work with config containing extra options', () => {
-      const { context, reports } = createMockContext({ extra: true, allow: ['warn'] })
+      const { context, reports } = createMockRuleContext({
+        options: [{ extra: true, allow: ['warn'] }],
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('warn'))
@@ -1734,7 +1743,9 @@ describe('no-console-log rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/src/features/auth/utils/logger.ts')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/features/auth/utils/logger.ts',
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -1743,7 +1754,9 @@ describe('no-console-log rule', () => {
     })
 
     test('should work with Windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\Users\\dev\\project\\src\\file.ts')
+      const { context, reports } = createMockRuleContext({
+        filePath: 'C:\\Users\\dev\\project\\src\\file.ts',
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('log'))
@@ -2147,7 +2160,9 @@ describe('no-console-log rule', () => {
     })
 
     test('should handle allow option with mixed valid and unknown methods', () => {
-      const { context, reports } = createMockContext({ allow: ['warn', 'nonExistent'] })
+      const { context, reports } = createMockRuleContext({
+        options: [{ allow: ['warn', 'nonExistent'] }],
+      })
       const visitor = noConsoleLogRule.create(context)
 
       visitor.CallExpression(createConsoleCall('warn'))

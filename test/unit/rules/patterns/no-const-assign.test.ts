@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noConstAssignRule } from '../../../../src/rules/patterns/no-const-assign.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1; x = 2;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVariableDeclaration(
   kind: string,
@@ -189,44 +153,44 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('create', () => {
     test('should return visitor object with VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(visitor).toHaveProperty('VariableDeclaration')
     })
 
     test('should return visitor object with AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(visitor).toHaveProperty('AssignmentExpression')
     })
 
     test('should return exactly 2 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(2)
     })
 
     test('should have VariableDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(typeof visitor.VariableDeclaration).toBe('function')
     })
 
     test('should have AssignmentExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(typeof visitor.AssignmentExpression).toBe('function')
     })
 
     test('should return a new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noConstAssignRule.create(context)
       const visitor2 = noConstAssignRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should create independent const tracking per visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noConstAssignRule.create(context)
       const visitor2 = noConstAssignRule.create(context)
 
@@ -234,7 +198,7 @@ describe('no-const-assign rule', () => {
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('a'))]),
       )
 
-      const { reports } = createMockContext()
+      const { reports } = createMockRuleContext()
       const ctx: RuleContext = {
         report: (d: ReportDescriptor) => {
           reports.push(d)
@@ -257,7 +221,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should accept context without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(() => noConstAssignRule.create(context)).not.toThrow()
     })
   })
@@ -267,7 +231,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('detection', () => {
     test('should detect simple const x reassignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -279,7 +243,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with single-letter name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('a'))]),
@@ -292,7 +256,7 @@ describe('no-const-assign rule', () => {
 
     test('should detect const with long name', () => {
       const name = 'veryLongDescriptiveConstantName'
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier(name))]),
@@ -305,7 +269,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -320,7 +284,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with dollar signs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('$var'))]),
@@ -333,7 +297,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with mixed case name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('MyConst'))]),
@@ -345,7 +309,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with uppercase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('MAX'))]),
@@ -357,7 +321,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with leading underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -371,7 +335,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with trailing underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -385,7 +349,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with numbers in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x1'))]),
@@ -397,7 +361,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect multiple declarations in single const statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -415,7 +379,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect reassignment after multiple const declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('a'))]),
@@ -431,7 +395,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect same const reassigned multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -446,7 +410,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const declared with init and then reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -460,7 +424,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const declared without init and then reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -472,7 +436,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with underscore-separated multi-word name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -489,7 +453,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect dollar-only prefix const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('$$'))]),
@@ -501,7 +465,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect double underscore const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('__foo'))]),
@@ -513,7 +477,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const in single declarator among many', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -530,7 +494,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect three separate const declarations all reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('a'))]),
@@ -554,7 +518,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with Unicode-like name abc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('abc'))]),
@@ -566,7 +530,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with name containing digits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('var123'))]),
@@ -578,7 +542,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with dollar and underscore combined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('$_$'))]),
@@ -590,7 +554,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect single-char const reassignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('z'))]),
@@ -602,7 +566,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report exact message format for myVar', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('myVar'))]),
@@ -614,7 +578,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report exact message format for x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -626,7 +590,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with right-hand side as call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('val'))]),
@@ -638,7 +602,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with right-hand side as object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('obj'))]),
@@ -650,7 +614,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const with right-hand side as array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('arr'))]),
@@ -662,7 +626,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect const reassigned with binary expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('sum'))]),
@@ -679,7 +643,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('not reporting', () => {
     test('should not report assignment to let variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('let', [createVariableDeclarator(createIdentifier('x'))]),
@@ -691,7 +655,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to var variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('var', [createVariableDeclarator(createIdentifier('x'))]),
@@ -703,7 +667,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to undeclared variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.AssignmentExpression(
         createAssignmentExpression(createIdentifier('undeclared'), { type: 'Literal', value: 2 }),
@@ -712,7 +676,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report property assignment on const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('obj'))]),
@@ -731,7 +695,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment before const declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.AssignmentExpression(
         createAssignmentExpression(createIdentifier('x'), { type: 'Literal', value: 2 }),
@@ -743,7 +707,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to different variable than const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -755,7 +719,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to let variable with same name as a const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('let', [createVariableDeclarator(createIdentifier('x'))]),
@@ -767,7 +731,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report when no VariableDeclaration is visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.AssignmentExpression(
         createAssignmentExpression(createIdentifier('x'), { type: 'Literal', value: 2 }),
@@ -776,7 +740,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report when no AssignmentExpression is visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -785,7 +749,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report computed member expression assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('arr'))]),
@@ -805,7 +769,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report deep nested member assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('obj'))]),
@@ -828,7 +792,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to variable that shadows const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -847,7 +811,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -857,7 +821,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to object expression left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -869,7 +833,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to array expression left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -881,7 +845,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to literal left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -898,7 +862,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report when const name differs in case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('X'))]),
@@ -910,7 +874,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to parameter-like name not declared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.AssignmentExpression(
         createAssignmentExpression(createIdentifier('param'), { type: 'Literal', value: 1 }),
@@ -919,7 +883,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report when operator is +=', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('let', [createVariableDeclarator(createIdentifier('x'))]),
@@ -936,7 +900,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report function expression assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('fn'))]),
@@ -948,7 +912,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report update expression on const (different node type)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -959,7 +923,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to const-like name that is actually let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('let', [createVariableDeclarator(createIdentifier('CONST_VAL'))]),
@@ -974,7 +938,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to var-declared variable with same name as const in different scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('var', [createVariableDeclarator(createIdentifier('shared'))]),
@@ -986,7 +950,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report when left side is ThisExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.AssignmentExpression(
         createAssignmentExpression({ type: 'ThisExpression' }, { type: 'Literal', value: 1 }),
@@ -995,7 +959,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report when left side is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.AssignmentExpression(
         createAssignmentExpression(
@@ -1007,7 +971,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report assignment to a variable with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'AssignmentExpression',
@@ -1026,61 +990,61 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('edge cases', () => {
     test('should handle null node in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined node in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle null node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration('string')).not.toThrow()
     })
 
     test('should handle number node in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration(123)).not.toThrow()
     })
 
     test('should handle boolean node in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration(true)).not.toThrow()
     })
 
     test('should handle string node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.AssignmentExpression('string')).not.toThrow()
     })
 
     test('should handle number node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.AssignmentExpression(123)).not.toThrow()
     })
 
     test('should handle node without loc in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1091,7 +1055,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle node without loc in AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1107,7 +1071,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle empty declarations array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1118,7 +1082,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declarations without id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1129,7 +1093,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declarations with null id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1140,7 +1104,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle assignment without identifier on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1156,7 +1120,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1196,14 +1160,14 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle VariableDeclaration node without kind', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = { type: 'VariableDeclaration', declarations: [] }
       expect(() => visitor.VariableDeclaration(node)).not.toThrow()
     })
 
     test('should handle VariableDeclaration with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1218,7 +1182,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1234,7 +1198,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declaration with non-identifier id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1245,7 +1209,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declaration with ArrayPattern id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1260,7 +1224,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declaration with null element in declarations array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1276,7 +1240,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('location', () => {
     test('should report correct location for reassignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1294,7 +1258,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1312,7 +1276,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1330,7 +1294,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1348,7 +1312,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle loc with non-number line in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1369,7 +1333,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle loc with non-number column in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1390,7 +1354,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle loc with undefined start in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1407,7 +1371,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle loc with undefined end in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1424,7 +1388,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle empty loc object in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1441,7 +1405,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1458,7 +1422,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report loc with correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1475,7 +1439,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report loc for multiple reassignments with different positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1502,7 +1466,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should provide default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1519,7 +1483,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle loc with missing start.line and start.column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1541,7 +1505,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('messages', () => {
     test('should include const in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1553,7 +1517,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should include variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('testVar'))]),
@@ -1565,7 +1529,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should use word unexpected in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1577,7 +1541,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should use word assignment in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1589,7 +1553,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should wrap variable name in single quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1601,7 +1565,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should end message with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1613,7 +1577,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should include word variable in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1627,7 +1591,7 @@ describe('no-const-assign rule', () => {
     test('should produce consistent message for different variable names', () => {
       const names = ['a', 'longName', '_private', '$dollar', 'num123']
       for (const name of names) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noConstAssignRule.create(context)
         visitor.VariableDeclaration(
           createVariableDeclaration('const', [createVariableDeclarator(createIdentifier(name))]),
@@ -1640,7 +1604,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should include variable name exactly as declared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -1655,7 +1619,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should produce non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1672,7 +1636,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('multiple reports', () => {
     test('should report two reassignments of different const variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1690,7 +1654,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report same const variable reassigned twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1705,7 +1669,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report three reassignments from multi-declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -1727,7 +1691,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report only const reassignments, not let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1746,7 +1710,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report reassignment interleaved with declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('a'))]),
@@ -1764,7 +1728,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report 5 reassignments of the same variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1778,7 +1742,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report each const from a 4-declarator statement individually', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -1800,7 +1764,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not report let assignment among const reassignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('a'))]),
@@ -1821,7 +1785,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report mixed const/let with only const violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('c1'))]),
@@ -1848,7 +1812,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle large number of const variables tracked', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const names = Array.from({ length: 50 }, (_, i) => `var${i}`)
       visitor.VariableDeclaration(
@@ -1872,7 +1836,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('context', () => {
     test('should handle different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/utils.ts' })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1884,7 +1848,10 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle different source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const PI = 3.14; PI = 3;')
+      const { context, reports } = createMockRuleContext({
+        filePath: '/src/file.ts',
+        source: 'const PI = 3.14; PI = 3;',
+      })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('PI'))]),
@@ -1896,7 +1863,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle context with extra config options', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 'max' })
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1908,7 +1875,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should work with empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/empty.ts', source: '' })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1921,7 +1888,7 @@ describe('no-const-assign rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/deeply/nested/directory/structure/src/components/utils/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ filePath: longPath })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1933,7 +1900,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/file.js' })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1945,7 +1912,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/component.tsx' })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1957,8 +1924,8 @@ describe('no-const-assign rule', () => {
     })
 
     test('should work with config containing nested options', () => {
-      const { context, reports } = createMockContext({
-        nested: { deep: { value: 42 } },
+      const { context, reports } = createMockRuleContext({
+        source: 'const x = 1; x = 2;',
       })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
@@ -1971,7 +1938,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle workspace root', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -1983,7 +1950,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\project\\src\\file.ts')
+      const { context, reports } = createMockRuleContext({ filePath: 'C:\\project\\src\\file.ts' })
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2002,7 +1969,7 @@ describe('no-const-assign rule', () => {
     test.each(['a', 'b', 'c', 'x', 'y', 'z', 'i', 'j', 'k', 'n'] as const)(
       'should detect const reassignment for single-letter variable %s',
       (name) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noConstAssignRule.create(context)
         visitor.VariableDeclaration(
           createVariableDeclaration('const', [createVariableDeclarator(createIdentifier(name))]),
@@ -2027,7 +1994,7 @@ describe('no-const-assign rule', () => {
       'waldo',
       'fred',
     ] as const)('should detect const reassignment for multi-letter variable %s', (name) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier(name))]),
@@ -2042,7 +2009,7 @@ describe('no-const-assign rule', () => {
     test.each(['_private', '__dunder', 'trailing_', 'mid_dle', '_a_b_c_'] as const)(
       'should detect const reassignment for underscore variable %s',
       (name) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noConstAssignRule.create(context)
         visitor.VariableDeclaration(
           createVariableDeclaration('const', [createVariableDeclarator(createIdentifier(name))]),
@@ -2058,7 +2025,7 @@ describe('no-const-assign rule', () => {
     test.each(['$', '$$', '$var', 'jQuery', '$elem'] as const)(
       'should detect const reassignment for dollar variable %s',
       (name) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noConstAssignRule.create(context)
         visitor.VariableDeclaration(
           createVariableDeclaration('const', [createVariableDeclarator(createIdentifier(name))]),
@@ -2076,7 +2043,7 @@ describe('no-const-assign rule', () => {
       ['let', false],
       ['var', false],
     ] as const)('should %s report reassignment (expect report: %s)', (kind, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration(kind, [createVariableDeclarator(createIdentifier('x'))]),
@@ -2093,7 +2060,7 @@ describe('no-const-assign rule', () => {
   // ========================================================================
   describe('additional boundary tests', () => {
     test('should handle declaration with declarations as non-array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2104,7 +2071,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression left as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2121,7 +2088,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression left as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2138,7 +2105,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression left as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2155,31 +2122,31 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle empty object as VariableDeclaration node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration({})).not.toThrow()
     })
 
     test('should handle empty object as AssignmentExpression node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.AssignmentExpression({})).not.toThrow()
     })
 
     test('should handle false as VariableDeclaration node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.VariableDeclaration(false)).not.toThrow()
     })
 
     test('should handle 0 as AssignmentExpression node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       expect(() => visitor.AssignmentExpression(0)).not.toThrow()
     })
 
     test('should track const declared in second VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('let', [createVariableDeclarator(createIdentifier('a'))]),
@@ -2194,7 +2161,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declaration with undefined declarations', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2204,7 +2171,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declaration with declarator having non-object id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2215,7 +2182,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle declaration with declarator having id without name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2231,7 +2198,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should report for each of 10 reassignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2245,7 +2212,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle VariableDeclaration with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2262,7 +2229,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2281,7 +2248,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle NaN line number in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2301,7 +2268,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle Infinity line number in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2321,7 +2288,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle negative line and column in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2341,7 +2308,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not crash with array as left side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2365,7 +2332,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const with name that looks like keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -2379,7 +2346,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const with name that is similar to reserved words', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [
@@ -2393,7 +2360,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with undefined right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2408,7 +2375,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with null right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2420,7 +2387,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with template literal right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2432,7 +2399,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with conditional expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2444,7 +2411,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with arrow function right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2456,7 +2423,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with new expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2468,7 +2435,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with unary expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2480,7 +2447,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with await expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2492,7 +2459,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle const reassignment with yield expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2504,7 +2471,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle VariableDeclaration with undefined kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2518,7 +2485,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle VariableDeclaration with empty string kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2533,7 +2500,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle VariableDeclaration with numeric kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2548,7 +2515,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not track const-like names from using declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2563,7 +2530,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should detect reassignment after many let/var declarations first', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('let', [createVariableDeclarator(createIdentifier('a'))]),
@@ -2585,7 +2552,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should not crash when context.report is called multiple times rapidly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2599,7 +2566,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with operator !== =', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2617,7 +2584,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with -= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2634,7 +2601,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with *= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2651,7 +2618,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with /= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2668,7 +2635,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with **= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2685,7 +2652,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with %= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2702,7 +2669,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with <<= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2719,7 +2686,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with >>= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2736,7 +2703,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with &= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2753,7 +2720,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with |= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2770,7 +2737,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with ^= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2787,7 +2754,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with &&= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2804,7 +2771,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with ||= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
@@ -2821,7 +2788,7 @@ describe('no-const-assign rule', () => {
     })
 
     test('should handle AssignmentExpression with ??= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noConstAssignRule.create(context)
       visitor.VariableDeclaration(
         createVariableDeclaration('const', [createVariableDeclarator(createIdentifier('x'))]),
