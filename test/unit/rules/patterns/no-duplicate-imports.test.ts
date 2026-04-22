@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noDuplicateImportsRule } from '../../../../src/rules/patterns/no-duplicate-imports.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'import { a } from "module";',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createImportDeclaration(module: string, line = 1, column = 0): unknown {
   return {
@@ -177,7 +141,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       expect(visitor).toHaveProperty('Program')
@@ -185,32 +149,32 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should have Program as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(typeof visitor.Program).toBe('function')
     })
 
     test('should have ImportDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(typeof visitor.ImportDeclaration).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor1 = noDuplicateImportsRule.create(context)
       const visitor2 = noDuplicateImportsRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should have exactly two visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(2)
     })
@@ -235,7 +199,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should create visitor that does not throw when Program is called without arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.Program()).not.toThrow()
     })
@@ -243,7 +207,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('detecting duplicate imports', () => {
     test('should report duplicate imports from same module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -256,7 +220,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report multiple duplicate imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -268,7 +232,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report single import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -278,7 +242,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report imports from different modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -289,7 +253,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicates across multiple modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -303,7 +267,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect exactly two duplicates of same module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -314,7 +278,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect three duplicates as two reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -326,7 +290,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect four duplicates as three reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -339,7 +303,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect five duplicates as four reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -351,7 +315,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect ten duplicates as nine reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -363,7 +327,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicates for each module independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -381,7 +345,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate when interleaved with other modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -395,7 +359,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate when first import has same name as another module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -407,7 +371,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report duplicate with empty module name string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -418,7 +382,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report duplicate for single-character module names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -430,7 +394,7 @@ describe('no-duplicate-imports rule', () => {
 
     test('should detect duplicates with very long module names', () => {
       const longName = '@very-long-scope/very-long-package-name-with-lots-of-hyphens-and-words'
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -442,7 +406,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicates when modules have spaces in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -453,7 +417,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat uppercase and lowercase as different modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -464,7 +428,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat module names with trailing slash differently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -475,7 +439,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with whitespace-only module name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -486,7 +450,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicates for modules with unicode names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -497,7 +461,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle 20 unique imports without false positives', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -509,7 +473,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle mix of unique and duplicate imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -528,7 +492,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('error messages', () => {
     test('should include module name in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -539,7 +503,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should suggest combining imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -550,7 +514,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should mention single import statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -561,7 +525,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should include module name wrapped in quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -572,7 +536,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have consistent message format across different modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -586,7 +550,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should mention Multiple imports at the start of message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -597,7 +561,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should produce message as a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -608,7 +572,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -619,7 +583,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have unique messages for different module duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -634,7 +598,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should produce same message text for same module duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -650,21 +614,21 @@ describe('no-duplicate-imports rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       expect(() => visitor.ImportDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       expect(() => visitor.ImportDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       expect(() => visitor.ImportDeclaration('string')).not.toThrow()
@@ -672,7 +636,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node without source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -685,7 +649,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -714,7 +678,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with non-Literal source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -731,7 +695,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with non-string source value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -748,7 +712,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -794,7 +758,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -806,7 +770,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should reset state between Program visits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -822,28 +786,28 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(true)).not.toThrow()
       expect(() => visitor.ImportDeclaration(false)).not.toThrow()
     })
 
     test('should handle numeric node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(0)).not.toThrow()
       expect(() => visitor.ImportDeclaration(-1)).not.toThrow()
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration([])).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with null source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -857,7 +821,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with undefined source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -871,7 +835,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with source as number value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -890,7 +854,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with source as boolean value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -904,7 +868,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with source as null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -918,7 +882,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with source as object value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -932,7 +896,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with source as array value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -946,7 +910,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with empty object as source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -960,7 +924,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -974,7 +938,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -987,7 +951,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle source with empty string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1003,7 +967,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle duplicate with only loc.start (no loc.end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1024,7 +988,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle loc with non-numeric line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1046,7 +1010,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle loc with missing start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1069,7 +1033,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle calling ImportDeclaration before Program', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       // ImportDeclaration before Program - moduleMap may or may not be clear
@@ -1081,7 +1045,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle multiple Program resets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1094,7 +1058,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1106,7 +1070,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1118,7 +1082,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle zero line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1129,7 +1093,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle negative column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1140,26 +1104,26 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle function as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(() => {})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle Symbol as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(Symbol('test'))).not.toThrow()
     })
 
     test('should handle NaN as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(NaN)).not.toThrow()
     })
 
     test('should handle Infinity as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(Infinity)).not.toThrow()
     })
@@ -1167,7 +1131,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('location reporting', () => {
     test('should report location of second duplicate import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1179,7 +1143,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report location of third duplicate import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1192,7 +1156,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report different locations for consecutive duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1205,7 +1169,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should include end location in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1218,7 +1182,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report loc as object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1234,7 +1198,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report location at column 0 when duplicate is at start of line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1245,7 +1209,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle same line different column duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1258,7 +1222,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1282,7 +1246,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should preserve exact location for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1297,7 +1261,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('different module types', () => {
     test('should detect duplicate relative imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1309,7 +1273,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate npm package imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1321,7 +1285,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate absolute path imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1332,7 +1296,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat similar but different paths as distinct', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1343,7 +1307,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate parent directory imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1354,7 +1318,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate grandparent directory imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1365,7 +1329,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate scoped package imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1376,7 +1340,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat different scoped packages as distinct', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1387,7 +1351,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat different scopes as distinct', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1398,7 +1362,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate imports with file extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1409,7 +1373,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat .js and .ts extensions as different', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1420,7 +1384,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate URL imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1431,7 +1395,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate data URI imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1446,7 +1410,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate index imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1457,7 +1421,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should treat ./foo and ./foo/ as different', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1470,7 +1434,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('multiple import patterns', () => {
     test('should detect duplicates with mixed import types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1483,7 +1447,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle module names with special characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1494,7 +1458,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle module names with file extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1505,7 +1469,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle deeply nested module paths', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1516,7 +1480,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicates across interleaved unique imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1530,7 +1494,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should report each module pair independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1544,7 +1508,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle pattern where every other import is duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1559,7 +1523,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle all unique imports with no duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1573,7 +1537,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle single module imported many times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1587,7 +1551,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";', filePath: '/src/components/App.tsx' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1598,7 +1562,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should work with empty file path', () => {
-      const { context, reports } = createMockContext({}, '')
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";', filePath: '' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1609,11 +1573,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'import { a, b } from "lodash"; import { c } from "lodash";',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'import { a, b } from "lodash"; import { c } from "lodash";', filePath: '/src/file.ts' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1624,7 +1584,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1635,10 +1595,10 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         ignore: ['react'],
         allowSameModule: false,
-      })
+      }], source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1782,7 +1742,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('report descriptor', () => {
     test('should have message property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1793,7 +1753,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have loc property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1804,7 +1764,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have loc.start in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1815,7 +1775,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have loc.end in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1826,7 +1786,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have numeric line in loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1837,7 +1797,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have numeric column in loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1848,7 +1808,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should have correct end line in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1859,7 +1819,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should call context.report exactly once for one duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1870,7 +1830,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should call context.report twice for two duplicates of same module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1882,7 +1842,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not call report for valid single import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1892,7 +1852,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not call report for valid multiple different imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1906,7 +1866,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('negative cases - unique imports', () => {
     test('should not report when importing from different modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1918,7 +1878,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for single import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1928,7 +1888,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report when no imports exist', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1937,7 +1897,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report when only Program is called', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1948,7 +1908,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for modules differing only in case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1959,7 +1919,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for modules differing by trailing slash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1970,7 +1930,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for modules differing by file extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1981,7 +1941,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for modules differing by subpath', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1992,7 +1952,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for different scoped packages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2003,7 +1963,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for different relative paths', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2015,7 +1975,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for different depth relative paths', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2027,7 +1987,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report after reset for previously seen module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2042,7 +2002,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for import with non-string source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2061,7 +2021,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for nodes that are not ImportDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2074,7 +2034,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report for import from null source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2095,7 +2055,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('state management', () => {
     test('should clear module map on Program visit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2109,7 +2069,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should track modules independently after reset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2124,7 +2084,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should maintain state within same Program scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2139,7 +2099,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should start fresh after multiple resets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2155,7 +2115,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not carry state between two visitors', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const reports1: ReportDescriptor[] = []
       const reports2: ReportDescriptor[] = []
 
@@ -2188,7 +2148,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle rapid alternating Program and Import calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2202,7 +2162,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should accumulate reports across modules without reset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2219,7 +2179,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('import specifier types', () => {
     test('should detect duplicate regardless of named specifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2240,7 +2200,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate regardless of default specifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2261,7 +2221,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate regardless of namespace specifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2282,7 +2242,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate when first is default and second is named', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2303,7 +2263,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate when first is namespace and second is default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2324,7 +2284,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate when one has empty specifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2345,7 +2305,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate when both have empty specifiers (side-effect imports)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2366,7 +2326,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with mixed specifier types from same module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2417,25 +2377,25 @@ describe('no-duplicate-imports rule', () => {
 
   describe('Program visitor behavior', () => {
     test('should accept Program node with no properties', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.Program({})).not.toThrow()
     })
 
     test('should accept Program node with null body', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.Program({ type: 'Program', body: null })).not.toThrow()
     })
 
     test('should accept Program node without type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.Program({ body: [] })).not.toThrow()
     })
 
     test('should not report when Program is called multiple times with no imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -2448,7 +2408,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('import declaration with extra properties', () => {
     test('should detect duplicate with importKind property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2471,7 +2431,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with assertions property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2494,7 +2454,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate regardless of extra node properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2516,7 +2476,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('additional detection scenarios', () => {
     test('should detect duplicate with module name containing dashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('my-cool-module', 1, 0))
@@ -2526,7 +2486,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with module name containing underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('my_util_pkg', 1, 0))
@@ -2535,7 +2495,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with module name containing dots', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('module.with.dots', 1, 0))
@@ -2544,7 +2504,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with tilde in module name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('~/utils', 1, 0))
@@ -2553,7 +2513,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should detect duplicate with at-sign scoped module and subpath', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('@angular/core/testing', 1, 0))
@@ -2562,7 +2522,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not treat @scope/pkg and @scope/pkg/sub as duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('@scope/pkg', 1, 0))
@@ -2571,7 +2531,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle module name that is a number string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('42', 1, 0))
@@ -2580,7 +2540,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle module name that looks like version number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('1.2.3', 1, 0))
@@ -2589,7 +2549,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle very short module name of single character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('x', 1, 0))
@@ -2599,7 +2559,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle module name with consecutive slashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('path//to///module', 1, 0))
@@ -2608,7 +2568,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not report duplicate for empty module name (falsy value)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('', 1, 0))
@@ -2620,7 +2580,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('Program reset interactions', () => {
     test('should count reports cumulatively across resets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('a', 1, 0))
@@ -2634,7 +2594,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should not carry imports across reset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('x', 1, 0))
@@ -2644,7 +2604,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle reset with no imports in between', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.Program(createProgram())
@@ -2655,7 +2615,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle single import before reset then duplicate after', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('mod', 1, 0))
@@ -2668,7 +2628,7 @@ describe('no-duplicate-imports rule', () => {
 
   describe('additional edge cases', () => {
     test('should handle node with prototype chain properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       const proto = { type: 'ImportDeclaration' }
       const node = Object.create(proto)
@@ -2678,25 +2638,25 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle Error object as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(new Error('test'))).not.toThrow()
     })
 
     test('should handle Promise object as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(Promise.resolve('test'))).not.toThrow()
     })
 
     test('should handle BigInt as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       expect(() => visitor.ImportDeclaration(BigInt(42))).not.toThrow()
     })
 
     test('should handle nested object with valid structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration({
@@ -2723,7 +2683,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should handle same import visited twice from same node reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       const node = createImportDeclaration('same-ref', 1, 0)
       visitor.Program(createProgram())
@@ -2733,7 +2693,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should work with source value containing regex special chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('module(v2)', 1, 0))
@@ -2742,7 +2702,7 @@ describe('no-duplicate-imports rule', () => {
     })
 
     test('should work with source value containing brackets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import { a } from "module";' })
       const visitor = noDuplicateImportsRule.create(context)
       visitor.Program(createProgram())
       visitor.ImportDeclaration(createImportDeclaration('module[0]', 1, 0))

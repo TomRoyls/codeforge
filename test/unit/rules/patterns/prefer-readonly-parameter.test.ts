@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferReadonlyParameterRule } from '../../../../src/rules/patterns/prefer-readonly-parameter.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function fn(arr: string[]) {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createTypeAnnotation(type: string, typeName?: string): unknown {
   if (type === 'TSArrayType') {
@@ -363,7 +327,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
@@ -379,7 +343,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should return a new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor1 = preferReadonlyParameterRule.create(context)
       const visitor2 = preferReadonlyParameterRule.create(context)
 
@@ -387,7 +351,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should have all visitor methods as functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(typeof visitor['FunctionDeclaration']).toBe('function')
@@ -407,22 +371,22 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       expect(() => preferReadonlyParameterRule.create(context)).not.toThrow()
     })
 
     test('should accept context with various file paths', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}', filePath: '/custom/path.ts' })
       expect(() => preferReadonlyParameterRule.create(context)).not.toThrow()
     })
 
     test('should accept context with various source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = 1;')
+      const { context } = createMockRuleContext({ source: 'const x = 1;', filePath: '/src/file.ts' })
       expect(() => preferReadonlyParameterRule.create(context)).not.toThrow()
     })
 
     test('visitor should have exactly 10 keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
       expect(Object.keys(visitor).length).toBe(10)
     })
@@ -430,7 +394,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('detection', () => {
     test('should report unmodified array parameter in function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -444,7 +408,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified object parameter in function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -459,7 +423,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified array parameter in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -472,7 +436,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified object parameter in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -486,7 +450,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified array parameter in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -501,7 +465,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified object parameter in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -515,7 +479,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report string[] parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -529,7 +493,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report number[] parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -543,7 +507,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Array<T> parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -557,7 +521,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Object type parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -571,7 +535,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Map type parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -585,7 +549,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Set type parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -599,7 +563,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Record type parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -613,7 +577,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report type literal parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -625,7 +589,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report TSObjectKeyword parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -639,7 +603,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified rest array parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -654,7 +618,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified object destructuring parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -670,7 +634,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report unmodified array destructuring parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -686,7 +650,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report parameter with map call (non-mutating)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -701,7 +665,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report parameter with filter call (non-mutating)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -716,7 +680,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report parameter with forEach call (non-mutating)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -731,7 +695,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Map parameter in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -746,7 +710,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report Set parameter in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -761,7 +725,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report TSObjectKeyword parameter in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -775,7 +739,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report TSObjectKeyword parameter in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -787,7 +751,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report rest parameter with Array type reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -802,7 +766,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report rest parameter in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -817,7 +781,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report parameter with reduce call (non-mutating)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -832,7 +796,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report parameter with concat call (non-mutating)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -847,7 +811,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report parameter with slice call (non-mutating)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -864,7 +828,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('not reporting', () => {
     test('should not report ReadonlyArray parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -878,7 +842,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report ReadonlyMap parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -892,7 +856,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report ReadonlySet parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -906,7 +870,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report Readonly type parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -920,7 +884,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter modified by assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -935,7 +899,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with push mutation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -952,7 +916,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with pop call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -967,7 +931,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with shift call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -982,7 +946,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with unshift call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -999,7 +963,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with splice call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1017,7 +981,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with sort call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1032,7 +996,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with reverse call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1047,7 +1011,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with fill call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1064,7 +1028,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with copyWithin call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1082,7 +1046,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with delete on property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1097,7 +1061,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with ++ on property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1112,7 +1076,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with -- on property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1127,7 +1091,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with property assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1145,7 +1109,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with index assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1163,7 +1127,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report rest parameter modified by push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1182,7 +1146,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report destructured parameter when property is reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1200,7 +1164,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report when nested property is assigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1221,7 +1185,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report when nested array is modified', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1239,7 +1203,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter without type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([{ type: 'Identifier', name: 'x' }]))
@@ -1249,7 +1213,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report parameter with non-array/object type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1261,7 +1225,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report function without parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1276,7 +1240,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report ReadonlyArray in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -1290,7 +1254,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report ReadonlyMap in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -1304,7 +1268,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report ReadonlySet in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -1318,7 +1282,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report Readonly type in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -1332,7 +1296,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not report when all destructured properties are reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1354,7 +1318,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -1363,7 +1327,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
@@ -1372,7 +1336,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -1380,7 +1344,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle node without params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1394,7 +1358,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle parameter with non-array/object type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1406,7 +1370,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle multiple functions independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1423,7 +1387,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle AssignmentExpression with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1439,7 +1403,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle UpdateExpression with non-MemberExpression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1452,7 +1416,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle CallExpression with non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1465,7 +1429,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle UnaryExpression with non-delete operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1478,7 +1442,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle destructuring without properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1499,56 +1463,56 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle AssignmentExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle UpdateExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.UpdateExpression(null)).not.toThrow()
     })
 
     test('should handle CallExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle UnaryExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.UnaryExpression(null)).not.toThrow()
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(true)).not.toThrow()
     })
 
     test('should handle numeric node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(42)).not.toThrow()
     })
 
     test('should handle empty string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('')).not.toThrow()
     })
 
     test('should handle node with empty params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression([]))
@@ -1558,14 +1522,14 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle AssignmentExpression with undefined node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
     })
 
     test('should handle CallExpression with callee missing property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1585,7 +1549,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle UnaryExpression with void operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1598,7 +1562,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle prefix update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1616,7 +1580,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle deeply nested member mutation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1637,7 +1601,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle parameter with null typeAnnotation gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1658,7 +1622,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('location', () => {
     test('should report correct location for parameter on line 10, column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1673,7 +1637,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location with default values when no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1696,7 +1660,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location for rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1711,7 +1675,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location for destructured parameter properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1727,7 +1691,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1742,7 +1706,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location for function expression parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression(
@@ -1757,7 +1721,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location for arrow function parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -1772,7 +1736,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1785,7 +1749,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report correct location for high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1800,7 +1764,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report multiple locations for multiple parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1817,7 +1781,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should include loc in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1831,7 +1795,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should have start and end in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1844,7 +1808,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle column 0 correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1858,7 +1822,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location for array destructuring parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1873,7 +1837,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report location for each destructured binding separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1891,7 +1855,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('message quality', () => {
     test('should mention parameter name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1905,7 +1869,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should mention readonly in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1917,7 +1881,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should mention immutability in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1929,7 +1893,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should mention array or object type in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1941,7 +1905,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should include parameter name in quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1953,7 +1917,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should mention modified in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1965,7 +1929,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1979,7 +1943,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should mention consider using readonly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1991,7 +1955,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should have correct message for object parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2006,7 +1970,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should have correct message for rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2023,7 +1987,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('multiple reports', () => {
     test('should report multiple unmodified parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2039,7 +2003,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report only unmodified when some are modified', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2060,7 +2024,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report all parameters in different function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2085,7 +2049,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not carry over mutations from previous function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       // First function with mutation
@@ -2110,7 +2074,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle mixed mutable and readonly parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2126,7 +2090,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report four unmodified parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2143,7 +2107,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report correctly with nested functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       // Outer function
@@ -2164,7 +2128,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should clear params between function exits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2177,7 +2141,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should report all destructured bindings individually', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2197,7 +2161,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should correctly handle some destructured bindings mutated', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2223,7 +2187,7 @@ describe('prefer-readonly-parameter rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/deep/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}', filePath: '/custom/deep/path.ts' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2235,7 +2199,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2247,11 +2211,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should work with complex source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'function foo(arr: string[]) { return arr.map(x => x); }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'function foo(arr: string[]) { return arr.map(x => x); }', filePath: '/src/file.ts' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2303,7 +2263,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle multiple sequential exit calls without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2317,7 +2277,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle arrow function with expression body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.ArrowFunctionExpression({
@@ -2332,7 +2292,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle function expression with named id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionExpression({
@@ -2348,7 +2308,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should handle same parameter name in different functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2367,7 +2327,7 @@ describe('prefer-readonly-parameter rule', () => {
     })
 
     test('should not leak mutations across function boundaries', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       // First function - push on 'arr'
@@ -2406,7 +2366,7 @@ describe('prefer-readonly-parameter rule', () => {
       'fill',
       'copyWithin',
     ] as const)('should not report parameter with %s call', (method) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2446,7 +2406,7 @@ describe('prefer-readonly-parameter rule', () => {
       'values',
       'toString',
     ] as const)('should report parameter with %s call', (method) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2469,7 +2429,7 @@ describe('prefer-readonly-parameter rule', () => {
       ['Set', 'set'],
       ['Record', 'rec'],
     ] as const)('should report %s type parameter', (typeName, paramName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2491,7 +2451,7 @@ describe('prefer-readonly-parameter rule', () => {
       ['ReadonlySet', 'set'],
       ['Readonly', 'obj'],
     ] as const)('should not report %s type parameter', (typeName, paramName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2517,7 +2477,7 @@ describe('prefer-readonly-parameter rule', () => {
       { type: 'TSAnyKeyword' },
       { type: 'TSUnknownKeyword' },
     ])('should not report $type parameter', ({ type }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createParameter('param', { type })]))
@@ -2533,7 +2493,7 @@ describe('prefer-readonly-parameter rule', () => {
       { fnType: 'FunctionExpression', createFn: createFunctionExpression },
       { fnType: 'ArrowFunctionExpression', createFn: createArrowFunctionExpression },
     ] as const)('should detect unmodified array param in $fnType', ({ createFn }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       const fnNode = createFn([createParameter('items', createTypeAnnotation('TSArrayType'))])
@@ -2564,7 +2524,7 @@ describe('prefer-readonly-parameter rule', () => {
         exitKey: 'ArrowFunctionExpression:exit',
       },
     ] as const)('should not report $fnType param with push mutation', ({ createFn, exitKey }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
       const visitor = preferReadonlyParameterRule.create(context)
 
       const fnNode = createFn([createParameter('arr', createTypeAnnotation('TSArrayType'))])
@@ -2584,7 +2544,7 @@ describe('prefer-readonly-parameter rule', () => {
     test.each(['typeof', 'void', '!', '~', '-'] as const)(
       'should report parameter with %s unary operator (non-delete)',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
         const visitor = preferReadonlyParameterRule.create(context)
 
         visitor.FunctionDeclaration(
@@ -2602,7 +2562,7 @@ describe('prefer-readonly-parameter rule', () => {
     test.each(['++', '--'] as const)(
       'should report array param when %s is on non-member expression',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
         const visitor = preferReadonlyParameterRule.create(context)
 
         visitor.FunctionDeclaration(
@@ -2618,7 +2578,7 @@ describe('prefer-readonly-parameter rule', () => {
     test.each(['++', '--'] as const)(
       'should not report object param when %s is on member expression',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'function fn(arr: string[]) {}' })
         const visitor = preferReadonlyParameterRule.create(context)
 
         visitor.FunctionDeclaration(

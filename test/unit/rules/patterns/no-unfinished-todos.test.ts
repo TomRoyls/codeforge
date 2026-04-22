@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnfinishedTodosRule } from '../../../../src/rules/patterns/no-unfinished-todos.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '// TODO: fix this',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createComment(text: string, line = 1, column = 0): unknown {
   return {
@@ -173,21 +137,21 @@ describe('no-unfinished-todos rule', () => {
 
   describe('create', () => {
     test('should return visitor object with visitNode method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(visitor).toHaveProperty('visitNode')
     })
 
     test('should return visitNode as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(typeof visitor.visitNode).toBe('function')
     })
 
     test('should return new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor1 = noUnfinishedTodosRule.create(context)
       const visitor2 = noUnfinishedTodosRule.create(context)
 
@@ -197,7 +161,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('detecting default terms', () => {
     test('should report TODO comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: implement this'))
@@ -207,7 +171,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report FIXME comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME: this is broken'))
@@ -217,7 +181,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report HACK comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// HACK: workaround'))
@@ -227,7 +191,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report XXX comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXX: dangerous'))
@@ -237,7 +201,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should be case insensitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// todo: lowercase'))
@@ -248,7 +212,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should require word boundary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODOS: not a match'))
@@ -258,7 +222,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO with colon separator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: refactor'))
@@ -267,7 +231,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO without colon separator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO refactor this'))
@@ -276,7 +240,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME with dash separator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME - broken logic'))
@@ -285,7 +249,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect HACK at start of comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('HACK temporary fix'))
@@ -294,7 +258,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect XXX with parentheses', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXX (needs review)'))
@@ -303,7 +267,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term followed by period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO. Implement later'))
@@ -312,7 +276,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term at very start of text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('TODO at the very beginning'))
@@ -321,7 +285,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term after whitespace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('  TODO: indented'))
@@ -330,7 +294,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term followed by exclamation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME! Critical bug'))
@@ -339,7 +303,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term followed by question mark', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO? Should we do this'))
@@ -348,7 +312,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term followed by newline in multi-line text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/* TODO\n   Multi-line comment */'))
@@ -357,7 +321,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term surrounded by spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// the TODO needs attention'))
@@ -366,7 +330,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect lowercase todo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// todo: lowercase'))
@@ -375,7 +339,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect lowercase fixme', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// fixme: broken'))
@@ -384,7 +348,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect lowercase hack', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// hack: workaround'))
@@ -393,7 +357,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect lowercase xxx', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// xxx: dangerous'))
@@ -402,7 +366,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect mixed case Todo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Todo: mixed'))
@@ -411,7 +375,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect mixed case FixMe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FixMe: broken'))
@@ -420,7 +384,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect mixed case HAcK', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// HAcK: workaround'))
@@ -429,7 +393,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect mixed case xXx', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// xXx: dangerous'))
@@ -438,7 +402,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect TODOS as TODO', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODOS: many items'))
@@ -447,7 +411,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect FIXMEEE as FIXME', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXMEEE: extended'))
@@ -456,7 +420,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect HACKS as HACK', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// HACKS: multiple'))
@@ -465,7 +429,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect XXXX as XXX', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXXX: extra'))
@@ -474,7 +438,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect TODONT as TODO', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODONT: anti-pattern'))
@@ -483,7 +447,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect BHACK as HACK', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// BHACK: unrelated word'))
@@ -492,7 +456,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect PREFIXEDFIXME as FIXME', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// PREFIXEDFIXME: no match'))
@@ -501,7 +465,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term preceded by opening parenthesis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// (TODO: implement later)'))
@@ -510,7 +474,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term preceded by opening bracket', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// [TODO: track this]'))
@@ -519,7 +483,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term preceded by newline', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/* line1\nTODO: second line */'))
@@ -530,7 +494,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('allowing regular comments', () => {
     test('should not report regular comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// This is a regular comment'))
@@ -541,7 +505,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comments without special terms', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/* Multi-line comment\n   without special terms */'))
@@ -550,7 +514,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report empty comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment(''))
@@ -559,7 +523,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report whitespace-only comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('   '))
@@ -570,7 +534,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment that just has the word todolist', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// todolist application'))
@@ -579,7 +543,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with word fixable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// This is fixable'))
@@ -588,7 +552,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with word hacking', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// ethical hacking'))
@@ -597,7 +561,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comments about video content (xxxtended)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXXTENTACION lyrics'))
@@ -606,7 +570,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comments about ToDO list app', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// ToDoList component'))
@@ -615,7 +579,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment about methodologies', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Methodologies: agile, scrum'))
@@ -624,7 +588,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with NOTE keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// NOTE: This is just a note'))
@@ -633,7 +597,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with WARNING keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// WARNING: deprecated API'))
@@ -642,7 +606,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with DEPRECATED keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// DEPRECATED: use new API'))
@@ -651,7 +615,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with IMPORTANT keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// IMPORTANT: read carefully'))
@@ -660,7 +624,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not report comment with SEE keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// SEE: documentation'))
@@ -671,9 +635,9 @@ describe('no-unfinished-todos rule', () => {
 
   describe('custom terms option', () => {
     test('should detect custom terms', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['BUG', 'ISSUE'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// BUG: found a bug'))
@@ -683,9 +647,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not detect default terms when custom terms are set', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['CUSTOM'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: this is a todo'))
@@ -696,9 +660,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect single custom term', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['OPTIMIZE'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// OPTIMIZE: improve perf'))
@@ -707,9 +671,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect custom term in mixed case', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['OPTIMIZE'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// optimize: lowercase'))
@@ -719,9 +683,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect multiple custom terms', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REFACTOR', 'CLEANUP', 'REVIEW'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// REFACTOR: needs work'))
@@ -732,9 +696,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should not match default terms when overridden with custom', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REVIEW'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: default term'))
@@ -748,9 +712,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle custom term with numbers', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['V2TODO'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// V2TODO: migrate'))
@@ -759,9 +723,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle single character custom term', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['Q'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Q: question here'))
@@ -770,9 +734,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle long custom term', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['NEEDSATTENTION'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// NEEDSATTENTION: urgent'))
@@ -781,9 +745,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle custom term with word boundary before period', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['WIP'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// WIP. Still working'))
@@ -792,9 +756,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should respect word boundary for custom terms', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['WIP'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// WIPWORK: not a match'))
@@ -803,9 +767,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle custom term at end of comment', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REFACTOR'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// This needs REFACTOR'))
@@ -816,9 +780,9 @@ describe('no-unfinished-todos rule', () => {
 
   describe('allowPatterns option', () => {
     test('should allow comments matching allowPatterns', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [TRACKED]: ticket-123'))
@@ -827,9 +791,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report comments not matching allowPatterns', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: untracked'))
@@ -838,9 +802,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should support multiple allowPatterns', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[TRACKED\\]', '\\[SNOOZE\\]', '#\\d+'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [TRACKED]: tracked'))
@@ -851,9 +815,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow pattern matching any part of comment', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['JIRA-\\d+'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: linked to JIRA-456'))
@@ -862,9 +826,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow pattern with ticket prefix', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['^// TODO \\['],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [TICKET-1]: has ticket'))
@@ -873,9 +837,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow pattern matching FIXME with ticket', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['TICKET-\\d+'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME TICKET-789: tracked fix'))
@@ -884,9 +848,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report when allowPattern partially matches', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['NOPE-\\d{5}'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO NOPE-123: only 3 digits'))
@@ -895,9 +859,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow dots in allowPattern', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\.com'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO example.com tracked'))
@@ -906,9 +870,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow with wildcard pattern', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['TRACKED-.*'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO TRACKED-abc-123: any suffix'))
@@ -917,9 +881,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow pattern with alternation', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[TRACKED\\]|\\[SNOOZE\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [TRACKED]: tracked'))
@@ -929,9 +893,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow pattern with character class', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['#[A-Z]+-\\d+'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO #PROJ-42: project ticket'))
@@ -940,9 +904,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should still report when allowPattern does not match any term comment', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Regular comment'))
@@ -952,9 +916,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern with unicode', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['✅'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO ✅: done'))
@@ -965,10 +929,10 @@ describe('no-unfinished-todos rule', () => {
 
   describe('combined terms and allowPatterns', () => {
     test('should allow custom term with allowPattern', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REVIEW', 'OPTIMIZE'],
         allowPatterns: ['\\[DEFERRED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// REVIEW [DEFERRED]: later'))
@@ -979,10 +943,10 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should apply allowPatterns to all custom terms', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REVIEW', 'OPTIMIZE', 'CLEANUP'],
         allowPatterns: ['\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// REVIEW [TRACKED]: ok'))
@@ -993,10 +957,10 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report all non-allowed custom terms', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REVIEW', 'OPTIMIZE'],
         allowPatterns: ['\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// REVIEW: untracked'))
@@ -1006,10 +970,10 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle empty terms with allowPatterns', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: [],
         allowPatterns: ['\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: would match defaults but terms empty'))
@@ -1020,7 +984,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('message quality', () => {
     test('should include term in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: implement'))
@@ -1029,7 +993,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should mention technical debt in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: implement'))
@@ -1038,7 +1002,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should suggest addressing or removing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: implement'))
@@ -1048,7 +1012,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should include TODO in uppercase in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// todo: lowercase input'))
@@ -1057,7 +1021,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should include FIXME in uppercase in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// fixme: lowercase input'))
@@ -1066,7 +1030,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should include HACK in uppercase in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// hack: lowercase input'))
@@ -1075,7 +1039,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should include XXX in uppercase in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// xxx: lowercase input'))
@@ -1084,9 +1048,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should include custom term in uppercase in message', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['REVIEW'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// review: lowercase'))
@@ -1097,7 +1061,7 @@ describe('no-unfinished-todos rule', () => {
     test('should produce consistent message format for all default terms', () => {
       const terms = ['TODO', 'FIXME', 'HACK', 'XXX']
       for (const term of terms) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
         const visitor = noUnfinishedTodosRule.create(context)
 
         visitor.visitNode(createComment(`// ${term}: test`))
@@ -1109,7 +1073,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should produce message matching known pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test'))
@@ -1120,7 +1084,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should produce message with FIXME for fixme term', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME: test'))
@@ -1131,7 +1095,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should produce message with HACK for hack term', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// HACK: test'))
@@ -1142,7 +1106,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should produce message with XXX for xxx term', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXX: test'))
@@ -1155,7 +1119,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(null)).not.toThrow()
@@ -1163,7 +1127,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(undefined)).not.toThrow()
@@ -1171,7 +1135,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode('string')).not.toThrow()
@@ -1180,7 +1144,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { text: '// TODO: test' }
@@ -1189,7 +1153,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = {
@@ -1201,7 +1165,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node without text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = {
@@ -1213,7 +1177,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with null text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = {
@@ -1226,7 +1190,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 10, 5))
@@ -1236,7 +1200,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = {
@@ -1248,7 +1212,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test'))
@@ -1257,7 +1221,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle empty terms array', () => {
-      const { context, reports } = createMockContext({ terms: [] })
+      const { context, reports } = createMockRuleContext({ options: [{ terms: [] }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test'))
@@ -1266,7 +1230,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle empty allowPatterns array', () => {
-      const { context, reports } = createMockContext({ allowPatterns: [] })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPatterns: [] }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test'))
@@ -1275,15 +1239,15 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should throw for invalid allowPatterns regex', () => {
-      const { context } = createMockContext({
+      const { context } = createMockRuleContext({ options: [{
         allowPatterns: ['[invalid'],
-      })
+      }], source: '// TODO: fix this' })
 
       expect(() => noUnfinishedTodosRule.create(context)).toThrow()
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(true)).not.toThrow()
@@ -1292,7 +1256,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle numeric node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(0)).not.toThrow()
@@ -1302,7 +1266,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode([1, 2, 3])).not.toThrow()
@@ -1310,7 +1274,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with empty string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: '', text: '// TODO: test' }
@@ -1319,7 +1283,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with numeric type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 42, text: '// TODO: test' }
@@ -1328,7 +1292,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with undefined text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 'Comment', text: undefined }
@@ -1337,7 +1301,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with numeric text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 'Comment', text: 12345 }
@@ -1346,7 +1310,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with object text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 'Comment', text: { toString: () => '// TODO: lazy' } }
@@ -1355,7 +1319,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with array text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 'Comment', text: ['TODO'] }
@@ -1364,7 +1328,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle very long comment text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const longComment = '// ' + 'x'.repeat(10000) + ' TODO: at the end'
@@ -1374,7 +1338,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle comment with unicode characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: 日本語テスト 🎉'))
@@ -1383,7 +1347,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle comment with emoji before term', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// 🔧 TODO: emoji before'))
@@ -1392,7 +1356,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle comment with special regex characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: $1.00 for (a+b)*c'))
@@ -1401,7 +1365,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle comment with backslashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: C:\\Users\\path'))
@@ -1410,7 +1374,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle comment with HTML entities', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: &amp; &lt; &gt;'))
@@ -1419,7 +1383,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 1, 0))
@@ -1429,7 +1393,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle location at large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 9999, 0))
@@ -1438,7 +1402,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle location at large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 1, 500))
@@ -1447,9 +1411,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle valid allowPatterns regex with anchors', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['^// TODO'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: at start'))
@@ -1458,23 +1422,23 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should throw for unclosed parenthesis regex', () => {
-      const { context } = createMockContext({
+      const { context } = createMockRuleContext({ options: [{
         allowPatterns: ['(unclosed'],
-      })
+      }], source: '// TODO: fix this' })
 
       expect(() => noUnfinishedTodosRule.create(context)).toThrow()
     })
 
     test('should throw for unclosed bracket regex', () => {
-      const { context } = createMockContext({
+      const { context } = createMockRuleContext({ options: [{
         allowPatterns: ['[unclosed'],
-      })
+      }], source: '// TODO: fix this' })
 
       expect(() => noUnfinishedTodosRule.create(context)).toThrow()
     })
 
     test('should handle node type case sensitivity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 'comment', text: '// TODO: test' }
@@ -1484,7 +1448,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node type COMMENT uppercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = { type: 'COMMENT', text: '// TODO: test' }
@@ -1494,7 +1458,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle NaN node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(Number.NaN)).not.toThrow()
@@ -1502,7 +1466,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle Infinity node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(Number.POSITIVE_INFINITY)).not.toThrow()
@@ -1510,7 +1474,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle Symbol node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(Symbol('test'))).not.toThrow()
@@ -1518,7 +1482,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle BigInt node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(BigInt(123))).not.toThrow()
@@ -1526,7 +1490,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(() => {})).not.toThrow()
@@ -1534,7 +1498,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle Date node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(new Date())).not.toThrow()
@@ -1542,7 +1506,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle regex literal node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(/TODO/)).not.toThrow()
@@ -1550,7 +1514,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle Map node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(new Map())).not.toThrow()
@@ -1558,7 +1522,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle Set node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       expect(() => visitor.visitNode(new Set())).not.toThrow()
@@ -1566,7 +1530,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle frozen object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = Object.freeze({ type: 'Comment', text: '// TODO: test' })
@@ -1575,7 +1539,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle sealed object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = Object.seal({ type: 'Comment', text: '// TODO: test' })
@@ -1584,7 +1548,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with prototype properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = Object.create({ type: 'Comment', text: '// TODO: test' })
@@ -1592,7 +1556,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle node with getter for text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const node = {
@@ -1608,7 +1572,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('multiple violations', () => {
     test('should report multiple TODO comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: first'))
@@ -1619,7 +1583,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report TODO but not regular comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// This is normal'))
@@ -1630,7 +1594,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report all four default terms', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: first'))
@@ -1642,7 +1606,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report multiple of same term type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: first'))
@@ -1653,7 +1617,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report correct count for mixed comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Normal'))
@@ -1668,7 +1632,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle many comments without terms', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1679,7 +1643,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle many comments all with terms', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1690,7 +1654,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report each term individually even with multiple terms in one comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO FIXME HACK XXX: all terms'))
@@ -1701,7 +1665,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('comment formats', () => {
     test('should detect single-line comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: single line'))
@@ -1710,7 +1674,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect multi-line comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/* TODO: multi-line */'))
@@ -1719,7 +1683,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect block comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/** TODO: doc comment */'))
@@ -1728,7 +1692,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in middle of comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Consider this TODO when refactoring'))
@@ -1737,7 +1701,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO at end of comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Refactor later - TODO'))
@@ -1746,7 +1710,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in hash comment style', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('# TODO: python-style'))
@@ -1755,7 +1719,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in HTML comment style', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('<!-- TODO: HTML comment -->'))
@@ -1764,7 +1728,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in triple-slash comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/// TODO: XML doc'))
@@ -1773,7 +1737,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in JSDoc style comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/**\n * TODO: JSDoc\n */'))
@@ -1782,7 +1746,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term with leading asterisk in block comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment(' * TODO: indented block'))
@@ -1791,7 +1755,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in comment with code reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO(refs #123): linked'))
@@ -1800,7 +1764,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in comment with author attribution', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO(john): assigned'))
@@ -1809,7 +1773,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in comment with priority marker', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO!: high priority'))
@@ -1818,7 +1782,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in comment with date', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO(2024-01-15): deadline'))
@@ -1827,7 +1791,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect term in multi-line block comment spanning multiple lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/*\n * First line\n * TODO: third line\n * Last line\n */'))
@@ -1838,7 +1802,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('location reporting', () => {
     test('should report location from comment node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 5, 10))
@@ -1849,7 +1813,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test'))
@@ -1859,7 +1823,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report location at zero line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 0, 0))
@@ -1868,7 +1832,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report location with different line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 42, 17))
@@ -1878,7 +1842,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report location for each violation separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: first', 1, 0))
@@ -1891,7 +1855,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should include end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: test', 3, 2))
@@ -1903,12 +1867,12 @@ describe('no-unfinished-todos rule', () => {
 
   describe('visitor independence', () => {
     test('visitors from different create calls should be independent', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext({
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ options: [{
         terms: ['TODO'],
-      })
-      const { context: ctx2, reports: reports2 } = createMockContext({
+      }], source: '// TODO: fix this' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ options: [{
         terms: ['FIXME'],
-      })
+      }], source: '// TODO: fix this' })
 
       const visitor1 = noUnfinishedTodosRule.create(ctx1)
       const visitor2 = noUnfinishedTodosRule.create(ctx2)
@@ -1924,8 +1888,8 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('reports should not leak between visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: '// TODO: fix this' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: '// TODO: fix this' })
 
       const visitor1 = noUnfinishedTodosRule.create(ctx1)
       const visitor2 = noUnfinishedTodosRule.create(ctx2)
@@ -1939,7 +1903,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('first matching term wins', () => {
     test('should report TODO when comment has TODO and FIXME', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO FIXME: both terms'))
@@ -1949,7 +1913,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report FIXME when comment has FIXME and HACK', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME HACK: both terms'))
@@ -1959,7 +1923,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report TODO when all four terms present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO FIXME HACK XXX: all terms'))
@@ -1969,9 +1933,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should report first custom term when multiple present', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['ALPHA', 'BETA', 'GAMMA'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// BETA ALPHA: both present'))
@@ -1983,9 +1947,9 @@ describe('no-unfinished-todos rule', () => {
 
   describe('allowPatterns filtering', () => {
     test('should not report when allowPattern matches but term is not first', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[OK\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [OK]: tracked'))
@@ -1994,9 +1958,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should still report when allowPattern does not match', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[NOPE\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [OK]: different pattern'))
@@ -2005,9 +1969,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern that matches multiple times', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['TODO'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: the pattern matches TODO'))
@@ -2016,9 +1980,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should allow when any of multiple allowPatterns matches', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['NOMATCH', '\\[TRACKED\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [TRACKED]: second pattern matches'))
@@ -2029,7 +1993,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('special comment content', () => {
     test('should detect TODO in comment with URLs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: see https://example.com'))
@@ -2038,7 +2002,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in comment with code snippets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: replace foo.bar() with baz.qux()'))
@@ -2047,7 +2011,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in comment with JSON', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: parse {"key": "value"}'))
@@ -2056,7 +2020,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in comment with Markdown-like formatting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: **bold** and _italic_'))
@@ -2065,7 +2029,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in comment with tabs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('//\tTODO:\ttabbed'))
@@ -2074,7 +2038,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in comment with carriage returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO:\r\nmultiline'))
@@ -2083,7 +2047,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in very short comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('TODO'))
@@ -2092,7 +2056,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME in minimal comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('FIXME'))
@@ -2101,7 +2065,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect HACK in minimal comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('HACK'))
@@ -2110,7 +2074,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect XXX in minimal comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('XXX'))
@@ -2119,7 +2083,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO surrounded by punctuation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// [TODO]: bracketed'))
@@ -2128,7 +2092,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in comment with multiple spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('//   TODO:   extra   spaces'))
@@ -2139,7 +2103,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('repeated visitNode calls', () => {
     test('should accumulate reports across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: one'))
@@ -2150,7 +2114,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle interleaved valid and invalid comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// Normal'))
@@ -2165,7 +2129,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle same node visited twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       const comment = createComment('// TODO: visited twice')
@@ -2178,9 +2142,9 @@ describe('no-unfinished-todos rule', () => {
 
   describe('allowPatterns with special regex features', () => {
     test('should handle allowPattern with lookahead', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['TODO(?=\\s*\\[TRACKED\\])'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [TRACKED]: lookahead match'))
@@ -2189,9 +2153,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern with word boundary', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\bTRACKED\\b'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO TRACKED: word boundary'))
@@ -2200,9 +2164,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern with case-insensitive flag not set', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['TRACKED'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO tracked: lowercase'))
@@ -2211,9 +2175,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern matching digits only', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\d{4,}'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: ticket #12345'))
@@ -2224,9 +2188,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern with start anchor', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['^// '],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: starts with // '))
@@ -2235,9 +2199,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle allowPattern with end anchor', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['done$'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: done'))
@@ -2248,9 +2212,9 @@ describe('no-unfinished-todos rule', () => {
 
   describe('options variations', () => {
     test('should work with only terms option', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['CUSTOM'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// CUSTOM: match'))
@@ -2259,9 +2223,9 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should work with only allowPatterns option', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowPatterns: ['\\[SKIP\\]'],
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO [SKIP]: skipped'))
@@ -2325,10 +2289,10 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should handle config with extra unknown options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         terms: ['TODO'],
         unknownOption: 'ignored',
-      })
+      }], source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: still works'))
@@ -2339,7 +2303,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('term matching priority', () => {
     test('should detect TODO before FIXME in text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO and FIXME'))
@@ -2349,7 +2313,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME before HACK in text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME and HACK'))
@@ -2359,7 +2323,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect HACK before XXX in text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// HACK and XXX'))
@@ -2371,7 +2335,7 @@ describe('no-unfinished-todos rule', () => {
 
   describe('real-world comment patterns', () => {
     test('should detect TODO with assignee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO(john.doe): implement auth'))
@@ -2380,7 +2344,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO with ticket reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO(#1234): related to ticket'))
@@ -2389,7 +2353,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME with URL', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME: see https://bugs.example.com/123'))
@@ -2398,7 +2362,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect HACK with explanation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(
@@ -2409,7 +2373,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect XXX with warning', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXX: This will break on edge case!'))
@@ -2418,7 +2382,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in TypeScript triple-slash reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/// TODO: remove after migration'))
@@ -2427,7 +2391,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME in CSS-like comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('/* FIXME: override needed */'))
@@ -2436,7 +2400,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO with date annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO(2024-12-31): deadline'))
@@ -2445,7 +2409,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME with priority', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME(P0): critical'))
@@ -2454,7 +2418,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect HACK in legacy code comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// HACK: Legacy code, do not touch without QA'))
@@ -2463,7 +2427,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO with multiline description', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(
@@ -2476,7 +2440,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME in error handler comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME: Handle edge case in catch block'))
@@ -2485,7 +2449,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect XXX in performance comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// XXX: O(n^2) algorithm, needs optimization'))
@@ -2494,7 +2458,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO in config comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO: Move to environment variable'))
@@ -2503,7 +2467,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect FIXME in security comment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// FIXME: SQL injection vulnerability'))
@@ -2512,7 +2476,7 @@ describe('no-unfinished-todos rule', () => {
     })
 
     test('should detect TODO with context tag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '// TODO: fix this' })
       const visitor = noUnfinishedTodosRule.create(context)
 
       visitor.visitNode(createComment('// TODO[perf]: optimize this'))

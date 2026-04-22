@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferObjectHasOwnRule } from '../../../../src/rules/patterns/prefer-object-has-own.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'obj.hasOwnProperty(prop);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -179,52 +143,52 @@ describe('prefer-object-has-own rule', () => {
 
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return a CallExpression that is a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return same visitor structure on multiple calls', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor1 = preferObjectHasOwnRule.create(context)
       const visitor2 = preferObjectHasOwnRule.create(context)
       expect(Object.keys(visitor1)).toEqual(Object.keys(visitor2))
     })
 
     test('should return visitor with exactly one key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(Object.keys(visitor)).toEqual(['CallExpression'])
     })
 
     test('should not return undefined visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(visitor).not.toBeUndefined()
     })
 
     test('should not return null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(visitor).not.toBeNull()
     })
 
     test('should create independent visitors per context', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor1 = preferObjectHasOwnRule.create(ctx1)
       const visitor2 = preferObjectHasOwnRule.create(ctx2)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/different/path.ts')
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);', filePath: '/different/path.ts' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
@@ -234,7 +198,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('detecting Object.prototype.hasOwnProperty.call()', () => {
     test('should report Object.prototype.hasOwnProperty.call(obj, prop)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -242,14 +206,14 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report with correct message for hasOwnProperty.call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('Object.prototype.hasOwnProperty.call')
     })
 
     test('should report Object.prototype.hasOwnProperty.call with various object args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('Object'), 'prototype')
       const method = createMemberExpression(object, 'hasOwnProperty')
@@ -266,7 +230,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('detecting Object.prototype.propertyIsEnumerable.call()', () => {
     test('should report Object.prototype.propertyIsEnumerable.call(obj, prop)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('propertyIsEnumerable'))
       expect(reports.length).toBe(1)
@@ -274,14 +238,14 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report propertyIsEnumerable with correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('propertyIsEnumerable'))
       expect(reports[0].message).toContain('propertyIsEnumerable')
     })
 
     test('should report propertyIsEnumerable with own properties message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('propertyIsEnumerable'))
       expect(reports[0].message.toLowerCase()).toContain('own properties')
@@ -290,7 +254,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('detecting obj.hasOwnProperty()', () => {
     test('should report obj.hasOwnProperty(prop)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -299,7 +263,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report config.hasOwnProperty(key)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('config', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -307,7 +271,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report data.hasOwnProperty(field)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('data', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -315,28 +279,28 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report myObj.hasOwnProperty(x)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('myObj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should include method name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports[0].message).toContain('hasOwnProperty')
     })
 
     test('should include caller name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('myObj', 'hasOwnProperty'))
       expect(reports[0].message).toContain('myObj')
     })
 
     test('should include Object.hasOwn suggestion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports[0].message).toContain('Object.hasOwn(obj')
@@ -345,7 +309,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('detecting obj.propertyIsEnumerable()', () => {
     test('should report obj.propertyIsEnumerable(prop)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'propertyIsEnumerable'))
       expect(reports.length).toBe(1)
@@ -353,7 +317,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report settings.propertyIsEnumerable(key)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('settings', 'propertyIsEnumerable'))
       expect(reports.length).toBe(1)
@@ -361,21 +325,21 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report item.propertyIsEnumerable(attr)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('item', 'propertyIsEnumerable'))
       expect(reports.length).toBe(1)
     })
 
     test('should include method name propertyIsEnumerable in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'propertyIsEnumerable'))
       expect(reports[0].message).toContain('propertyIsEnumerable')
     })
 
     test('should include caller name in message for propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('options', 'propertyIsEnumerable'))
       expect(reports[0].message).toContain('options')
@@ -384,7 +348,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('detecting multiple patterns', () => {
     test('should report both hasOwnProperty and propertyIsEnumerable on same object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('obj', 'propertyIsEnumerable'))
@@ -392,7 +356,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report both prototype and direct call patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
@@ -400,7 +364,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should detect hasOwnProperty on result of function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const innerCall = createCallExpression(createIdentifier('getObj'), [])
       const callee = createMemberExpression(innerCall, 'hasOwnProperty')
@@ -410,7 +374,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should detect propertyIsEnumerable on result of function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const innerCall = createCallExpression(createIdentifier('getConfig'), [])
       const callee = createMemberExpression(innerCall, 'propertyIsEnumerable')
@@ -424,7 +388,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('not reporting valid code', () => {
     test('should not report Object.hasOwn()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('Object'), 'hasOwn')
       const node = createCallExpression(callee, [createIdentifier('obj'), createIdentifier('prop')])
@@ -433,7 +397,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.keys()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('Object'), 'keys')
       const node = createCallExpression(callee, [createIdentifier('obj')])
@@ -442,7 +406,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const node = createCallExpression(createIdentifier('check'), [createIdentifier('obj')])
       visitor.CallExpression(node)
@@ -450,42 +414,42 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report obj.toString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'toString'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report Object.hasOwnProperty() (Object is caller)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('Object', 'hasOwnProperty'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report Object.propertyIsEnumerable() (Object is caller)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('Object', 'propertyIsEnumerable'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.valueOf()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'valueOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.isPrototypeOf()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'isPrototypeOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report Array.isArray()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('Array'), 'isArray')
       const node = createCallExpression(callee, [createIdentifier('arr')])
@@ -494,7 +458,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.entries()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('Object'), 'entries')
       const node = createCallExpression(callee, [createIdentifier('obj')])
@@ -503,7 +467,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.values()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('Object'), 'values')
       const node = createCallExpression(callee, [createIdentifier('obj')])
@@ -512,7 +476,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.assign()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('Object'), 'assign')
       const node = createCallExpression(callee, [
@@ -524,63 +488,63 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report obj.forEach()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'forEach'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.map()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'map'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.filter()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'filter'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.find()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'find'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.reduce()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'reduce'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.push()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'push'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.includes()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'includes'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.join()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('arr', 'join'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report JSON.stringify()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('JSON'), 'stringify')
       const node = createCallExpression(callee, [createIdentifier('obj')])
@@ -589,7 +553,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report console.log()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('console'), 'log')
       const node = createCallExpression(callee, [createIdentifier('msg')])
@@ -598,7 +562,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.prototype.hasOwnProperty.bind()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('Object'), 'prototype')
       const method = createMemberExpression(object, 'hasOwnProperty')
@@ -609,7 +573,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.prototype.propertyIsEnumerable.bind()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('Object'), 'prototype')
       const method = createMemberExpression(object, 'propertyIsEnumerable')
@@ -620,14 +584,14 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report Object.prototype.toString.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('toString'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report MyObject.prototype.hasOwnProperty.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('MyObject'), 'prototype')
       const method = createMemberExpression(object, 'hasOwnProperty')
@@ -640,21 +604,21 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report obj.constructor()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'constructor'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.__lookupGetter__()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', '__lookupGetter__'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const node = {
         type: 'NewExpression',
@@ -666,7 +630,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report obj.toLocaleString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'toLocaleString'))
       expect(reports.length).toBe(0)
@@ -677,38 +641,38 @@ describe('prefer-object-has-own rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(() => visitor.CallExpression('string')).not.toThrow()
       expect(() => visitor.CallExpression(123)).not.toThrow()
     })
 
     test('should handle boolean node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle array node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       expect(() => visitor.CallExpression([])).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -720,7 +684,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -750,7 +714,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle node with missing callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const node = { type: 'CallExpression', arguments: [] }
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -758,7 +722,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle node with missing arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('obj'), 'hasOwnProperty')
       const node = { type: 'CallExpression', callee }
@@ -767,7 +731,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle callee with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -780,7 +744,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle callee with undefined property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = { type: 'MemberExpression', object: createIdentifier('obj') }
       const node = createCallExpression(callee, [])
@@ -789,7 +753,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle callee property as Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -802,7 +766,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle prototype call with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -815,7 +779,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle non-MemberExpression callee in prototype check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = createMemberExpression(createIdentifier('func'), 'call')
       const node = createCallExpression(callee, [createIdentifier('obj')])
@@ -824,7 +788,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle prototype object without proper property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -845,7 +809,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle prototype with wrong property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('Object'), 'proto')
       const method = createMemberExpression(object, 'hasOwnProperty')
@@ -856,7 +820,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle Object identifier as Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -877,7 +841,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle wrong Object identifier name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('MyObject'), 'prototype')
       const method = createMemberExpression(object, 'hasOwnProperty')
@@ -888,7 +852,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle method property as non-Identifier in prototype chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -909,7 +873,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle prototype without MemberExpression for prototype callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -926,21 +890,21 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle obj with method name valueOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'valueOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should handle obj with method name isPrototypeOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'isPrototypeOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should handle node without type gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const node = {
         callee: createMemberExpression(createIdentifier('obj'), 'hasOwnProperty'),
@@ -955,7 +919,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('location', () => {
     test('should report correct location at line 15 column 8', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 15, 8))
       expect(reports[0].loc?.start.line).toBe(15)
@@ -963,7 +927,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -971,7 +935,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report correct location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 100, 50))
       expect(reports[0].loc?.start.line).toBe(100)
@@ -979,7 +943,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 5, 10))
       expect(reports[0].loc?.end.line).toBe(5)
@@ -987,7 +951,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report location for Object.prototype.hasOwnProperty.call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty', 7, 12))
       expect(reports[0].loc?.start.line).toBe(7)
@@ -995,7 +959,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report location for propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'propertyIsEnumerable', 3, 4))
       expect(reports[0].loc?.start.line).toBe(3)
@@ -1003,7 +967,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report location for Object.prototype.propertyIsEnumerable.call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('propertyIsEnumerable', 20, 0))
       expect(reports[0].loc?.start.line).toBe(20)
@@ -1011,7 +975,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1025,7 +989,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report loc object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 2, 3))
       expect(reports[0].loc).toHaveProperty('start')
@@ -1033,7 +997,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should preserve location for second report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 1, 0))
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 10, 5))
@@ -1042,28 +1006,28 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle zero column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 1, 0))
       expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should handle large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 9999, 0))
       expect(reports[0].loc?.start.line).toBe(9999)
     })
 
     test('should handle large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 1, 500))
       expect(reports[0].loc?.start.column).toBe(500)
     })
 
     test('should report loc for Object.prototype call with specific location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('Object'), 'prototype')
       const method = createMemberExpression(object, 'hasOwnProperty')
@@ -1079,7 +1043,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report loc with correct end for Object.prototype call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const object = createMemberExpression(createIdentifier('Object'), 'prototype')
       const method = createMemberExpression(object, 'propertyIsEnumerable')
@@ -1098,50 +1062,50 @@ describe('prefer-object-has-own rule', () => {
 
   describe('message quality', () => {
     test('should mention hasOwn in message for hasOwnProperty.call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       expect(reports[0].message.toLowerCase()).toContain('hasown')
     })
 
     test('should mention safer in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports[0].message.toLowerCase()).toContain('safer')
     })
 
     test('should include object name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('myConfig', 'hasOwnProperty'))
       expect(reports[0].message).toContain('myConfig')
     })
 
     test('should include method name hasOwnProperty in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports[0].message).toContain('hasOwnProperty')
     })
 
     test('should include method name propertyIsEnumerable in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'propertyIsEnumerable'))
       expect(reports[0].message).toContain('propertyIsEnumerable')
     })
 
     test('should include Object.hasOwn suggestion in prototype call message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports[0].message).toContain('Object.hasOwn(obj')
     })
 
     test('should have different messages for Object.prototype vs direct call', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor1 = preferObjectHasOwnRule.create(ctx1)
       const visitor2 = preferObjectHasOwnRule.create(ctx2)
       visitor1.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
@@ -1150,14 +1114,14 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should contain prefer in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports[0].message.toLowerCase()).toContain('prefer')
     })
 
     test('should mention cleaner or safer in Object.prototype message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       const msg = reports[0].message.toLowerCase()
@@ -1165,7 +1129,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should include hasOwn in propertyIsEnumerable message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('propertyIsEnumerable'))
       expect(reports[0].message).toContain('hasOwn')
@@ -1176,7 +1140,7 @@ describe('prefer-object-has-own rule', () => {
 
   describe('multiple reports', () => {
     test('should report each hasOwnProperty call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('a', 'hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('b', 'hasOwnProperty'))
@@ -1185,7 +1149,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report each propertyIsEnumerable call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('a', 'propertyIsEnumerable'))
       visitor.CallExpression(createPrototypeCall('b', 'propertyIsEnumerable'))
@@ -1193,7 +1157,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report mix of hasOwnProperty and propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('a', 'hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('b', 'propertyIsEnumerable'))
@@ -1201,7 +1165,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report mix of prototype and Object.prototype patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
@@ -1209,7 +1173,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should not report valid calls mixed with invalid ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       const validCallee = createMemberExpression(createIdentifier('Object'), 'hasOwn')
       const validNode = createCallExpression(validCallee, [
@@ -1222,7 +1186,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should handle many calls in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       for (let i = 0; i < 50; i++) {
         visitor.CallExpression(createPrototypeCall(`obj${i}`, 'hasOwnProperty'))
@@ -1231,7 +1195,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should maintain separate report messages for different patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
@@ -1239,7 +1203,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report correct object names in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('alpha', 'hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('beta', 'hasOwnProperty'))
@@ -1248,7 +1212,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report correct locations for multiple nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 5, 0))
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty', 10, 4))
@@ -1258,7 +1222,7 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should report Object.prototype patterns with different methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createObjectPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createObjectPrototypeCall('propertyIsEnumerable'))
@@ -1271,39 +1235,35 @@ describe('prefer-object-has-own rule', () => {
 
   describe('context', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);', filePath: '/project/src/utils.ts' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x.hasOwnProperty(y)')
+      const { context, reports } = createMockRuleContext({ source: 'x.hasOwnProperty(y)', filePath: '/src/file.ts' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with complex source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/deep/nested/file.ts',
-        'const x = { a: 1 }; if (x.hasOwnProperty("a")) { console.log("found"); }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = { a: 1 }; if (x.hasOwnProperty("a")) { console.log("found"); }', filePath: '/src/deep/nested/file.ts' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\project\\src\\file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);', filePath: 'C:\\project\\src\\file.ts' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -1355,21 +1315,21 @@ describe('prefer-object-has-own rule', () => {
     })
 
     test('should work with config options containing extra fields', () => {
-      const { context, reports } = createMockContext({ extraOption: true, numericOption: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ extraOption: true, numericOption: 42 }], source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);', filePath: '/src/components/App.tsx' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('props', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);', filePath: '/src/index.js' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall('obj', 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -1422,7 +1382,7 @@ describe('prefer-object-has-own rule', () => {
     ]
 
     test.each(objectNames)('should report %s.hasOwnProperty()', (objectName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall(objectName, 'hasOwnProperty'))
       expect(reports.length).toBe(1)
@@ -1474,7 +1434,7 @@ describe('prefer-object-has-own rule', () => {
     ]
 
     test.each(objectNames)('should report %s.propertyIsEnumerable()', (objectName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty(prop);' })
       const visitor = preferObjectHasOwnRule.create(context)
       visitor.CallExpression(createPrototypeCall(objectName, 'propertyIsEnumerable'))
       expect(reports.length).toBe(1)

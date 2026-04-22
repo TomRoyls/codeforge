@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preserveCaughtErrorRule } from '../../../../src/rules/patterns/preserve-caught-error.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'try { } catch (e) { }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCatchClause(param: unknown, body: unknown, line = 1, column = 0): unknown {
   return {
@@ -232,7 +196,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('create', () => {
     test('should return visitor object with CatchClause method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).toHaveProperty('CatchClause')
@@ -242,7 +206,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('visitor structure', () => {
     test('create should return a non-null object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -250,7 +214,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('visitor should have CatchClause as own property', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).toHaveProperty('CatchClause')
@@ -258,49 +222,49 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('CatchClause should not be null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor.CatchClause).not.toBeNull()
     })
 
     test('CatchClause should not be undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor.CatchClause).not.toBeUndefined()
     })
 
     test('visitor should not have FunctionDeclaration handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).not.toHaveProperty('FunctionDeclaration')
     })
 
     test('visitor should not have VariableDeclaration handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).not.toHaveProperty('VariableDeclaration')
     })
 
     test('visitor should not have ExpressionStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).not.toHaveProperty('ExpressionStatement')
     })
 
     test('visitor should not have IfStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor).not.toHaveProperty('IfStatement')
     })
 
     test('CatchClause should return undefined for valid input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -311,7 +275,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('CatchClause should return undefined for unused error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -322,7 +286,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('calling create multiple times should return new visitor objects', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor1 = preserveCaughtErrorRule.create(context)
       const visitor2 = preserveCaughtErrorRule.create(context)
 
@@ -330,29 +294,29 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('CatchClause function should have length 1', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(visitor.CatchClause).toHaveLength(1)
     })
 
     test('CatchClause can be destructured from visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const { CatchClause } = preserveCaughtErrorRule.create(context)
 
       expect(typeof CatchClause).toBe('function')
     })
 
     test('create should accept different context instances', () => {
-      const { context: ctx1 } = createMockContext({}, '/src/a.ts')
-      const { context: ctx2 } = createMockContext({}, '/src/b.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'try { } catch (e) { }', filePath: '/src/a.ts' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'try { } catch (e) { }', filePath: '/src/b.ts' })
 
       expect(() => preserveCaughtErrorRule.create(ctx1)).not.toThrow()
       expect(() => preserveCaughtErrorRule.create(ctx2)).not.toThrow()
     })
 
     test('CatchClause should be callable multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -368,7 +332,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('detecting unused caught errors', () => {
     test('should report catch clause with unused error identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -381,7 +345,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report catch clause with unused error variable named e', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e')
@@ -393,7 +357,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report catch clause with unused error variable named err', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -405,7 +369,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report catch clause with unused error variable in body with different identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -416,7 +380,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -430,7 +394,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('detecting unused errors - more variable names', () => {
     test('should report unused error named ex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('ex')
@@ -442,7 +406,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named exception', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('exception')
@@ -454,7 +418,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named catchErr', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('catchErr')
@@ -466,7 +430,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named exc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('exc')
@@ -478,7 +442,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named caught', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('caught')
@@ -490,7 +454,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error with very long name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const longName = 'a'.repeat(100)
@@ -503,7 +467,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error with single character x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('x')
@@ -515,7 +479,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named ERROR (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('ERROR')
@@ -527,7 +491,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named MyCustomError', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('MyCustomError')
@@ -539,7 +503,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named _err', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('_err')
@@ -551,7 +515,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named catchBlock', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('catchBlock')
@@ -563,7 +527,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report unused error named __', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('__')
@@ -577,7 +541,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('isIdentifierUsed - positive detection', () => {
     test('should not report when error used in nested call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -595,7 +559,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used as left side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -610,7 +574,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used as callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -623,7 +587,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used as second argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -641,7 +605,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used deeply in nested calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -657,7 +621,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used in multiple statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -671,7 +635,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used in expression then return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -685,7 +649,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error found through right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -700,7 +664,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error is argument of a member call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -714,7 +678,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error is used in argument of nested call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e')
@@ -731,7 +695,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error found through left then right chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -748,7 +712,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error in statement after unrelated statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -764,7 +728,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used in return of expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -779,7 +743,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report when error used in expression of expression statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -792,7 +756,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('isIdentifierUsed - traversal properties', () => {
     test('should find error through expression property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -803,7 +767,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through argument property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -814,7 +778,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through left property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -829,7 +793,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through right property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -844,7 +808,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through callee property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -857,7 +821,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -872,7 +836,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through body array of BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -883,7 +847,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through expression->argument chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -895,7 +859,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through callee->arguments chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -908,7 +872,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error through left->right chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -921,7 +885,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error deeply nested in body array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -937,7 +901,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should find error in three levels of expression nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e')
@@ -953,7 +917,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not find error when traversal property value is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -967,7 +931,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not find error when traversal property value is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -983,7 +947,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('isIdentifierUsed - negative detection (known limitations)', () => {
     test('should report when error used only as object of member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -998,7 +962,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error used only as property of member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1013,7 +977,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error is in conditional expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1030,7 +994,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error is in array expression elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1046,7 +1010,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error is in object expression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1068,7 +1032,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error used in template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1085,7 +1049,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error used in sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1101,7 +1065,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report when error used in conditional expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1121,7 +1085,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('not reporting valid catch clauses', () => {
     test('should not report catch clause with used error in expression statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1132,7 +1096,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report catch clause with used error in call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1147,7 +1111,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report catch clause with used error in return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1158,7 +1122,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report catch clause with used error in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1173,7 +1137,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report catch clause with used error in member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1188,7 +1152,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should not report catch clause without param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const body = createBlockStatement([])
@@ -1204,7 +1168,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('message quality', () => {
     test('should mention not used in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1215,7 +1179,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should mention error variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('myError')
@@ -1226,7 +1190,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should suggest catch without param syntax in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1239,7 +1203,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('message format exhaustive', () => {
     test('message should be a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -1250,7 +1214,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message should be non-empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -1261,7 +1225,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message should wrap variable name in single quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('myErr')
@@ -1272,7 +1236,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message for name e should contain single-quoted e', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e')
@@ -1283,7 +1247,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message should mention caught', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1294,7 +1258,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message should suggest using the error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1305,7 +1269,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message for long variable name should include full name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const longName = 'aVeryLongCaughtErrorVariableNameThatShouldStillAppear'
@@ -1317,8 +1281,8 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('messages should be identical for same inputs', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'try { } catch (e) { }' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'try { } catch (e) { }' })
 
       const visitor1 = preserveCaughtErrorRule.create(ctx1)
       const visitor2 = preserveCaughtErrorRule.create(ctx2)
@@ -1332,7 +1296,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message should not contain undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -1343,7 +1307,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('message should not contain null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -1356,7 +1320,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('location', () => {
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1368,7 +1332,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report location with large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1380,7 +1344,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report location with end values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1393,7 +1357,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should report location from multiple calls independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -1407,7 +1371,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('loc start.line should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1418,7 +1382,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('loc start.column should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1429,7 +1393,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('loc end.line should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1440,7 +1404,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('loc end.column should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1451,7 +1415,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should use default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1469,7 +1433,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle location with multi-line span', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1492,7 +1456,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('multiple reports', () => {
     test('two unused catches should produce two reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1504,7 +1468,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('first unused and second used should produce one report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1518,7 +1482,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('first used and second unused should produce one report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1531,7 +1495,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('both used should produce zero reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1543,7 +1507,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('three unused catches should produce three reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -1556,7 +1520,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('same visitor processes multiple nodes independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param1 = createIdentifier('e1')
@@ -1571,8 +1535,8 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('reports from different contexts do not interfere', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'try { } catch (e) { }' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'try { } catch (e) { }' })
 
       const visitor1 = preserveCaughtErrorRule.create(ctx1)
       const visitor2 = preserveCaughtErrorRule.create(ctx2)
@@ -1586,7 +1550,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('calling CatchClause many times accumulates reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e')
@@ -1601,7 +1565,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('context variations', () => {
     test('should work with empty string filePath', () => {
-      const { context, reports } = createMockContext({}, '')
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }', filePath: '' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1641,11 +1605,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'try { foo() } catch (e) { log(e) }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'try { foo() } catch (e) { log(e) }', filePath: '/src/file.ts' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e')
@@ -1685,7 +1645,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should work with extra config properties', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 'max' })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, level: 'max' }], source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1894,7 +1854,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('report descriptor', () => {
     test('report descriptor should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1905,7 +1865,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1916,7 +1876,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc should have start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1927,7 +1887,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc should have end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1938,7 +1898,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc.start should have line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1949,7 +1909,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc.start should have column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1960,7 +1920,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc.end should have line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1971,7 +1931,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc.end should have column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -1982,7 +1942,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('report descriptor loc values should all be numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2031,7 +1991,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(() => visitor.CatchClause(null)).not.toThrow()
@@ -2039,7 +1999,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(() => visitor.CatchClause(undefined)).not.toThrow()
@@ -2047,7 +2007,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       expect(() => visitor.CatchClause('string')).not.toThrow()
@@ -2057,7 +2017,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2070,7 +2030,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node without param property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2083,7 +2043,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node without body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2096,7 +2056,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2110,7 +2070,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with non-Identifier param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = { type: 'Literal', value: 'error' }
@@ -2121,7 +2081,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with null param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2135,7 +2095,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with undefined param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2148,7 +2108,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2162,7 +2122,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2175,7 +2135,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2186,7 +2146,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with incorrect type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const node = {
@@ -2200,7 +2160,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = { type: 'Identifier' }
@@ -2211,7 +2171,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with non-string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = { type: 'Identifier', name: 123 as unknown as string }
@@ -2224,7 +2184,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('edge cases - additional', () => {
     test('should handle catch clause with empty body array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2235,7 +2195,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with body containing only unrelated call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2248,7 +2208,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with body containing multiple unrelated statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2263,7 +2223,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with body as non-BlockStatement (reports since error not found)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2279,7 +2239,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle body with null elements in array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2294,7 +2254,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2313,7 +2273,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('')
@@ -2324,7 +2284,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle deeply nested body structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('err')
@@ -2340,7 +2300,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with ObjectPattern type (destructuring)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = { type: 'ObjectPattern', properties: [] }
@@ -2351,7 +2311,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with ArrayPattern type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = { type: 'ArrayPattern', elements: [] }
@@ -2362,7 +2322,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with AssignmentPattern type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = {
@@ -2377,7 +2337,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle body with very many statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2391,7 +2351,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle body with very many statements where last uses error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2406,7 +2366,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle catch clause with numeric-like name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('e2')
@@ -2420,7 +2380,7 @@ describe('preserve-caught-error rule', () => {
 
   describe('edge cases - isIdentifierUsed edge cases', () => {
     test('should handle body that is a plain object without body array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2431,7 +2391,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle body as an empty plain object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2442,7 +2402,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with name matching JavaScript keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('undefined')
@@ -2454,7 +2414,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle param with name that is a different case variant', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('Error')
@@ -2465,7 +2425,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should detect usage with exact case match only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('myError')
@@ -2476,7 +2436,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle body where arguments property is not an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2493,7 +2453,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle body where body property is not an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2504,7 +2464,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node with loc having non-numeric values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2525,7 +2485,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node with partial loc (start only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')
@@ -2545,7 +2505,7 @@ describe('preserve-caught-error rule', () => {
     })
 
     test('should handle node with partial loc (no start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'try { } catch (e) { }' })
       const visitor = preserveCaughtErrorRule.create(context)
 
       const param = createIdentifier('error')

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noThrowSyncRule } from '../../../../src/rules/patterns/no-throw-sync.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'async function foo() { throw new Error("test"); }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createAsyncFunctionDeclaration(line = 1, column = 0): unknown {
   return {
@@ -188,7 +152,7 @@ describe('no-throw-sync rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
@@ -203,7 +167,7 @@ describe('no-throw-sync rule', () => {
 
   describe('detecting throw in async functions', () => {
     test('should report throw in async function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -215,7 +179,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw in async function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createAsyncFunctionExpression())
@@ -226,7 +190,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw in async arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createAsyncArrowFunction())
@@ -237,7 +201,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw in sync function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createSyncFunctionDeclaration())
@@ -248,7 +212,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw outside any function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement())
@@ -257,7 +221,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle nested async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -271,7 +235,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle async function inside sync function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createSyncFunctionDeclaration())
@@ -287,7 +251,7 @@ describe('no-throw-sync rule', () => {
 
   describe('message quality', () => {
     test('should mention Promise.reject in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -298,7 +262,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should mention async function in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -311,7 +275,7 @@ describe('no-throw-sync rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully for FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -319,7 +283,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle undefined node gracefully for FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
@@ -327,7 +291,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle non-object node gracefully for FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -337,7 +301,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle null node gracefully for ThrowStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -346,7 +310,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle undefined node gracefully for ThrowStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -355,7 +319,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle non-object node gracefully for ThrowStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -365,7 +329,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const throwNode = {
@@ -383,7 +347,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle function node without async property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const funcNode = {
@@ -401,7 +365,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with partial loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const throwNode = {
@@ -422,7 +386,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -434,7 +398,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not report non-throw statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -445,7 +409,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle FunctionExpression edge cases', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionExpression(null)).not.toThrow()
@@ -455,7 +419,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle ArrowFunctionExpression edge cases', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(null)).not.toThrow()
@@ -465,7 +429,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const nodeWithoutType = {
@@ -481,7 +445,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -591,69 +555,69 @@ describe('no-throw-sync rule', () => {
 
   describe('create - visitor structure', () => {
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should have FunctionDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.FunctionDeclaration).toBe('function')
     })
 
     test('should have FunctionDeclaration_exit as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.FunctionDeclaration_exit).toBe('function')
     })
 
     test('should have FunctionExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.FunctionExpression).toBe('function')
     })
 
     test('should have FunctionExpression_exit as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.FunctionExpression_exit).toBe('function')
     })
 
     test('should have ArrowFunctionExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.ArrowFunctionExpression).toBe('function')
     })
 
     test('should have ArrowFunctionExpression_exit as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.ArrowFunctionExpression_exit).toBe('function')
     })
 
     test('should have ThrowStatement as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(typeof visitor.ThrowStatement).toBe('function')
     })
 
     test('should return exactly 7 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
       expect(Object.keys(visitor).length).toBe(7)
     })
 
     test('should create independent visitors per call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor1 = noThrowSyncRule.create(context)
       const visitor2 = noThrowSyncRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should create fresh state per visitor', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const v1 = noThrowSyncRule.create(ctx1)
       const v2 = noThrowSyncRule.create(ctx2)
 
@@ -670,7 +634,7 @@ describe('no-throw-sync rule', () => {
 
   describe('detection - sync functions should not report', () => {
     test('should NOT report throw in sync FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createSyncFunctionDeclaration())
@@ -681,7 +645,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw in sync FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createSyncFunctionExpression())
@@ -692,7 +656,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw in sync ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createSyncArrowFunction())
@@ -703,7 +667,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw at top level with no functions entered', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement())
@@ -714,7 +678,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report after exiting all async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -726,7 +690,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report after async function fully exits and throw is at top level', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createAsyncArrowFunction())
@@ -741,7 +705,7 @@ describe('no-throw-sync rule', () => {
 
   describe('detection - async function declarations', () => {
     test('should report single throw in async FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -752,7 +716,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report multiple throws in async FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -765,7 +729,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw at various locations in async FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -781,7 +745,7 @@ describe('no-throw-sync rule', () => {
 
   describe('detection - async function expressions', () => {
     test('should report single throw in async FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createAsyncFunctionExpression())
@@ -792,7 +756,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report multiple throws in async FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createAsyncFunctionExpression())
@@ -804,7 +768,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw in sync FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createSyncFunctionExpression())
@@ -817,7 +781,7 @@ describe('no-throw-sync rule', () => {
 
   describe('detection - async arrow functions', () => {
     test('should report single throw in async ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createAsyncArrowFunction())
@@ -828,7 +792,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report multiple throws in async ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createAsyncArrowFunction())
@@ -841,7 +805,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report throw in sync ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createSyncArrowFunction())
@@ -854,7 +818,7 @@ describe('no-throw-sync rule', () => {
 
   describe('detection - mixed function types', () => {
     test('should report in async FunctionDeclaration but not sync FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -870,7 +834,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report in async FunctionExpression but not sync FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createSyncFunctionExpression())
@@ -886,7 +850,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report in async arrow but not sync arrow', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createSyncArrowFunction())
@@ -902,7 +866,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle sequential async functions of different types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -923,7 +887,7 @@ describe('no-throw-sync rule', () => {
 
   describe('nested functions', () => {
     test('should report throw in deeply nested async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -938,7 +902,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should track async depth correctly through nested sync functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -952,7 +916,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle async inside sync inside async', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -971,7 +935,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle multiple nested async arrows', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createAsyncArrowFunction())
@@ -986,7 +950,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle entering and exiting same function type multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1003,7 +967,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle exit without matching enter gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration_exit(createAsyncFunctionDeclaration())
@@ -1013,7 +977,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle enter without matching exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1025,7 +989,7 @@ describe('no-throw-sync rule', () => {
 
   describe('location reporting accuracy', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1037,7 +1001,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1049,7 +1013,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1061,7 +1025,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report default location when throw node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1073,7 +1037,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report location with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1085,7 +1049,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report each throw at its own location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1102,7 +1066,7 @@ describe('no-throw-sync rule', () => {
 
   describe('message content verification', () => {
     test('should contain "Unexpected" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1113,7 +1077,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should contain "throw" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1124,7 +1088,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should contain "Promise.reject()" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1137,7 +1101,7 @@ describe('no-throw-sync rule', () => {
     test('should produce consistent messages for all function types', () => {
       const contexts = [
         () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
           const visitor = noThrowSyncRule.create(context)
           visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
           visitor.ThrowStatement(createThrowStatement())
@@ -1145,7 +1109,7 @@ describe('no-throw-sync rule', () => {
           return reports
         },
         () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
           const visitor = noThrowSyncRule.create(context)
           visitor.FunctionExpression(createAsyncFunctionExpression())
           visitor.ThrowStatement(createThrowStatement())
@@ -1153,7 +1117,7 @@ describe('no-throw-sync rule', () => {
           return reports
         },
         () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
           const visitor = noThrowSyncRule.create(context)
           visitor.ArrowFunctionExpression(createAsyncArrowFunction())
           visitor.ThrowStatement(createThrowStatement())
@@ -1168,7 +1132,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should produce same message for every throw in same function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1182,7 +1146,7 @@ describe('no-throw-sync rule', () => {
 
   describe('report descriptor structure', () => {
     test('should have message property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1193,7 +1157,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have loc property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1204,7 +1168,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have loc.start in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1215,7 +1179,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have loc.end in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1226,7 +1190,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have start.line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1237,7 +1201,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have start.column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1248,7 +1212,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have end.line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1259,7 +1223,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have end.column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1270,7 +1234,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should have message as non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1284,7 +1248,7 @@ describe('no-throw-sync rule', () => {
 
   describe('multiple reports', () => {
     test('should report 5 throws in single async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1297,7 +1261,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report 10 throws in single async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1310,7 +1274,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should accumulate reports across sequential async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -1324,7 +1288,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle mix of throws and non-throws in async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1341,7 +1305,7 @@ describe('no-throw-sync rule', () => {
 
   describe('non-throw statement types', () => {
     test('should NOT report ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1352,7 +1316,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1363,7 +1327,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1374,7 +1338,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1385,7 +1349,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1402,7 +1366,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1413,7 +1377,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should NOT report TryStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1426,7 +1390,7 @@ describe('no-throw-sync rule', () => {
 
   describe('edge cases - null and undefined nodes', () => {
     test('should handle null for all visitor methods without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -1439,7 +1403,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle undefined for all visitor methods without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
@@ -1452,7 +1416,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not report for null ThrowStatement in async context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1463,7 +1427,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not report for undefined ThrowStatement in async context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression(createAsyncFunctionExpression())
@@ -1474,7 +1438,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle boolean node for ThrowStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression(createAsyncArrowFunction())
@@ -1486,7 +1450,7 @@ describe('no-throw-sync rule', () => {
 
   describe('edge cases - malformed nodes', () => {
     test('should handle node with async as string "true"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1505,7 +1469,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with async as number 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1522,7 +1486,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with async as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1539,7 +1503,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle empty object as function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({})
@@ -1550,7 +1514,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle empty object as throw node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1561,7 +1525,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with loc containing non-numeric values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1576,7 +1540,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with loc.start as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1591,7 +1555,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1614,7 +1578,7 @@ describe('no-throw-sync rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }', filePath: '/custom/path/file.ts' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1625,7 +1589,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = 1')
+      const { context, reports } = createMockRuleContext({ source: 'const x = 1', filePath: '/src/file.ts' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1636,7 +1600,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ extra: true, nested: { value: 42 } })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, nested: { value: 42 } }], source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1672,7 +1636,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should work with different workspace roots', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const ctx = { ...context, workspaceRoot: '/different/workspace' } as unknown as RuleContext
       const visitor = noThrowSyncRule.create(ctx)
 
@@ -1705,7 +1669,7 @@ describe('no-throw-sync rule', () => {
 
   describe('async depth tracking', () => {
     test('should increment depth for each async function entered', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1717,7 +1681,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should decrement depth when async function exits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1734,7 +1698,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not increment depth for sync function enter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1748,7 +1712,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not decrement depth for sync function exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1760,7 +1724,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle rapid enter/exit of async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1773,7 +1737,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle enter/exit mismatch with different function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1789,7 +1753,7 @@ describe('no-throw-sync rule', () => {
 
   describe('partial loc handling', () => {
     test('should handle node with loc.start only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1805,7 +1769,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with loc containing empty objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1822,7 +1786,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with loc.start having missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1839,7 +1803,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with loc as non-object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1857,7 +1821,7 @@ describe('no-throw-sync rule', () => {
 
   describe('method shorthand patterns', () => {
     test('should treat method with async:true as async FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const methodNode = {
@@ -1878,7 +1842,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should treat method with async:false as sync FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const methodNode = {
@@ -1899,7 +1863,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle generator function (not async) with throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const genNode = {
@@ -1919,7 +1883,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle async generator function with throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const asyncGenNode = {
@@ -1941,7 +1905,7 @@ describe('no-throw-sync rule', () => {
 
   describe('different throw argument types', () => {
     test('should report throw new Error()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1960,7 +1924,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw new TypeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1979,7 +1943,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw literal string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -1994,7 +1958,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2009,7 +1973,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw with no argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2026,8 +1990,8 @@ describe('no-throw-sync rule', () => {
 
   describe('isolation between visitors', () => {
     test('should not share state between two visitor instances', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const v1 = noThrowSyncRule.create(ctx1)
       const v2 = noThrowSyncRule.create(ctx2)
 
@@ -2041,8 +2005,8 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should allow independent depth tracking per visitor', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const v1 = noThrowSyncRule.create(ctx1)
       const v2 = noThrowSyncRule.create(ctx2)
 
@@ -2061,7 +2025,7 @@ describe('no-throw-sync rule', () => {
 
   describe('stress tests', () => {
     test('should handle 50 sequential async functions each with a throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2074,7 +2038,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle deeply nested 10-level async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2089,7 +2053,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle alternating async and sync functions at same depth', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2106,7 +2070,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle interleaved function enter/exit of different types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2123,7 +2087,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle only sync functions with throws', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createSyncFunctionDeclaration())
@@ -2140,7 +2104,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle visitor methods called with numeric zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(0)).not.toThrow()
@@ -2154,7 +2118,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle visitor methods called with empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       expect(() => visitor.FunctionDeclaration([])).not.toThrow()
@@ -2163,7 +2127,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle many throws with only some in async context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(1, 0))
@@ -2185,7 +2149,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with prototype properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       class CustomNode {
@@ -2202,7 +2166,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle all function types entered then all exited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2224,7 +2188,7 @@ describe('no-throw-sync rule', () => {
 
   describe('function type edge cases', () => {
     test('should not treat unknown function type as async', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2241,7 +2205,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle FunctionDeclaration with async as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2258,7 +2222,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle FunctionExpression with async as undefined explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionExpression({
@@ -2275,7 +2239,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle ArrowFunctionExpression with async as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ArrowFunctionExpression({
@@ -2292,7 +2256,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should detect async FunctionDeclaration regardless of other properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const minimalAsync = { type: 'FunctionDeclaration', async: true }
@@ -2304,7 +2268,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should detect async FunctionExpression regardless of other properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const minimalAsync = { type: 'FunctionExpression', async: true }
@@ -2316,7 +2280,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should detect async ArrowFunctionExpression regardless of other properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const minimalAsync = { type: 'ArrowFunctionExpression', async: true }
@@ -2406,7 +2370,7 @@ describe('no-throw-sync rule', () => {
 
   describe('throw at boundaries', () => {
     test('should report throw immediately after entering async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2417,7 +2381,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should report throw immediately before exiting async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2428,7 +2392,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not report throw immediately before entering async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement())
@@ -2440,7 +2404,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should not report throw immediately after exiting async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2452,7 +2416,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle throw between two async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2469,7 +2433,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle throw in overlapping function scopes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2502,7 +2466,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should work regardless of options passed', () => {
-      const { context, reports } = createMockContext({ checkAll: true, strict: false })
+      const { context, reports } = createMockRuleContext({ options: [{ checkAll: true, strict: false }], source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2513,7 +2477,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should ignore unknown options without error', () => {
-      const { context, reports } = createMockContext({ unknownOption: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownOption: 42 }], source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2526,7 +2490,7 @@ describe('no-throw-sync rule', () => {
 
   describe('non-standard node shapes', () => {
     test('should handle ThrowStatement with function type argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2546,7 +2510,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle ThrowStatement with object expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2561,7 +2525,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle ThrowStatement with call expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2580,7 +2544,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with Symbol properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       const sym = Symbol('test')
@@ -2594,7 +2558,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle node with numeric type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.ThrowStatement({ type: 42, argument: {} })
@@ -2605,7 +2569,7 @@ describe('no-throw-sync rule', () => {
 
   describe('concurrent visitor usage simulation', () => {
     test('should handle enter/exit across multiple function types in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2633,7 +2597,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle only enter no exit across multiple function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2646,7 +2610,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle double enter without matching exits for same type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())
@@ -2661,7 +2625,7 @@ describe('no-throw-sync rule', () => {
     })
 
     test('should handle many non-throw nodes mixed with throws', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { throw new Error("test"); }' })
       const visitor = noThrowSyncRule.create(context)
 
       visitor.FunctionDeclaration(createAsyncFunctionDeclaration())

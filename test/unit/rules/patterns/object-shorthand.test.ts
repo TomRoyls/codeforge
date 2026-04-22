@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { objectShorthandRule } from '../../../../src/rules/patterns/object-shorthand.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const obj = {};',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createProperty(
   value: unknown,
@@ -212,7 +176,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('create', () => {
     test('should return visitor object with Property method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(visitor).toHaveProperty('Property')
@@ -223,26 +187,26 @@ describe('object-shorthand rule', () => {
     })
 
     test('create should return an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('visitor should not be null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       expect(visitor).not.toBeNull()
     })
 
     test('Property method should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       expect(typeof visitor.Property).toBe('function')
     })
 
     test('should create independent visitors per call', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'const obj = {};' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor1 = objectShorthandRule.create(ctx1)
       const visitor2 = objectShorthandRule.create(ctx2)
 
@@ -254,41 +218,41 @@ describe('object-shorthand rule', () => {
     })
 
     test('create should accept context with empty options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       expect(() => objectShorthandRule.create(context)).not.toThrow()
     })
 
     test('create should accept context with options', () => {
-      const { context } = createMockContext({ someOption: true })
+      const { context } = createMockRuleContext({ options: [{ someOption: true }], source: 'const obj = {};' })
       expect(() => objectShorthandRule.create(context)).not.toThrow()
     })
 
     test('visitor should have exactly Property key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       expect(Object.keys(visitor)).toContain('Property')
     })
 
     test('Property should not throw when called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       expect(() => visitor.Property(createProperty(createFunctionExpression()))).not.toThrow()
     })
 
     test('create should handle different file paths', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'const obj = {};', filePath: '/custom/path.ts' })
       const visitor = objectShorthandRule.create(context)
       expect(typeof visitor.Property).toBe('function')
     })
 
     test('create should handle different source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = { a: function() {} };')
+      const { context } = createMockRuleContext({ source: 'const x = { a: function() {} };', filePath: '/src/file.ts' })
       const visitor = objectShorthandRule.create(context)
       expect(typeof visitor.Property).toBe('function')
     })
 
     test('multiple calls to create should work', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       for (let i = 0; i < 5; i++) {
         const visitor = objectShorthandRule.create(context)
         expect(typeof visitor.Property).toBe('function')
@@ -296,14 +260,14 @@ describe('object-shorthand rule', () => {
     })
 
     test('visitor Property should return void', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       const result = visitor.Property(createProperty(createFunctionExpression()))
       expect(result).toBeUndefined()
     })
 
     test('visitor Property should return void for non-matching node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
       const result = visitor.Property(createProperty(null))
       expect(result).toBeUndefined()
@@ -315,7 +279,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('detecting function expression properties', () => {
     test('should report function expression property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -324,7 +288,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report correct message for function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -333,7 +297,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report multiple function expression properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 1, 0))
@@ -344,7 +308,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression with params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -362,7 +326,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression with multiple params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -384,7 +348,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression with body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -405,7 +369,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report named function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -423,7 +387,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report generator function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -441,7 +405,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(1, 0)))
@@ -452,7 +416,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when property key name matches value name pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const prop = {
@@ -474,7 +438,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when property key is different from value name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const prop = {
@@ -496,7 +460,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression in nested object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 42, 15))
@@ -506,7 +470,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report 10 function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -517,7 +481,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report 50 function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -528,7 +492,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression with zero column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(1, 0), false, false, 'init', 1, 0))
@@ -538,7 +502,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression on large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(
@@ -550,7 +514,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression on large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(
@@ -562,7 +526,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -580,7 +544,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report function expression with complex body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const fnExpr = {
@@ -611,7 +575,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report regardless of property key type being Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const prop = {
@@ -638,7 +602,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('not reporting method shorthand', () => {
     test('should not report method shorthand syntax', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(null, true, false, 'init'))
@@ -647,7 +611,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report shorthand property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(null, false, true, 'init'))
@@ -656,7 +620,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when both method and shorthand are true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), true, true, 'init'))
@@ -665,7 +629,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when method is true even with function expression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), true, false, 'init'))
@@ -674,7 +638,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when shorthand is true even with function expression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, true, 'init'))
@@ -685,7 +649,7 @@ describe('object-shorthand rule', () => {
 
   describe('not reporting getter/setter', () => {
     test('should not report getter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'get'))
@@ -694,7 +658,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report setter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'set'))
@@ -703,7 +667,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report getter with method true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), true, false, 'get'))
@@ -712,7 +676,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report setter with method true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), true, false, 'set'))
@@ -723,7 +687,7 @@ describe('object-shorthand rule', () => {
 
   describe('not reporting non-function values', () => {
     test('should not report arrow function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createArrowFunctionExpression()))
@@ -732,7 +696,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -745,7 +709,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report number value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -758,7 +722,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report boolean value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -771,7 +735,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report identifier value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -784,7 +748,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(null))
@@ -793,7 +757,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(undefined))
@@ -802,7 +766,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report CallExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -816,7 +780,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report MemberExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -830,7 +794,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report ObjectExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -843,7 +807,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report ArrayExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -856,7 +820,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report BinaryExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -871,7 +835,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report ConditionalExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -886,7 +850,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report TemplateLiteral value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -900,7 +864,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report NewExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -914,7 +878,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report UnaryExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -928,7 +892,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report LogicalExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -943,7 +907,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report UpdateExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -958,7 +922,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report AssignmentExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -973,7 +937,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report ThisExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'ThisExpression' }
@@ -983,7 +947,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report SequenceExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -996,7 +960,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report SpreadElement value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -1009,7 +973,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report Literal null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'Literal', value: null }
@@ -1019,7 +983,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report Literal regex value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'Literal', value: /test/, regex: { pattern: 'test', flags: '' } }
@@ -1029,7 +993,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report AwaitExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -1042,7 +1006,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report YieldExpression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -1057,7 +1021,7 @@ describe('object-shorthand rule', () => {
 
   describe('not reporting computed properties', () => {
     test('should not report computed property with function expression when shorthand is true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const prop = {
@@ -1084,7 +1048,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('edge cases', () => {
     test('should handle null node in Property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property(null)).not.toThrow()
@@ -1093,7 +1057,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle undefined node in Property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property(undefined)).not.toThrow()
@@ -1102,7 +1066,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle non-object node in Property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property('string')).not.toThrow()
@@ -1112,7 +1076,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node without value property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1129,7 +1093,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1148,7 +1112,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1187,7 +1151,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property(true)).not.toThrow()
@@ -1196,7 +1160,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property(0)).not.toThrow()
@@ -1206,7 +1170,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property({})
@@ -1215,7 +1179,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with only type Property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property({ type: 'Property' })
@@ -1224,7 +1188,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with non-Property type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property({ type: 'ExpressionStatement' })
@@ -1235,7 +1199,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with value as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1253,7 +1217,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with value as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1271,7 +1235,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with value as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1289,7 +1253,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with array value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1307,7 +1271,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle loc with missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1328,7 +1292,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle loc with missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1349,7 +1313,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1371,7 +1335,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle loc with string line/column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1393,7 +1357,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1418,7 +1382,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle kind as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1436,7 +1400,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle shorthand as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1454,7 +1418,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle method as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1472,7 +1436,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle Array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property([1, 2, 3])).not.toThrow()
@@ -1480,7 +1444,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle Date node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property(new Date())).not.toThrow()
@@ -1488,7 +1452,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle Symbol node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       expect(() => visitor.Property(Symbol('test'))).not.toThrow()
@@ -1501,7 +1465,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('location reporting', () => {
     test('should report correct location for function expression property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 10, 5))
@@ -1511,7 +1475,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 5, 10))
@@ -1521,7 +1485,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 1, 0))
@@ -1531,7 +1495,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 100, 50))
@@ -1541,7 +1505,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report location with correct end values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 3, 5))
@@ -1553,7 +1517,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report location for each of multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 1, 0))
@@ -1569,7 +1533,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should default to line 1 column 0 when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1588,7 +1552,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should default end to line 1 column 1 when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1607,7 +1571,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle location with zero line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1629,7 +1593,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle location at same start and end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -1654,7 +1618,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report different locations for consecutive calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1670,7 +1634,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should preserve exact column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const columns = [0, 1, 4, 8, 16, 32, 64, 128]
@@ -1689,7 +1653,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('message quality', () => {
     test('should mention shorthand in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1698,7 +1662,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 1, 0))
@@ -1709,7 +1673,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should be a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1718,7 +1682,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should not be empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1727,7 +1691,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should start with capital letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1736,7 +1700,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1745,7 +1709,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should be exactly "Expected property shorthand."', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1754,7 +1718,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('all reports should have the same message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1766,7 +1730,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should contain "Expected"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1775,7 +1739,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('message should contain "property"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1789,7 +1753,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('multiple reports', () => {
     test('should report two function expression properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1799,7 +1763,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report mixed properties correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression())) // report
@@ -1810,7 +1774,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report only function expressions in a batch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1823,7 +1787,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should accumulate reports across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1837,7 +1801,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not clear reports between calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1849,7 +1813,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle interleaved matching and non-matching nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1864,7 +1828,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle 100 consecutive function expression reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1875,7 +1839,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should maintain correct order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init', 1, 0))
@@ -1888,7 +1852,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report after non-matching nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(null)) // no report
@@ -1905,7 +1869,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};', filePath: '/project/src/utils.ts' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1914,11 +1878,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const obj = { method: function() { return 1; } };',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { method: function() { return 1; } };', filePath: '/src/file.ts' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1927,10 +1887,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with long file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/very/long/path/to/some/deeply/nested/directory/structure/file.ts',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};', filePath: '/very/long/path/to/some/deeply/nested/directory/structure/file.ts' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1939,11 +1896,11 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with options containing extra fields', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         extra: 'field',
         nested: { deep: true },
         array: [1, 2, 3],
-      })
+      }], source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1952,7 +1909,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1961,11 +1918,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with multiline source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const obj = {\n  method: function() {\n    return 1;\n  }\n};',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {\n  method: function() {\n    return 1;\n  }\n};', filePath: '/src/file.ts' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1974,7 +1927,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js')
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};', filePath: '/src/file.js' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1983,7 +1936,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};', filePath: '/src/component.tsx' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -1992,7 +1945,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should work with .jsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.jsx')
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};', filePath: '/src/component.jsx' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2093,7 +2046,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('create should be callable with mock context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
       expect(() => objectShorthandRule.create(context)).not.toThrow()
     })
 
@@ -2113,7 +2066,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('report descriptor structure', () => {
     test('report should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2122,7 +2075,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2131,7 +2084,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2140,7 +2093,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2149,7 +2102,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc start should have line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2158,7 +2111,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc start should have column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2167,7 +2120,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc end should have line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2176,7 +2129,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc end should have column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2185,7 +2138,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc start line should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2194,7 +2147,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc start column should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2203,7 +2156,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc end line should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2212,7 +2165,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report loc end column should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2221,7 +2174,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('report should have exactly 2 properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2236,7 +2189,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('additional value type tests', () => {
     test('should not report when value type is ClassExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -2250,7 +2203,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when value type is TaggedTemplateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -2264,7 +2217,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when value type is FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -2279,7 +2232,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when value type is exactly FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'FunctionExpression' }
@@ -2289,7 +2242,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when value type is FunctionExpression but case differs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'functionexpression' }
@@ -2299,7 +2252,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when value type is functionexpression (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'functionexpression' }
@@ -2309,7 +2262,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when value has no type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { name: 'something' }
@@ -2319,7 +2272,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when value is empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty({}))
@@ -2328,7 +2281,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report FunctionExpression even with minimal properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = { type: 'FunctionExpression', id: null }
@@ -2338,7 +2291,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report ArrowFunctionExpression with async', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -2354,7 +2307,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report FunctionExpression with async true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const value = {
@@ -2371,7 +2324,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when computed is true with function expression and method is true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const prop = {
@@ -2393,7 +2346,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when computed is true with function expression but not method/shorthand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const prop = {
@@ -2420,7 +2373,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('kind variations', () => {
     test('should report init kind with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init'))
@@ -2429,7 +2382,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report get kind with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'get'))
@@ -2438,7 +2391,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report set kind with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'set'))
@@ -2447,7 +2400,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report unknown kind with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'other'))
@@ -2456,7 +2409,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report empty string kind with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, ''))
@@ -2465,7 +2418,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when kind is exactly get', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -2484,7 +2437,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report when kind is exactly set', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -2503,7 +2456,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when kind is "Get" (case sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'Get'))
@@ -2512,7 +2465,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when kind is "Set" (case sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'Set'))
@@ -2521,7 +2474,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report when kind is "GET" (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'GET'))
@@ -2535,7 +2488,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('combined conditions', () => {
     test('should report: init + non-method + non-shorthand + FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'init'))
@@ -2544,7 +2497,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: init + method + non-shorthand + FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), true, false, 'init'))
@@ -2553,7 +2506,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: init + non-method + shorthand + FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, true, 'init'))
@@ -2562,7 +2515,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: get + non-method + non-shorthand + FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'get'))
@@ -2571,7 +2524,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: set + non-method + non-shorthand + FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), false, false, 'set'))
@@ -2580,7 +2533,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: init + non-method + non-shorthand + ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createArrowFunctionExpression(), false, false, 'init'))
@@ -2589,7 +2542,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: init + non-method + non-shorthand + null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(null, false, false, 'init'))
@@ -2598,7 +2551,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should not report: init + method + shorthand + FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression(), true, true, 'init'))
@@ -2607,7 +2560,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should report: init + non-method + non-shorthand + FunctionExpression at various locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const locations = [
@@ -2628,7 +2581,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should correctly identify only FunctionExpression in mixed value types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const values = [
@@ -2648,7 +2601,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle all non-matching conditions simultaneously', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       // getter
@@ -2666,7 +2619,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle alternating match/no-match patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const pattern = [
@@ -2697,7 +2650,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('stress and boundary tests', () => {
     test('should handle single function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(createProperty(createFunctionExpression()))
@@ -2706,14 +2659,14 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle zero calls gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       objectShorthandRule.create(context)
 
       expect(reports.length).toBe(0)
     })
 
     test('should handle 200 calls to Property with function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -2724,7 +2677,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle 200 calls to Property with non-matching nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -2735,7 +2688,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle mixed 400 calls (200 matching + 200 non-matching)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -2747,7 +2700,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(
@@ -2759,7 +2712,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       visitor.Property(
@@ -2771,7 +2724,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle calling create multiple times', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = {};' })
 
       for (let i = 0; i < 10; i++) {
         const visitor = objectShorthandRule.create(context)
@@ -2781,7 +2734,7 @@ describe('object-shorthand rule', () => {
 
     test('should handle sequential create and report cycles', () => {
       for (let i = 0; i < 5; i++) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
         const visitor = objectShorthandRule.create(context)
 
         visitor.Property(createProperty(createFunctionExpression()))
@@ -2791,7 +2744,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should handle node with all properties having default-like values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       const node = {
@@ -2820,7 +2773,7 @@ describe('object-shorthand rule', () => {
   // =======================================================================
   describe('report count verification', () => {
     test('should produce exactly 0 reports for only getters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2831,7 +2784,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should produce exactly 0 reports for only setters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2842,7 +2795,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should produce exactly 0 reports for only method shorthands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2853,7 +2806,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should produce exactly 0 reports for only property shorthands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2864,7 +2817,7 @@ describe('object-shorthand rule', () => {
     })
 
     test('should produce correct count for mixed batch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = {};' })
       const visitor = objectShorthandRule.create(context)
 
       // 3 should report

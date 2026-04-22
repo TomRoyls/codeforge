@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferTernaryOperatorRule } from '../../../../src/rules/patterns/prefer-ternary-operator.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = a || b;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIfStatement(
   test: unknown,
@@ -198,61 +160,61 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('create', () => {
     test('should return visitor object with IfStatement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
       expect(visitor).toHaveProperty('IfStatement')
     })
 
     test('should return IfStatement as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
       expect(typeof visitor.IfStatement).toBe('function')
     })
 
     test('should not throw when creating visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       expect(() => preferTernaryOperatorRule.create(context)).not.toThrow()
     })
 
     test('should return a new visitor object on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor1 = preferTernaryOperatorRule.create(context)
       const visitor2 = preferTernaryOperatorRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should return visitor with only IfStatement key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
       expect(Object.keys(visitor)).toEqual(['IfStatement'])
     })
 
     test('should accept different context objects', () => {
-      const { context: ctx1 } = createMockContext({}, '/src/a.ts')
-      const { context: ctx2 } = createMockContext({}, '/src/b.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'const x = a || b;', filePath: '/src/a.ts' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'const x = a || b;', filePath: '/src/b.ts' })
       expect(() => preferTernaryOperatorRule.create(ctx1)).not.toThrow()
       expect(() => preferTernaryOperatorRule.create(ctx2)).not.toThrow()
     })
 
     test('should not throw when calling IfStatement with no arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
       expect(() => visitor.IfStatement()).not.toThrow()
     })
 
     test('should return visitor whose IfStatement accepts single argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
       expect(visitor.IfStatement.length).toBe(1)
     })
 
     test('should create visitor with empty options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       expect(() => preferTernaryOperatorRule.create(context)).not.toThrow()
     })
 
     test('should create visitor with populated options', () => {
-      const { context } = createMockContext({ checkReturns: true })
+      const { context } = createMockRuleContext({ options: [{ checkReturns: true }], source: 'const x = a || b;' })
       expect(() => preferTernaryOperatorRule.create(context)).not.toThrow()
     })
   })
@@ -263,7 +225,7 @@ describe('prefer-ternary-operator rule', () => {
   describe('detecting simple if-else assignments', () => {
     test('should report simple if-else with same variable assignment in expression statements', () => {
       const source = 'if (condition) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -282,7 +244,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should report if-else with block statements containing single assignment', () => {
       const source = 'if (condition) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createBlockStatement([
@@ -304,7 +266,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should report if-else with mixed block and expression statements', () => {
       const source = 'if (condition) { x = 1; } else x = 2;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createBlockStatement([
@@ -323,7 +285,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should report if-else with variable expressions', () => {
       const source = 'if (condition) { x = a; } else { x = b; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -340,7 +302,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should report if-else with expression in consequent and block in alternate', () => {
       const source = 'if (condition) x = 1; else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -358,7 +320,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with literal values in both branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(true), createLiteral(false)))
@@ -367,7 +329,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with string literal values in both branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('name', createLiteral('yes'), createLiteral('no')))
@@ -376,7 +338,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with null literal in branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('val', createLiteral(null), createLiteral(0)))
@@ -385,7 +347,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with identifier right-hand values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -396,7 +358,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with numeric literal values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('count', createLiteral(0), createLiteral(1)))
@@ -405,7 +367,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with negative numeric literal values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('num', createLiteral(-1), createLiteral(1)))
@@ -414,7 +376,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with call expression test condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const callExpr = { type: 'CallExpression', callee: createIdentifier('fn'), arguments: [] }
@@ -435,7 +397,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with binary expression test condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const binaryExpr = {
@@ -461,7 +423,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with logical expression test condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const logicalExpr = {
@@ -487,7 +449,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with member expression as right-hand value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const memberExpr = {
@@ -510,7 +472,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with call expression as right-hand value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const callExpr = { type: 'CallExpression', callee: createIdentifier('fn'), arguments: [] }
@@ -529,7 +491,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with unary expression test condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const unaryExpr = {
@@ -554,7 +516,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with underscore variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('_result', createLiteral(1), createLiteral(2)))
@@ -563,7 +525,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with dollar sign variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -574,7 +536,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with single letter variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('a', createLiteral(1), createLiteral(2)))
@@ -583,7 +545,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with long descriptive variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -598,7 +560,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with boolean literal test condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -617,7 +579,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -626,7 +588,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with same literal value in both branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(5), createLiteral(5)))
@@ -640,7 +602,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('location reporting', () => {
     test('should report correct location for if statement at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 1, 0))
@@ -650,7 +612,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report correct location for if statement at line 10 column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 10, 5))
@@ -660,7 +622,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report correct location for if statement at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 100, 50))
@@ -670,7 +632,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 5, 10))
@@ -679,7 +641,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report location with correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 5, 10))
@@ -689,7 +651,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -708,7 +670,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should use default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -729,7 +691,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with only start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -753,7 +715,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with non-numeric line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -777,7 +739,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with non-numeric column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -801,7 +763,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -825,7 +787,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with null end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -850,7 +812,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -875,7 +837,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with very large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 9999, 0))
@@ -884,7 +846,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle location with very large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 1, 9999))
@@ -898,7 +860,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('message quality', () => {
     test('should mention variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('result', createLiteral(1), createLiteral(2)))
@@ -907,7 +869,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should mention ternary operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -916,7 +878,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should mention if-else in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -925,7 +887,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should mention simple assignment in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -934,7 +896,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should have correct message format for variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('myVar', createLiteral(1), createLiteral(2)))
@@ -943,7 +905,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should mention underscore variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('_private', createLiteral(1), createLiteral(2)))
@@ -952,7 +914,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should mention dollar variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('$elem', createLiteral(1), createLiteral(2)))
@@ -961,8 +923,8 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should produce consistent messages for the same variable', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'const x = a || b;' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor1 = preferTernaryOperatorRule.create(ctx1)
       const visitor2 = preferTernaryOperatorRule.create(ctx2)
 
@@ -973,8 +935,8 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should produce different messages for different variables', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'const x = a || b;' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor1 = preferTernaryOperatorRule.create(ctx1)
       const visitor2 = preferTernaryOperatorRule.create(ctx2)
 
@@ -985,7 +947,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -994,7 +956,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should have message containing quoted variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('count', createLiteral(1), createLiteral(2)))
@@ -1003,7 +965,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should have message that starts with Use', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -1012,7 +974,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should mention operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -1021,7 +983,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should be a non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -1030,7 +992,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should be a string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -1044,7 +1006,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('patterns that should NOT be reported', () => {
     test('should not report if-else without alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1057,7 +1019,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else without consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const alternate = createExpressionStatement(
@@ -1070,7 +1032,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with different variable assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1086,7 +1048,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with multiple statements in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createBlockStatement([
@@ -1107,7 +1069,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with multiple statements in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1128,7 +1090,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else without assignment in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(createIdentifier('console.log'))
@@ -1142,7 +1104,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else without assignment in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1156,7 +1118,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with non-assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(createIdentifier('doSomething'))
@@ -1168,7 +1130,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with empty block statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createBlockStatement([])
@@ -1182,7 +1144,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with empty block in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1196,7 +1158,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with compound assignment operator in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1215,7 +1177,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with compound assignment operator in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1234,7 +1196,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with compound assignment operator *=', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1253,7 +1215,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with MemberExpression left side in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1272,7 +1234,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with MemberExpression left side in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1291,7 +1253,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with MemberExpression on both sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1313,7 +1275,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with return statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'ReturnStatement', argument: createLiteral(1) }
@@ -1325,7 +1287,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if with undefined consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -1343,7 +1305,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if with undefined alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -1361,7 +1323,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with case-sensitive different variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1377,7 +1339,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with throw statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'ThrowStatement' }
@@ -1391,7 +1353,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with variable declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = {
@@ -1409,7 +1371,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with function declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'FunctionDeclaration', id: createIdentifier('fn') }
@@ -1423,7 +1385,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report if-else with if-else chain in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const innerIf = {
@@ -1447,7 +1409,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when consequent has for statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'ForStatement' }
@@ -1461,7 +1423,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when both branches are while loops', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'WhileStatement' }
@@ -1473,7 +1435,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when consequent is a switch statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'SwitchStatement' }
@@ -1487,7 +1449,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when alternate is a try statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement(
@@ -1501,7 +1463,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when both branches have different operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1528,42 +1490,42 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(undefined)).not.toThrow()
     })
 
     test('should handle non-object string node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement('string')).not.toThrow()
     })
 
     test('should handle non-object number node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(123)).not.toThrow()
     })
 
     test('should handle non-object boolean node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(true)).not.toThrow()
     })
 
     test('should handle empty object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement({})).not.toThrow()
@@ -1571,7 +1533,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle array node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement([])).not.toThrow()
@@ -1579,7 +1541,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle if statement without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -1598,7 +1560,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report even without test (rule still detects pattern)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -1617,7 +1579,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle node without consequent property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -1634,7 +1596,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle node without alternate property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -1651,7 +1613,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle block statement with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'BlockStatement', body: null }
@@ -1668,7 +1630,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle block statement with undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'BlockStatement' }
@@ -1685,7 +1647,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle expression statement without expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'ExpressionStatement' }
@@ -1702,7 +1664,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle assignment expression with non-identifier left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1727,7 +1689,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -1768,7 +1730,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement({
@@ -1786,7 +1748,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() =>
@@ -1804,7 +1766,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle expression statement with null expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'ExpressionStatement', expression: null }
@@ -1821,7 +1783,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle assignment expression without left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1842,7 +1804,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle assignment expression without right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1863,7 +1825,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle assignment expression without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1884,7 +1846,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle identifier without name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1906,7 +1868,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle identifier with non-string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = createExpressionStatement({
@@ -1928,7 +1890,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle Date object as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(new Date())).not.toThrow()
@@ -1936,7 +1898,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle regex as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(/test/)).not.toThrow()
@@ -1944,14 +1906,14 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(Symbol('test'))).not.toThrow()
     })
 
     test('should handle function as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(() => visitor.IfStatement(() => {})).not.toThrow()
@@ -1964,7 +1926,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('multiple reports', () => {
     test('should report multiple if-statements in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -1974,7 +1936,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report three if-statements in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('a', createLiteral(1), createLiteral(2)))
@@ -1985,7 +1947,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should accumulate reports correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1996,7 +1958,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report each variable name correctly in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2007,7 +1969,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report locations correctly for multiple if-statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2), 1, 0))
@@ -2020,7 +1982,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report matching and skip non-matching in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2046,7 +2008,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report 10 if-statements in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2057,7 +2019,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle mix of null and valid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(null)
@@ -2068,7 +2030,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should handle mix of matching and empty objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement({})
@@ -2079,7 +2041,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not mix up reports between calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('first', createLiteral(1), createLiteral(2)))
@@ -2100,7 +2062,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;', filePath: '/project/src/utils.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2109,7 +2071,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with different file extensions', () => {
-      const { context, reports } = createMockContext({}, '/project/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;', filePath: '/project/src/component.tsx' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2118,7 +2080,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with JavaScript file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;', filePath: '/project/src/index.js' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2127,10 +2089,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/project/src/features/auth/utils/helpers.ts',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;', filePath: '/project/src/features/auth/utils/helpers.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2139,11 +2098,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'if (a) { b = 1; } else { b = 2; }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'if (a) { b = 1; } else { b = 2; }', filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2152,7 +2107,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2162,7 +2117,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should work with multiline source code', () => {
       const source = `if (condition) {\n  x = 1;\n} else {\n  x = 2;\n}`
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2199,7 +2154,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with options object', () => {
-      const { context, reports } = createMockContext({ strictMode: true })
+      const { context, reports } = createMockRuleContext({ options: [{ strictMode: true }], source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2241,7 +2196,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with Windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\project\\src\\file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;', filePath: 'C:\\project\\src\\file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2250,7 +2205,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with relative file path', () => {
-      const { context, reports } = createMockContext({}, './src/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;', filePath: './src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2259,7 +2214,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with unicode source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const 你好 = 1;')
+      const { context, reports } = createMockRuleContext({ source: 'const 你好 = 1;', filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2269,7 +2224,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should work with very long source code', () => {
       const longSource = 'const x = 1;\n'.repeat(1000)
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2278,7 +2233,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should work with context that returns empty comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       expect(context.getComments()).toEqual([])
@@ -2353,7 +2308,7 @@ describe('prefer-ternary-operator rule', () => {
         alternateVal: { type: 'Literal', value: null },
       },
     ] as const)('should report $name', ({ varName, consequentVal, alternateVal }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2380,7 +2335,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'no alternate',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2397,7 +2352,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'different variables',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2416,7 +2371,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'multiple statements in consequent block',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2440,7 +2395,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'compound operator +=',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2462,7 +2417,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'member expression left side',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2484,7 +2439,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'empty consequent block',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2501,7 +2456,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'non-assignment expression in consequent',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2518,7 +2473,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'return statement in consequent',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2535,7 +2490,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'null node',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(null)
           return reports.length
@@ -2544,7 +2499,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'undefined node',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(undefined)
           return reports.length
@@ -2553,7 +2508,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'empty object node',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement({})
           return reports.length
@@ -2562,7 +2517,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'wrong type ForStatement',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement({
             type: 'ForStatement',
@@ -2580,7 +2535,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'string node',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement('not a node')
           return reports.length
@@ -2589,7 +2544,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'number node',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(42)
           return reports.length
@@ -2598,7 +2553,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'boolean node',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(true)
           return reports.length
@@ -2607,7 +2562,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'block with multiple statements in both branches',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2636,7 +2591,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'expression statement without expression property',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2653,7 +2608,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'assignment without operator property',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2674,7 +2629,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'case-different variables (myVar vs myvar)',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2693,7 +2648,7 @@ describe('prefer-ternary-operator rule', () => {
       {
         name: 'both branches have empty blocks',
         build: () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
           const visitor = preferTernaryOperatorRule.create(context)
           visitor.IfStatement(
             createIfStatement(
@@ -2715,7 +2670,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('block statement variations', () => {
     test('should detect assignment inside block statement in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2736,7 +2691,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should detect assignment inside block statement in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2757,7 +2712,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should detect assignment in both block statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2780,7 +2735,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report block with zero items', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2795,7 +2750,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report block with two items', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2819,7 +2774,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report block with exactly one statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2842,7 +2797,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when block contains non-expression statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2859,7 +2814,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when block body is not an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const consequent = { type: 'BlockStatement', body: 'not-array' }
@@ -2873,7 +2828,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report with deeply nested block containing single assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2898,7 +2853,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report when inner block has multiple items', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -2929,7 +2884,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('fix generation', () => {
     test('should not include fix when nodes lack range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(createTernaryCandidate('x', createLiteral(1), createLiteral(2)))
@@ -2940,7 +2895,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should include fix when all nodes have range', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -2975,7 +2930,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should generate fix text with ternary operator', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3011,7 +2966,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should generate fix text starting with variable name', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3045,7 +3000,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should not include fix when if node lacks range', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3078,7 +3033,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should not include fix when test node lacks range', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3112,7 +3067,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should not include fix when consequent right lacks range', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3142,7 +3097,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should not include fix when alternate right lacks range', () => {
       const source = 'if (cond) { x = 1; } else { x = 2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3172,7 +3127,7 @@ describe('prefer-ternary-operator rule', () => {
 
     test('should generate fix text with variable assignment format', () => {
       const source = 'if (cond) { result = val1; } else { result = val2; }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       const node = {
@@ -3205,7 +3160,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should report even when fix cannot be generated', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       // No range on any node
@@ -3221,7 +3176,7 @@ describe('prefer-ternary-operator rule', () => {
   // =========================================================================
   describe('additional operator and type variations', () => {
     test('should not report for /= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3243,7 +3198,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for %= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3265,7 +3220,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for **= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3287,7 +3242,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for <<= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3309,7 +3264,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for >>= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3331,7 +3286,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for &= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3353,7 +3308,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for |= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3375,7 +3330,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for ^= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3397,7 +3352,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for &&= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(
@@ -3419,7 +3374,7 @@ describe('prefer-ternary-operator rule', () => {
     })
 
     test('should not report for ||= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferTernaryOperatorRule.create(context)
 
       visitor.IfStatement(

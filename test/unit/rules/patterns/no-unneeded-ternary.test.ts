@@ -1,43 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noUnneededTernaryRule } from '../../../../src/rules/patterns/no-unneeded-ternary.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = cond ? true : false;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createConditionalExpression(
   test: unknown,
@@ -233,28 +195,28 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('create', () => {
     test('should return visitor object with ConditionalExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(visitor).toHaveProperty('ConditionalExpression')
     })
 
     test('should return ConditionalExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(typeof visitor.ConditionalExpression).toBe('function')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor1 = noUnneededTernaryRule.create(context)
       const visitor2 = noUnneededTernaryRule.create(context)
 
@@ -262,13 +224,13 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should accept context without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
 
       expect(() => noUnneededTernaryRule.create(context)).not.toThrow()
     })
 
     test('should not have visitor methods for other node types', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['ConditionalExpression'])
@@ -280,7 +242,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('detecting cond ? true : false pattern', () => {
     test('should report when consequent is true and alternate is false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -295,7 +257,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should include !! in message for true : false pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -310,7 +272,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should include Boolean() in message for true : false pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -325,7 +287,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with binary expression as test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -340,7 +302,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with unary expression as test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -355,7 +317,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with call expression as test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -370,7 +332,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with member expression as test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -385,7 +347,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with nested conditional as test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const innerConditional = createConditionalExpression(
@@ -406,7 +368,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report true : false with Literal raw "true" and "false"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -421,7 +383,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not double-report true : false (only reports once)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -436,7 +398,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report true : false when test is numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -451,7 +413,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report true : false when test is string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -466,7 +428,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report true : false when test is a complex expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -481,7 +443,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report true : false when consequent has extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -496,7 +458,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report true : false when alternate has extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -516,7 +478,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('detecting cond ? false : true pattern', () => {
     test('should report when consequent is false and alternate is true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -531,7 +493,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should include ! in message for false : true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -546,7 +508,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with binary expression as test for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -561,7 +523,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with unary expression as test for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -576,7 +538,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with call expression as test for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -591,7 +553,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with member expression as test for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -606,7 +568,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report with nested conditional as test for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const innerConditional = createConditionalExpression(
@@ -627,7 +589,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not include !! in message for false : true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -642,7 +604,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report false : true with Literal raw values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -657,7 +619,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report false : true when test is numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -672,7 +634,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report false : true when test is a complex expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -687,7 +649,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not double-report false : true (only reports once)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -702,7 +664,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report false : true with consequent having extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -722,7 +684,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('detecting identical branches pattern', () => {
     test('should report when consequent and alternate are identical literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -737,7 +699,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report when consequent and alternate are identical identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -752,7 +714,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report when consequent and alternate are identical string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -767,7 +729,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should mention identical in message for identical branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -782,7 +744,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical numeric literals (0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -797,7 +759,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical numeric literals (negative)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -812,7 +774,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical numeric literals (decimal)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -827,7 +789,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical string literals (empty string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -842,7 +804,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical string literals (with special chars)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -857,7 +819,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical identifiers (single letter)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -872,7 +834,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical identifiers (long name)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -887,7 +849,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical identifiers (with dollar sign)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -902,7 +864,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical identifiers (with underscore)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -917,7 +879,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical null literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -933,7 +895,7 @@ describe('no-unneeded-ternary rule', () => {
 
     test('should not report identical branches when they are true/false (already caught by bool check)', () => {
       // true : true is identical but NOT true : false, so it gets caught by identical branch check
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -949,7 +911,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical false : false branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -964,7 +926,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report nodes with identical raw values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -980,7 +942,7 @@ describe('no-unneeded-ternary rule', () => {
 
     test('should report identical string literals with different raw', () => {
       // Same value but potentially different raw representations
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1000,7 +962,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('allowing valid ternary expressions', () => {
     test('should not report when consequent and alternate are different values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1015,7 +977,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is true and alternate is not false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1030,7 +992,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is not true and alternate is false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1045,7 +1007,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent and alternate are different identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1060,7 +1022,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report complex ternary with different branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1080,7 +1042,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent and alternate are different numeric literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1095,7 +1057,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent and alternate are different string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1110,7 +1072,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is a literal and alternate is an identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1125,7 +1087,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is an identifier and alternate is a literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1140,7 +1102,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when both branches are different type nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1155,7 +1117,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is false and alternate is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1170,7 +1132,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is a number and alternate is true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1185,7 +1147,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when branches are identifiers with similar but different names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1200,7 +1162,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when one branch is null and other is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(createIdentifier('cond'), createNullLiteral(), {
@@ -1214,7 +1176,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is positive and alternate is negative number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1229,7 +1191,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent and alternate are call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1244,7 +1206,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent and alternate are member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1259,7 +1221,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is empty string and alternate is non-empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1274,7 +1236,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent and alternate have different raw but same type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1289,7 +1251,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report with valid real-world ternary: status check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1309,21 +1271,21 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression('string')).not.toThrow()
@@ -1331,7 +1293,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1345,7 +1307,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1360,7 +1322,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle missing consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1374,7 +1336,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle missing alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1388,7 +1350,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle null consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1402,7 +1364,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle null alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1416,7 +1378,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle literal with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1429,7 +1391,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle nodes with raw property for comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1444,7 +1406,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle different raw values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1459,7 +1421,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle undefined raw in one node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1473,21 +1435,21 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle boolean node as input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(true)).not.toThrow()
     })
 
     test('should handle numeric node as input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(42)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression({})).not.toThrow()
@@ -1495,7 +1457,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with empty string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1510,7 +1472,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with number type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1526,7 +1488,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle consequent as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1540,7 +1502,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle alternate as 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1554,7 +1516,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle both consequent and alternate as 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(createIdentifier('cond'), 0, 0)
@@ -1565,7 +1527,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with loc as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1582,7 +1544,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with loc as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1599,7 +1561,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1615,7 +1577,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with consequent as array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1628,7 +1590,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle node with test as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1648,7 +1610,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('location reporting', () => {
     test('should include location in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1666,7 +1628,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report correct end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1682,7 +1644,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1698,7 +1660,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle multi-line location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1715,7 +1677,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1733,7 +1695,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle location at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1750,7 +1712,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle location with large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1766,7 +1728,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle location with large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1782,7 +1744,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should include location for identical branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1799,7 +1761,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should include location for false : true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1816,7 +1778,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle location where start equals end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1833,7 +1795,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should provide default end column when loc has no end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1853,7 +1815,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should provide default start when loc has only end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1873,7 +1835,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle non-numeric line gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1895,7 +1857,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle partial loc with missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = {
@@ -1921,7 +1883,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('multiple patterns', () => {
     test('should only report once for cond ? true : false (not also as identical)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1936,7 +1898,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report multiple different ternary violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -1958,7 +1920,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report three sequential violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -1987,7 +1949,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report mixed violations and valid expressions correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2016,7 +1978,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle many violations in sequence (10 nodes)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2032,7 +1994,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle alternating valid and invalid ternaries', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       // Invalid
@@ -2066,7 +2028,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report each identical branch violation separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2089,7 +2051,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not carry state between visitor calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       // First: valid
@@ -2132,7 +2094,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('message quality', () => {
     test('should mention boolean literals in message for true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2147,7 +2109,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should mention unnecessary in message for true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2162,7 +2124,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should mention ternary in message for identical branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2177,7 +2139,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should mention unnecessary in message for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2192,7 +2154,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should mention boolean in message for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2207,7 +2169,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should mention unnecessary in message for identical branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2222,7 +2184,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should provide correct suggestion for true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2238,7 +2200,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should provide correct suggestion for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2253,7 +2215,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have non-empty message for true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2268,7 +2230,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have non-empty message for false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2283,7 +2245,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have non-empty message for identical branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2298,7 +2260,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have different messages for true:false vs false:true patterns', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor1 = noUnneededTernaryRule.create(ctx1)
 
       visitor1.ConditionalExpression(
@@ -2309,7 +2271,7 @@ describe('no-unneeded-ternary rule', () => {
         ),
       )
 
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor2 = noUnneededTernaryRule.create(ctx2)
 
       visitor2.ConditionalExpression(
@@ -2329,7 +2291,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;', filePath: '/project/src/utils.ts' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2344,7 +2306,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'flag ? true : false')
+      const { context, reports } = createMockRuleContext({ source: 'flag ? true : false', filePath: '/src/file.ts' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2359,7 +2321,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should work with options provided', () => {
-      const { context, reports } = createMockContext({ strict: true })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true }], source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2374,7 +2336,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2389,7 +2351,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/app.js')
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;', filePath: '/src/app.js' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2404,7 +2366,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;', filePath: '/src/component.tsx' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2420,7 +2382,7 @@ describe('no-unneeded-ternary rule', () => {
 
     test('should work with long source code', () => {
       const longSource = 'const a = 1; const b = 2; '.repeat(100) + 'const x = cond ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2435,7 +2397,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should work with nested directory path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/deep/nested/dir/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;', filePath: '/project/src/deep/nested/dir/file.ts' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2578,7 +2540,7 @@ describe('no-unneeded-ternary rule', () => {
     ] as Array<{ name: string; consequent: unknown; alternate: unknown; test: unknown }>)(
       'should report: $name',
       ({ consequent, alternate, test: testNode }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
         const visitor = noUnneededTernaryRule.create(context)
 
         const node = createConditionalExpression(testNode, consequent, alternate)
@@ -2717,7 +2679,7 @@ describe('no-unneeded-ternary rule', () => {
     ] as Array<{ name: string; consequent: unknown; alternate: unknown; test: unknown }>)(
       'should not report: $name',
       ({ consequent, alternate, test: testNode }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
         const visitor = noUnneededTernaryRule.create(context)
 
         const node = createConditionalExpression(testNode, consequent, alternate)
@@ -2733,7 +2695,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('nested ternary expressions', () => {
     test('should report outer ternary when inner is valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -2755,7 +2717,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report each nested ternary independently when visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -2778,7 +2740,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical branches in nested ternary when visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -2794,7 +2756,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report valid inner ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -2809,7 +2771,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle deeply nested ternary visited from inside out', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const level3 = createConditionalExpression(
@@ -2861,7 +2823,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('real-world patterns', () => {
     test('should report: isActive ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2876,7 +2838,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: isDisabled ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2891,7 +2853,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: result ? result : result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2906,7 +2868,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: x > 0 ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2921,7 +2883,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: arr.length ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2936,7 +2898,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: check() ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2951,7 +2913,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report: user ? user.name : "Anonymous"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2966,7 +2928,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report: age > 18 ? "adult" : "minor"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2981,7 +2943,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: flag ? 0 : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2996,7 +2958,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report: cond ? "same" : "same"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3016,7 +2978,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('mixed type comparisons', () => {
     test('should not report when one branch is Literal and other is Identifier with same string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3031,7 +2993,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when one branch is null literal and other is null identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3046,7 +3008,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report when both are non-Literal non-Identifier with same raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3061,7 +3023,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when non-Literal non-Identifier nodes have different raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3076,7 +3038,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when non-Literal non-Identifier nodes have no raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3091,7 +3053,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when one node has raw and the other does not', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3106,7 +3068,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report when one is Literal and other is non-Literal but same raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       // Literal vs TemplateLiteral with same raw
@@ -3124,7 +3086,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report RegExp literals as identical (compared by reference)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3144,7 +3106,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('exact message text', () => {
     test('should have exact message for true : false pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3161,7 +3123,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have exact message for false : true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3178,7 +3140,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have exact message for identical branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3195,7 +3157,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have exact message for identical identifier branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3212,7 +3174,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have exact message for identical string branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3229,7 +3191,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should have exact message for true : true (identical booleans)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3251,7 +3213,7 @@ describe('no-unneeded-ternary rule', () => {
   // =====================================================
   describe('additional coverage', () => {
     test('should not report when consequent is number and alternate is null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3266,7 +3228,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when both branches are undefined literal nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3281,7 +3243,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle consequent as boolean false with truthy test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3297,7 +3259,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should handle NaN numeric literal comparison (NaN !== NaN)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3312,7 +3274,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is false and alternate is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3327,7 +3289,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report when consequent is null and alternate is true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3342,7 +3304,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical negative numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3357,7 +3319,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical very large numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3372,7 +3334,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should report identical small decimal numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -3387,7 +3349,7 @@ describe('no-unneeded-ternary rule', () => {
     })
 
     test('should not report Infinity vs -Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = cond ? true : false;' })
       const visitor = noUnneededTernaryRule.create(context)
 
       const node = createConditionalExpression(

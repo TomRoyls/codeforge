@@ -1,44 +1,6 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noUnnecessaryEscapeInRegexpRule } from '../../../../src/rules/patterns/no-unnecessary-escape-in-regexp.js'
 import noUnnecessaryEscapeDefaultExport from '../../../../src/rules/patterns/no-unnecessary-escape-in-regexp.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '"test"',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createLiteral(raw: string, value: string, line = 1, column = 0): unknown {
   return {
@@ -172,7 +134,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(visitor).toHaveProperty('Literal')
@@ -180,7 +142,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should return visitor as a plain object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -188,21 +150,21 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should return visitor with Literal as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(typeof visitor.Literal).toBe('function')
     })
 
     test('should return visitor with RegExpLiteral as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(typeof visitor.RegExpLiteral).toBe('function')
     })
 
     test('should return new visitor object each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor1 = noUnnecessaryEscapeInRegexpRule.create(context)
       const visitor2 = noUnnecessaryEscapeInRegexpRule.create(context)
 
@@ -210,7 +172,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should have visitor methods that return undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const result = visitor.Literal(null)
@@ -218,7 +180,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should have visitor RegExpLiteral that returns undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const result = visitor.RegExpLiteral(null)
@@ -226,17 +188,17 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should accept context with default options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: '"test"' })
       expect(() => noUnnecessaryEscapeInRegexpRule.create(context)).not.toThrow()
     })
 
     test('should accept context with no options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       expect(() => noUnnecessaryEscapeInRegexpRule.create(context)).not.toThrow()
     })
 
     test('should have visitor with exactly Literal and RegExpLiteral keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -247,7 +209,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('detecting unnecessary escape in double-quoted strings', () => {
     test('should report escaped single quote in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\'s value"', "test's value")
@@ -261,7 +223,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report multiple unnecessary escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("\"test\\'s \\'value\\'\"", "test's 'value'")
@@ -272,7 +234,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped double quote in double-quoted string (necessary)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\"value"', 'test"value')
@@ -283,7 +245,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped single quote at the beginning of double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'start"', "'start")
@@ -295,7 +257,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped single quote at the end of double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"end\\\'"', "end'")
@@ -306,7 +268,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report consecutive escaped single quotes in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("\"\\'\\'\\'\"", "'''")
@@ -317,7 +279,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped single quote surrounded by text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"hello\\\'world"', "hello'world")
@@ -330,7 +292,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report any escapes in double-quoted string without escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"plain text"', 'plain text')
@@ -341,7 +303,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle double-quoted string with only escaped single quote', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'"', "'")
@@ -352,7 +314,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct number of unnecessary single quote escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("\"a\\'b\\'c\\'d\"", "a'b'c'd")
@@ -363,7 +325,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle double-quoted string with necessary double quote escape and unnecessary single quote', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'test\\"value"', '\'test"value')
@@ -375,7 +337,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped non-quote characters in double-quoted strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"hello\\nworld"', 'hello\nworld')
@@ -386,7 +348,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle double-quoted string with backslash near end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\'end"', "test'end")
@@ -397,7 +359,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle empty double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('""', '')
@@ -408,7 +370,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped single quote in double-quoted string with long content', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const longContent = 'a'.repeat(100)
@@ -423,7 +385,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report all unnecessary escapes regardless of position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("\"\\'a\\'b\\'c\\'\"", "'a'b'c'")
@@ -434,7 +396,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report when only necessary escape exists in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"say \\"hello\\""', 'say "hello"')
@@ -445,7 +407,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle double-quoted string with mix of necessary and unnecessary escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\'s \\"val\\""', 'test\'s "val"')
@@ -456,7 +418,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should produce messages containing escaped character and quote type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"\\\'test"', "'test"))
@@ -468,7 +430,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('detecting unnecessary escape in single-quoted strings', () => {
     test('should report escaped double quote in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'test\\\"value'", 'test"value')
@@ -482,7 +444,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped single quote in single-quoted string (necessary)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'test\\'value'", "test'value")
@@ -493,7 +455,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped double quote at start of single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'\\\"start'", '"start')
@@ -504,7 +466,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped double quote at end of single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'end\\\"'", 'end"')
@@ -515,7 +477,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report multiple escaped double quotes in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('\'\\"a\\"b\\"\'', '"a"b"')
@@ -526,7 +488,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle single-quoted string with only escaped double quote', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'\\\"'", '"')
@@ -537,7 +499,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle empty single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("''", '')
@@ -548,7 +510,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report any escapes in single-quoted string without escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'plain text'", 'plain text')
@@ -559,7 +521,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct count of unnecessary double quote escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('\'\\"\\"\\"\'', '"""')
@@ -570,7 +532,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle single-quoted string with mix of necessary and unnecessary escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'test\\\"s \\'val'", 'test"s \'val')
@@ -582,7 +544,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should produce message with escaped character and quote type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral("'\\\"test'", '"test'))
@@ -592,7 +554,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped non-quote characters in single-quoted strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'hello\\nworld'", 'hello\nworld')
@@ -603,7 +565,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report escaped double quote in single-quoted string with long content', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const longContent = 'z'.repeat(50)
@@ -618,7 +580,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report necessary single quote escape in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'it\\'s'", "it's")
@@ -629,7 +591,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report consecutive escaped double quotes in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('\'a\\"\\"b\'', 'a""b')
@@ -642,7 +604,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('detecting unnecessary escape in regex literals', () => {
     test('should report unnecessary escape in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a/', 'a')
@@ -655,7 +617,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of letters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\c\\h\\i/', 'chi')
@@ -666,7 +628,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report necessary regex escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\d\\s\\w/', '\\d\\s\\w')
@@ -677,7 +639,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report special characters that need escaping', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\.\\*\\?/', '\\.*?')
@@ -688,7 +650,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreferences', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)\\1/', '(a)\\1')
@@ -699,7 +661,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\e', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\e/', 'e')
@@ -711,7 +673,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\g/', 'g')
@@ -723,7 +685,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\j', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\j/', 'j')
@@ -735,7 +697,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\l', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\l/', 'l')
@@ -746,7 +708,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\m', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\m/', 'm')
@@ -757,7 +719,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\o', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\o/', 'o')
@@ -768,7 +730,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\q', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\q/', 'q')
@@ -779,7 +741,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\y/', 'y')
@@ -790,7 +752,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\z', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\z/', 'z')
@@ -801,7 +763,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\A', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\A/', 'A')
@@ -813,7 +775,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\C', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\C/', 'C')
@@ -824,7 +786,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\E', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\E/', 'E')
@@ -835,7 +797,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\F', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\F/', 'F')
@@ -846,7 +808,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\G', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\G/', 'G')
@@ -857,7 +819,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\H', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\H/', 'H')
@@ -868,7 +830,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\I', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\I/', 'I')
@@ -879,7 +841,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\J', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\J/', 'J')
@@ -890,7 +852,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\L', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\L/', 'L')
@@ -901,7 +863,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\M', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\M/', 'M')
@@ -912,7 +874,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\O', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\O/', 'O')
@@ -923,7 +885,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\Q', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\Q/', 'Q')
@@ -934,7 +896,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\T', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\T/', 'T')
@@ -945,7 +907,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\U', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\U/', 'U')
@@ -956,7 +918,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\V', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\V/', 'V')
@@ -967,7 +929,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\Y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\Y/', 'Y')
@@ -978,7 +940,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of uppercase \\Z', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\Z/', 'Z')
@@ -989,7 +951,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\8', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\8/', '8')
@@ -1000,7 +962,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape \\9', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\9/', '9')
@@ -1011,7 +973,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report multiple unnecessary escapes in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a\\e\\g\\h/', 'aegh')
@@ -1022,7 +984,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of hash character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\#/', '#')
@@ -1033,7 +995,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of at sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\@/', '@')
@@ -1044,7 +1006,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of exclamation mark', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\!/', '!')
@@ -1055,7 +1017,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of percent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\%/', '%')
@@ -1066,7 +1028,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of ampersand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\&/', '&')
@@ -1077,7 +1039,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\_/', '_')
@@ -1088,7 +1050,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of colon', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\:/', ':')
@@ -1099,7 +1061,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of semicolon', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\;/', ';')
@@ -1110,7 +1072,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of equals sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\=/', '=')
@@ -1121,7 +1083,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of comma', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\,/', ',')
@@ -1132,7 +1094,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of tilde', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\~/', '~')
@@ -1143,7 +1105,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of backtick', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\`/', '`')
@@ -1154,7 +1116,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of angle bracket', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\</', '<')
@@ -1165,7 +1127,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape of greater-than sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\>/', '>')
@@ -1178,7 +1140,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('necessary regex escapes not reported', () => {
     test('should not report escaped backslash in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\\\/', '\\\\')
@@ -1189,7 +1151,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped caret in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\^/', '\\^')
@@ -1200,7 +1162,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped dollar in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\$/', '\\$')
@@ -1211,7 +1173,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped dot in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\./', '\\.')
@@ -1222,7 +1184,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped pipe in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\|/', '\\|')
@@ -1233,7 +1195,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped question mark in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\?/', '\\?')
@@ -1244,7 +1206,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped asterisk in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\*/', '\\*')
@@ -1255,7 +1217,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped plus in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\+/', '\\+')
@@ -1266,7 +1228,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped opening paren in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\(/', '\\(')
@@ -1277,7 +1239,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped closing paren in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\)/', '\\)')
@@ -1288,7 +1250,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped opening bracket in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\[/', '\\[')
@@ -1299,7 +1261,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped closing bracket in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\]/', '\\]')
@@ -1310,7 +1272,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped opening brace in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\{/', '\\{')
@@ -1321,7 +1283,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped closing brace in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\}/', '\\}')
@@ -1332,7 +1294,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped forward slash in regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\//', '\\/')
@@ -1343,7 +1305,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\n escape (newline)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\n/', '\\n')
@@ -1354,7 +1316,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\r escape (carriage return)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\r/', '\\r')
@@ -1365,7 +1327,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\t escape (tab)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\t/', '\\t')
@@ -1376,7 +1338,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\f escape (form feed)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\f/', '\\f')
@@ -1387,7 +1349,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\v escape (vertical tab)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\v/', '\\v')
@@ -1398,7 +1360,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\0 escape (null)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\0/', '\\0')
@@ -1409,7 +1371,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\d escape (digit)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\d/', '\\d')
@@ -1420,7 +1382,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\D escape (non-digit)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\D/', '\\D')
@@ -1431,7 +1393,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\s escape (whitespace)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\s/', '\\s')
@@ -1442,7 +1404,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\S escape (non-whitespace)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\S/', '\\S')
@@ -1453,7 +1415,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\w escape (word char)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\w/', '\\w')
@@ -1464,7 +1426,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\W escape (non-word char)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\W/', '\\W')
@@ -1475,7 +1437,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\b escape (word boundary)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\b/', '\\b')
@@ -1486,7 +1448,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\B escape (non-word boundary)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\B/', '\\B')
@@ -1497,7 +1459,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\p escape (unicode property)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\p/', '\\p')
@@ -1508,7 +1470,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\P escape (negated unicode property)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\P/', '\\P')
@@ -1519,7 +1481,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\x escape (hex escape)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\x/', '\\x')
@@ -1530,7 +1492,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\u escape (unicode escape)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\u/', '\\u')
@@ -1541,7 +1503,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\k escape (named backreference)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\k/', '\\k')
@@ -1552,7 +1514,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\N escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\N/', '\\N')
@@ -1563,7 +1525,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\R escape (line break)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\R/', '\\R')
@@ -1574,7 +1536,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report \\X escape (unicode grapheme)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\X/', '\\X')
@@ -1585,7 +1547,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)\\1/', '(a)\\1')
@@ -1596,7 +1558,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)(b)\\2/', '(a)(b)\\2')
@@ -1607,7 +1569,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)(b)(c)\\3/', '(a)(b)(c)\\3')
@@ -1618,7 +1580,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\4', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)(b)(c)(d)\\4/', '(a)(b)(c)(d)\\4')
@@ -1629,7 +1591,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)(b)(c)(d)(e)\\5/', '(a)(b)(c)(d)(e)\\5')
@@ -1640,7 +1602,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\6', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)(b)(c)(d)(e)(f)\\6/', '(a)(b)(c)(d)(e)(f)\\6')
@@ -1651,7 +1613,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report backreference \\7', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(a)(b)(c)(d)(e)(f)(g)\\7/', '(a)(b)(c)(d)(e)(f)(g)\\7')
@@ -1662,7 +1624,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report unnecessary escape mixed with necessary ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\d\\a\\s/', '\\da\\s')
@@ -1674,7 +1636,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report all unnecessary escapes in a complex regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a\\d\\e\\s\\g/', 'ad�sg')
@@ -1685,7 +1647,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report anything for regex without escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/abc/', 'abc')
@@ -1698,7 +1660,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal(null)).not.toThrow()
@@ -1706,7 +1668,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal(undefined)).not.toThrow()
@@ -1714,7 +1676,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal('string')).not.toThrow()
@@ -1723,7 +1685,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node without raw property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1736,7 +1698,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\'s"', "test's")
@@ -1747,7 +1709,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\'s"', "test's", 5, 10)
@@ -1759,7 +1721,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\'s"', "test's", 5, 10)
@@ -1771,7 +1733,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle numeric literal without reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1785,7 +1747,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle boolean literal without reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1799,7 +1761,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle RegExpLiteral without raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1812,7 +1774,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle wrong node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1825,7 +1787,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle Literal node passed to RegExpLiteral without reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test"', 'test')
@@ -1835,7 +1797,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle RegExpLiteral node passed to Literal without reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/test/', 'test')
@@ -1845,7 +1807,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node with null raw property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1859,7 +1821,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node with non-string raw property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1873,7 +1835,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle RegExpLiteral with null raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -1887,7 +1849,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle boolean node passed to RegExpLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.RegExpLiteral(true)).not.toThrow()
@@ -1895,7 +1857,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle numeric node passed to Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal(42)).not.toThrow()
@@ -1903,21 +1865,21 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle array node passed to Literal', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal([])).not.toThrow()
     })
 
     test('should handle array node passed to RegExpLiteral', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.RegExpLiteral([])).not.toThrow()
     })
 
     test('should handle node with empty object for Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal({})).not.toThrow()
@@ -1925,7 +1887,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node with empty object for RegExpLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.RegExpLiteral({})).not.toThrow()
@@ -1933,7 +1895,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle backtick-quoted raw string without reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('`test`', 'test')
@@ -1944,7 +1906,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle unquoted raw string without reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('test', 'test')
@@ -1955,7 +1917,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle regex with empty pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('//', '')
@@ -1966,7 +1928,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle regex with single char pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/a/', 'a')
@@ -1977,7 +1939,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle calling visitor methods with no arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       expect(() => visitor.Literal()).not.toThrow()
@@ -1985,7 +1947,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle Literal with value but no escapes in raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"hello world"', 'hello world')
@@ -1996,7 +1958,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'"', "'", 0, 0)
@@ -2011,7 +1973,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('location reporting', () => {
     test('should report location for unnecessary escape in double-quoted string at line 1 col 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'test"', "'test", 1, 0)
@@ -2024,7 +1986,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct end column for escape sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'"', "'", 1, 0)
@@ -2035,7 +1997,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report location for each unnecessary escape separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'a\\\'b"', "'a'b", 1, 0)
@@ -2048,7 +2010,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report location for regex unnecessary escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a/', 'a', 3, 5)
@@ -2060,7 +2022,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct end column for regex escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a/', 'a', 1, 0)
@@ -2071,7 +2033,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report locations for multiple regex escapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a\\b/', '\\a\\b', 1, 10)
@@ -2083,7 +2045,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report location with high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\\'"', "'", 100, 50)
@@ -2095,7 +2057,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report location for unnecessary escape in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'\\\"test'", '"test', 2, 3)
@@ -2107,7 +2069,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report correct location for escape not at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"hello\\\'world"', "hello'world", 1, 0)
@@ -2118,7 +2080,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node with partial loc (missing end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -2135,7 +2097,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle node with partial loc (missing start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = {
@@ -2152,7 +2114,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report location for regex at offset column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/a\\e\\g/', 'aeg', 1, 20)
@@ -2167,7 +2129,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('message quality', () => {
     test('should mention the escaped character in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"test\\\'s"', "test's"))
@@ -2176,7 +2138,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should mention quote type in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"test\\\'s"', "test's"))
@@ -2185,7 +2147,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should mention unnecessary escape in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"test\\\'s"', "test's"))
@@ -2194,7 +2156,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should include escaped character in regex message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('/\\a/', 'a'))
@@ -2203,7 +2165,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should include "does not need" phrasing in regex message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('/\\a/', 'a'))
@@ -2212,7 +2174,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should include "regex" in regex message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('/\\a/', 'a'))
@@ -2221,8 +2183,8 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should produce different messages for double-quoted vs single-quoted', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: '"test"' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: '"test"' })
 
       const visitor1 = noUnnecessaryEscapeInRegexpRule.create(ctx1)
       const visitor2 = noUnnecessaryEscapeInRegexpRule.create(ctx2)
@@ -2235,7 +2197,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should produce message mentioning the specific escaped quote', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"\\\'"', "'"))
@@ -2245,7 +2207,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should produce correct message for escaped double quote in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral("'\\\"'", '"'))
@@ -2255,7 +2217,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should include "escape character" in regex message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('/\\e/', 'e'))
@@ -2296,7 +2258,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should be callable with context to produce visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeDefaultExport.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -2307,7 +2269,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('multiple reports in single node', () => {
     test('should report each unnecessary escape separately in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral("\"\\'a\\'b\\'c\\'\"", "'a'b'c'"))
@@ -2319,7 +2281,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report each unnecessary escape separately in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('\'\\"a\\"b\\"c\\"\'', '"a"b"c"'))
@@ -2331,7 +2293,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should report each unnecessary escape in regex separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('/\\a\\e\\i\\o\\y/', 'aeioy'))
@@ -2340,7 +2302,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should give unique locations to each report in a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral("\"\\'a\\'b\\'\"", "'a'b'", 1, 0))
@@ -2351,7 +2313,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should give unique locations to each report in a regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.RegExpLiteral(createRegExpLiteral('/\\a\\e\\i/', 'aei', 1, 0))
@@ -2362,7 +2324,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle many consecutive escapes in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("\"\\'\\'\\'\\'\\'\"", "''''")
@@ -2372,7 +2334,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle many consecutive escapes in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('\'\\"\\"\\"\\"\\"\'', '""""')
@@ -2384,8 +2346,8 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('visitor independence', () => {
     test('should have independent report collections for different visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: '"test"' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: '"test"' })
 
       const visitor1 = noUnnecessaryEscapeInRegexpRule.create(ctx1)
       const visitor2 = noUnnecessaryEscapeInRegexpRule.create(ctx2)
@@ -2397,7 +2359,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle calling same visitor method multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"\\\'"', "'"))
@@ -2407,7 +2369,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle calling different visitor methods on same context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"\\\'"', "'"))
@@ -2417,7 +2379,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle intermixed valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       visitor.Literal(createLiteral('"no escapes"', 'no escapes'))
@@ -2431,7 +2393,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('Literal only detects quote escapes', () => {
     test('should not report escaped backslash in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"test\\\\path"', 'test\\path')
@@ -2442,7 +2404,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped n in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"line1\\nline2"', 'line1\nline2')
@@ -2453,7 +2415,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should not report escaped t in double-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"col1\\tcol2"', 'col1\tcol2')
@@ -2464,7 +2426,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should only report escaped quote characters in strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral('"\\a\\b\\c\\\'\\d"', "abc'd")
@@ -2476,7 +2438,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should only report escaped opposite quote in single-quoted string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createLiteral("'\\a\\b\\c\\\"\\d'", 'abc"d')
@@ -2490,7 +2452,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
 
   describe('regex with special flags and patterns', () => {
     test('should handle regex with flags suffix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a/gi', 'a')
@@ -2501,7 +2463,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle regex with only special chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\.\\*\\+\\?/', '\\.*+?')
@@ -2512,7 +2474,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle regex with character class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/[\\a\\b]/', '[\\a\\b]')
@@ -2523,7 +2485,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle regex with alternation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a|\\e/', 'a|e')
@@ -2534,7 +2496,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle complex regex with groups', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/(\\a)(\\d)/', '(a)(\\d)')
@@ -2546,7 +2508,7 @@ describe('no-unnecessary-escape-in-regexp rule', () => {
     })
 
     test('should handle regex with quantifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"test"' })
       const visitor = noUnnecessaryEscapeInRegexpRule.create(context)
 
       const node = createRegExpLiteral('/\\a+\\e*/', 'ae')

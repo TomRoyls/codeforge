@@ -1,45 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { preferConstRule } from '../../../../src/rules/patterns/prefer-const.js'
 import type { RuleContext, RuleVisitor } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'let x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createLetDeclaration(varName: string, line = 1, column = 0): unknown {
   return {
@@ -253,31 +215,31 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('create', () => {
     test('should return visitor object with VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(visitor).toHaveProperty('VariableDeclaration')
     })
 
     test('should return visitor object with AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(visitor).toHaveProperty('AssignmentExpression')
     })
 
     test('should return visitor object with UpdateExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(visitor).toHaveProperty('UpdateExpression')
     })
 
     test('should return visitor object with Program:exit', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(visitor).toHaveProperty('Program:exit')
     })
 
     test('should return all four required visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(Object.keys(visitor)).toContain('VariableDeclaration')
       expect(Object.keys(visitor)).toContain('AssignmentExpression')
@@ -286,7 +248,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should return visitor methods that are functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(typeof visitor.VariableDeclaration).toBe('function')
       expect(typeof visitor.AssignmentExpression).toBe('function')
@@ -295,14 +257,14 @@ describe('prefer-const rule', () => {
     })
 
     test('should create a new visitor instance for each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor1 = preferConstRule.create(context)
       const visitor2 = preferConstRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should accept a valid RuleContext', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       expect(() => preferConstRule.create(context)).not.toThrow()
     })
   })
@@ -312,7 +274,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('detection', () => {
     test('should report let declaration that is never reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -320,7 +282,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration that is never reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('y'))
       visitor['Program:exit']?.(undefined)
@@ -328,7 +290,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report message containing variable name for let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('myVar'))
       visitor['Program:exit']?.(undefined)
@@ -336,7 +298,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report message containing variable name for var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('counter'))
       visitor['Program:exit']?.(undefined)
@@ -344,7 +306,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report message containing const keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -352,7 +314,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report message containing never reassigned phrase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -360,7 +322,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report suggestion text in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -369,7 +331,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report multiple let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -378,7 +340,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report three let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -388,7 +350,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report multiple var declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('a'))
       visitor.VariableDeclaration(createVarDeclaration('b'))
@@ -397,7 +359,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report mixed let and var declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createVarDeclaration('b'))
@@ -408,7 +370,7 @@ describe('prefer-const rule', () => {
     test('should report let with various variable names', () => {
       const names = ['x', 'myVar', '_private', '$jquery', 'camelCase', 'UPPER']
       for (const name of names) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
         const visitor = preferConstRule.create(context)
         visitor.VariableDeclaration(createLetDeclaration(name))
         visitor['Program:exit']?.(undefined)
@@ -420,7 +382,7 @@ describe('prefer-const rule', () => {
     test('should report var with various variable names', () => {
       const names = ['a', 'data', 'result', 'item', 'temp']
       for (const name of names) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
         const visitor = preferConstRule.create(context)
         visitor.VariableDeclaration(createVarDeclaration(name))
         visitor['Program:exit']?.(undefined)
@@ -429,7 +391,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report destructuring with let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b']))
       visitor['Program:exit']?.(undefined)
@@ -437,7 +399,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report destructuring with var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('var', ['a', 'b']))
       visitor['Program:exit']?.(undefined)
@@ -445,7 +407,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report each destructured variable separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b', 'c']))
       visitor['Program:exit']?.(undefined)
@@ -453,7 +415,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report array destructuring with let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -479,7 +441,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let without init value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -499,7 +461,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var without init value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -518,7 +480,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report single variable from destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -548,7 +510,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should detect rest element in destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -577,7 +539,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should detect nested object destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -615,7 +577,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should detect assignment pattern in destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -648,7 +610,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should detect rest element in object destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -681,7 +643,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report when let variable is only read', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('readOnly'))
       visitor['Program:exit']?.(undefined)
@@ -690,7 +652,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declared with function init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -714,7 +676,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declared with object init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -737,7 +699,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declared with array init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -760,7 +722,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let with string literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -780,7 +742,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let with boolean literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -805,7 +767,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('not reporting', () => {
     test('should not report let declaration that is reassigned via assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.AssignmentExpression(createAssignment('x'))
@@ -814,7 +776,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report let declaration that is reassigned via update', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.UpdateExpression(createUpdateExpression('x'))
@@ -823,7 +785,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report const declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createConstDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -831,7 +793,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report var declaration that is reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('x'))
       visitor.AssignmentExpression(createAssignment('x'))
@@ -840,7 +802,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report var declaration that is updated', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('x'))
       visitor.UpdateExpression(createUpdateExpression('x'))
@@ -849,7 +811,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when only some variables are reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -860,7 +822,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when all variables are reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -871,7 +833,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report assignment to unrelated variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.AssignmentExpression(createAssignment('y'))
@@ -880,7 +842,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report update to unrelated variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.UpdateExpression(createUpdateExpression('y'))
@@ -889,14 +851,14 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when no VariableDeclaration is visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor['Program:exit']?.(undefined)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when Program:exit is not called', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       expect(reports.length).toBe(0)
@@ -905,7 +867,7 @@ describe('prefer-const rule', () => {
     test('should not report const with various names', () => {
       const names = ['a', 'test', '_private', '$dollar', 'PascalCase']
       for (const name of names) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
         const visitor = preferConstRule.create(context)
         visitor.VariableDeclaration(createConstDeclaration(name))
         visitor['Program:exit']?.(undefined)
@@ -914,7 +876,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when assignment comes before declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.AssignmentExpression(createAssignment('x'))
       visitor.VariableDeclaration(createLetDeclaration('x'))
@@ -923,7 +885,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when update comes before declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.UpdateExpression(createUpdateExpression('x'))
       visitor.VariableDeclaration(createLetDeclaration('x'))
@@ -932,11 +894,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report destructured variable when ignoreDestructuring is true for object', () => {
-      const { context, reports } = createMockContext(
-        { ignoreDestructuring: true },
-        '/src/file.ts',
-        'let { x } = obj;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: true }], source: 'let { x } = obj;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -965,11 +923,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report destructured variable when ignoreDestructuring is true for array', () => {
-      const { context, reports } = createMockContext(
-        { ignoreDestructuring: true },
-        '/src/file.ts',
-        'let [y] = arr;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: true }], source: 'let [y] = arr;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -992,7 +946,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when node is null in VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(null)
       visitor['Program:exit']?.(undefined)
@@ -1000,7 +954,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when node is undefined in VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(undefined)
       visitor['Program:exit']?.(undefined)
@@ -1008,7 +962,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when node is a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration('string')
       visitor['Program:exit']?.(undefined)
@@ -1016,7 +970,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when node is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(123)
       visitor['Program:exit']?.(undefined)
@@ -1024,7 +978,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when node is a boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(true)
       visitor['Program:exit']?.(undefined)
@@ -1032,7 +986,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when declarations array is empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1046,7 +1000,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when declarations is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1060,7 +1014,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when declaration has no id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1074,7 +1028,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when type is not VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1088,7 +1042,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report when kind is not let or var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1108,7 +1062,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report for AssignmentExpression with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       const node = { type: 'AssignmentExpression', operator: '=' }
@@ -1118,7 +1072,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report for UpdateExpression with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       const node = { type: 'UpdateExpression', operator: '++' }
@@ -1128,7 +1082,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report for destructuring with null property value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1151,7 +1105,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report for ArrayPattern with null elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1176,7 +1130,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('edge cases', () => {
     test('should handle node without loc gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1192,7 +1146,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle declaration without id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1204,7 +1158,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle empty declarations array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1218,54 +1172,54 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle AssignmentExpression without left', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = { type: 'AssignmentExpression', operator: '=' }
       expect(() => visitor.AssignmentExpression(node)).not.toThrow()
     })
 
     test('should handle UpdateExpression without argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = { type: 'UpdateExpression', operator: '++' }
       expect(() => visitor.UpdateExpression(node)).not.toThrow()
     })
 
     test('should handle AssignmentExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle UpdateExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.UpdateExpression(null)).not.toThrow()
     })
 
     test('should handle non-object node in VariableDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration('string')).not.toThrow()
       expect(() => visitor.VariableDeclaration(123)).not.toThrow()
     })
 
     test('should handle non-object node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.AssignmentExpression('str')).not.toThrow()
       expect(() => visitor.AssignmentExpression(42)).not.toThrow()
     })
 
     test('should handle non-object node in UpdateExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.UpdateExpression('str')).not.toThrow()
       expect(() => visitor.UpdateExpression(42)).not.toThrow()
     })
 
     test('should handle node with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration({})
       visitor['Program:exit']?.(undefined)
@@ -1273,7 +1227,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle declaration with non-Identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1292,7 +1246,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle AssignmentExpression with non-Identifier left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       const node = {
@@ -1311,7 +1265,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle UpdateExpression with non-Identifier argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       const node = {
@@ -1330,7 +1284,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle multiple AssignmentExpressions for same variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.AssignmentExpression(createAssignment('x'))
@@ -1340,7 +1294,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle multiple UpdateExpressions for same variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.UpdateExpression(createUpdateExpression('x'))
@@ -1350,7 +1304,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle mixed assignment and update for same variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.AssignmentExpression(createAssignment('x'))
@@ -1360,7 +1314,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle variable name with underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('_private'))
       visitor['Program:exit']?.(undefined)
@@ -1369,7 +1323,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle variable name with dollar sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('$jquery'))
       visitor['Program:exit']?.(undefined)
@@ -1378,7 +1332,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle single character variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('i'))
       visitor['Program:exit']?.(undefined)
@@ -1387,7 +1341,7 @@ describe('prefer-const rule', () => {
 
     test('should handle long variable name', () => {
       const longName = 'veryLongVariableNameThatDescribesSomethingInGreatDetail'
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration(longName))
       visitor['Program:exit']?.(undefined)
@@ -1396,7 +1350,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle AssignmentExpression with compound assignment operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       const node = {
@@ -1411,7 +1365,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle prefix update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       const node = {
@@ -1426,7 +1380,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle declaration with id.name as non-string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1445,7 +1399,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle node with null id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1469,7 +1423,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('location', () => {
     test('should report correct location for default line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 1, 0))
       visitor['Program:exit']?.(undefined)
@@ -1478,7 +1432,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 5, 10))
       visitor['Program:exit']?.(undefined)
@@ -1487,7 +1441,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 100, 0))
       visitor['Program:exit']?.(undefined)
@@ -1495,7 +1449,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 1 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 1, 50))
       visitor['Program:exit']?.(undefined)
@@ -1503,7 +1457,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 3, 5))
       visitor['Program:exit']?.(undefined)
@@ -1512,7 +1466,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report location for each variable independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a', 1, 0))
       visitor.VariableDeclaration(createLetDeclaration('b', 5, 10))
@@ -1523,7 +1477,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should provide default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1542,7 +1496,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should provide default location when loc.start is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1563,7 +1517,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle loc with partial start info', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1583,7 +1537,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report location for var declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('y', 7, 3))
       visitor['Program:exit']?.(undefined)
@@ -1592,7 +1546,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report location for destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a'], 10, 5))
       visitor['Program:exit']?.(undefined)
@@ -1601,7 +1555,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report end location for var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('x', 2, 4))
       visitor['Program:exit']?.(undefined)
@@ -1610,7 +1564,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should use default column when column is not a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1634,7 +1588,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should use default line when line is not a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1657,7 +1611,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report same location for multiple destructured vars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b'], 4, 8))
       visitor['Program:exit']?.(undefined)
@@ -1672,7 +1626,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('messages', () => {
     test('should include variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('myVar'))
       visitor['Program:exit']?.(undefined)
@@ -1680,7 +1634,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should include const suggestion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1688,7 +1642,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should include never reassigned text in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1696,7 +1650,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should include RULE_SUGGESTIONS.preferConst in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1705,7 +1659,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should have unique messages for different variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('alpha'))
       visitor.VariableDeclaration(createLetDeclaration('beta'))
@@ -1717,7 +1671,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should have correct message format for let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1725,7 +1679,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should have correct message format for var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('y'))
       visitor['Program:exit']?.(undefined)
@@ -1733,7 +1687,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should contain Use const instead in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('z'))
       visitor['Program:exit']?.(undefined)
@@ -1741,7 +1695,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should have consistent message across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -1752,7 +1706,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should include variable name with quotes in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('testVar'))
       visitor['Program:exit']?.(undefined)
@@ -1765,7 +1719,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('multiple reports', () => {
     test('should report two separate let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -1774,7 +1728,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report three separate let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -1784,7 +1738,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report mixed reassigned and non-reassigned correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -1795,7 +1749,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report four variables with two reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createLetDeclaration('b'))
@@ -1810,7 +1764,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report each destructured name separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['p', 'q', 'r']))
       visitor['Program:exit']?.(undefined)
@@ -1818,7 +1772,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report both let and var in same session', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a'))
       visitor.VariableDeclaration(createVarDeclaration('b'))
@@ -1827,7 +1781,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report five let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 5; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`var${i}`))
@@ -1837,7 +1791,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report any when all are reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.VariableDeclaration(createLetDeclaration('y'))
@@ -1848,7 +1802,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle many variables with selective reassignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 10; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`v${i}`))
@@ -1862,7 +1816,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle destructured variables with partial reassignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b', 'c']))
       visitor.AssignmentExpression(createAssignment('b'))
@@ -1878,7 +1832,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('context and options', () => {
     test('should respect destructuring option "all"', () => {
-      const { context, reports } = createMockContext({ destructuring: 'all' })
+      const { context, reports } = createMockRuleContext({ options: [{ destructuring: 'all' }], source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b']))
       visitor['Program:exit']?.(undefined)
@@ -1886,7 +1840,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should respect destructuring option "any"', () => {
-      const { context, reports } = createMockContext({ destructuring: 'any' })
+      const { context, reports } = createMockRuleContext({ options: [{ destructuring: 'any' }], source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b']))
       visitor['Program:exit']?.(undefined)
@@ -1894,13 +1848,13 @@ describe('prefer-const rule', () => {
     })
 
     test('should respect ignoreReadBeforeAssign option', () => {
-      const { context } = createMockContext({ ignoreReadBeforeAssign: true })
+      const { context } = createMockRuleContext({ options: [{ ignoreReadBeforeAssign: true }], source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(visitor).toBeDefined()
     })
 
     test('should handle empty options object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1932,11 +1886,11 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle all options set together', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         destructuring: 'all',
         ignoreReadBeforeAssign: true,
         ignoreDestructuring: false,
-      })
+      }], source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1944,7 +1898,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle context with different file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;', filePath: '/custom/path.ts' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -1952,7 +1906,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle context with different source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'let y = 42;')
+      const { context, reports } = createMockRuleContext({ source: 'let y = 42;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('y'))
       visitor['Program:exit']?.(undefined)
@@ -1960,11 +1914,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should respect ignoreDestructuring for single-variable object destructuring', () => {
-      const { context, reports } = createMockContext(
-        { ignoreDestructuring: true },
-        '/src/file.ts',
-        'let { x } = obj;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: true }], source: 'let { x } = obj;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1993,7 +1943,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report destructuring when ignoreDestructuring is false', () => {
-      const { context, reports } = createMockContext({ ignoreDestructuring: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: false }], source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b']))
       visitor['Program:exit']?.(undefined)
@@ -2006,7 +1956,7 @@ describe('prefer-const rule', () => {
   // ==========================================================================
   describe('test.each - variable kinds', () => {
     test('should report let declaration with name x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -2014,7 +1964,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration with name y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('y'))
       visitor['Program:exit']?.(undefined)
@@ -2022,7 +1972,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration with name x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -2030,7 +1980,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration with name y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('y'))
       visitor['Program:exit']?.(undefined)
@@ -2040,7 +1990,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - const should not report', () => {
     test('should not report const declaration for a', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createConstDeclaration('a'))
       visitor['Program:exit']?.(undefined)
@@ -2048,7 +1998,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report const declaration for myConst', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createConstDeclaration('myConst'))
       visitor['Program:exit']?.(undefined)
@@ -2056,7 +2006,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report const declaration for _private', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createConstDeclaration('_private'))
       visitor['Program:exit']?.(undefined)
@@ -2064,7 +2014,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report const declaration for $dollar', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createConstDeclaration('$dollar'))
       visitor['Program:exit']?.(undefined)
@@ -2072,7 +2022,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report const declaration for UPPER_CASE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createConstDeclaration('UPPER_CASE'))
       visitor['Program:exit']?.(undefined)
@@ -2082,7 +2032,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - various variable names for let', () => {
     test('should report let declaration for variable "x"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -2091,7 +2041,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "myVar"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('myVar'))
       visitor['Program:exit']?.(undefined)
@@ -2100,7 +2050,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "_underscore"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('_underscore'))
       visitor['Program:exit']?.(undefined)
@@ -2109,7 +2059,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "$dollar"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('$dollar'))
       visitor['Program:exit']?.(undefined)
@@ -2118,7 +2068,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "camelCase"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('camelCase'))
       visitor['Program:exit']?.(undefined)
@@ -2127,7 +2077,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "PascalCase"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('PascalCase'))
       visitor['Program:exit']?.(undefined)
@@ -2136,7 +2086,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "UPPER_CASE"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('UPPER_CASE'))
       visitor['Program:exit']?.(undefined)
@@ -2145,7 +2095,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "a1"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('a1'))
       visitor['Program:exit']?.(undefined)
@@ -2154,7 +2104,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "_private2"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('_private2'))
       visitor['Program:exit']?.(undefined)
@@ -2163,7 +2113,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report let declaration for variable "$el"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('$el'))
       visitor['Program:exit']?.(undefined)
@@ -2174,7 +2124,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - various variable names for var', () => {
     test('should report var declaration for variable "x"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -2183,7 +2133,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration for variable "result"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('result'))
       visitor['Program:exit']?.(undefined)
@@ -2192,7 +2142,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration for variable "temp"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('temp'))
       visitor['Program:exit']?.(undefined)
@@ -2201,7 +2151,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration for variable "data"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('data'))
       visitor['Program:exit']?.(undefined)
@@ -2210,7 +2160,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report var declaration for variable "item"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createVarDeclaration('item'))
       visitor['Program:exit']?.(undefined)
@@ -2221,7 +2171,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - reassignment prevents report', () => {
     test('should not report x when reassigned via assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor.AssignmentExpression(createAssignment('x'))
@@ -2230,7 +2180,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report y when reassigned via update', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('y'))
       visitor.UpdateExpression(createUpdateExpression('y'))
@@ -2239,7 +2189,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report z when reassigned via assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('z'))
       visitor.AssignmentExpression(createAssignment('z'))
@@ -2248,7 +2198,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should not report w when reassigned via update', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('w'))
       visitor.UpdateExpression(createUpdateExpression('w'))
@@ -2259,7 +2209,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - invalid node types', () => {
     test('should handle null node in VariableDeclaration without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration(null)).not.toThrow()
       visitor['Program:exit']?.(undefined)
@@ -2267,7 +2217,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle undefined node in VariableDeclaration without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration(undefined)).not.toThrow()
       visitor['Program:exit']?.(undefined)
@@ -2275,7 +2225,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle string node in VariableDeclaration without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration('string')).not.toThrow()
       visitor['Program:exit']?.(undefined)
@@ -2283,7 +2233,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle number node in VariableDeclaration without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration(42)).not.toThrow()
       visitor['Program:exit']?.(undefined)
@@ -2291,7 +2241,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle boolean node in VariableDeclaration without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration(true)).not.toThrow()
       visitor['Program:exit']?.(undefined)
@@ -2299,7 +2249,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should handle empty array node in VariableDeclaration without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.VariableDeclaration([])).not.toThrow()
       visitor['Program:exit']?.(undefined)
@@ -2309,25 +2259,25 @@ describe('prefer-const rule', () => {
 
   describe('test.each - invalid node types in AssignmentExpression', () => {
     test('should handle null node in AssignmentExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in AssignmentExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node in AssignmentExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.AssignmentExpression('str')).not.toThrow()
     })
 
     test('should handle number node in AssignmentExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.AssignmentExpression(42)).not.toThrow()
     })
@@ -2335,25 +2285,25 @@ describe('prefer-const rule', () => {
 
   describe('test.each - invalid node types in UpdateExpression', () => {
     test('should handle null node in UpdateExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.UpdateExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in UpdateExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.UpdateExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node in UpdateExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.UpdateExpression('str')).not.toThrow()
     })
 
     test('should handle number node in UpdateExpression without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       expect(() => visitor.UpdateExpression(42)).not.toThrow()
     })
@@ -2361,7 +2311,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - location correctness', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 1, 0))
       visitor['Program:exit']?.(undefined)
@@ -2370,7 +2320,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 1 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 1, 20))
       visitor['Program:exit']?.(undefined)
@@ -2379,7 +2329,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 5 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 5, 0))
       visitor['Program:exit']?.(undefined)
@@ -2388,7 +2338,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 10 column 15', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 10, 15))
       visitor['Program:exit']?.(undefined)
@@ -2397,7 +2347,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 100, 0))
       visitor['Program:exit']?.(undefined)
@@ -2406,7 +2356,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report correct location at line 1 column 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x', 1, 100))
       visitor['Program:exit']?.(undefined)
@@ -2417,11 +2367,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - ignoreDestructuring scenarios', () => {
     test('ignoreDestructuring with source "let { x } = obj;" for x should report 0', () => {
-      const { context, reports } = createMockContext(
-        { ignoreDestructuring: true },
-        '/src/file.ts',
-        'let { x } = obj;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: true }], source: 'let { x } = obj;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('x'))
       visitor['Program:exit']?.(undefined)
@@ -2429,11 +2375,7 @@ describe('prefer-const rule', () => {
     })
 
     test('ignoreDestructuring with source "let [y] = arr;" for y should report 0', () => {
-      const { context, reports } = createMockContext(
-        { ignoreDestructuring: true },
-        '/src/file.ts',
-        'let [y] = arr;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: true }], source: 'let [y] = arr;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('y'))
       visitor['Program:exit']?.(undefined)
@@ -2441,11 +2383,7 @@ describe('prefer-const rule', () => {
     })
 
     test('ignoreDestructuring with source "let z = val;" for z should report 1', () => {
-      const { context, reports } = createMockContext(
-        { ignoreDestructuring: true },
-        '/src/file.ts',
-        'let z = val;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreDestructuring: true }], source: 'let z = val;', filePath: '/src/file.ts' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createLetDeclaration('z'))
       visitor['Program:exit']?.(undefined)
@@ -2455,7 +2393,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - multiple declarations count', () => {
     test('should report 1 for 1 let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 1; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`v${i}`))
@@ -2465,7 +2403,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 2 for 2 let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 2; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`v${i}`))
@@ -2475,7 +2413,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 3 for 3 let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 3; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`v${i}`))
@@ -2485,7 +2423,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 5 for 5 let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 5; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`v${i}`))
@@ -2495,7 +2433,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 10 for 10 let declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       for (let i = 0; i < 10; i++) {
         visitor.VariableDeclaration(createLetDeclaration(`v${i}`))
@@ -2507,7 +2445,7 @@ describe('prefer-const rule', () => {
 
   describe('test.each - destructure names count', () => {
     test('should report 1 for destructuring names ["a"]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a']))
       visitor['Program:exit']?.(undefined)
@@ -2515,7 +2453,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 2 for destructuring names ["a", "b"]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b']))
       visitor['Program:exit']?.(undefined)
@@ -2523,7 +2461,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 3 for destructuring names ["a", "b", "c"]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['a', 'b', 'c']))
       visitor['Program:exit']?.(undefined)
@@ -2531,7 +2469,7 @@ describe('prefer-const rule', () => {
     })
 
     test('should report 4 for destructuring names ["p", "q", "r", "s"]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x = 1;' })
       const visitor = preferConstRule.create(context)
       visitor.VariableDeclaration(createDestructuringDeclaration('let', ['p', 'q', 'r', 's']))
       visitor['Program:exit']?.(undefined)

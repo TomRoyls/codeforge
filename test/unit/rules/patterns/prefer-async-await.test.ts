@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferAsyncAwaitRule } from '../../../../src/rules/patterns/prefer-async-await.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'promise.then(x => x);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createPromiseThenCall(method: string, line = 1, column = 0): unknown {
   return {
@@ -131,7 +95,7 @@ describe('prefer-async-await rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -140,7 +104,7 @@ describe('prefer-async-await rule', () => {
 
   describe('detecting promise methods', () => {
     test('should report .then() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then'))
@@ -150,7 +114,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .catch() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('catch'))
@@ -160,7 +124,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .finally() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('finally'))
@@ -170,7 +134,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report non-promise method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createMethodCall('map'))
@@ -179,7 +143,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report direct function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createNonPromiseCall())
@@ -190,7 +154,7 @@ describe('prefer-async-await rule', () => {
 
   describe('options - allowPromiseMethods', () => {
     test('should allow promise methods when option is true', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then'))
@@ -199,7 +163,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should still report when option is false', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: false }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then'))
@@ -210,21 +174,21 @@ describe('prefer-async-await rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -232,7 +196,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       const node = {
@@ -256,7 +220,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then', 10, 5))
@@ -266,7 +230,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then'))
@@ -305,7 +269,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       const node = {
@@ -319,7 +283,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       const node = {
@@ -337,7 +301,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with non-Identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       const node = {
@@ -364,7 +328,7 @@ describe('prefer-async-await rule', () => {
 
   describe('message quality', () => {
     test('should mention async/await in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then'))
@@ -373,7 +337,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should mention readability in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
 
       visitor.CallExpression(createPromiseThenCall('then'))
@@ -526,44 +490,44 @@ describe('prefer-async-await rule', () => {
     })
 
     test('create should return an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('create should return visitor with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('CallExpression should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(visitor.CallExpression.length).toBe(1)
     })
 
     test('create should return a new visitor each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor1 = preferAsyncAwaitRule.create(context)
       const visitor2 = preferAsyncAwaitRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('visitor should not have other methods besides CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const keys = Object.keys(visitor)
       expect(keys).toEqual(['CallExpression'])
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(() => preferAsyncAwaitRule.create(context)).not.toThrow()
     })
 
     test('visitor CallExpression should not throw when called with no args', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(() => visitor.CallExpression()).not.toThrow()
     })
@@ -592,7 +556,7 @@ describe('prefer-async-await rule', () => {
 
   describe('detecting promise methods - exhaustive', () => {
     test('should report .then() with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -609,7 +573,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .catch() with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -626,7 +590,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .finally() with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -643,7 +607,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .then() regardless of object name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -660,7 +624,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .catch() regardless of object name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -677,7 +641,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report .finally() regardless of object name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -694,140 +658,140 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report .map() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('map'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .filter() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('filter'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .reduce() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('reduce'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .forEach() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('forEach'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .find() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('find'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .some() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('some'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .every() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('every'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .includes() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('includes'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .indexOf() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('indexOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .join() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('join'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .push() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('push'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .pop() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('pop'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .shift() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('shift'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .slice() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('slice'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .splice() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('splice'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .concat() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('concat'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .sort() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('sort'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .flat() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('flat'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .flatMap() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('flatMap'))
       expect(reports.length).toBe(0)
     })
 
     test('should report .then() on chained calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -853,7 +817,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report .then on identifier alone', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -866,7 +830,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report .catch on identifier alone', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -879,7 +843,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report .finally on identifier alone', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -892,28 +856,28 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not report method named "Then" (case-sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('Then'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report method named "Catch" (case-sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('Catch'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report method named "Finally" (case-sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('Finally'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report method named "THEN" (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createMethodCall('THEN'))
       expect(reports.length).toBe(0)
@@ -922,77 +886,77 @@ describe('prefer-async-await rule', () => {
 
   describe('options - allowPromiseMethods exhaustive', () => {
     test('should not report .then() when allowPromiseMethods is true', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .catch() when allowPromiseMethods is true', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('catch'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report .finally() when allowPromiseMethods is true', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('finally'))
       expect(reports.length).toBe(0)
     })
 
     test('should report .then() when allowPromiseMethods is false', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: false }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('should report .catch() when allowPromiseMethods is false', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: false }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('catch'))
       expect(reports.length).toBe(1)
     })
 
     test('should report .finally() when allowPromiseMethods is false', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: false }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('finally'))
       expect(reports.length).toBe(1)
     })
 
     test('should report .then() when options is empty object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('should report .catch() when options is empty object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('catch'))
       expect(reports.length).toBe(1)
     })
 
     test('should report .finally() when options is empty object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('finally'))
       expect(reports.length).toBe(1)
     })
 
     test('should report when options has unrelated properties', () => {
-      const { context, reports } = createMockContext({ someOtherOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOtherOption: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('should not report when allowPromiseMethods is true regardless of other options', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true, other: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true, other: false }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(0)
@@ -1073,7 +1037,7 @@ describe('prefer-async-await rule', () => {
 
   describe('edge cases - exhaustive', () => {
     test('should handle node with numeric callee type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1086,7 +1050,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with string callee type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1099,7 +1063,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1112,7 +1076,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1125,7 +1089,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with callee having null property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1142,7 +1106,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with callee having undefined property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1159,7 +1123,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with empty object as property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1176,27 +1140,27 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(() => visitor.CallExpression(true)).not.toThrow()
       expect(() => visitor.CallExpression(false)).not.toThrow()
     })
 
     test('should handle array node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(() => visitor.CallExpression([])).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       expect(() => visitor.CallExpression({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1213,7 +1177,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with numeric type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 42,
@@ -1230,7 +1194,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with null type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: null,
@@ -1247,7 +1211,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with undefined type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: undefined,
@@ -1264,7 +1228,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle deeply nested node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1297,7 +1261,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with numeric property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1314,7 +1278,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with computed MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1332,7 +1296,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node where callee.object is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1348,7 +1312,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle loc with missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1365,7 +1329,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle loc with missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1382,7 +1346,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle loc with string line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1402,14 +1366,14 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle loc with negative line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', -1, -5))
       expect(reports.length).toBe(1)
     })
 
     test('should handle loc with zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 0, 0))
       expect(reports.length).toBe(1)
@@ -1420,35 +1384,35 @@ describe('prefer-async-await rule', () => {
 
   describe('location reporting', () => {
     test('should report correct start line for .then()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 15, 8))
       expect(reports[0].loc?.start.line).toBe(15)
     })
 
     test('should report correct start column for .then()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 15, 8))
       expect(reports[0].loc?.start.column).toBe(8)
     })
 
     test('should report correct end line for .then()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 15, 8))
       expect(reports[0].loc?.end.line).toBe(15)
     })
 
     test('should report correct end column for .then()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 15, 8))
       expect(reports[0].loc?.end.column).toBe(28)
     })
 
     test('should report correct location for .catch()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('catch', 20, 4))
       expect(reports[0].loc?.start.line).toBe(20)
@@ -1456,7 +1420,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report correct location for .finally()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('finally', 30, 12))
       expect(reports[0].loc?.start.line).toBe(30)
@@ -1464,7 +1428,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report location at start of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -1472,7 +1436,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report location at large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 500, 100))
       expect(reports[0].loc?.start.line).toBe(500)
@@ -1480,7 +1444,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report location when loc has partial start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1500,70 +1464,70 @@ describe('prefer-async-await rule', () => {
 
   describe('message quality - exhaustive', () => {
     test('.then() message should contain method name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message).toContain('.then()')
     })
 
     test('.catch() message should contain method name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('catch'))
       expect(reports[0].message).toContain('.catch()')
     })
 
     test('.finally() message should contain method name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('finally'))
       expect(reports[0].message).toContain('.finally()')
     })
 
     test('message should mention async/await in lowercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message.toLowerCase()).toContain('async/await')
     })
 
     test('message should mention readability', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message.toLowerCase()).toContain('readability')
     })
 
     test('message should mention convert', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message.toLowerCase()).toContain('convert')
     })
 
     test('message should start with Prefer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message).toMatch(/^Prefer/)
     })
 
     test('message should mention Promise chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message.toLowerCase()).toContain('promise chain')
     })
 
     test('message should mention syntax', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message.toLowerCase()).toContain('syntax')
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports[0].message.length).toBeGreaterThan(0)
@@ -1571,8 +1535,8 @@ describe('prefer-async-await rule', () => {
     })
 
     test('different methods should produce different messages', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'promise.then(x => x);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const v1 = preferAsyncAwaitRule.create(ctx1)
       const v2 = preferAsyncAwaitRule.create(ctx2)
       v1.CallExpression(createPromiseThenCall('then'))
@@ -1581,8 +1545,8 @@ describe('prefer-async-await rule', () => {
     })
 
     test('.then() and .finally() messages should differ', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'promise.then(x => x);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const v1 = preferAsyncAwaitRule.create(ctx1)
       const v2 = preferAsyncAwaitRule.create(ctx2)
       v1.CallExpression(createPromiseThenCall('then'))
@@ -1591,8 +1555,8 @@ describe('prefer-async-await rule', () => {
     })
 
     test('.catch() and .finally() messages should differ', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'promise.then(x => x);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const v1 = preferAsyncAwaitRule.create(ctx1)
       const v2 = preferAsyncAwaitRule.create(ctx2)
       v1.CallExpression(createPromiseThenCall('catch'))
@@ -1603,7 +1567,7 @@ describe('prefer-async-await rule', () => {
 
   describe('multiple calls behavior', () => {
     test('should report each .then() call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 1, 0))
       visitor.CallExpression(createPromiseThenCall('then', 2, 0))
@@ -1612,7 +1576,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report each .catch() call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('catch', 1, 0))
       visitor.CallExpression(createPromiseThenCall('catch', 2, 0))
@@ -1620,7 +1584,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report mixed promise method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 1, 0))
       visitor.CallExpression(createPromiseThenCall('catch', 2, 0))
@@ -1629,7 +1593,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should only report promise methods, not other methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 1, 0))
       visitor.CallExpression(createMethodCall('map'))
@@ -1640,7 +1604,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle many consecutive calls without error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       for (let i = 0; i < 100; i++) {
         visitor.CallExpression(createPromiseThenCall('then', i + 1, 0))
@@ -1649,7 +1613,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle alternating valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       for (let i = 0; i < 50; i++) {
         visitor.CallExpression(createPromiseThenCall('then', i * 2 + 1, 0))
@@ -1659,7 +1623,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should track correct location for each call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 5, 10))
       visitor.CallExpression(createPromiseThenCall('catch', 15, 20))
@@ -1704,48 +1668,48 @@ describe('prefer-async-await rule', () => {
 
   describe('createMockContext integration', () => {
     test('createMockContext should return context and reports', () => {
-      const result = createMockContext()
+      const result = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(result).toHaveProperty('context')
       expect(result).toHaveProperty('reports')
     })
 
     test('createMockContext reports should start empty', () => {
-      const { reports } = createMockContext()
+      const { reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(reports).toEqual([])
     })
 
     test('createMockContext should accept custom filePath', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);', filePath: '/custom/path.ts' })
       expect(context.getFilePath()).toBe('/custom/path.ts')
     })
 
     test('createMockContext should accept custom source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'custom source code')
+      const { context } = createMockRuleContext({ source: 'custom source code', filePath: '/src/file.ts' })
       expect(context.getSource()).toBe('custom source code')
     })
 
     test('createMockContext should provide getAST returning null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(context.getAST()).toBeNull()
     })
 
     test('createMockContext should provide getTokens returning empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(context.getTokens()).toEqual([])
     })
 
     test('createMockContext should provide getComments returning empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(context.getComments()).toEqual([])
     })
 
     test('createMockContext should provide workspaceRoot', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(context.workspaceRoot).toBe('/src')
     })
 
     test('createMockContext should provide logger methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(x => x);' })
       expect(typeof context.logger.debug).toBe('function')
       expect(typeof context.logger.info).toBe('function')
       expect(typeof context.logger.warn).toBe('function')
@@ -1753,7 +1717,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('createMockContext report should push to reports array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       context.report({ message: 'test', loc: undefined })
       expect(reports.length).toBe(1)
       expect(reports[0].message).toBe('test')
@@ -1823,7 +1787,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should not trigger report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createNonPromiseCall())
       expect(reports.length).toBe(0)
@@ -1873,25 +1837,21 @@ describe('prefer-async-await rule', () => {
 
   describe('rule behavior with different contexts', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/utils/async.ts')
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);', filePath: '/project/utils/async.ts' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'fetch(url).then(r => r.json())',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'fetch(url).then(r => r.json())', filePath: '/src/file.ts' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
@@ -1899,22 +1859,22 @@ describe('prefer-async-await rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/long/path/to/some/deeply/nested/directory/structure/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);', filePath: longPath })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with special characters in file path', () => {
-      const { context, reports } = createMockContext({}, '/src/[file].ts')
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);', filePath: '/src/[file].ts' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       expect(reports.length).toBe(1)
     })
 
     test('visitor created from one context should be independent of another', () => {
-      const { context: ctx1, reports: r1 } = createMockContext({ allowPromiseMethods: true })
-      const { context: ctx2, reports: r2 } = createMockContext({ allowPromiseMethods: false })
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ options: [{ allowPromiseMethods: false }], source: 'promise.then(x => x);' })
       const v1 = preferAsyncAwaitRule.create(ctx1)
       const v2 = preferAsyncAwaitRule.create(ctx2)
       v1.CallExpression(createPromiseThenCall('then'))
@@ -1926,7 +1886,7 @@ describe('prefer-async-await rule', () => {
 
   describe('type guards and node structure validation', () => {
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1947,7 +1907,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node with Symbol properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1964,7 +1924,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle node without arguments property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1980,7 +1940,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle callee with extra nested MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2001,7 +1961,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should handle ThisExpression as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2020,7 +1980,7 @@ describe('prefer-async-await rule', () => {
 
   describe('allowPromiseMethods with multiple calls', () => {
     test('should suppress all reports when allowPromiseMethods is true', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 1, 0))
       visitor.CallExpression(createPromiseThenCall('catch', 2, 0))
@@ -2029,7 +1989,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('should report all calls when allowPromiseMethods is false', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: false }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then', 1, 0))
       visitor.CallExpression(createPromiseThenCall('catch', 2, 0))
@@ -2038,7 +1998,7 @@ describe('prefer-async-await rule', () => {
     })
 
     test('allowPromiseMethods true should suppress even with null node after', () => {
-      const { context, reports } = createMockContext({ allowPromiseMethods: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPromiseMethods: true }], source: 'promise.then(x => x);' })
       const visitor = preferAsyncAwaitRule.create(context)
       visitor.CallExpression(createPromiseThenCall('then'))
       visitor.CallExpression(null)

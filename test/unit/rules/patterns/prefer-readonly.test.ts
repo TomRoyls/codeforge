@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferReadonlyRule } from '../../../../src/rules/patterns/prefer-readonly.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'let arr = [1, 2, 3];',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVariableDeclarator(
   name: string,
@@ -375,7 +339,7 @@ describe('prefer-readonly rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclarator')
@@ -388,44 +352,44 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should return non-null visitor from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(visitor).not.toBeNull()
       expect(typeof visitor).toBe('object')
     })
 
     test('should have ClassDeclaration visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(typeof visitor['ClassDeclaration']).toBe('function')
     })
 
     test('should have ClassDeclaration:exit visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(typeof visitor['ClassDeclaration:exit']).toBe('function')
     })
 
     test('should have ClassExpression visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(typeof visitor['ClassExpression']).toBe('function')
     })
 
     test('should have ClassExpression:exit visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(typeof visitor['ClassExpression:exit']).toBe('function')
     })
 
     test('should have MethodDefinition visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(typeof visitor['MethodDefinition']).toBe('function')
     })
 
     test('should have MethodDefinition:exit visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
       expect(typeof visitor['MethodDefinition:exit']).toBe('function')
     })
@@ -433,7 +397,7 @@ describe('prefer-readonly rule', () => {
 
   describe('detecting mutable arrays', () => {
     test('should report unmodified let array variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -445,7 +409,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report const array variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression(), 'const'))
@@ -455,7 +419,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -470,7 +434,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by pop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -483,7 +447,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by shift', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -496,7 +460,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by unshift', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -511,7 +475,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by splice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -527,7 +491,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by sort', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -540,7 +504,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by reverse', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -553,7 +517,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by fill', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -568,7 +532,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array modified by copyWithin', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -584,7 +548,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report non-mutating array methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -603,7 +567,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report array modified by direct assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -616,7 +580,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report array with index assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -632,7 +596,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report var-declared array variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression(), 'var'))
@@ -643,7 +607,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report array with TSAsExpression wrapper', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -655,7 +619,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report array with TSTypeAssertion wrapper', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -669,7 +633,7 @@ describe('prefer-readonly rule', () => {
 
   describe('detecting mutable objects', () => {
     test('should report unmodified let object variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -680,7 +644,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report object modified by property assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -696,7 +660,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report object with delete operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -709,7 +673,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report object with update expression on property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -722,7 +686,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report var-declared object variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression(), 'var'))
@@ -732,7 +696,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report object with computed property assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -748,7 +712,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report object with TSAsExpression wrapper', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -760,7 +724,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report object with TSTypeAssertion wrapper', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -774,7 +738,7 @@ describe('prefer-readonly rule', () => {
 
   describe('detecting NewExpression arrays and objects', () => {
     test('should report unmodified new Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createNewArrayExpression()))
@@ -784,7 +748,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report unmodified new Object()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createNewObjectExpression()))
@@ -794,7 +758,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report unmodified new Map()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('map', createNewMapExpression()))
@@ -804,7 +768,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report unmodified new Set()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('set', createNewSetExpression()))
@@ -814,7 +778,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report new Map() modified by set method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('map', createNewMapExpression()))
@@ -827,7 +791,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report new Set() modified by reassignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('set', createNewSetExpression()))
@@ -840,7 +804,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report new Array() with const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -852,7 +816,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report new Object() with const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -866,7 +830,7 @@ describe('prefer-readonly rule', () => {
 
   describe('options - ignoreLocalVariables', () => {
     test('should ignore local variables when option is true', () => {
-      const { context, reports } = createMockContext({ ignoreLocalVariables: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreLocalVariables: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -876,7 +840,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report local variables when option is false', () => {
-      const { context, reports } = createMockContext({ ignoreLocalVariables: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreLocalVariables: false }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -886,7 +850,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report local variables by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -896,7 +860,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should still report class properties when ignoreLocalVariables is true', () => {
-      const { context, reports } = createMockContext({ ignoreLocalVariables: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreLocalVariables: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -907,7 +871,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should ignore local objects when ignoreLocalVariables is true', () => {
-      const { context, reports } = createMockContext({ ignoreLocalVariables: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreLocalVariables: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -917,7 +881,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should ignore local new Map when ignoreLocalVariables is true', () => {
-      const { context, reports } = createMockContext({ ignoreLocalVariables: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreLocalVariables: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('map', createNewMapExpression()))
@@ -929,7 +893,7 @@ describe('prefer-readonly rule', () => {
 
   describe('options - ignorePrivateMembers', () => {
     test('should ignore private members starting with _', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('_privateArr', createArrayExpression()))
@@ -939,7 +903,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should ignore private members starting with #', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('#privateArr', createArrayExpression()))
@@ -949,7 +913,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report private members when option is false', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: false }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('_privateArr', createArrayExpression()))
@@ -959,7 +923,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report public members even with ignorePrivateMembers true', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('publicArr', createArrayExpression()))
@@ -969,7 +933,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should ignore private objects when ignorePrivateMembers is true', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('_privateObj', createObjectExpression()))
@@ -979,7 +943,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report private members by default without option', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('_privateArr', createArrayExpression()))
@@ -991,7 +955,7 @@ describe('prefer-readonly rule', () => {
 
   describe('class properties', () => {
     test('should report unmodified class property with array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('items', createArrayExpression()))
@@ -1002,7 +966,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report unmodified class property with object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('config', createObjectExpression()))
@@ -1012,7 +976,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report modified class property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('items', createArrayExpression()))
@@ -1028,7 +992,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report Property with new Array value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('data', createNewArrayExpression()))
@@ -1038,7 +1002,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report Property with new Map value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('cache', createNewMapExpression()))
@@ -1048,7 +1012,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report Property with new Set value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('unique', createNewSetExpression()))
@@ -1060,7 +1024,7 @@ describe('prefer-readonly rule', () => {
 
   describe('message quality', () => {
     test('should mention variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('myArray', createArrayExpression()))
@@ -1070,7 +1034,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention readonly in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1080,7 +1044,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention immutability in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1090,7 +1054,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention variable name for object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('myObj', createObjectExpression()))
@@ -1100,7 +1064,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention const in variable message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1110,7 +1074,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention as const in variable message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1120,7 +1084,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention property name in class property message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1131,7 +1095,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention readonly modifier in class property message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1142,7 +1106,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should mention constructor in class property message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1153,7 +1117,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should produce string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1165,21 +1129,21 @@ describe('prefer-readonly rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
@@ -1187,7 +1151,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1211,7 +1175,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle node without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1232,7 +1196,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle node with non-Identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1257,7 +1221,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle node without init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1278,7 +1242,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle non-array/object init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('str', createLiteral('hello')))
@@ -1288,7 +1252,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle call expression with non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1299,7 +1263,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle call expression with computed property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1312,7 +1276,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1355,7 +1319,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle nested member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -1374,7 +1338,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle AssignmentExpression with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1388,7 +1352,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle UpdateExpression with non-MemberExpression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1399,7 +1363,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle UnaryExpression with non-delete operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1410,7 +1374,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle Property with non-Identifier key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1430,42 +1394,42 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle AssignmentExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle CallExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle UpdateExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.UpdateExpression(null)).not.toThrow()
     })
 
     test('should handle UnaryExpression with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.UnaryExpression(null)).not.toThrow()
     })
 
     test('should handle Property with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor.Property(null)).not.toThrow()
     })
 
     test('should handle CallExpression with null callee property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1476,7 +1440,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle CallExpression with non-Identifier property on callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1494,7 +1458,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle ClassDeclaration with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor['ClassDeclaration'](null)).not.toThrow()
@@ -1503,7 +1467,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle ClassExpression with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor['ClassExpression'](null)).not.toThrow()
@@ -1512,7 +1476,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle MethodDefinition with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor['MethodDefinition'](null)).not.toThrow()
@@ -1521,7 +1485,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle PropertyDefinition with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       expect(() => visitor['PropertyDefinition'](null)).not.toThrow()
@@ -1530,7 +1494,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle PropertyDefinition with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1547,7 +1511,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle PropertyDefinition with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1564,7 +1528,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle UnaryExpression with void operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1575,7 +1539,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle UpdateExpression with prefix increment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -1591,7 +1555,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle UpdateExpression with decrement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -1604,7 +1568,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle UpdateExpression with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1622,7 +1586,7 @@ describe('prefer-readonly rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1635,7 +1599,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1648,7 +1612,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report default location when no loc present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1665,7 +1629,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1678,7 +1642,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1691,7 +1655,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report Property location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('items', createArrayExpression(), 7, 12))
@@ -1702,7 +1666,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report PropertyDefinition location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1716,7 +1680,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report location for object variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1729,7 +1693,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report location for new Array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1742,7 +1706,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report different locations for multiple variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1758,7 +1722,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report location with column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1770,7 +1734,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle location with partial loc - missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1790,7 +1754,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle location with non-numeric start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       const node = {
@@ -1810,7 +1774,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report correct location for var declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1823,7 +1787,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report location for new Map expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -1838,7 +1802,7 @@ describe('prefer-readonly rule', () => {
 
   describe('multiple reports', () => {
     test('should handle multiple variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr1', createArrayExpression()))
@@ -1850,7 +1814,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle mixed modified and unmodified variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr1', createArrayExpression()))
@@ -1867,7 +1831,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report two unmodified arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a', createArrayExpression()))
@@ -1878,7 +1842,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report two unmodified objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('o1', createObjectExpression()))
@@ -1889,7 +1853,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report mix of arrays objects maps and sets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1902,7 +1866,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report multiple class properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -1914,7 +1878,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report variables and class properties combined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -1926,7 +1890,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report across multiple class declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('ClassA'))
@@ -1943,7 +1907,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report exactly one per unmodified variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x', createArrayExpression()))
@@ -1959,7 +1923,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report zero when all variables are modified', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a', createArrayExpression()))
@@ -1976,7 +1940,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report for each Property with array/object value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('a', createArrayExpression()))
@@ -1988,7 +1952,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report mixed Property and VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.Property(createProperty('prop1', createArrayExpression()))
@@ -2001,7 +1965,7 @@ describe('prefer-readonly rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];', filePath: '/custom/path/file.ts' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2011,7 +1975,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should work with different source code strings', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = {};')
+      const { context, reports } = createMockRuleContext({ source: 'const x = {};', filePath: '/src/file.ts' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -2049,7 +2013,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should work with null AST from getAST', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       expect(context.getAST()).toBeNull()
 
       const visitor = preferReadonlyRule.create(context)
@@ -2060,7 +2024,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should work with empty tokens from getTokens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       expect(context.getTokens()).toEqual([])
 
       const visitor = preferReadonlyRule.create(context)
@@ -2071,7 +2035,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should work with empty comments from getComments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       expect(context.getComments()).toEqual([])
 
       const visitor = preferReadonlyRule.create(context)
@@ -2082,8 +2046,8 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle multiple create calls independently', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
 
       const visitor1 = preferReadonlyRule.create(ctx1)
       const visitor2 = preferReadonlyRule.create(ctx2)
@@ -2101,7 +2065,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle empty program with no declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor['Program:exit']()
@@ -2138,10 +2102,10 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle both ignoreLocalVariables and ignorePrivateMembers true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         ignoreLocalVariables: true,
         ignorePrivateMembers: true,
-      })
+      }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2154,7 +2118,7 @@ describe('prefer-readonly rule', () => {
 
   describe('class properties and declarations', () => {
     test('should report unmodified class PropertyDefinition with array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2184,7 +2148,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report unmodified class PropertyDefinition with object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2213,7 +2177,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report class PropertyDefinition with readonly modifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2241,7 +2205,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report class PropertyDefinition assigned outside constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2284,7 +2248,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report class PropertyDefinition assigned in constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2332,7 +2296,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should ignore private class property with _ prefix when ignorePrivateMembers is true', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2354,7 +2318,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report private class property when ignorePrivateMembers is false', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: false }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration({
@@ -2376,7 +2340,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle ClassExpression with property definition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor['ClassExpression']({
@@ -2398,7 +2362,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle PropertyDefinition with PrivateIdentifier key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -2413,7 +2377,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should ignore PrivateIdentifier property when ignorePrivateMembers is true', () => {
-      const { context, reports } = createMockContext({ ignorePrivateMembers: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignorePrivateMembers: true }], source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -2428,7 +2392,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle PropertyDefinition with non-Identifier non-PrivateIdentifier key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -2445,7 +2409,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle ClassDeclaration without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor['ClassDeclaration']({ type: 'ClassDeclaration' })
@@ -2462,7 +2426,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle ClassExpression without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor['ClassExpression']({ type: 'ClassExpression' })
@@ -2481,7 +2445,7 @@ describe('prefer-readonly rule', () => {
 
   describe('not reporting for non-matching init types', () => {
     test('should not report for string literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('str', createLiteral('hello')))
@@ -2491,7 +2455,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for number literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('num', createLiteral(42)))
@@ -2501,7 +2465,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for boolean literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('bool', createLiteral(true)))
@@ -2511,7 +2475,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for null literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('val', createLiteral(null)))
@@ -2521,7 +2485,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for function expression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('fn', createFunctionExpression()))
@@ -2531,7 +2495,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for arrow function init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('fn', createArrowFunctionExpression()))
@@ -2541,7 +2505,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for binary expression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('sum', createBinaryExpression()))
@@ -2551,7 +2515,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for NewExpression with non-tracked constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('date', createNewExpression('Date')))
@@ -2561,7 +2525,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for identifier init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('ref', createIdentifier('other')))
@@ -2571,7 +2535,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report for call expression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2585,7 +2549,7 @@ describe('prefer-readonly rule', () => {
 
   describe('additional detection scenarios', () => {
     test('should report variable with single-character name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a', createArrayExpression()))
@@ -2596,7 +2560,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report variable with long descriptive name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2609,7 +2573,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report when variable is reassigned via simple identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2622,7 +2586,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report when only delete on unrelated variable happens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2638,7 +2602,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report when update on unrelated variable happens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2651,7 +2615,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report object even when push called on different array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -2664,7 +2628,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle array with elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2679,7 +2643,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle object with properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2694,7 +2658,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not double-report same variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2705,7 +2669,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle new Array with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2721,7 +2685,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle new Map with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2737,7 +2701,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle new Set with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2753,7 +2717,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle deeply nested member expression mutation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))
@@ -2775,7 +2739,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should not report when assignment targets member of different object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2791,7 +2755,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should report for new Object with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2807,7 +2771,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle TSAsExpression wrapping new Map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2819,7 +2783,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle TSTypeAssertion wrapping new Set', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2831,7 +2795,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle TSAsExpression wrapping non-tracked type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2843,7 +2807,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle TSTypeAssertion wrapping non-tracked type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2855,7 +2819,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle NewExpression with MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2875,7 +2839,7 @@ describe('prefer-readonly rule', () => {
     })
 
     test('should handle class property with new Array value in class expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor['ClassExpression']({
@@ -2904,7 +2868,7 @@ describe('prefer-readonly rule', () => {
       'join',
       'concat',
     ] as const)('should report array when only %s is called (non-mutating)', (method) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -2928,7 +2892,7 @@ describe('prefer-readonly rule', () => {
       { name: 'new Map()', create: createNewMapExpression },
       { name: 'new Set()', create: createNewSetExpression },
     ] as const)('should report unmodified let variable with $name init', ({ create }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('data', create()))
@@ -2949,7 +2913,7 @@ describe('prefer-readonly rule', () => {
       { name: 'arrow function', value: createArrowFunctionExpression() },
       { name: 'new Date()', value: createNewExpression('Date') },
     ] as const)('should NOT report for $name init', ({ value }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('val', value))
@@ -2963,7 +2927,7 @@ describe('prefer-readonly rule', () => {
     test.each(['_private', '#private', '__dunder', '$dollar'] as const)(
       'should report variable named %s by default (no ignorePrivateMembers)',
       (name) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
         const visitor = preferReadonlyRule.create(context)
 
         visitor.VariableDeclarator(createVariableDeclarator(name, createArrayExpression()))
@@ -2980,7 +2944,7 @@ describe('prefer-readonly rule', () => {
       { kind: 'var', expected: 1 },
       { kind: 'const', expected: 0 },
     ] as const)('should report $kind array as $expected reports', ({ kind, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression(), kind))
@@ -3002,7 +2966,7 @@ describe('prefer-readonly rule', () => {
       'fill',
       'copyWithin',
     ] as const)('should not report array when %s is called', (method) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arr', createArrayExpression()))
@@ -3022,7 +2986,7 @@ describe('prefer-readonly rule', () => {
       { operator: '--', prefix: false },
       { operator: '--', prefix: true },
     ] as const)('should not report object when %s%s is used on member', ({ operator, prefix }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let arr = [1, 2, 3];' })
       const visitor = preferReadonlyRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('obj', createObjectExpression()))

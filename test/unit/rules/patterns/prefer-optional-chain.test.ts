@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferOptionalChainRule } from '../../../../src/rules/patterns/prefer-optional-chain.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'obj && obj.prop',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createLogicalExpression(
   operator: string,
@@ -204,7 +168,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(visitor).toHaveProperty('LogicalExpression')
@@ -212,7 +176,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -220,22 +184,22 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should return visitor where LogicalExpression is a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(typeof visitor.LogicalExpression).toBe('function')
     })
 
     test('should return visitor where BinaryExpression is a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should create independent visitors per call', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'obj && obj.prop' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor1 = preferOptionalChainRule.create(ctx1)
       const visitor2 = preferOptionalChainRule.create(ctx2)
 
@@ -243,13 +207,13 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should accept context without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
 
       expect(() => preferOptionalChainRule.create(context)).not.toThrow()
     })
 
     test('should create visitor with exactly 2 methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const keys = Object.keys(visitor)
@@ -259,7 +223,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should allow calling visitor methods without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => {
@@ -276,7 +240,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('detecting obj && obj.prop pattern in LogicalExpression', () => {
     test('should report obj && obj.prop pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -290,7 +254,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report data && data.value pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const data = createIdentifier('data')
@@ -304,7 +268,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report foo && foo.bar pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const foo = createIdentifier('foo')
@@ -317,7 +281,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report config && config.setting pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const config = createIdentifier('config')
@@ -330,7 +294,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report state && state.isLoading pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const state = createIdentifier('state')
@@ -343,7 +307,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report item && item.name pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const item = createIdentifier('item')
@@ -356,7 +320,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report node && node.children pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = createIdentifier('node')
@@ -369,7 +333,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report user && user.email pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const user = createIdentifier('user')
@@ -382,7 +346,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report null != null && obj.prop pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -399,7 +363,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report obj !== null && obj.prop pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -415,7 +379,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report obj !== undefined && obj.prop pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -431,7 +395,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report obj != null && obj.prop via != operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('myObj')
@@ -447,7 +411,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report null != null check with raw undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('x')
@@ -463,7 +427,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report null !== null check with raw null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('target')
@@ -479,7 +443,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report with single letter identifier a && a.b', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const a = createIdentifier('a')
@@ -492,7 +456,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report with underscore identifier _data && _data.val', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const data = createIdentifier('_data')
@@ -505,7 +469,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report with dollar identifier $el && $el.style', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const el = createIdentifier('$el')
@@ -518,7 +482,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report camelCase identifier myObject && myObject.prop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const myObject = createIdentifier('myObject')
@@ -531,7 +495,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report PascalCase identifier Component && Component.render', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const component = createIdentifier('Component')
@@ -544,7 +508,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report UPPER_CASE identifier CONST && CONST.value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const cst = createIdentifier('CONST')
@@ -557,7 +521,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report identifier with numbers item2 && item2.name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const item2 = createIdentifier('item2')
@@ -570,7 +534,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report response && response.data pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const response = createIdentifier('response')
@@ -583,7 +547,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report window && window.document pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const window = createIdentifier('window')
@@ -596,7 +560,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report error && error.message pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const error = createIdentifier('error')
@@ -609,7 +573,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report options && options.enabled pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const options = createIdentifier('options')
@@ -622,7 +586,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report props && props.children pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const props = createIdentifier('props')
@@ -635,7 +599,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report ctx && ctx.request pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const ctx = createIdentifier('ctx')
@@ -648,7 +612,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report event && event.target pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const event = createIdentifier('event')
@@ -661,7 +625,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report result && result.success pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const result = createIdentifier('result')
@@ -674,7 +638,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report self && self.name pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const self = createIdentifier('self')
@@ -687,7 +651,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report handler && handler.fn pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const handler = createIdentifier('handler')
@@ -702,7 +666,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('not reporting invalid patterns in LogicalExpression', () => {
     test('should not report different identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj1 = createIdentifier('obj1')
@@ -716,7 +680,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report non-member expression on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -728,7 +692,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report || operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -741,7 +705,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report ?? operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -754,7 +718,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when right object already uses optional chaining', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -768,7 +732,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report different identifiers in null check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj1 = createIdentifier('obj1')
@@ -785,7 +749,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report non-null check on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -799,7 +763,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report equality check (==)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -815,7 +779,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report strict equality check (===)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -831,7 +795,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report computed property access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -844,7 +808,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with non-null literal on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -860,7 +824,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report non-Identifier object in member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -874,7 +838,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report non-Identifier property in member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -887,7 +851,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report member expression with optional=true on object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = { type: 'Identifier', name: 'obj', optional: true } as unknown
@@ -900,7 +864,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when left is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const call = { type: 'CallExpression', callee: createIdentifier('fn') }
@@ -913,7 +877,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when both identifiers differ by case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('Obj')
@@ -927,7 +891,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report for < operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -940,7 +904,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report for > operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -953,7 +917,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with literal number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -969,7 +933,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with literal string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -985,7 +949,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with literal boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1001,7 +965,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with non-Identifier rightObject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1018,7 +982,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with non-string rightIdentifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1035,7 +999,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when right side is a plain Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1047,7 +1011,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when right side is a Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1059,7 +1023,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when right side is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1071,7 +1035,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when right side is a ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1088,7 +1052,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with identifier check target != something', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('target')
@@ -1104,7 +1068,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report null check with null on left side of comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1120,7 +1084,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report empty string operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1135,7 +1099,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('detecting obj && obj.prop pattern in BinaryExpression', () => {
     test('should report obj && obj.prop pattern in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1149,7 +1113,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report data && data.value pattern in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const data = createIdentifier('data')
@@ -1162,7 +1126,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report obj != null && obj.prop pattern in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1178,7 +1142,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report obj !== null && obj.prop pattern in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1194,7 +1158,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report obj !== undefined && obj.prop pattern in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1210,7 +1174,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report x && x.y in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const x = createIdentifier('x')
@@ -1223,7 +1187,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report different identifiers in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj1 = createIdentifier('obj1')
@@ -1237,7 +1201,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report non-&& operators in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1252,7 +1216,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report when right object already uses optional chaining in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1266,7 +1230,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report different identifiers in null check in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj1 = createIdentifier('obj1')
@@ -1283,7 +1247,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report computed member expression in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1296,7 +1260,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report config && config.setting in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const config = createIdentifier('config')
@@ -1309,7 +1273,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report * operator in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1322,7 +1286,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report - operator in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1335,7 +1299,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report / operator in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1348,7 +1312,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report <= operator in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1361,7 +1325,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report >= operator in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1374,7 +1338,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report % operator in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1389,21 +1353,21 @@ describe('prefer-optional-chain rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully in LogicalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.LogicalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully in LogicalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.LogicalExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully in LogicalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.LogicalExpression('string')).not.toThrow()
@@ -1411,21 +1375,21 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle null node gracefully in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
@@ -1433,7 +1397,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1452,7 +1416,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle node without left property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = {
@@ -1467,7 +1431,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle node without right property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = {
@@ -1482,7 +1446,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle MemberExpression without object property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1495,7 +1459,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle MemberExpression without property property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1507,7 +1471,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1520,7 +1484,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle computed property access (should not report)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1533,7 +1497,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle null check with non-Literal right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1549,7 +1513,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle null check with Literal that is not null/undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1565,7 +1529,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle null check with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1585,7 +1549,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle null check with non-Identifier left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1602,7 +1566,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle Identifier with non-string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = { type: 'Identifier', name: 123 as unknown as string }
@@ -1615,7 +1579,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle nodesMatchIdentifier with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1628,7 +1592,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle nodesMatchIdentifier with null rightObject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1641,7 +1605,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle BinaryExpression with null left in nullCheck', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1662,7 +1626,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle boolean node in LogicalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.LogicalExpression(true)).not.toThrow()
@@ -1670,7 +1634,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle array node in LogicalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       expect(() => visitor.LogicalExpression([])).not.toThrow()
@@ -1678,7 +1642,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle node with empty type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = {
@@ -1694,7 +1658,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle node with numeric 0 as left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = {
@@ -1712,7 +1676,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for line 10, column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 10, 5)
@@ -1726,7 +1690,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report correct location for line 1, column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 1, 0)
@@ -1740,7 +1704,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report correct location for large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 500, 20)
@@ -1754,7 +1718,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report correct location in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 5, 10)
@@ -1768,7 +1732,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1792,7 +1756,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1816,7 +1780,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1838,7 +1802,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1860,7 +1824,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1880,7 +1844,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report location end position from extractLocation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 3, 8)
@@ -1895,7 +1859,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should default to line 1 when no loc on node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1916,7 +1880,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report location for null check pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 7, 3)
@@ -1933,7 +1897,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report location for BinaryExpression null check pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj', 12, 4)
@@ -1950,7 +1914,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1974,7 +1938,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle loc with null end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2000,7 +1964,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('message quality', () => {
     test('should mention optional chaining in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2013,7 +1977,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should mention chaining in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2026,7 +1990,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should mention ?. in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2039,7 +2003,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should mention && in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2052,7 +2016,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should have non-empty message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2066,8 +2030,8 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should have consistent message for LogicalExpression and BinaryExpression', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'obj && obj.prop' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'obj && obj.prop' })
 
       const visitor1 = preferOptionalChainRule.create(ctx1)
       const visitor2 = preferOptionalChainRule.create(ctx2)
@@ -2083,8 +2047,8 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should have consistent message for simple and null-check patterns', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'obj && obj.prop' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'obj && obj.prop' })
 
       const visitor1 = preferOptionalChainRule.create(ctx1)
       const visitor2 = preferOptionalChainRule.create(ctx2)
@@ -2103,7 +2067,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should mention prefer in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2116,7 +2080,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should have message that starts with Prefer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2129,7 +2093,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2144,7 +2108,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('multiple reports', () => {
     test('should report separately for each matching LogicalExpression call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2158,7 +2122,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report separately for each matching BinaryExpression call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2172,7 +2136,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for mixed LogicalExpression and BinaryExpression calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2186,7 +2150,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for different variable names across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj1 = createIdentifier('obj1')
@@ -2203,7 +2167,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for three consecutive calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const a = createIdentifier('a')
@@ -2218,7 +2182,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report for mixed valid and invalid patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2235,7 +2199,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report null check pattern and simple pattern separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2253,8 +2217,8 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should track reports independently per context', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'obj && obj.prop' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'obj && obj.prop' })
 
       const visitor1 = preferOptionalChainRule.create(ctx1)
       const visitor2 = preferOptionalChainRule.create(ctx2)
@@ -2272,7 +2236,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report five consecutive valid patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2286,7 +2250,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report only valid patterns among mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2305,7 +2269,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop', filePath: '/src/components/App.tsx' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2318,7 +2282,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'foo && foo.bar')
+      const { context, reports } = createMockRuleContext({ source: 'foo && foo.bar', filePath: '/src/file.ts' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('foo')
@@ -2331,7 +2295,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should work with empty options object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2344,7 +2308,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should work with custom options', () => {
-      const { context, reports } = createMockContext({ checkNullish: true })
+      const { context, reports } = createMockRuleContext({ options: [{ checkNullish: true }], source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2412,7 +2376,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle deep workspace root path', () => {
-      const { context, reports } = createMockContext({}, '/deep/nested/path/to/project/src/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop', filePath: '/deep/nested/path/to/project/src/file.ts' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('x')
@@ -2425,7 +2389,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle empty source string', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2438,7 +2402,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle BinaryExpression visitor with non-BinaryExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = {
@@ -2454,7 +2418,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should handle LogicalExpression visitor with non-LogicalExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const node = {
@@ -2497,7 +2461,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(matchingPairs)(
       'should report %s && %s.%s pattern in LogicalExpression',
       (objName: string, propName: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const obj = createIdentifier(objName)
@@ -2514,7 +2478,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(matchingPairs)(
       'should report %s && %s.%s pattern in BinaryExpression',
       (objName: string, propName: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const obj = createIdentifier(objName)
@@ -2556,7 +2520,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(nonMatchingOperators)(
       'should not report for %s operator in LogicalExpression',
       (op: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const obj = createIdentifier('obj')
@@ -2572,7 +2536,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(nonMatchingOperators)(
       'should not report for %s operator in BinaryExpression',
       (op: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const obj = createIdentifier('obj')
@@ -2588,7 +2552,7 @@ describe('prefer-optional-chain rule', () => {
 
   describe('parameterized null check operator tests', () => {
     test('should report for != null check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2604,7 +2568,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for !== null check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2620,7 +2584,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for != with raw undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2636,7 +2600,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for !== with raw undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2652,7 +2616,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should report for != null check in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2668,7 +2632,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report for == null check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2684,7 +2648,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report for === null check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2700,7 +2664,7 @@ describe('prefer-optional-chain rule', () => {
     })
 
     test('should not report for > null check operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
       const visitor = preferOptionalChainRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2731,7 +2695,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(edgeInputs)(
       'should handle %s node in LogicalExpression without throwing',
       (input: unknown, _label: string) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         expect(() => visitor.LogicalExpression(input)).not.toThrow()
@@ -2741,7 +2705,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(edgeInputs)(
       'should handle %s node in BinaryExpression without throwing',
       (input: unknown, _label: string) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         expect(() => visitor.BinaryExpression(input)).not.toThrow()
@@ -2766,7 +2730,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(locations)(
       'should report correct location at line %d, column %d',
       (line: number, column: number) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const obj = createIdentifier('obj', line, column)
@@ -2798,7 +2762,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(mismatchedPairs)(
       'should not report when identifiers differ: %s vs %s',
       (leftName: string, rightName: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const left = createIdentifier(leftName)
@@ -2828,7 +2792,7 @@ describe('prefer-optional-chain rule', () => {
     test.each(mismatchedNullCheckPairs)(
       'should not report null check with mismatched identifiers: %s != null && %s.prop',
       (leftName: string, rightName: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj && obj.prop' })
         const visitor = preferOptionalChainRule.create(context)
 
         const left = createIdentifier(leftName)

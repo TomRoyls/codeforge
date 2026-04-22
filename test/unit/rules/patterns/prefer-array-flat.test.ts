@@ -1,45 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { preferArrayFlatRule } from '../../../../src/rules/patterns/prefer-array-flat.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'array.reduce((acc, val) => acc.concat(val), [])',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -304,7 +264,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -318,11 +278,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('detecting reduce with concat', () => {
     test('should report reduce with concat using arrow function expression body', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'array.reduce((acc, val) => acc.concat(val), [])',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])', filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -344,11 +300,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report reduce with concat using arrow function block body', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'array.reduce((acc, val) => { return acc.concat(val); }, [])',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => { return acc.concat(val); }, [])', filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -372,7 +324,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report reduce with concat using function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -395,7 +347,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should include array name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('nestedArrays'), 'reduce')
@@ -419,11 +371,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('detecting reduce with spread concat', () => {
     test('should report reduce with spread pattern [...acc, ...val]', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'array.reduce((acc, val) => [...acc, ...val], [])',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => [...acc, ...val], [])', filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -445,7 +393,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report reduce with multiple spreads', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -467,7 +415,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report spread with less than 2 spreads', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -494,7 +442,7 @@ describe('prefer-array-flat rule', () => {
   describe('fix generation', () => {
     test('should generate fix for reduce with concat', () => {
       const source = 'array.reduce((acc, val) => acc.concat(val), [])'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const arrayIdentifier = createIdentifier('array')
@@ -521,7 +469,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should use "array" as fallback name when callee is not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getArray'), [])
@@ -547,7 +495,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('nested for loops', () => {
     test('should report nested for loops with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const innerPushCall = createCallExpression(
@@ -568,7 +516,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report nested for-of loops with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const innerPushCall = createCallExpression(
@@ -599,7 +547,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report mixed nested for loops with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const innerPushCall = createCallExpression(
@@ -629,7 +577,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('valid alternative patterns - reduce', () => {
     test('should not report reduce without empty array initial value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -648,7 +596,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce without concat in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -667,7 +615,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce without initial value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -686,7 +634,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with non-arrow function callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -701,7 +649,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce without return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -728,7 +676,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('valid alternative patterns - for loops', () => {
     test('should not report single for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const pushCall = createCallExpression(
@@ -744,7 +692,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report nested for loops without push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const logCall = createCallExpression(
@@ -763,7 +711,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report for loop with nested non-for-loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const pushCall = createCallExpression(
@@ -792,7 +740,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
@@ -801,7 +749,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
@@ -810,7 +758,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -819,7 +767,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -841,7 +789,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const node = createCallExpression(createIdentifier('fn'), [createIdentifier('arg')])
@@ -852,7 +800,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle non-reduce method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'map')
@@ -864,7 +812,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -884,7 +832,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle empty array literal with elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -904,7 +852,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should treat undefined elements as empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -933,7 +881,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('message quality', () => {
     test('should mention flat in reduce message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('array'), 'reduce')
@@ -952,7 +900,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should mention flat in nested for loop message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
 
       const innerPushCall = createCallExpression(
@@ -1013,39 +961,39 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('visitor structure', () => {
     test('visitor CallExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('visitor ForStatement should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       expect(typeof visitor.ForStatement).toBe('function')
     })
 
     test('visitor ForOfStatement should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       expect(typeof visitor.ForOfStatement).toBe('function')
     })
 
     test('visitor should not have ForInStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       expect(visitor).not.toHaveProperty('ForInStatement')
     })
 
     test('should create fresh visitor for each context', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor1 = preferArrayFlatRule.create(ctx1)
       const visitor2 = preferArrayFlatRule.create(ctx2)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('visitor should have exactly 3 methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const methods = Object.keys(visitor)
       expect(methods.length).toBe(3)
@@ -1057,7 +1005,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('reduce with concat - array names', () => {
     test('should report for array named "data"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('data')
       visitor.CallExpression(node)
@@ -1066,7 +1014,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "items"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('items')
       visitor.CallExpression(node)
@@ -1075,7 +1023,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "results"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('results')
       visitor.CallExpression(node)
@@ -1084,7 +1032,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "arr"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr')
       visitor.CallExpression(node)
@@ -1093,7 +1041,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "lists"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('lists')
       visitor.CallExpression(node)
@@ -1102,7 +1050,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "nested"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('nested')
       visitor.CallExpression(node)
@@ -1111,7 +1059,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "matrix"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('matrix')
       visitor.CallExpression(node)
@@ -1120,7 +1068,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for array named "rows"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('rows')
       visitor.CallExpression(node)
@@ -1129,7 +1077,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for single letter array name "x"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('x')
       visitor.CallExpression(node)
@@ -1138,7 +1086,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report for underscored array name "_data"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('_data')
       visitor.CallExpression(node)
@@ -1152,7 +1100,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('reduce with concat - block body variants', () => {
     test('should report arrow block body with return acc.concat(val)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -1173,7 +1121,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report function expression body with return acc.concat(val)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -1193,7 +1141,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report function expression returning [...acc, ...val]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -1211,7 +1159,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report arrow block body returning [...acc, ...val]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -1230,7 +1178,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report block body without return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -1256,7 +1204,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('spread pattern variants', () => {
     test('should report spread with two elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceSpreadNode('array', 'a', 'b')
       visitor.CallExpression(node)
@@ -1264,7 +1212,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report spread with three spread elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -1283,7 +1231,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report spread with four spread elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -1308,7 +1256,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report spread with five spread elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -1335,7 +1283,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report spread with only one spread element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([createSpreadElement(createIdentifier('acc'))])
@@ -1350,7 +1298,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report spread with zero elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const emptyArray = createArrayLiteral([])
@@ -1365,7 +1313,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report array with mix of spread and non-spread elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const mixedArray = createArrayLiteral([
@@ -1390,7 +1338,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('non-reduce CallExpressions', () => {
     test('should not report map call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'map')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1399,7 +1347,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report filter call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'filter')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1408,7 +1356,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report forEach call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'forEach')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1417,7 +1365,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report flatMap call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'flatMap')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1426,7 +1374,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report flat call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'flat')
       const node = createCallExpression(callee, [])
@@ -1435,7 +1383,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report find call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'find')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1444,7 +1392,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report some call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'some')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1453,7 +1401,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report every call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'every')
       const node = createCallExpression(callee, [createIdentifier('fn')])
@@ -1462,7 +1410,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report join call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'join')
       const node = createCallExpression(callee, [createLiteral(',')])
@@ -1471,7 +1419,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report standalone function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = createCallExpression(createIdentifier('myFunc'), [createIdentifier('arg')])
       visitor.CallExpression(node)
@@ -1479,7 +1427,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report constructor call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('Array'), 'from')
       const node = createCallExpression(callee, [createIdentifier('iterable')])
@@ -1488,7 +1436,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report sort call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'sort')
       const node = createCallExpression(callee, [createIdentifier('compareFn')])
@@ -1497,7 +1445,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report slice call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'slice')
       const node = createCallExpression(callee, [createLiteral(0), createLiteral(5)])
@@ -1511,7 +1459,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('reduce without flattening', () => {
     test('should not report reduce with sum pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1528,7 +1476,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with object initial value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1545,7 +1493,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with string initial value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1561,7 +1509,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with null initial value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1577,7 +1525,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with push in body instead of concat', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1593,7 +1541,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with map in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1609,7 +1557,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with filter in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1625,7 +1573,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce callback that is plain identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const node = createCallExpression(callee, [
@@ -1637,7 +1585,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with only callback, no initial value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -1653,7 +1601,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report reduce with empty block body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([])
@@ -1673,7 +1621,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('nested for loop combinations', () => {
     test('should report ForStatement containing ForStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForStatement')
       visitor.ForStatement(node)
@@ -1681,7 +1629,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForStatement containing ForOfStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForOfStatement')
       visitor.ForStatement(node)
@@ -1689,7 +1637,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForStatement containing ForInStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForInStatement')
       visitor.ForStatement(node)
@@ -1697,7 +1645,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForOfStatement containing ForStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForOfStatement', 'ForStatement')
       visitor.ForOfStatement(node)
@@ -1705,7 +1653,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForOfStatement containing ForOfStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForOfStatement', 'ForOfStatement')
       visitor.ForOfStatement(node)
@@ -1713,7 +1661,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForOfStatement containing ForInStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForOfStatement', 'ForInStatement')
       visitor.ForOfStatement(node)
@@ -1721,7 +1669,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report nested for loops with different push target names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForStatement', 'output', 'elem')
       visitor.ForStatement(node)
@@ -1729,7 +1677,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report nested for loops with push of literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForStatement', 'result', 'val')
       visitor.ForStatement(node)
@@ -1742,7 +1690,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('for loops - non-nesting patterns', () => {
     test('should not report single ForStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -1756,7 +1704,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report single ForOfStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -1772,7 +1720,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report nested for loops without push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const consoleLog = createCallExpression(
         createMemberExpression(createIdentifier('console'), 'log'),
@@ -1787,7 +1735,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report nested for-of loops without push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const consoleLog = createCallExpression(
         createMemberExpression(createIdentifier('console'), 'log'),
@@ -1814,7 +1762,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report ForStatement containing if statement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -1831,7 +1779,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report ForOfStatement containing while statement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -1852,7 +1800,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report empty ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const forLoop = createForStatement(createBlockStatement([]))
       visitor.ForStatement(forLoop)
@@ -1860,7 +1808,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report empty ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const forLoop = createForOfStatement(
         createIdentifier('i'),
@@ -1872,7 +1820,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report for loop with only expression statement (non-push)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const assignExpr = {
         type: 'AssignmentExpression',
@@ -1892,7 +1840,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('location reporting', () => {
     test('should report location for reduce+concat at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr', 'acc', 'val', 1, 0)
       visitor.CallExpression(node)
@@ -1901,7 +1849,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report location for reduce+concat at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr', 'acc', 'val', 5, 10)
       visitor.CallExpression(node)
@@ -1910,7 +1858,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report location for reduce+concat at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr', 'acc', 'val', 100, 50)
       visitor.CallExpression(node)
@@ -1919,7 +1867,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report location for nested for at line 3 column 8', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForStatement')
       visitor.ForStatement(node)
@@ -1928,7 +1876,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report location for nested for-of at custom location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const innerPushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -1960,7 +1908,7 @@ describe('prefer-array-flat rule', () => {
   describe('fix generation - additional', () => {
     test('should generate fix with correct array name', () => {
       const source = 'myArray.reduce((acc, val) => acc.concat(val), [])'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const arrayId = createIdentifier('myArray')
@@ -1983,7 +1931,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not generate fix when node has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr')
       visitor.CallExpression(node)
@@ -1993,7 +1941,7 @@ describe('prefer-array-flat rule', () => {
 
     test('should generate fix for spread pattern', () => {
       const source = 'arr.reduce((a, b) => [...a, ...b], [])'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const arrayId = createIdentifier('arr')
@@ -2020,7 +1968,7 @@ describe('prefer-array-flat rule', () => {
 
     test('should generate fix using "array" when callee object is CallExpression', () => {
       const source = 'getArray().reduce((acc, val) => acc.concat(val), [])'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getArray'), [])
@@ -2049,7 +1997,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('malformed node handling', () => {
     test('should handle node with missing callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = { type: 'CallExpression', arguments: [] }
       visitor.CallExpression(node)
@@ -2057,7 +2005,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle node with missing arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const node = { type: 'CallExpression', callee }
@@ -2066,7 +2014,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle node with empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const node = createCallExpression(callee, [])
@@ -2075,7 +2023,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle ForStatement with missing body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = {
         type: 'ForStatement',
@@ -2086,7 +2034,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle ForOfStatement with missing body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = {
         type: 'ForOfStatement',
@@ -2097,7 +2045,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle ForStatement with non-BlockStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = createForStatement(createIdentifier('emptyStmt'))
       visitor.ForStatement(node)
@@ -2105,42 +2053,42 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle node with null type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression({ type: null })
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with numeric type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression({ type: 42 })
       expect(reports.length).toBe(0)
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       expect(() => visitor.CallExpression(true)).not.toThrow()
       expect(() => visitor.CallExpression(false)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression({})
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with type but no other properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression({ type: 'CallExpression' })
       expect(reports.length).toBe(0)
     })
 
     test('should handle arrow function callback with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = { type: 'ArrowFunctionExpression', expression: true, body: null, params: [] }
@@ -2150,7 +2098,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle function expression callback with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = { type: 'FunctionExpression', body: null, params: [] }
@@ -2165,7 +2113,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('multiple visitor calls', () => {
     test('should report each reduce+concat separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node: node1 } = buildReduceConcatNode('arr1')
       const { node: node2 } = buildReduceConcatNode('arr2')
@@ -2175,7 +2123,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report three reduce+concat separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node: node1 } = buildReduceConcatNode('arr1')
       const { node: node2 } = buildReduceConcatNode('arr2')
@@ -2187,7 +2135,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report reduce+concat and reduce+spread separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node: concatNode } = buildReduceConcatNode('arr1')
       const { node: spreadNode } = buildReduceSpreadNode('arr2')
@@ -2197,7 +2145,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report both reduce and for loop patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node: reduceNode } = buildReduceConcatNode('arr')
       const forNode = buildNestedForLoopNode('ForStatement', 'ForStatement')
@@ -2207,7 +2155,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report mix of valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node: validNode } = buildReduceConcatNode('arr')
       const callee = createMemberExpression(createIdentifier('arr'), 'map')
@@ -2218,7 +2166,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report any when all are valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee1 = createMemberExpression(createIdentifier('arr'), 'map')
       const callee2 = createMemberExpression(createIdentifier('arr'), 'filter')
@@ -2228,7 +2176,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report nested for loops found via ForStatement and ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const forNode = buildNestedForLoopNode('ForStatement', 'ForStatement')
       const forOfNode = buildNestedForLoopNode('ForOfStatement', 'ForOfStatement')
@@ -2238,7 +2186,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle many sequential calls without issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       for (let i = 0; i < 10; i++) {
         const { node } = buildReduceConcatNode(`arr${i}`)
@@ -2253,7 +2201,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/flatten.ts')
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])', filePath: '/src/utils/flatten.ts' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2261,7 +2209,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should work with test file paths', () => {
-      const { context, reports } = createMockContext({}, '/test/flatten.test.ts')
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])', filePath: '/test/flatten.test.ts' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2269,7 +2217,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should work with JS file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/flatten.js')
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])', filePath: '/src/flatten.js' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2277,7 +2225,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2285,7 +2233,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 'error' })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, level: 'error' }], source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2294,7 +2242,7 @@ describe('prefer-array-flat rule', () => {
 
     test('should work with different source code', () => {
       const source = 'data.reduce((memo, item) => memo.concat(item), [])'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('data', 'memo', 'item')
       visitor.CallExpression(node)
@@ -2307,7 +2255,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('for-in nested loop detection', () => {
     test('should report ForStatement containing ForInStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForStatement', 'ForInStatement')
       visitor.ForStatement(node)
@@ -2315,7 +2263,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForOfStatement containing ForInStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForOfStatement', 'ForInStatement')
       visitor.ForOfStatement(node)
@@ -2323,7 +2271,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report ForInStatement (as inner) inside ForStatement with push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const innerPushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -2348,7 +2296,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('message content verification', () => {
     test('reduce+concat message should contain "Prefer"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2356,7 +2304,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('reduce+concat message should contain "flat()"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2364,7 +2312,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('reduce+concat message should contain "reduce"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2372,7 +2320,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('reduce+concat message should contain "concat"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       visitor.CallExpression(node)
@@ -2380,7 +2328,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('reduce+spread message should contain "flat()"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceSpreadNode()
       visitor.CallExpression(node)
@@ -2388,7 +2336,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('nested for loop message should contain "Prefer"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode()
       visitor.ForStatement(node)
@@ -2396,7 +2344,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('nested for loop message should contain "nested for loops"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode()
       visitor.ForStatement(node)
@@ -2404,7 +2352,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('nested for-of loop message should mention flat()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const node = buildNestedForLoopNode('ForOfStatement', 'ForOfStatement')
       visitor.ForOfStatement(node)
@@ -2412,7 +2360,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('reduce+concat should include specific array name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('mySpecialArray')
       visitor.CallExpression(node)
@@ -2425,7 +2373,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('complex callee patterns', () => {
     test('should report when array is a member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const objProp = createMemberExpression(createIdentifier('obj'), 'data')
       const callee = createMemberExpression(objProp, 'reduce')
@@ -2442,7 +2390,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report when array is a function call result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const fnCall = createCallExpression(createIdentifier('getData'), [])
       const callee = createMemberExpression(fnCall, 'reduce')
@@ -2461,7 +2409,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report when array is a computed member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const computedMember = {
         type: 'MemberExpression',
@@ -2483,7 +2431,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report chained calls: getNested().items.reduce(...)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const innerCall = createCallExpression(createIdentifier('getNested'), [])
       const itemsAccess = createMemberExpression(innerCall, 'items')
@@ -2501,7 +2449,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when callee property is Literal (not Identifier)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = {
         type: 'MemberExpression',
@@ -2526,35 +2474,35 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('non-CallExpression nodes in CallExpression visitor', () => {
     test('should not crash on Identifier node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression(createIdentifier('x'))
       expect(reports.length).toBe(0)
     })
 
     test('should not crash on Literal node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression(createLiteral(42))
       expect(reports.length).toBe(0)
     })
 
     test('should not crash on ArrayExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression(createArrayLiteral([createLiteral(1)]))
       expect(reports.length).toBe(0)
     })
 
     test('should not crash on BlockStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression(createBlockStatement([]))
       expect(reports.length).toBe(0)
     })
 
     test('should not crash on ArrowFunctionExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression(
         createArrowFunction([createIdentifier('x')], createIdentifier('x'), true),
@@ -2563,7 +2511,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not crash on ForStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression(createForStatement(createBlockStatement([])))
       expect(reports.length).toBe(0)
@@ -2575,7 +2523,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('callback parameter name variations', () => {
     test('should report with custom accumulator name "memo"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr', 'memo', 'item')
       visitor.CallExpression(node)
@@ -2583,7 +2531,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report with custom value name "element"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr', 'acc', 'element')
       visitor.CallExpression(node)
@@ -2591,7 +2539,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report with short names a and b', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode('arr', 'a', 'b')
       visitor.CallExpression(node)
@@ -2599,7 +2547,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report spread with custom names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceSpreadNode('arr', 'prev', 'curr')
       visitor.CallExpression(node)
@@ -2607,7 +2555,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report function expression with custom names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -2632,7 +2580,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('initial value edge cases', () => {
     test('should not report when initial value is non-empty array with one element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const { node } = buildReduceConcatNode()
       // Override the initial value to be [1]
@@ -2650,7 +2598,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when initial value is non-empty array with two elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -2667,7 +2615,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report when initial value has undefined elements (treated as empty)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -2684,7 +2632,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report when initial value is empty array literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -2701,7 +2649,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when initial value is not an ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -2718,7 +2666,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when initial value is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -2740,7 +2688,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('for loop additional edge cases', () => {
     test('should report nested for loop with multiple push calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall1 = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -2762,7 +2710,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report first inner for loop with push even when second inner has no push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -2789,7 +2737,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when inner for loop body is not BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       // Inner for with single statement body (not wrapped in BlockStatement)
       const pushCall = createCallExpression(
@@ -2811,7 +2759,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when outer for loop body is single statement (not BlockStatement)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       // Outer for with single statement body (the inner for)
       const pushCall = createCallExpression(
@@ -2836,7 +2784,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report deeply nested: ForStatement > ForOfStatement > push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'push'),
@@ -2862,7 +2810,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('expression statement patterns in for loops', () => {
     test('should not report nested for with shift call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const shiftCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'shift'),
@@ -2879,7 +2827,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report nested for with pop call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const popCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'pop'),
@@ -2896,7 +2844,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report nested for with unshift call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const unshiftCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'unshift'),
@@ -2913,7 +2861,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report nested for with concat call (not push)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const concatCall = createCallExpression(
         createMemberExpression(createIdentifier('result'), 'concat'),
@@ -2930,7 +2878,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report nested for with push called on different targets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const pushCall = createCallExpression(
         createMemberExpression(createIdentifier('output'), 'push'),
@@ -2989,7 +2937,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('reduce+concat expression body variations', () => {
     test('should report with acc.concat(val) where val is a spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3005,7 +2953,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report when concat has multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3022,7 +2970,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when callback body is an identifier (not call)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3036,7 +2984,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when callback body is a literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3050,7 +2998,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when callback body is an ArrayExpression without spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const bodyArray = createArrayLiteral([createIdentifier('acc'), createIdentifier('val')])
@@ -3071,7 +3019,7 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('block body return statement handling', () => {
     test('should report first return statement with concat in block body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -3093,7 +3041,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when first return is not concat but second is', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -3117,7 +3065,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report block body with only non-return statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([
@@ -3138,7 +3086,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should report when return contains spread concat', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -3157,7 +3105,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should not report when return argument is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callbackBody = createBlockStatement([{ type: 'ReturnStatement', argument: null }])
@@ -3177,28 +3125,28 @@ describe('prefer-array-flat rule', () => {
   // =========================================================
   describe('misc additional tests', () => {
     test('should handle CallExpression visitor being called with object lacking type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.CallExpression({ someProp: 'value' })
       expect(reports.length).toBe(0)
     })
 
     test('should handle ForStatement visitor being called with object lacking type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.ForStatement({ someProp: 'value' })
       expect(reports.length).toBe(0)
     })
 
     test('should handle ForOfStatement visitor being called with object lacking type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       visitor.ForOfStatement({ someProp: 'value' })
       expect(reports.length).toBe(0)
     })
 
     test('should handle ForStatement with body that is empty BlockStatement containing no statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const outerFor = createForStatement(createBlockStatement([]))
       visitor.ForStatement(outerFor)
@@ -3206,7 +3154,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle reduce where callback has zero params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3223,7 +3171,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle reduce where callback has three params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3239,7 +3187,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle reduce with three arguments (callback, initial, thisArg)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const callback = createArrowFunction(
@@ -3260,7 +3208,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle reduce where concat body is a nested call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       // Body is acc.concat(val) - a call expression
@@ -3282,7 +3230,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle reduce where spread body has null element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([
@@ -3301,7 +3249,7 @@ describe('prefer-array-flat rule', () => {
     })
 
     test('should handle reduce where spread body has SpreadElement with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.reduce((acc, val) => acc.concat(val), [])' })
       const visitor = preferArrayFlatRule.create(context)
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
       const spreadArray = createArrayLiteral([createSpreadElement(null), createSpreadElement(null)])

@@ -1,43 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noUnusedPrivateMembersRule } from '../../../../src/rules/patterns/no-unused-private-members.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'class A { #x = 1; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createLocation(line = 1, column = 0, endLine?: number, endColumn?: number) {
   return {
@@ -225,70 +187,70 @@ describe('no-unused-private-members rule', () => {
 
   describe('create', () => {
     test('should return visitor object with ClassDeclaration method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('ClassDeclaration')
     })
 
     test('should return visitor object with ClassDeclaration:exit method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('ClassDeclaration:exit')
     })
 
     test('should return visitor object with ClassExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('ClassExpression')
     })
 
     test('should return visitor object with ClassExpression:exit method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('ClassExpression:exit')
     })
 
     test('should return visitor object with PropertyDefinition method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('PropertyDefinition')
     })
 
     test('should return visitor object with MethodDefinition method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('MethodDefinition')
     })
 
     test('should return visitor object with MemberExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('MemberExpression')
     })
 
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return visitor object with BinaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should return visitor with all handlers as functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(typeof visitor.ClassDeclaration).toBe('function')
@@ -303,7 +265,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should return a new visitor for each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor1 = noUnusedPrivateMembersRule.create(context)
       const visitor2 = noUnusedPrivateMembersRule.create(context)
 
@@ -311,7 +273,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should return visitor with exactly 9 keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(9)
@@ -320,7 +282,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('detecting unused private properties', () => {
     test('should report when private property is declared but never used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -333,7 +295,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private property is used via member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -345,7 +307,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private property is used with "in" operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -357,7 +319,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report multiple unused private properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -370,7 +332,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report only unused when some are used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -386,7 +348,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect single unused private property with underscore prefix name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -398,7 +360,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private property with numeric-like name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -410,7 +372,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private property with single character name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -422,7 +384,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private property with long descriptive name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -434,7 +396,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private property with dollar sign name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -446,7 +408,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect 5 unused private properties at once', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -461,7 +423,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report unused property when only method is used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -475,7 +437,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when property and method share the same name and method is called', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -491,7 +453,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('detecting unused private methods', () => {
     test('should report when private method is declared but never used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -504,7 +466,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private method is called', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -516,7 +478,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private method is accessed via member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -528,7 +490,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report unused private method with underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -540,7 +502,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report multiple unused private methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -553,7 +515,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report only unused methods when some are used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -567,7 +529,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report private method used via "in" operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -579,7 +541,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private getter-style method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -591,7 +553,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when method and property share same name and property is accessed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -607,7 +569,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('mixed private members', () => {
     test('should report both unused private properties and methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -621,7 +583,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle class with both used and unused private members', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -639,7 +601,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report correctly when property is used but method is not', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -654,7 +616,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report correctly when method is used but property is not', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -669,7 +631,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report any when all properties and methods are used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -685,7 +647,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('ClassExpression', () => {
     test('should detect unused private members in class expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -696,7 +658,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report used private members in class expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -708,7 +670,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private methods in class expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -720,7 +682,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report used private methods in class expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -732,7 +694,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should detect unused private property via "in" in class expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -744,7 +706,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report both unused property and method in class expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -758,7 +720,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('nested classes', () => {
     test('should track private members separately in nested classes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -774,7 +736,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report unused in correct class scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -789,7 +751,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle three levels of nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -806,7 +768,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not confuse member usage between nested classes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -821,7 +783,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle ClassExpression nested inside ClassDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -837,7 +799,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle sibling classes at same nesting level', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -855,7 +817,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in ClassDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(() => visitor.ClassDeclaration(null)).not.toThrow()
@@ -865,7 +827,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle undefined node in PropertyDefinition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -876,7 +838,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle PropertyDefinition without key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -887,7 +849,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle PropertyDefinition with non-private identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -902,7 +864,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle MethodDefinition without key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -913,7 +875,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle MemberExpression without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -925,7 +887,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle CallExpression without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -937,7 +899,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle BinaryExpression without left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -949,7 +911,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle BinaryExpression with wrong operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -965,7 +927,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle class without body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration({ type: 'ClassDeclaration', loc: createLocation() })
@@ -975,7 +937,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle MethodDefinition with non-private key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -991,7 +953,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle MemberExpression with non-private property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1007,7 +969,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle CallExpression with non-member callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1023,7 +985,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle CallExpression with member callee but non-private property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1043,7 +1005,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle undefined node in MethodDefinition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1054,28 +1016,28 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle null node in MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(() => visitor.MemberExpression(null)).not.toThrow()
     })
 
     test('should handle null node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle null node in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle class with only public members', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(
@@ -1089,7 +1051,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle empty class body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration([]))
@@ -1099,7 +1061,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle PropertyDefinition with null key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1114,7 +1076,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle MethodDefinition with null key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1130,7 +1092,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private property defined outside class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.PropertyDefinition(createPrivateProperty('orphan'))
@@ -1138,7 +1100,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private method defined outside class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.MethodDefinition(createPrivateMethod('orphan'))
@@ -1146,7 +1108,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle BinaryExpression with in operator but Identifier left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1163,7 +1125,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle popClass when stack is empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor['ClassDeclaration:exit']?.(undefined)
@@ -1172,7 +1134,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle MethodDefinition with constructor kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1188,7 +1150,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle PropertyDefinition without value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1206,7 +1168,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('message quality', () => {
     test('should mention member name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1217,7 +1179,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should mention declared in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1228,7 +1190,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should mention never used in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1239,7 +1201,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should distinguish property from method in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1252,7 +1214,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should include hash prefix in property message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1263,7 +1225,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should include hash prefix in method message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1274,7 +1236,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should have period at end of message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1285,7 +1247,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should format property message correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1296,7 +1258,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should format method message correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1307,7 +1269,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should have distinct messages for each unused member', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1321,7 +1283,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for unused private property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1333,7 +1295,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report correct location for unused private method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1345,7 +1307,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report correct end location for unused property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1357,7 +1319,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1369,7 +1331,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location for multiple unused members at different positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1386,7 +1348,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location for unused private method at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1398,7 +1360,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location for mixed property and method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1411,7 +1373,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location for unused member in class expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -1423,7 +1385,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location with multi-line span', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1441,7 +1403,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should preserve exact column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1452,7 +1414,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should preserve line number 0 when passed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1468,7 +1430,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report end location for method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1480,7 +1442,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report distinct locations for each unused member', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1492,7 +1454,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location for nested class unused member', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1506,7 +1468,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report location for unused method at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1519,7 +1481,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('multiple reports', () => {
     test('should report 4 unused private properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1533,7 +1495,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report 4 unused private methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1547,7 +1509,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report mix of unused properties and methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1561,7 +1523,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report for sequential separate classes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1575,7 +1537,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report for class expression followed by class declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -1589,7 +1551,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report only first member unused among many', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1605,7 +1567,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report only last member unused among many', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1621,7 +1583,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report all when nothing is used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1636,7 +1598,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when everything is used via different mechanisms', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1654,7 +1616,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/app.ts')
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }', filePath: '/project/src/app.ts' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1665,7 +1627,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should work with different source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = 1')
+      const { context, reports } = createMockRuleContext({ source: 'const x = 1', filePath: '/src/file.ts' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1676,7 +1638,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1687,7 +1649,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should work with options containing ignored patterns', () => {
-      const { context, reports } = createMockContext({ ignore: ['#x'] })
+      const { context, reports } = createMockRuleContext({ options: [{ ignore: ['#x'] }], source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1698,8 +1660,8 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should work with multiple sequential create calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'class A { #x = 1; }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'class A { #x = 1; }' })
 
       const v1 = noUnusedPrivateMembersRule.create(ctx1)
       const v2 = noUnusedPrivateMembersRule.create(ctx2)
@@ -1718,8 +1680,8 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not share state between different visitor instances', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'class A { #x = 1; }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'class A { #x = 1; }' })
 
       const v1 = noUnusedPrivateMembersRule.create(ctx1)
       const v2 = noUnusedPrivateMembersRule.create(ctx2)
@@ -1739,10 +1701,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/very/deeply/nested/project/src/features/auth/user.ts',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }', filePath: '/very/deeply/nested/project/src/features/auth/user.ts' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1754,7 +1713,7 @@ describe('no-unused-private-members rule', () => {
 
     test('should work with long source content', () => {
       const longSource = 'class A { #x = 1; }\n'.repeat(100)
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1765,7 +1724,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not call report when all members used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1777,7 +1736,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should handle class with only used members gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1795,7 +1754,7 @@ describe('no-unused-private-members rule', () => {
 
   describe('not reporting - used private members', () => {
     test('should not report private property used via member expression with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1807,7 +1766,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report private property used via "in" operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1819,7 +1778,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report private method used via call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1831,7 +1790,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report private method used via member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1843,7 +1802,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when private property used multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1857,7 +1816,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report public property with same name as unused private', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1872,7 +1831,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report public method with same name as unused private', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1888,7 +1847,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report private property used after method definition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1902,7 +1861,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report private member used in class expression with member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -1914,7 +1873,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when used via in operator for method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1926,7 +1885,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should report member when used before being registered in visitor order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1938,7 +1897,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report when all three usage mechanisms apply to same member', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1951,7 +1910,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report used private method in class expression with call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassExpression(createClassExpression())
@@ -1963,7 +1922,7 @@ describe('no-unused-private-members rule', () => {
     })
 
     test('should not report member accessed with non-this object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -1990,7 +1949,7 @@ describe('no-unused-private-members rule', () => {
       ['_', '#_'],
       ['$', '#$'],
     ])('should report unused private property named %s', (name: string, expected: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2009,7 +1968,7 @@ describe('no-unused-private-members rule', () => {
       ['UPPER_METHOD', '#UPPER_METHOD'],
       ['x', '#x'],
     ])('should report unused private method named %s', (name: string, expected: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2032,7 +1991,7 @@ describe('no-unused-private-members rule', () => {
       'iota',
       'kappa',
     ])('should report unused property with greek-like name %s', (name: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2055,7 +2014,7 @@ describe('no-unused-private-members rule', () => {
       [100, 0],
       [1, 99],
     ])('should report location at line %d column %d', (line: number, column: number) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2071,7 +2030,7 @@ describe('no-unused-private-members rule', () => {
       ['call expression', 'CallExpression'],
       ['in operator', 'BinaryExpression'],
     ])('should not report when private member used via %s', (_desc: string, mechanism: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2095,7 +2054,7 @@ describe('no-unused-private-members rule', () => {
       ['PropertyDefinition', 'PropertyDefinition'],
       ['MethodDefinition', 'MethodDefinition'],
     ])('should register private members from %s', (_desc: string, nodeType: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2116,7 +2075,7 @@ describe('no-unused-private-members rule', () => {
       ['null', null],
       ['undefined', undefined],
     ])('should not report for non-private key type: %s', (_desc: string, key: unknown) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2156,7 +2115,7 @@ describe('no-unused-private-members rule', () => {
         { type: 'BinaryExpression', operator: '<', left: { type: 'PrivateIdentifier', name: 'x' } },
       ],
     ])('should not mark as used with %s operator', (_op: string, node: unknown) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
       const visitor = noUnusedPrivateMembersRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration())
@@ -2199,7 +2158,7 @@ describe('no-unused-private-members rule', () => {
     ])(
       'should report $expected unused when $props declared and $used used',
       ({ props, used, expected }: { props: number; used: number; expected: number }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
         const visitor = noUnusedPrivateMembersRule.create(context)
 
         visitor.ClassDeclaration(createClassDeclaration())
@@ -2230,7 +2189,7 @@ describe('no-unused-private-members rule', () => {
     ])(
       'should report $expected unused methods when $methods declared and $called called',
       ({ methods, called, expected }: { methods: number; called: number; expected: number }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
         const visitor = noUnusedPrivateMembersRule.create(context)
 
         visitor.ClassDeclaration(createClassDeclaration())
@@ -2252,7 +2211,7 @@ describe('no-unused-private-members rule', () => {
     test.each([{ count: 1 }, { count: 2 }, { count: 5 }, { count: 10 }])(
       'should report exactly $count unused private properties',
       ({ count }: { count: number }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
         const visitor = noUnusedPrivateMembersRule.create(context)
 
         visitor.ClassDeclaration(createClassDeclaration())
@@ -2270,7 +2229,7 @@ describe('no-unused-private-members rule', () => {
     test.each([{ count: 1 }, { count: 2 }, { count: 5 }, { count: 10 }])(
       'should report exactly $count unused private methods',
       ({ count }: { count: number }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'class A { #x = 1; }' })
         const visitor = noUnusedPrivateMembersRule.create(context)
 
         visitor.ClassDeclaration(createClassDeclaration())

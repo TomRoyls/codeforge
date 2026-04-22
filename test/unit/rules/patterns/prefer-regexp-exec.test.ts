@@ -1,43 +1,6 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferRegexpExecRule } from '../../../../src/rules/patterns/prefer-regexp-exec.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'str.match(/test/g);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createStringMatchCall(
   objectName: string,
@@ -124,7 +87,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -133,7 +96,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('detecting string.match with global flag', () => {
     test('should report str.match(/test/g)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = createStringMatchCall('str', 'test', 'g')
@@ -145,7 +108,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report str.match(/pattern/gi) with multiple flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = createStringMatchCall('str', 'pattern', 'gi')
@@ -156,7 +119,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report str.match(/pattern/ig) with global flag in any position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = createStringMatchCall('str', 'pattern', 'ig')
@@ -167,7 +130,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report str.match(/pattern/) without global flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = createStringMatchCall('str', 'pattern', 'i')
@@ -178,7 +141,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report str.match(/pattern/) with no flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = createStringMatchCall('str', 'pattern', '')
@@ -189,7 +152,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report when method is not match', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -216,7 +179,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report when callee is not a member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -238,7 +201,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report when no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -258,7 +221,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report when argument is not a regex literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -280,7 +243,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('regex literal parsing', () => {
     test('should detect global flag from raw property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -300,7 +263,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report when raw has no global flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -322,21 +285,21 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -344,7 +307,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = {
@@ -370,7 +333,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       const node = createStringMatchCall('str', 'test', 'g', 10, 5)
@@ -382,7 +345,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
@@ -393,7 +356,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('message quality', () => {
     test('should mention exec in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
@@ -402,7 +365,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should mention matchAll in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
@@ -477,33 +440,33 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('create visitor shape', () => {
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should have CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return a visitor each time create is called', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'str.match(/test/g);' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor1 = preferRegexpExecRule.create(ctx1)
       const visitor2 = preferRegexpExecRule.create(ctx2)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should have CallExpression that accepts one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(visitor.CallExpression.length).toBe(1)
     })
 
     test('visitor should only have CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(Object.keys(visitor)).toEqual(['CallExpression'])
     })
@@ -511,126 +474,126 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('regex flags detection - global flag combinations', () => {
     test('should report with flag g only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gi', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gi'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gm', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gm'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gs'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gu', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gu'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gy', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gy'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gimsuy', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gimsuy'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gim', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gim'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag gis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'gis'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with flag giy', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'giy'))
       expect(reports.length).toBe(1)
     })
 
     test('should not report with flag i only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'i'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with flag m only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'm'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with flag s only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 's'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with flag u only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'u'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with flag y only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'y'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with flag im', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'im'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with flag isu', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', 'isu'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with empty flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'abc', ''))
       expect(reports.length).toBe(0)
@@ -639,105 +602,105 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('regex pattern variations', () => {
     test('should report with simple pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'hello', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with character class pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '[a-z]+', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with digit pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '\\d+', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with word boundary pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '\\bword\\b', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with capturing group pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '(foo|bar)', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with non-capturing group pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '(?:foo|bar)', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with anchor pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '^test$', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with lookahead pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'foo(?=bar)', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with quantifier pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'a{2,4}', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with escaped special char pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '\\.\\*\\+', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with empty pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with complex nested groups pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '((a|b)(c|d))', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with unicode escape pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '\\u0041', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with backreference pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '(a)\\1', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with named group pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', '(?<name>\\w+)', 'g'))
       expect(reports.length).toBe(1)
@@ -746,70 +709,70 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('object name variations', () => {
     test('should report with str object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with text object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('text', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with myString object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('myString', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with result object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('result', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with input object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('input', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with data object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('data', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with value object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('value', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with content object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('content', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with line object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('line', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with foo object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('foo', 'test', 'g'))
       expect(reports.length).toBe(1)
@@ -818,7 +781,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('non-match method calls should not report', () => {
     test('should not report for test method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -835,7 +798,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for exec method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -852,7 +815,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for replace method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -877,7 +840,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for search method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -901,7 +864,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for split method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -925,7 +888,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for matchAll method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -949,7 +912,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for trim method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -966,7 +929,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for toString method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -983,7 +946,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for indexOf method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1000,7 +963,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for includes method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1019,7 +982,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('malformed node structures', () => {
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = { type: 'CallExpression', arguments: [] }
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1027,7 +990,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = { type: 'CallExpression', callee: null, arguments: [] }
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1035,7 +998,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with callee missing property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1047,7 +1010,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with callee property as non-identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1071,7 +1034,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with computed property access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1095,7 +1058,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with null arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1112,7 +1075,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1128,7 +1091,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node where first arg is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1151,7 +1114,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node where first arg is a MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1174,7 +1137,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node where argument is empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1191,7 +1154,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with Literal that has no regex or raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1208,7 +1171,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with regex flags as non-string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1231,7 +1194,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with raw as non-string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1248,14 +1211,14 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(() => visitor.CallExpression({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1279,7 +1242,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle RegExpLiteral type node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1304,7 +1267,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('raw property parsing edge cases', () => {
     test('should detect g flag from raw /pattern/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1321,7 +1284,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should detect g flag from raw /pattern/gi', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1338,7 +1301,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for raw /pattern/i', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1355,7 +1318,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for raw /pattern/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1372,7 +1335,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle raw with no slashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1389,7 +1352,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle raw with single slash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1406,7 +1369,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should prefer regex.flags over raw when both present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1430,7 +1393,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should fall back to raw when regex has no flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1454,7 +1417,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle raw with all flags /pattern/gimsuvy', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1473,7 +1436,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g', 1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -1481,7 +1444,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g', 5, 10))
       expect(reports[0].loc?.start.line).toBe(5)
@@ -1489,21 +1452,21 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report location at line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g', 100, 0))
       expect(reports[0].loc?.start.line).toBe(100)
     })
 
     test('should report location at line 1 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g', 1, 50))
       expect(reports[0].loc?.start.column).toBe(50)
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g', 3, 5))
       expect(reports[0].loc?.end).toBeDefined()
@@ -1512,7 +1475,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1537,7 +1500,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with partial loc (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1567,21 +1530,21 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('message content validation', () => {
     test('should contain predictable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports[0].message.toLowerCase()).toContain('predictable')
     })
 
     test('should mention global flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports[0].message.toLowerCase()).toContain('global')
     })
 
     test('should mention regex or string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       const msg = reports[0].message.toLowerCase()
@@ -1589,14 +1552,14 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should mention match method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports[0].message).toContain('match')
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(typeof reports[0].message).toBe('string')
@@ -1604,7 +1567,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports[0].message.endsWith('.')).toBe(true)
@@ -1613,7 +1576,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('multiple invocations', () => {
     test('should report each match call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'a', 'g'))
@@ -1624,7 +1587,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should only count match calls with g flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'a', 'g'))
@@ -1635,7 +1598,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle mix of valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'a', 'g'))
@@ -1648,7 +1611,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report correct message for each call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('s1', 'a', 'g'))
@@ -1658,7 +1621,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report different locations for different calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       visitor.CallExpression(createStringMatchCall('str', 'a', 'g', 1, 0))
@@ -1669,7 +1632,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle 100 consecutive calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1682,53 +1645,49 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/app.ts')
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);', filePath: '/project/src/app.ts' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = str.match(/test/g)',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = str.match(/test/g)', filePath: '/src/file.ts' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with config options present', () => {
-      const { context, reports } = createMockContext({ strict: true })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true }], source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with multiple config options', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 'error', ignore: [] })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, level: 'error', ignore: [] }], source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty string file path', () => {
-      const { context, reports } = createMockContext({}, '')
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);', filePath: '' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source string', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report only once for the same match call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = createStringMatchCall('str', 'test', 'g')
       visitor.CallExpression(node)
@@ -1739,7 +1698,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('callee object variations', () => {
     test('should not report when callee object is not an Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1763,7 +1722,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle callee object being a MemberExpression (chained calls)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1796,7 +1755,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle callee object being a function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1826,7 +1785,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('extra arguments', () => {
     test('should report when extra arguments are present after regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1851,7 +1810,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report when regex is first arg regardless of total args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1879,35 +1838,35 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('primitive node values', () => {
     test('should handle boolean true node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(() => visitor.CallExpression(true)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle boolean false node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(() => visitor.CallExpression(false)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(() => visitor.CallExpression(42)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle zero node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(() => visitor.CallExpression(0)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle empty string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       expect(() => visitor.CallExpression('')).not.toThrow()
       expect(reports.length).toBe(0)
@@ -1935,7 +1894,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('node type variations', () => {
     test('should not report for FunctionExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'FunctionExpression',
@@ -1959,7 +1918,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for ArrowFunctionExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'ArrowFunctionExpression',
@@ -1983,7 +1942,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for MemberExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'MemberExpression',
@@ -2009,7 +1968,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('regex literal without regex property - raw fallback', () => {
     test('should detect from raw when regex property is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2026,7 +1985,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not detect when raw is an empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2043,7 +2002,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle raw with slashes but no flags section', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2060,7 +2019,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle raw pattern with slashes inside', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2079,7 +2038,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('regex property with no flags string', () => {
     test('should fall back to raw when regex.flags is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2103,7 +2062,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report when regex has pattern but empty flags and raw missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2126,7 +2085,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report when regex.flags is g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2149,7 +2108,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should report when regex.flags contains g among others', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2233,7 +2192,7 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('createMockContext behavior', () => {
     test('context report captures messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       context.report({
         message: 'test message',
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 1 } },
@@ -2243,32 +2202,32 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('context getFilePath returns provided path', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);', filePath: '/custom/path.ts' })
       expect(context.getFilePath()).toBe('/custom/path.ts')
     })
 
     test('context getSource returns provided source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = 1')
+      const { context } = createMockRuleContext({ source: 'const x = 1', filePath: '/src/file.ts' })
       expect(context.getSource()).toBe('const x = 1')
     })
 
     test('context getAST returns null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       expect(context.getAST()).toBeNull()
     })
 
     test('context getTokens returns empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       expect(context.getTokens()).toEqual([])
     })
 
     test('context getComments returns empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       expect(context.getComments()).toEqual([])
     })
 
     test('context logger methods are vi fns', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       expect(vi.isMockFunction(context.logger.debug)).toBe(true)
       expect(vi.isMockFunction(context.logger.info)).toBe(true)
       expect(vi.isMockFunction(context.logger.warn)).toBe(true)
@@ -2276,22 +2235,22 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('context workspaceRoot is /src', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       expect(context.workspaceRoot).toBe('/src')
     })
 
     test('context config options wrapped in array', () => {
-      const { context } = createMockContext({ foo: 'bar' })
+      const { context } = createMockRuleContext({ options: [{ foo: 'bar' }], source: 'str.match(/test/g);' })
       expect(context.config.options).toEqual([{ foo: 'bar' }])
     })
 
     test('reports array starts empty', () => {
-      const { reports } = createMockContext()
+      const { reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       expect(reports).toEqual([])
     })
 
     test('reports array captures multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       context.report({
         message: 'first',
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 1 } },
@@ -2308,8 +2267,8 @@ describe('prefer-regexp-exec rule', () => {
 
   describe('rule behavior consistency', () => {
     test('should produce same result for same input across multiple visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'str.match(/test/g);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const v1 = preferRegexpExecRule.create(ctx1)
       const v2 = preferRegexpExecRule.create(ctx2)
       const node = createStringMatchCall('str', 'test', 'g')
@@ -2320,7 +2279,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not mutate input node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = createStringMatchCall('str', 'test', 'g')
       const originalType = (node as Record<string, unknown>).type
@@ -2331,7 +2290,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle NaN in location gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2359,7 +2318,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       visitor.CallExpression(createStringMatchCall('str', 'test', 'g', 99999, 99999))
       expect(reports.length).toBe(1)
@@ -2368,7 +2327,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle negative line/column gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2397,7 +2356,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report for NewExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'NewExpression',
@@ -2421,7 +2380,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle literal arg with type RegExpLiteral and g flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2444,7 +2403,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should not report RegExpLiteral without g flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2467,7 +2426,7 @@ describe('prefer-regexp-exec rule', () => {
     })
 
     test('should handle node with array type arguments containing regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.match(/test/g);' })
       const visitor = preferRegexpExecRule.create(context)
       const node = {
         type: 'CallExpression',

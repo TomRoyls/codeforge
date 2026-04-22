@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { requireReturnTypeRule } from '../../../../src/rules/patterns/require-return-type.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function add(a: number, b: number) { return a + b; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFunctionDeclaration(
   name: string,
@@ -216,37 +180,37 @@ describe('require-return-type rule - meta properties', () => {
 // ============================================================
 describe('require-return-type rule - create/visitor', () => {
   test('create should return an object', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(typeof visitor).toBe('object')
   })
 
   test('visitor should have FunctionDeclaration method', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(typeof visitor.FunctionDeclaration).toBe('function')
   })
 
   test('visitor should have FunctionExpression method', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(typeof visitor.FunctionExpression).toBe('function')
   })
 
   test('visitor should have ArrowFunctionExpression method', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(typeof visitor.ArrowFunctionExpression).toBe('function')
   })
 
   test('visitor should only have exactly 3 keys', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(Object.keys(visitor)).toHaveLength(3)
   })
 
   test('visitor methods should be callable without throwing', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.FunctionDeclaration(createFunctionDeclaration('fn'))).not.toThrow()
     expect(() => visitor.FunctionExpression(createFunctionExpression('fn'))).not.toThrow()
@@ -254,8 +218,8 @@ describe('require-return-type rule - create/visitor', () => {
   })
 
   test('create can be called multiple times with different contexts', () => {
-    const { context: ctx1, reports: r1 } = createMockContext()
-    const { context: ctx2, reports: r2 } = createMockContext({ allowArrowFunctions: true })
+    const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
+    const { context: ctx2, reports: r2 } = createMockRuleContext({ options: [{ allowArrowFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const v1 = requireReturnTypeRule.create(ctx1)
     const v2 = requireReturnTypeRule.create(ctx2)
     v1.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -265,7 +229,7 @@ describe('require-return-type rule - create/visitor', () => {
   })
 
   test('visitor FunctionDeclaration should accept single argument', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(visitor.FunctionDeclaration.length).toBeLessThanOrEqual(1)
   })
@@ -276,49 +240,49 @@ describe('require-return-type rule - create/visitor', () => {
 // ============================================================
 describe('require-return-type rule - detection', () => {
   test('should report function declaration without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add'))
     expect(reports.length).toBe(1)
   })
 
   test('should not report function declaration with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add', true))
     expect(reports.length).toBe(0)
   })
 
   test('should report function expression without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('handler'))
     expect(reports.length).toBe(1)
   })
 
   test('should not report function expression with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('handler', true))
     expect(reports.length).toBe(0)
   })
 
   test('should report arrow function without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(1)
   })
 
   test('should not report arrow function with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(true))
     expect(reports.length).toBe(0)
   })
 
   test('should report anonymous function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -332,7 +296,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should report function expression with variable name from parent', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'myFunc', hasTypeAnnotation: false })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -341,7 +305,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should report arrow function with variable name from parent', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'myArrow', hasTypeAnnotation: false })
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 1, 0, parent))
@@ -350,7 +314,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should report function expression with expression body as arrow', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     visitor.ArrowFunctionExpression(
@@ -360,7 +324,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on exported function', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('exportedFn'))
     expect(reports.length).toBe(1)
@@ -368,7 +332,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on async function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -383,7 +347,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on generator function', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -398,7 +362,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on method in object literal', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -416,7 +380,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on method definition', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -434,7 +398,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on function in assignment expression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -452,7 +416,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on arrow function with expression body', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'ArrowFunctionExpression',
@@ -465,7 +429,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on function with parameters', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -483,7 +447,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect missing return type on function with typed parameters but no return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -497,28 +461,28 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect on function expression without id', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression(null))
     expect(reports.length).toBe(1)
   })
 
   test('should detect on nested arrow function without parent', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 5, 10))
     expect(reports.length).toBe(1)
   })
 
   test('should detect on function with empty body', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('emptyBody'))
     expect(reports.length).toBe(1)
   })
 
   test('should detect on function expression assigned to variable without type annotation', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'untyped', hasTypeAnnotation: false })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -526,7 +490,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should report when function has body with statements but no return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -543,7 +507,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect on function with null returnType', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -558,7 +522,7 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should detect on function with undefined returnType explicitly', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -573,28 +537,28 @@ describe('require-return-type rule - detection', () => {
   })
 
   test('should report arrow function as Arrow function kind', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports[0].message).toContain('Arrow function')
   })
 
   test('should report function expression as Function expression kind', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression())
     expect(reports[0].message).toContain('Function expression')
   })
 
   test('should report function declaration as Function kind', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn'))
     expect(reports[0].message).toMatch(/^Function\b/)
   })
 
   test('should report on IIFE function expression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -613,35 +577,35 @@ describe('require-return-type rule - detection', () => {
 // ============================================================
 describe('require-return-type rule - not reporting', () => {
   test('should not report function declaration with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add', true))
     expect(reports.length).toBe(0)
   })
 
   test('should not report function expression with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('handler', true))
     expect(reports.length).toBe(0)
   })
 
   test('should not report arrow function with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(true))
     expect(reports.length).toBe(0)
   })
 
   test('should not report arrow function when allowArrowFunctions is true', () => {
-    const { context, reports } = createMockContext({ allowArrowFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowArrowFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(0)
   })
 
   test('should not report function expression with typed variable when allowTypedFunctionExpressions is true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'typedFunc', hasTypeAnnotation: true })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -649,7 +613,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report arrow function with typed variable when allowTypedFunctionExpressions is true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'typedArrow', hasTypeAnnotation: true })
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 1, 0, parent))
@@ -657,7 +621,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report higher-order function returning arrow when allowHigherOrderFunctions is true', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerFunc = {
@@ -672,7 +636,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report higher-order arrow returning function when allowHigherOrderFunctions is true', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerFunc = createFunctionExpression()
     const outerArrow = createArrowFunctionExpression(false, 1, 0, undefined, innerFunc)
@@ -681,21 +645,21 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report named function expression with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('named', true))
     expect(reports.length).toBe(0)
   })
 
   test('should not report arrow with allowArrowFunctions and no return type', () => {
-    const { context, reports } = createMockContext({ allowArrowFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowArrowFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 3, 5))
     expect(reports.length).toBe(0)
   })
 
   test('should not report function expression when parent is typed variable declarator', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = {
       type: 'VariableDeclarator',
@@ -710,7 +674,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report arrow function when parent is typed variable declarator', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = {
       type: 'VariableDeclarator',
@@ -725,7 +689,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function whose body is an arrow function with allowHigherOrderFunctions', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerFunc = {
@@ -740,7 +704,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function whose body is a function expression with allowHigherOrderFunctions', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerFunc = createFunctionExpression()
     const outerFunc = {
@@ -755,7 +719,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report arrow function body is a function expression with allowHigherOrderFunctions', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerFunc = createFunctionExpression()
     const outerArrow = createArrowFunctionExpression(false, 1, 0, undefined, innerFunc)
@@ -764,7 +728,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report arrow function body is another arrow with allowHigherOrderFunctions', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerArrow = createArrowFunctionExpression(false, 1, 0, undefined, innerArrow)
@@ -773,22 +737,22 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report with all options combined for arrow', () => {
-    const { context, reports } = createMockContext({
+    const { context, reports } = createMockRuleContext({ options: [{
       allowArrowFunctions: true,
       allowTypedFunctionExpressions: true,
       allowHigherOrderFunctions: true,
-    })
+    }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(0)
   })
 
   test('should not report with all options combined for typed function expression', () => {
-    const { context, reports } = createMockContext({
+    const { context, reports } = createMockRuleContext({ options: [{
       allowArrowFunctions: true,
       allowTypedFunctionExpressions: true,
       allowHigherOrderFunctions: true,
-    })
+    }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'typed', hasTypeAnnotation: true })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -796,7 +760,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function with returnType object present', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -811,7 +775,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function expression with id and return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node: Record<string, unknown> = {
       type: 'FunctionExpression',
@@ -826,7 +790,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report when allowArrowFunctions is true even with expression body', () => {
-    const { context, reports } = createMockContext({ allowArrowFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowArrowFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'ArrowFunctionExpression',
@@ -839,7 +803,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function expression when parent is MethodDefinition with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -857,7 +821,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function expression when parent is Property with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -875,7 +839,7 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report function expression when parent is AssignmentExpression with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -893,28 +857,28 @@ describe('require-return-type rule - not reporting', () => {
   })
 
   test('should not report on function declaration at different line positions with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', true, 100, 50))
     expect(reports.length).toBe(0)
   })
 
   test('should not report on function expression at different line positions with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('fn', true, 200, 30))
     expect(reports.length).toBe(0)
   })
 
   test('should not report arrow function at different line positions with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 300, 20))
     expect(reports.length).toBe(0)
   })
 
   test('should not report function in object property with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -937,37 +901,37 @@ describe('require-return-type rule - not reporting', () => {
 // ============================================================
 describe('require-return-type rule - edge cases', () => {
   test('should handle null node for FunctionDeclaration', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
   })
 
   test('should handle undefined node for FunctionDeclaration', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
   })
 
   test('should handle string node for FunctionDeclaration', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
   })
 
   test('should handle number node for FunctionExpression', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.FunctionExpression(123)).not.toThrow()
   })
 
   test('should handle boolean node for ArrowFunctionExpression', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.ArrowFunctionExpression(true)).not.toThrow()
   })
 
   test('should handle node without loc', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -980,7 +944,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle node without id', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -993,7 +957,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle node with partial loc (only start)', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1007,7 +971,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle empty options object', () => {
-    const { context, reports } = createMockContext({})
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test'))
     expect(reports.length).toBe(1)
@@ -1040,7 +1004,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle node with id but id has no name property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1054,7 +1018,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle node with empty body array', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1068,7 +1032,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle node with body as non-object', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1082,7 +1046,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle function expression parent with non-Identifier key', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -1099,7 +1063,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle function expression parent with no key property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -1115,7 +1079,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle arrow function with body as non-BlockStatement and non-function', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'ArrowFunctionExpression',
@@ -1128,7 +1092,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle function with loc containing zero values', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 0, 0))
     expect(reports.length).toBe(1)
@@ -1137,7 +1101,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle function with very large line/column numbers', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 9999, 8888))
     expect(reports.length).toBe(1)
@@ -1146,7 +1110,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle allowTypedFunctionExpressions with non-VariableDeclarator parent', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -1162,7 +1126,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle allowHigherOrderFunctions with non-returning function', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1179,11 +1143,11 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle combined options', () => {
-    const { context, reports } = createMockContext({
+    const { context, reports } = createMockRuleContext({ options: [{
       allowArrowFunctions: true,
       allowTypedFunctionExpressions: true,
       allowHigherOrderFunctions: true,
-    })
+    }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     visitor.FunctionExpression(
@@ -1199,7 +1163,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle node with parent that is null', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node: Record<string, unknown> = {
       type: 'FunctionExpression',
@@ -1213,7 +1177,7 @@ describe('require-return-type rule - edge cases', () => {
   })
 
   test('should handle VariableDeclarator parent with non-Identifier id', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -1260,7 +1224,7 @@ describe('require-return-type rule - edge cases', () => {
 // ============================================================
 describe('require-return-type rule - location', () => {
   test('should report correct location for function declaration at line 10, column 5', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 10, 5))
     expect(reports[0].loc?.start.line).toBe(10)
@@ -1268,7 +1232,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should report correct location for function declaration at line 1, column 0', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 1, 0))
     expect(reports[0].loc?.start.line).toBe(1)
@@ -1276,7 +1240,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should report correct location for function expression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('fn', false, 5, 10))
     expect(reports[0].loc?.start.line).toBe(5)
@@ -1284,7 +1248,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should report correct location for arrow function', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 7, 3))
     expect(reports[0].loc?.start.line).toBe(7)
@@ -1292,7 +1256,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should report default location when node has no loc', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1306,7 +1270,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should report default location when loc is null', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1321,21 +1285,21 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should handle location with column 0', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 3, 0))
     expect(reports[0].loc?.start.column).toBe(0)
   })
 
   test('should handle location at line 100', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 100, 0))
     expect(reports[0].loc?.start.line).toBe(100)
   })
 
   test('should preserve end location from node', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test', false, 2, 4))
     expect(reports[0].loc?.end.line).toBe(2)
@@ -1343,7 +1307,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should report location for multiple different functions', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn1', false, 1, 0))
     visitor.FunctionDeclaration(createFunctionDeclaration('fn2', false, 2, 0))
@@ -1354,7 +1318,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should handle location for function expression at various positions', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression(null, false, 42, 8))
     expect(reports[0].loc?.start.line).toBe(42)
@@ -1362,7 +1326,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should handle location for arrow at line 50 column 25', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 50, 25))
     expect(reports[0].loc?.start.line).toBe(50)
@@ -1370,7 +1334,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should not crash for non-object node in location context', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
     expect(reports.length).toBe(1)
@@ -1379,7 +1343,7 @@ describe('require-return-type rule - location', () => {
   })
 
   test('should handle location when start has non-numeric line', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionDeclaration',
@@ -1398,56 +1362,56 @@ describe('require-return-type rule - location', () => {
 // ============================================================
 describe('require-return-type rule - messages', () => {
   test('should mention type safety in message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add'))
     expect(reports[0].message).toContain('type safety')
   })
 
   test('should mention documentation in message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add'))
     expect(reports[0].message).toContain('documentation')
   })
 
   test('should include function name in message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('myFunction'))
     expect(reports[0].message).toContain('myFunction')
   })
 
   test('should include return type annotation in message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add'))
     expect(reports[0].message).toContain('return type annotation')
   })
 
   test('should include function kind for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn'))
     expect(reports[0].message).toMatch(/^Function\b/)
   })
 
   test('should include Arrow function kind for arrow', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports[0].message).toContain('Arrow function')
   })
 
   test('should include Function expression kind for function expression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression())
     expect(reports[0].message).toContain('Function expression')
   })
 
   test('should not include name for anonymous function expression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression(null))
     const msg = reports[0].message
@@ -1457,7 +1421,7 @@ describe('require-return-type rule - messages', () => {
   })
 
   test('should not include name for anonymous arrow without parent', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     const msg = reports[0].message
@@ -1467,7 +1431,7 @@ describe('require-return-type rule - messages', () => {
   })
 
   test('should include property name when function is in object property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const node = {
       type: 'FunctionExpression',
@@ -1489,7 +1453,7 @@ describe('require-return-type rule - messages', () => {
 // ============================================================
 describe('require-return-type rule - multiple reports', () => {
   test('should report multiple function declarations', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn1'))
     visitor.FunctionDeclaration(createFunctionDeclaration('fn2'))
@@ -1498,7 +1462,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report multiple function expressions', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('a'))
     visitor.FunctionExpression(createFunctionExpression('b'))
@@ -1506,7 +1470,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report multiple arrow functions', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 1, 0))
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 2, 0))
@@ -1515,7 +1479,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report mixed function types', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn'))
     visitor.FunctionExpression(createFunctionExpression('expr'))
@@ -1524,7 +1488,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report only functions without return types in mixed batch', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('has', true))
     visitor.FunctionDeclaration(createFunctionDeclaration('nothas', false))
@@ -1534,7 +1498,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report 10 functions without return types', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     for (let i = 0; i < 10; i++) {
       visitor.FunctionDeclaration(createFunctionDeclaration(`fn${i}`, false, i + 1, 0))
@@ -1543,7 +1507,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report interleaved typed and untyped functions correctly', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('a', false))
     visitor.FunctionDeclaration(createFunctionDeclaration('b', true))
@@ -1554,7 +1518,7 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report for all three visitor types in sequence', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('decl'))
     visitor.FunctionExpression(createFunctionExpression('expr'))
@@ -1566,8 +1530,8 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should not carry over reports between separate create calls', () => {
-    const { context: ctx1, reports: r1 } = createMockContext()
-    const { context: ctx2, reports: r2 } = createMockContext()
+    const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
+    const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const v1 = requireReturnTypeRule.create(ctx1)
     const v2 = requireReturnTypeRule.create(ctx2)
     v1.FunctionDeclaration(createFunctionDeclaration('fn'))
@@ -1579,8 +1543,8 @@ describe('require-return-type rule - multiple reports', () => {
   })
 
   test('should report all arrows when allowArrowFunctions is false but not when true', () => {
-    const { context: ctx1, reports: r1 } = createMockContext({ allowArrowFunctions: false })
-    const { context: ctx2, reports: r2 } = createMockContext({ allowArrowFunctions: true })
+    const { context: ctx1, reports: r1 } = createMockRuleContext({ options: [{ allowArrowFunctions: false }], source: 'function add(a: number, b: number) { return a + b; }' })
+    const { context: ctx2, reports: r2 } = createMockRuleContext({ options: [{ allowArrowFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const v1 = requireReturnTypeRule.create(ctx1)
     const v2 = requireReturnTypeRule.create(ctx2)
     v1.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -1597,49 +1561,49 @@ describe('require-return-type rule - multiple reports', () => {
 // ============================================================
 describe('require-return-type rule - context', () => {
   test('should work with different file paths', () => {
-    const { context, reports } = createMockContext({}, '/custom/path.ts')
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }', filePath: '/custom/path.ts' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test'))
     expect(reports.length).toBe(1)
   })
 
   test('should work with different source code', () => {
-    const { context, reports } = createMockContext({}, '/src/app.ts', 'const x = () => 1')
+    const { context, reports } = createMockRuleContext({ source: 'const x = () => 1', filePath: '/src/app.ts' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(1)
   })
 
   test('should work with empty source code', () => {
-    const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+    const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test'))
     expect(reports.length).toBe(1)
   })
 
   test('should work with .tsx file extension', () => {
-    const { context, reports } = createMockContext({}, '/src/component.tsx')
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }', filePath: '/src/component.tsx' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('Component'))
     expect(reports.length).toBe(1)
   })
 
   test('should work with .js file extension', () => {
-    const { context, reports } = createMockContext({}, '/src/index.js')
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }', filePath: '/src/index.js' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('handler'))
     expect(reports.length).toBe(1)
   })
 
   test('should work with allowArrowFunctions set to false explicitly', () => {
-    const { context, reports } = createMockContext({ allowArrowFunctions: false })
+    const { context, reports } = createMockRuleContext({ options: [{ allowArrowFunctions: false }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(1)
   })
 
   test('should work with allowTypedFunctionExpressions set to false explicitly', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: false })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: false }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'typed', hasTypeAnnotation: true })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -1647,7 +1611,7 @@ describe('require-return-type rule - context', () => {
   })
 
   test('should work with allowHigherOrderFunctions set to false explicitly', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: false })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: false }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerFunc = {
@@ -1662,18 +1626,18 @@ describe('require-return-type rule - context', () => {
   })
 
   test('should work with unknown extra options', () => {
-    const { context, reports } = createMockContext({ unknownOption: true })
+    const { context, reports } = createMockRuleContext({ options: [{ unknownOption: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('test'))
     expect(reports.length).toBe(1)
   })
 
   test('should work with all three options set to true', () => {
-    const { context, reports } = createMockContext({
+    const { context, reports } = createMockRuleContext({ options: [{
       allowArrowFunctions: true,
       allowTypedFunctionExpressions: true,
       allowHigherOrderFunctions: true,
-    })
+    }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(0)
@@ -1685,7 +1649,7 @@ describe('require-return-type rule - context', () => {
 // ============================================================
 describe('require-return-type rule - parameterized function names', () => {
   test('should report function declaration named "add" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add'))
     expect(reports.length).toBe(1)
@@ -1693,7 +1657,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "subtract" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('subtract'))
     expect(reports.length).toBe(1)
@@ -1701,7 +1665,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "multiply" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('multiply'))
     expect(reports.length).toBe(1)
@@ -1709,7 +1673,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "divide" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('divide'))
     expect(reports.length).toBe(1)
@@ -1717,7 +1681,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "compute" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('compute'))
     expect(reports.length).toBe(1)
@@ -1725,7 +1689,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "process" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('process'))
     expect(reports.length).toBe(1)
@@ -1733,7 +1697,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "handleClick" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('handleClick'))
     expect(reports.length).toBe(1)
@@ -1741,7 +1705,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "onChange" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('onChange'))
     expect(reports.length).toBe(1)
@@ -1749,7 +1713,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "fetchData" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fetchData'))
     expect(reports.length).toBe(1)
@@ -1757,7 +1721,7 @@ describe('require-return-type rule - parameterized function names', () => {
   })
 
   test('should report function declaration named "render" without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('render'))
     expect(reports.length).toBe(1)
@@ -1770,42 +1734,42 @@ describe('require-return-type rule - parameterized function names', () => {
 // ============================================================
 describe('require-return-type rule - parameterized function types', () => {
   test('should report FunctionDeclaration without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn'))
     expect(reports.length).toBe(1)
   })
 
   test('should report FunctionExpression without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('fn'))
     expect(reports.length).toBe(1)
   })
 
   test('should report ArrowFunctionExpression without return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(1)
   })
 
   test('should not report FunctionDeclaration with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', true))
     expect(reports.length).toBe(0)
   })
 
   test('should not report FunctionExpression with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionExpression(createFunctionExpression('fn', true))
     expect(reports.length).toBe(0)
   })
 
   test('should not report ArrowFunctionExpression with return type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(true))
     expect(reports.length).toBe(0)
@@ -1817,56 +1781,56 @@ describe('require-return-type rule - parameterized function types', () => {
 // ============================================================
 describe('require-return-type rule - parameterized line numbers', () => {
   test('should report correct line 1 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 0))
     expect(reports[0].loc?.start.line).toBe(1)
   })
 
   test('should report correct line 5 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 5, 0))
     expect(reports[0].loc?.start.line).toBe(5)
   })
 
   test('should report correct line 10 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 10, 0))
     expect(reports[0].loc?.start.line).toBe(10)
   })
 
   test('should report correct line 25 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 25, 0))
     expect(reports[0].loc?.start.line).toBe(25)
   })
 
   test('should report correct line 50 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 50, 0))
     expect(reports[0].loc?.start.line).toBe(50)
   })
 
   test('should report correct line 100 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 100, 0))
     expect(reports[0].loc?.start.line).toBe(100)
   })
 
   test('should report correct line 250 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 250, 0))
     expect(reports[0].loc?.start.line).toBe(250)
   })
 
   test('should report correct line 500 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 500, 0))
     expect(reports[0].loc?.start.line).toBe(500)
@@ -1878,56 +1842,56 @@ describe('require-return-type rule - parameterized line numbers', () => {
 // ============================================================
 describe('require-return-type rule - parameterized column numbers', () => {
   test('should report correct column 0 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 0))
     expect(reports[0].loc?.start.column).toBe(0)
   })
 
   test('should report correct column 2 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 2))
     expect(reports[0].loc?.start.column).toBe(2)
   })
 
   test('should report correct column 4 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 4))
     expect(reports[0].loc?.start.column).toBe(4)
   })
 
   test('should report correct column 8 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 8))
     expect(reports[0].loc?.start.column).toBe(8)
   })
 
   test('should report correct column 12 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 12))
     expect(reports[0].loc?.start.column).toBe(12)
   })
 
   test('should report correct column 16 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 16))
     expect(reports[0].loc?.start.column).toBe(16)
   })
 
   test('should report correct column 20 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 20))
     expect(reports[0].loc?.start.column).toBe(20)
   })
 
   test('should report correct column 32 for function declaration', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('fn', false, 1, 32))
     expect(reports[0].loc?.start.column).toBe(32)
@@ -1939,14 +1903,14 @@ describe('require-return-type rule - parameterized column numbers', () => {
 // ============================================================
 describe('require-return-type rule - parameterized option combos', () => {
   test('arrow function with allowArrowFunctions=true should produce 0 reports', () => {
-    const { context, reports } = createMockContext({ allowArrowFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowArrowFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(0)
   })
 
   test('arrow function with allowArrowFunctions=false should produce 1 report', () => {
-    const { context, reports } = createMockContext({ allowArrowFunctions: false })
+    const { context, reports } = createMockRuleContext({ options: [{ allowArrowFunctions: false }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.ArrowFunctionExpression(createArrowFunctionExpression())
     expect(reports.length).toBe(1)
@@ -1958,7 +1922,7 @@ describe('require-return-type rule - parameterized option combos', () => {
 // ============================================================
 describe('require-return-type rule - higher-order functions', () => {
   test('should detect function returning arrow function body as higher-order', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerFunc = {
@@ -1973,7 +1937,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should not suppress report when allowHigherOrderFunctions is false', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: false })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: false }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerFunc = {
@@ -1988,7 +1952,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should detect arrow with arrow body as higher-order', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerArrow = createArrowFunctionExpression(false, 1, 0, undefined, innerArrow)
@@ -1997,7 +1961,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should detect arrow with function expression body as higher-order', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerFunc = createFunctionExpression()
     const outerArrow = createArrowFunctionExpression(false, 1, 0, undefined, innerFunc)
@@ -2006,7 +1970,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should not consider function returning non-function as higher-order', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const outerFunc = {
       type: 'FunctionDeclaration',
@@ -2023,7 +1987,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should handle block body with no return statement as non-higher-order', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const outerFunc = {
       type: 'FunctionDeclaration',
@@ -2040,7 +2004,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should handle block body with return of non-function argument', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const outerFunc = {
       type: 'FunctionDeclaration',
@@ -2057,7 +2021,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should handle function expression returning arrow function with allowHigherOrderFunctions', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerArrow = createArrowFunctionExpression()
     const outerFunc = {
@@ -2071,7 +2035,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should handle function expression returning function expression with allowHigherOrderFunctions', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const innerFunc = createFunctionExpression()
     const outerFunc = {
@@ -2085,7 +2049,7 @@ describe('require-return-type rule - higher-order functions', () => {
   })
 
   test('should still report function declaration when allowHigherOrderFunctions is true and body is not higher-order', () => {
-    const { context, reports } = createMockContext({ allowHigherOrderFunctions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowHigherOrderFunctions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('regular'))
     expect(reports.length).toBe(1)
@@ -2097,7 +2061,7 @@ describe('require-return-type rule - higher-order functions', () => {
 // ============================================================
 describe('require-return-type rule - typed function expressions', () => {
   test('should not report function expression in typed variable when allowTypedFunctionExpressions is true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'typed', hasTypeAnnotation: true })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -2105,7 +2069,7 @@ describe('require-return-type rule - typed function expressions', () => {
   })
 
   test('should report function expression in untyped variable when allowTypedFunctionExpressions is true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'untyped', hasTypeAnnotation: false })
     visitor.FunctionExpression(createFunctionExpression(null, false, 1, 0, parent))
@@ -2113,7 +2077,7 @@ describe('require-return-type rule - typed function expressions', () => {
   })
 
   test('should not report arrow function in typed variable when allowTypedFunctionExpressions is true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'typedArrow', hasTypeAnnotation: true })
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 1, 0, parent))
@@ -2121,7 +2085,7 @@ describe('require-return-type rule - typed function expressions', () => {
   })
 
   test('should report arrow function in untyped variable when allowTypedFunctionExpressions is true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = createVariableDeclarator({ name: 'untypedArrow', hasTypeAnnotation: false })
     visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 1, 0, parent))
@@ -2129,14 +2093,14 @@ describe('require-return-type rule - typed function expressions', () => {
   })
 
   test('should report function declaration even with allowTypedFunctionExpressions true', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     visitor.FunctionDeclaration(createFunctionDeclaration('add'))
     expect(reports.length).toBe(1)
   })
 
   test('should handle variable declarator with null type annotation', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = {
       type: 'VariableDeclarator',
@@ -2151,7 +2115,7 @@ describe('require-return-type rule - typed function expressions', () => {
   })
 
   test('should handle variable declarator with undefined type annotation', () => {
-    const { context, reports } = createMockContext({ allowTypedFunctionExpressions: true })
+    const { context, reports } = createMockRuleContext({ options: [{ allowTypedFunctionExpressions: true }], source: 'function add(a: number, b: number) { return a + b; }' })
     const visitor = requireReturnTypeRule.create(context)
     const parent = {
       type: 'VariableDeclarator',

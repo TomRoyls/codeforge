@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferRestParamsRule } from '../../../../src/rules/patterns/prefer-rest-params.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function test() { return arguments; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string, line = 1, column = 0, range?: [number, number]): unknown {
   return {
@@ -153,7 +115,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(visitor).toHaveProperty('Identifier')
@@ -161,62 +123,62 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should return visitor with FunctionDeclaration handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor.FunctionDeclaration).toBe('function')
     })
 
     test('should return visitor with FunctionExpression handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor.FunctionExpression).toBe('function')
     })
 
     test('should return visitor with ArrowFunctionExpression handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor.ArrowFunctionExpression).toBe('function')
     })
 
     test('should return visitor with FunctionDeclaration:exit handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor['FunctionDeclaration:exit']).toBe('function')
     })
 
     test('should return visitor with FunctionExpression:exit handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor['FunctionExpression:exit']).toBe('function')
     })
 
     test('should return visitor with ArrowFunctionExpression:exit handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor['ArrowFunctionExpression:exit']).toBe('function')
     })
 
     test('should return visitor with VariableDeclarator handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor.VariableDeclarator).toBe('function')
     })
 
     test('should return visitor with Identifier handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
       expect(typeof visitor.Identifier).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor1 = preferRestParamsRule.create(context)
       const visitor2 = preferRestParamsRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('each visitor should have independent state', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor1 = preferRestParamsRule.create(context)
       const visitor2 = preferRestParamsRule.create(context)
 
@@ -224,7 +186,7 @@ describe('prefer-rest-params rule', () => {
       visitor1.Identifier(createIdentifier('arguments'))
 
       // visitor2 is independent - no function entered, no report
-      const { reports } = createMockContext()
+      const { reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const origContext = {
         ...context,
         report: (d: ReportDescriptor) => {
@@ -238,7 +200,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('detecting arguments usage inside functions', () => {
     test('should report arguments inside function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -249,7 +211,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments inside function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionExpression())
@@ -260,7 +222,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments inside arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createArrowFunctionExpression())
@@ -271,7 +233,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report multiple arguments usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -282,7 +244,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments using FunctionExpression enter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -292,7 +254,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments using ArrowFunctionExpression enter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -302,7 +264,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at depth 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -312,7 +274,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at depth 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -323,7 +285,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at depth 3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('f1'))
@@ -335,7 +297,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at depth 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -347,7 +309,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at different line positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -359,7 +321,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at different column positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -371,7 +333,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments after other identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -383,7 +345,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments after VariableDeclarator for different name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -394,7 +356,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments inside named function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       const namedFnExpr = {
@@ -410,7 +372,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report when arguments is at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -422,7 +384,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments inside multiple sequential function declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fn1'))
@@ -441,7 +403,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments inside multiple sequential function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -456,7 +418,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments inside multiple sequential arrow functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -471,7 +433,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report when mixing function types in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fn1'))
@@ -492,7 +454,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('not reporting arguments outside functions', () => {
     test('should not report arguments outside any function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.Identifier(createIdentifier('arguments'))
@@ -501,7 +463,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report other identifiers outside functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.Identifier(createIdentifier('foo'))
@@ -511,7 +473,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report at global scope after function exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -522,7 +484,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report before any function entered', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.Identifier(createIdentifier('arguments'))
@@ -533,7 +495,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report after all functions exited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -546,7 +508,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report after nested functions all exited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -559,7 +521,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report arguments in VariableDeclarator outside function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arguments'))
@@ -569,7 +531,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report after rapid enter and exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -582,7 +544,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('not reporting other identifiers inside functions', () => {
     test('should not report regular identifiers inside function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -594,7 +556,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report arg identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -604,7 +566,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report args identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -614,7 +576,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report argument identifier (singular)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -624,7 +586,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report Arguments identifier (different case)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -634,7 +596,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report ARGUMENTS identifier (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -644,7 +606,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report myArguments identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -654,7 +616,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report _arguments identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -664,7 +626,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report arguments0 identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -674,7 +636,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report common variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -686,7 +648,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report function parameter-like names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -698,7 +660,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report empty string name identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -710,7 +672,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('not reporting when arguments is explicitly declared', () => {
     test('should not report when arguments is declared as variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -721,7 +683,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report other identifiers even when arguments is declared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -733,7 +695,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments if different variable is declared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -744,7 +706,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should reset arguments declared flag on function exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test1'))
@@ -759,7 +721,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report after declaring a different variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -770,7 +732,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report when arguments is declared via let-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -782,7 +744,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report Arguments (wrong case) declaration as shadowing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -793,7 +755,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should still report after declaring foo then bar', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -805,7 +767,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report after declaring arguments and other variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -818,7 +780,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator without id property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -829,7 +791,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with destructuring id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       const destructuringNode = {
@@ -845,7 +807,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with array destructuring id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       const arrayDestructuringNode = {
@@ -861,7 +823,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not affect reporting when VariableDeclarator is outside function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('arguments'))
@@ -872,7 +834,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle multiple VariableDeclarators for arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -886,7 +848,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('nested functions', () => {
     test('should track function depth correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -899,7 +861,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report arguments in outer function when declared in inner', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -913,7 +875,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report in all 3 nested levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('l1'))
@@ -929,7 +891,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report in 4 deeply nested levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('l1'))
@@ -942,7 +904,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should properly exit nested functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -958,7 +920,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should track depth with mixed function types nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -970,7 +932,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle sibling functions at same depth', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -994,7 +956,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle sibling functions with different declared states', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -1018,7 +980,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle inner declared not affecting outer after inner exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -1036,7 +998,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle outer declared affecting inner', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -1054,7 +1016,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle deeply nested with alternating declared states', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       // Level 1: not declared
@@ -1078,7 +1040,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle FunctionExpression nesting inside FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -1091,7 +1053,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle ArrowFunctionExpression nesting inside FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -1104,7 +1066,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle exit before enter not breaking state', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       // Premature exit decrements depth to -1
@@ -1119,7 +1081,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle deeply nested exits correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('l1'))
@@ -1140,21 +1102,21 @@ describe('prefer-rest-params rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier('string')).not.toThrow()
@@ -1162,7 +1124,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1177,7 +1139,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1188,7 +1150,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1231,7 +1193,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle multiple function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('decl'))
@@ -1250,7 +1212,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle boolean node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(true)).not.toThrow()
@@ -1258,7 +1220,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle array node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier([])).not.toThrow()
@@ -1266,7 +1228,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with only type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1276,7 +1238,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1286,7 +1248,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with null name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1296,7 +1258,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with undefined name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1306,7 +1268,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1316,7 +1278,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with partial loc - no start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1331,7 +1293,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with partial loc - no end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1346,7 +1308,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with loc but non-numeric values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1364,28 +1326,28 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle FunctionDeclaration enter with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
     })
 
     test('should handle FunctionExpression enter with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.FunctionExpression(null)).not.toThrow()
     })
 
     test('should handle ArrowFunctionExpression enter with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(null)).not.toThrow()
     })
 
     test('should handle VariableDeclarator with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1396,7 +1358,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle exit handlers with null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor['FunctionDeclaration:exit'](null)).not.toThrow()
@@ -1405,7 +1367,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with range [0, 0]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1416,7 +1378,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with large range values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1427,7 +1389,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle very large line and column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1439,7 +1401,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1449,7 +1411,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1467,7 +1429,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1476,7 +1438,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with non-Identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1491,7 +1453,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should create fresh state for each visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor1 = preferRestParamsRule.create(context)
       const visitor2 = preferRestParamsRule.create(context)
 
@@ -1507,7 +1469,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('message quality', () => {
     test('should mention rest parameters in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1517,7 +1479,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should mention arguments in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1527,7 +1489,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should have correct message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1574,7 +1536,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report arguments when used as property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1584,7 +1546,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report when arguments is used multiple times in same function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1596,7 +1558,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should produce consistent message across all reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1611,7 +1573,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should produce message that is a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1621,7 +1583,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should produce message mentioning ...args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1633,7 +1595,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1644,7 +1606,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1655,7 +1617,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report distinct locations for multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1669,7 +1631,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should include loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1681,7 +1643,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1695,7 +1657,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('auto-fix', () => {
     test('should provide fix replacing arguments with args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1708,7 +1670,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix for each arguments usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1721,7 +1683,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not provide fix when node has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1742,7 +1704,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix text as args consistently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1756,7 +1718,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix with correct range for each occurrence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1770,7 +1732,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix at start of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1781,7 +1743,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix with range at end of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1791,7 +1753,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix with single character range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1802,7 +1764,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should provide fix as object with range and text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1817,7 +1779,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('context variations', () => {
     test('should work with different file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }', filePath: '/project/src/utils.ts' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1827,11 +1789,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const f = () => arguments[0];',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const f = () => arguments[0];', filePath: '/src/file.ts' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1841,7 +1799,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1852,7 +1810,7 @@ describe('prefer-rest-params rule', () => {
 
     test('should work with long source code', () => {
       const longSource = 'x'.repeat(10000)
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1862,7 +1820,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should work with config containing extra options', () => {
-      const { context, reports } = createMockContext({ strictMode: true, customFlag: 'yes' })
+      const { context, reports } = createMockRuleContext({ options: [{ strictMode: true, customFlag: 'yes' }], source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1872,7 +1830,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should work with context that has undefined getAST', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1884,7 +1842,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('report descriptor properties', () => {
     test('each report should have a message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1898,7 +1856,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('each report should have a loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1911,7 +1869,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('reports should maintain order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1925,7 +1883,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('report descriptor should match expected shape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1942,7 +1900,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('function type specific behavior', () => {
     test('should report when entering via FunctionDeclaration and exiting via FunctionDeclaration:exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1954,7 +1912,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report when entering via FunctionExpression and exiting via FunctionExpression:exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1966,7 +1924,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report when entering via ArrowFunctionExpression and exiting via ArrowFunctionExpression:exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -1978,7 +1936,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should track depth with mixed enter/exit types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -1992,7 +1950,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should track depth correctly with arrow inside function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2006,7 +1964,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should track depth correctly with function inside arrow', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -2022,7 +1980,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('rapid state changes', () => {
     test('should handle rapid enter exit cycles', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2035,7 +1993,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle rapid enter exit without identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2047,7 +2005,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle alternating declared and undeclared across functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       // Function 1: declared
@@ -2073,7 +2031,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('complex scenarios', () => {
     test('should handle IIFE-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2084,7 +2042,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle callback pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       // Outer function
@@ -2101,7 +2059,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle promise chain pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fetch'))
@@ -2117,7 +2075,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle event handler pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2129,7 +2087,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle class method pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2141,7 +2099,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle recursive function pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('recurse'))
@@ -2156,7 +2114,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle decorator-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       // Outer wrapper
@@ -2170,7 +2128,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle many identifiers with single arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2182,7 +2140,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle many VariableDeclarators then arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2195,7 +2153,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle many VariableDeclarators including arguments then arguments identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2211,7 +2169,7 @@ describe('prefer-rest-params rule', () => {
 
   describe('additional coverage', () => {
     test('should handle function with params property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       const fnWithParams = {
@@ -2227,7 +2185,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report before VariableDeclarator processes arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2239,7 +2197,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle FunctionExpression exit resetting argumentsDeclared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2255,7 +2213,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle ArrowFunctionExpression exit resetting argumentsDeclared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression())
@@ -2271,7 +2229,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with type as non-string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2281,7 +2239,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle node with name as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2294,7 +2252,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should report arguments at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2305,7 +2263,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with undefined type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2317,7 +2275,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2332,7 +2290,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with id having null type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2347,7 +2305,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with id having wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2362,7 +2320,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with id having undefined name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2377,7 +2335,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle VariableDeclarator with id name not matching arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2388,7 +2346,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should not report when multiple functions declare arguments at different levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('outer'))
@@ -2408,7 +2366,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle deeply nested with declaration only at top', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('l1'))
@@ -2425,42 +2383,42 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(Symbol('test'))).not.toThrow()
     })
 
     test('should handle Date as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(new Date())).not.toThrow()
     })
 
     test('should handle RegExp as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(/test/)).not.toThrow()
     })
 
     test('should handle Map as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(new Map())).not.toThrow()
     })
 
     test('should handle Set as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       expect(() => visitor.Identifier(new Set())).not.toThrow()
     })
 
     test('should handle arguments with arguments-like suffixes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2473,7 +2431,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle arguments with arguments-like prefixes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('test'))
@@ -2485,7 +2443,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle nested function with exit by different type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       // Enter with FunctionDeclaration, exit with FunctionExpression:exit
@@ -2500,7 +2458,7 @@ describe('prefer-rest-params rule', () => {
     })
 
     test('should handle 20 rapid enter/exit cycles with arguments in each', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return arguments; }' })
       const visitor = preferRestParamsRule.create(context)
 
       for (let i = 0; i < 20; i++) {

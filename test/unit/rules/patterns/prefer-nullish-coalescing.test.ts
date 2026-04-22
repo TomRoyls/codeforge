@@ -1,43 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { preferNullishCoalescingRule } from '../../../../src/rules/patterns/prefer-nullish-coalescing.js'
 import type { RuleContext, RuleVisitor } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = a || b;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createLogicalOrExpression(
   rightType: string = 'Identifier',
@@ -113,7 +77,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(visitor).toHaveProperty('LogicalExpression')
@@ -122,7 +86,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detecting || expressions', () => {
     test('should report || with identifier right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier'))
@@ -132,7 +96,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report && expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalAndExpression())
@@ -141,7 +105,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report || true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('true'))
@@ -150,7 +114,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report || false pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('false'))
@@ -161,7 +125,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('message quality', () => {
     test('should mention falsy values in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -170,7 +134,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should mention nullish coalescing operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -182,11 +146,11 @@ describe('prefer-nullish-coalescing rule', () => {
   describe('options - ignoreConditionalTests', () => {
     test('should skip || in if statement when option is true', () => {
       const source = 'if (x || y) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -207,11 +171,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should report || in if statement when option is false', () => {
       const source = 'if (x || y) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: false },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: false }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -221,11 +185,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should report || not in if statement even with option true', () => {
       const source = 'const x = a || b;'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -236,21 +200,21 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression('string')).not.toThrow()
@@ -258,7 +222,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -273,7 +237,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -288,7 +252,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node without right property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -303,7 +267,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 10, 5))
@@ -313,7 +277,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -352,7 +316,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with partial loc (missing end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -370,7 +334,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with partial loc (missing start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -388,7 +352,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle right node without value property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -404,7 +368,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle nested logical expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -511,32 +475,32 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('create - visitor structure', () => {
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should return visitor with LogicalExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       expect(typeof visitor.LogicalExpression).toBe('function')
     })
 
     test('should return a new visitor for each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor1 = preferNullishCoalescingRule.create(context)
       const visitor2 = preferNullishCoalescingRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('visitor LogicalExpression should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       expect(visitor.LogicalExpression.length).toBe(1)
     })
 
     test('should have only expected visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       expect(Object.keys(visitor)).toContain('LogicalExpression')
     })
@@ -563,7 +527,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - || with various right-side types', () => {
     test('should report || with numeric literal right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -579,7 +543,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with string literal right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -595,7 +559,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with null literal right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -611,7 +575,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with call expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -631,7 +595,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with member expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -651,7 +615,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with object expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -667,7 +631,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with array expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -683,7 +647,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with arrow function right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -703,7 +667,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with template literal right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -719,7 +683,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with conditional expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -735,7 +699,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with binary expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -758,7 +722,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - various left-side types', () => {
     test('should report with member expression left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -778,7 +742,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report with call expression left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -794,7 +758,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report with literal left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -810,7 +774,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report with nested || expression left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -831,7 +795,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report with array expression left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -849,7 +813,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - operators that should not report', () => {
     test('should not report ?? expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -865,7 +829,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report && expressions with identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -881,7 +845,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report BinaryExpression with ||-like operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -897,7 +861,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression({
@@ -912,7 +876,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression({
@@ -927,7 +891,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report SequenceExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression({
@@ -940,7 +904,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report empty string literal as right side when boolean true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -956,7 +920,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report when right side is boolean false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -972,7 +936,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report && even with boolean true right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -990,7 +954,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('location reporting accuracy', () => {
     test('should report location at line 1, column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 1, 0))
@@ -1000,7 +964,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report location at line 5, column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 5, 10))
@@ -1010,7 +974,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report location at line 100, column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 100, 50))
@@ -1020,7 +984,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 1, 0))
@@ -1030,7 +994,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report start location before end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 3, 5))
@@ -1039,7 +1003,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should use default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1055,7 +1019,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should use default location when loc is empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1071,7 +1035,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 1, 9999))
@@ -1080,7 +1044,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 9999, 0))
@@ -1091,7 +1055,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('message content verification', () => {
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1101,7 +1065,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should mention nullish coalescing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1110,7 +1074,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should mention || operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1119,7 +1083,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should mention ?? operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1128,7 +1092,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should mention falsy values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1137,7 +1101,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should mention specific falsy examples', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1146,7 +1110,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should be consistent across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1156,7 +1120,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should not be undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1165,7 +1129,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should not be null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1176,7 +1140,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('report descriptor structure', () => {
     test('report should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1185,7 +1149,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1194,7 +1158,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1203,7 +1167,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1212,7 +1176,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report loc start should have line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1221,7 +1185,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report loc start should have column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1230,7 +1194,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report loc end should have line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1239,7 +1203,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('report loc end should have column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1250,7 +1214,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('multiple reports', () => {
     test('should report multiple separate || expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1261,7 +1225,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report two || expressions with different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression('Identifier', 1, 0))
@@ -1273,7 +1237,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should accumulate reports across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1284,7 +1248,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report for non-|| expressions between || reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1298,11 +1262,11 @@ describe('prefer-nullish-coalescing rule', () => {
   describe('options - ignoreConditionalTests - additional', () => {
     test('should skip || when source has if( pattern', () => {
       const source = 'if(x || y) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1319,11 +1283,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should skip || when source has "if (" pattern with space', () => {
       const source = '  if (x || y) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1340,11 +1304,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should not skip || in assignment context with option true', () => {
       const source = 'const x = a || b;'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1353,11 +1317,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should report || in return context with option true', () => {
       const source = 'return a || b;'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1366,11 +1330,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should not match iffy as if pattern', () => {
       const source = 'iffy(a || b);'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1387,11 +1351,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should not match verify as if pattern', () => {
       const source = 'verify(a || b);'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1408,11 +1372,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should handle multi-line source with if on different line', () => {
       const source = 'const x = 1;\nif (a || b) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1429,11 +1393,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should handle multi-line source with assignment on different line', () => {
       const source = 'if (x) { }\nconst y = a || b;'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: true },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: true }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1450,7 +1414,10 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should use default when options has no ignoreConditionalTests', () => {
       const source = 'if (x || y) { }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1468,7 +1435,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('edge cases - additional', () => {
     test('should handle boolean true node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression(true)).not.toThrow()
@@ -1476,7 +1443,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle boolean false node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression(false)).not.toThrow()
@@ -1484,7 +1451,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression({})).not.toThrow()
@@ -1492,7 +1459,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with only type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression({ type: 'LogicalExpression' })).not.toThrow()
@@ -1500,7 +1467,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with extra unexpected properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1518,7 +1485,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with zero values in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1536,7 +1503,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with negative column (unusual but valid)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1552,7 +1519,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle deeply nested || expressions (3 levels)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1578,28 +1545,28 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node with string type instead of expected type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression('LogicalExpression')).not.toThrow()
     })
 
     test('should handle node with number type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression(42)).not.toThrow()
     })
 
     test('should handle node with array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       expect(() => visitor.LogicalExpression([])).not.toThrow()
     })
 
     test('should handle right side with numeric literal value 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1615,7 +1582,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle right side with empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1631,7 +1598,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node where loc.start has string values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1647,7 +1614,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node where loc has null values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1663,7 +1630,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle node where loc.start is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1679,7 +1646,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle || with LogicalExpression && as left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1702,7 +1669,10 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/different/path.ts', 'x || y')
+      const { context, reports } = createMockRuleContext({
+        source: 'x || y',
+        filePath: '/different/path.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1710,7 +1680,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1719,7 +1689,10 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should work with multi-line source', () => {
       const source = 'const a = 1;\nconst b = 2;\nconst c = x || y;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1727,7 +1700,10 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should work with context that has workspaceRoot', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x || y')
+      const { context, reports } = createMockRuleContext({
+        source: 'x || y',
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1798,7 +1774,10 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should work with different workspace roots', () => {
-      const { context, reports } = createMockContext({}, '/project/src/file.ts', 'x || y')
+      const { context, reports } = createMockRuleContext({
+        source: 'x || y',
+        filePath: '/project/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1826,7 +1805,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('create should be callable with mock context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       expect(() => preferNullishCoalescingRule.create(context)).not.toThrow()
     })
   })
@@ -1847,7 +1826,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - mixed operator scenarios', () => {
     test('should report || followed by && in separate nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const orNode = {
@@ -1873,7 +1852,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report only || expressions in a mix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1888,7 +1867,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || mixed with ??', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -1908,7 +1887,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - common patterns', () => {
     test('should report variable || default pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1924,7 +1903,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report obj.prop || fallback pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1944,7 +1923,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report getValue() || default pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1964,7 +1943,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report x || 0 pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1980,7 +1959,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report x || "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -1996,7 +1975,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report arr[0] || fallback pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2017,7 +1996,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report || true common pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2033,7 +2012,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report || false common pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2051,7 +2030,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('idempotency', () => {
     test('should report same node multiple times when called repeatedly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       const node = createLogicalOrExpression()
 
@@ -2063,7 +2042,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should produce same message for same node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       const node = createLogicalOrExpression()
 
@@ -2074,7 +2053,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should produce same location for same node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
       const node = createLogicalOrExpression()
 
@@ -2087,7 +2066,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('visitor method behavior', () => {
     test('LogicalExpression should return void (not throw)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const result = visitor.LogicalExpression(createLogicalOrExpression())
@@ -2095,7 +2074,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('LogicalExpression should return void for non-matching node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const result = visitor.LogicalExpression(createLogicalAndExpression())
@@ -2103,7 +2082,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('LogicalExpression should return void for null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const result = visitor.LogicalExpression(null)
@@ -2111,7 +2090,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('LogicalExpression should handle node with undefined operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2127,7 +2106,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('LogicalExpression should handle node with wrong type and || operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2145,7 +2124,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - should not report non-boolean literal that is truthy', () => {
     test('should report with right side as undefined identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2163,7 +2142,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('extractLocation integration', () => {
     test('should use default location when extractLocation returns defaults for null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(null)
@@ -2171,7 +2150,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should preserve exact location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2193,10 +2172,15 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('options handling edge cases', () => {
     test('should handle options with extra unknown properties', () => {
-      const { context, reports } = createMockContext({
-        ignoreConditionalTests: false,
-        unknownProp: 'value',
-      } as Record<string, unknown>)
+      const { context, reports } = createMockRuleContext({
+        options: [
+          {
+            ignoreConditionalTests: false,
+            unknownProp: 'value',
+          } as Record<string, unknown>,
+        ],
+        source: 'const x = a || b;',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -2205,11 +2189,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should handle options with ignoreConditionalTests as truthy non-boolean', () => {
       const source = 'if (x || y) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: 'yes' },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: 'yes' }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2226,11 +2210,11 @@ describe('prefer-nullish-coalescing rule', () => {
 
     test('should handle options with ignoreConditionalTests as 1 (truthy)', () => {
       const source = 'if (x || y) { }'
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: 1 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: 1 }],
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2246,11 +2230,11 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should handle options with ignoreConditionalTests as 0 (falsy)', () => {
-      const { context, reports } = createMockContext(
-        { ignoreConditionalTests: 0 },
-        '/src/file.ts',
-        'const x = a || b;',
-      )
+      const { context, reports } = createMockRuleContext({
+        options: [{ ignoreConditionalTests: 0 }],
+        source: 'const x = a || b;',
+        filePath: '/src/file.ts',
+      })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -2286,7 +2270,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - right side edge cases', () => {
     test('should not report when right side type is Literal and value is boolean true via different ref', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const boolTrue = true
@@ -2303,7 +2287,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report when right side type is Literal and value is boolean false via different ref', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const boolFalse = false
@@ -2320,7 +2304,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report when right side is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2340,7 +2324,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report when right side is UnaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2360,7 +2344,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report when right side is UpdateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2381,7 +2365,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report when left side is UnaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2403,7 +2387,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('detection - chained expressions', () => {
     test('should report || with chained || on both sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2431,7 +2415,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report each || in separate calls independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2448,7 +2432,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with function expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2469,7 +2453,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with typeof expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2489,7 +2473,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with spread element right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2505,7 +2489,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should report || with tagged template expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2525,7 +2509,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('should not report when right side has Literal type but value matches true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       const node = {
@@ -2543,7 +2527,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
   describe('message - comprehensive content checks', () => {
     test('message should contain the word "unexpected"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -2552,7 +2536,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should contain the word "behavior"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -2561,7 +2545,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should have length greater than 50 characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -2570,7 +2554,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should contain suggestion to use ??', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())
@@ -2579,7 +2563,7 @@ describe('prefer-nullish-coalescing rule', () => {
     })
 
     test('message should not be empty after trimming', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = a || b;' })
       const visitor = preferNullishCoalescingRule.create(context)
 
       visitor.LogicalExpression(createLogicalOrExpression())

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noNewWrappersRule } from '../../../../src/rules/patterns/no-new-wrappers.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(calleeName: string, lineNumber = 1, column = 0): unknown {
   return {
@@ -168,28 +132,28 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('create', () => {
     test('should return visitor object with NewExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(visitor).toHaveProperty('NewExpression')
     })
 
     test('should return a visitor with only NewExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(Object.keys(visitor)).toContain('NewExpression')
     })
 
     test('NewExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(typeof visitor.NewExpression).toBe('function')
     })
 
     test('create should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -197,8 +161,8 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should create independent visitors for different contexts', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const visitor1 = noNewWrappersRule.create(ctx1)
       const visitor2 = noNewWrappersRule.create(ctx2)
@@ -213,8 +177,8 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle multiple create calls without shared state', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const visitor1 = noNewWrappersRule.create(ctx1)
       visitor1.NewExpression(createNewExpression('String'))
@@ -227,7 +191,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('create should accept context with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/custom/path/file.ts' })
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -236,7 +200,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('create should accept context with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new String("hello")')
+      const { context, reports } = createMockRuleContext({ source: 'new String("hello")', filePath: '/src/file.ts' })
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -250,7 +214,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('detecting new String()', () => {
     test('should report new String()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -259,7 +223,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct message for new String()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -268,7 +232,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should mention string() in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -279,7 +243,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('detecting new Number()', () => {
     test('should report new Number()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -288,7 +252,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct message for new Number()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -297,7 +261,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should mention number() in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -308,7 +272,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('detecting new Boolean()', () => {
     test('should report new Boolean()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean'))
@@ -317,7 +281,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct message for new Boolean()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean'))
@@ -328,7 +292,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should mention boolean() in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean'))
@@ -339,7 +303,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('detecting new Symbol()', () => {
     test('should report new Symbol()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Symbol'))
@@ -348,7 +312,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct message for new Symbol()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Symbol'))
@@ -357,7 +321,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should mention symbol() in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Symbol'))
@@ -368,7 +332,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('detecting new BigInt()', () => {
     test('should report new BigInt()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('BigInt'))
@@ -377,7 +341,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct message for new BigInt()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('BigInt'))
@@ -386,7 +350,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should mention bigint() in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('BigInt'))
@@ -397,7 +361,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('detecting wrappers with arguments', () => {
     test('should report new String() even with arguments present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -412,7 +376,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report new Number() with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -427,7 +391,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report new Boolean() with argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -444,7 +408,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('detecting all five wrappers individually', () => {
     test('should detect new String() independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -455,7 +419,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should detect new Number() independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -466,7 +430,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should detect new Boolean() independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean'))
@@ -477,7 +441,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should detect new Symbol() independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Symbol'))
@@ -488,7 +452,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should detect new BigInt() independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('BigInt'))
@@ -504,7 +468,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('not reporting non-wrapper constructors', () => {
     test('should not report regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Date'))
@@ -516,7 +480,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report user-defined constructors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('UserClass'))
@@ -526,7 +490,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report CallExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(reports.length).toBe(0)
@@ -535,7 +499,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('not reporting common non-wrapper globals', () => {
     test('should not report new Date()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Date'))
@@ -544,7 +508,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array'))
@@ -553,7 +517,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Object()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Object'))
@@ -562,7 +526,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Map()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map'))
@@ -571,7 +535,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Set()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set'))
@@ -580,7 +544,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new WeakMap()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakMap'))
@@ -589,7 +553,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new WeakSet()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakSet'))
@@ -598,7 +562,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Promise()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise'))
@@ -607,7 +571,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new RegExp()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('RegExp'))
@@ -616,7 +580,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Error()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Error'))
@@ -625,7 +589,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new TypeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('TypeError'))
@@ -634,7 +598,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Int8Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Int8Array'))
@@ -643,7 +607,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new Float64Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Float64Array'))
@@ -652,7 +616,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new ArrayBuffer()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('ArrayBuffer'))
@@ -661,7 +625,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new DataView()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('DataView'))
@@ -672,7 +636,7 @@ describe('no-new-wrappers rule', () => {
 
   describe('not reporting case-sensitive non-matches', () => {
     test('should not report new string (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('string'))
@@ -681,7 +645,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new number (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('number'))
@@ -690,7 +654,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new boolean (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('boolean'))
@@ -699,7 +663,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new symbol (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('symbol'))
@@ -708,7 +672,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new bigint (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('bigint'))
@@ -717,7 +681,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new STRING (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('STRING'))
@@ -726,7 +690,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report new NUMBER (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('NUMBER'))
@@ -735,7 +699,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report names with extra characters like StringWrapper', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('StringWrapper'))
@@ -744,7 +708,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report names with extra characters like NumberType', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('NumberType'))
@@ -753,7 +717,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not report empty string callee name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(''))
@@ -767,7 +731,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression(null)).not.toThrow()
@@ -775,7 +739,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression(undefined)).not.toThrow()
@@ -783,7 +747,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle non-object node (string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression('string')).not.toThrow()
@@ -791,7 +755,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle non-object node (number)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression(123)).not.toThrow()
@@ -799,7 +763,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle non-object node (boolean)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression(true)).not.toThrow()
@@ -807,7 +771,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -823,7 +787,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -837,7 +801,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -852,7 +816,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle non-Identifier callee (MemberExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -869,7 +833,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle non-Identifier callee (FunctionExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -886,7 +850,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle callee with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -900,7 +864,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -939,7 +903,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node that is an empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression({})).not.toThrow()
@@ -947,7 +911,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -964,7 +928,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle callee as a number instead of object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -977,7 +941,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle callee as a string instead of object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -990,7 +954,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle callee Identifier without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1003,7 +967,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle deeply nested arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1030,7 +994,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1043,7 +1007,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle array as node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       expect(() => visitor.NewExpression([])).not.toThrow()
@@ -1051,7 +1015,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node with Symbol as callee name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1064,7 +1028,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle very large line numbers in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 99999, 99999))
@@ -1074,7 +1038,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle zero line and column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 0, 0))
@@ -1089,7 +1053,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('location reporting', () => {
     test('should report correct location for wrapper expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 10, 5))
@@ -1099,7 +1063,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number', 5, 10))
@@ -1109,7 +1073,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1126,7 +1090,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct location for new String() at line 1 col 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 1, 0))
@@ -1136,7 +1100,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct location for new Number() at custom position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number', 42, 15))
@@ -1146,7 +1110,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct location for new Boolean() at custom position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean', 7, 3))
@@ -1156,7 +1120,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct location for new Symbol() at custom position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Symbol', 100, 50))
@@ -1166,7 +1130,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report correct location for new BigInt() at custom position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('BigInt', 3, 8))
@@ -1176,7 +1140,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1191,7 +1155,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should preserve end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = createNewExpression('String', 5, 10)
@@ -1202,7 +1166,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle location for multiple reports independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 1, 0))
@@ -1214,7 +1178,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report location when callee is Identifier but type is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 20, 4))
@@ -1224,7 +1188,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle loc with only start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1240,7 +1204,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle loc with null start/end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1255,7 +1219,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should use extractLocation default when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const node = {
@@ -1274,7 +1238,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('message quality', () => {
     test('should contain "Do not use new" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1283,7 +1247,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should contain wrapper name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1292,7 +1256,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should suggest lowercase function in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean'))
@@ -1301,7 +1265,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should suggest literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -1310,7 +1274,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should have consistent message format for all wrappers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1327,7 +1291,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should end message with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1336,7 +1300,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should include "or a literal" phrase in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Symbol'))
@@ -1345,7 +1309,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should include "instead" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('BigInt'))
@@ -1354,7 +1318,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should use correct casing for wrapper name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -1364,7 +1328,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should produce a non-empty message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1379,7 +1343,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('multiple violations', () => {
     test('should report multiple new wrapper expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 1, 0))
@@ -1392,7 +1356,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report mixed violations and non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1405,7 +1369,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report same wrapper multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String', 1, 0))
@@ -1416,7 +1380,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report all five wrappers in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       const wrappers = ['String', 'Number', 'Boolean', 'Symbol', 'BigInt']
@@ -1428,7 +1392,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report each wrapper with correct message in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1441,7 +1405,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should handle large number of violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1452,7 +1416,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report interleaved violations and non-violations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1467,7 +1431,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report duplicate wrapper names separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number', 1, 0))
@@ -1481,7 +1445,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should report all five wrappers then non-wrappers without affecting count', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1497,7 +1461,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should accumulate reports across multiple visitor calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1519,7 +1483,7 @@ describe('no-new-wrappers rule', () => {
   // =========================================================================
   describe('context interaction', () => {
     test('should call context.report once for a single violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1528,7 +1492,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should pass message in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Number'))
@@ -1538,7 +1502,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should pass loc in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Boolean'))
@@ -1548,7 +1512,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should work with context returning different file paths', () => {
-      const { context, reports } = createMockContext({}, '/different/project/src/test.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/different/project/src/test.ts' })
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1557,11 +1521,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should work with context returning different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = new String("test")',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = new String("test")', filePath: '/src/file.ts' })
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1570,7 +1530,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should not call report for non-violating nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('Date'))
@@ -1580,7 +1540,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should use context logger without errors', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
 
       expect(() => {
         const visitor = noNewWrappersRule.create(context)
@@ -1648,11 +1608,7 @@ describe('no-new-wrappers rule', () => {
     })
 
     test('should maintain report count even with complex context', () => {
-      const { context, reports } = createMockContext(
-        { strict: true, customOption: 'value' },
-        '/deeply/nested/path/to/file.ts',
-        'const a = new String("x"); const b = new Number(1);',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, customOption: 'value' }], source: 'const a = new String("x"); const b = new Number(1);', filePath: '/deeply/nested/path/to/file.ts' })
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression('String'))
@@ -1673,7 +1629,7 @@ describe('no-new-wrappers rule', () => {
       { name: 'Symbol', expected: 'symbol()' },
       { name: 'BigInt', expected: 'bigint()' },
     ] as const)('should report new $name() with suggestion $expected', ({ name, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -1705,7 +1661,7 @@ describe('no-new-wrappers rule', () => {
       'Proxy',
       'FinalizationRegistry',
     ] as const)('should not report new %s()', (name) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -1720,7 +1676,7 @@ describe('no-new-wrappers rule', () => {
       { name: 'Symbol', expected: 'new Symbol()' },
       { name: 'BigInt', expected: 'new BigInt()' },
     ] as const)('message for $name should contain "$expected"', ({ name, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -1735,7 +1691,7 @@ describe('no-new-wrappers rule', () => {
       { name: 'Symbol', lower: 'symbol' },
       { name: 'BigInt', lower: 'bigint' },
     ] as const)('message for $name should suggest $lower() function', ({ name, lower }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -1752,7 +1708,7 @@ describe('no-new-wrappers rule', () => {
     ] as const)(
       'should report correct location at line=$line, column=$column',
       ({ line, column }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noNewWrappersRule.create(context)
 
         visitor.NewExpression(createNewExpression('String', line, column))
@@ -1774,7 +1730,7 @@ describe('no-new-wrappers rule', () => {
       'BooleanHelper',
       'SymbolTable',
     ] as const)('should not report user-defined class new %s()', (name) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -1789,7 +1745,7 @@ describe('no-new-wrappers rule', () => {
       { name: 'Symbol', line: 4 },
       { name: 'BigInt', line: 5 },
     ] as const)('should report $name at line $line with correct location', ({ name, line }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name, line, 0))
@@ -1806,7 +1762,7 @@ describe('no-new-wrappers rule', () => {
       { name: 'SYMBOL', desc: 'all uppercase' },
       { name: 'BIGINT', desc: 'all uppercase' },
     ] as const)('should not report $name ($desc)', ({ name }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewWrappersRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -1817,7 +1773,7 @@ describe('no-new-wrappers rule', () => {
     test.each(['string', 'number', 'boolean', 'symbol', 'bigint'] as const)(
       'should not report lowercase wrapper name "%s"',
       (name) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noNewWrappersRule.create(context)
 
         visitor.NewExpression(createNewExpression(name))

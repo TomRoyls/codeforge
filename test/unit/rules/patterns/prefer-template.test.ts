@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferTemplateRule } from '../../../../src/rules/patterns/prefer-template.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '"Hello " + name;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBinaryExpression(
   left: unknown,
@@ -127,7 +89,7 @@ describe('prefer-template rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
@@ -136,7 +98,7 @@ describe('prefer-template rule', () => {
 
   describe('detecting string concatenation', () => {
     test('should report string literal + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createLiteral('Hello '), createIdentifier('name'), '+')
@@ -148,7 +110,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report identifier + string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createIdentifier('name'), createLiteral(' world'), '+')
@@ -159,7 +121,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string literal + string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createLiteral('Hello '), createLiteral('world'), '+')
@@ -170,7 +132,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report nested concatenation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const innerConcat = createBinaryExpression(
@@ -187,7 +149,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report template literal + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createTemplateLiteral(), createIdentifier('name'), '+')
@@ -198,7 +160,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report number + number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(
@@ -213,7 +175,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report identifier + identifier without string context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createIdentifier('a'), createIdentifier('b'), '+')
@@ -224,7 +186,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report subtraction', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createLiteral('Hello'), createIdentifier('name'), '-')
@@ -235,7 +197,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report multiplication', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createLiteral('Hello'), createIdentifier('name'), '*')
@@ -248,21 +210,21 @@ describe('prefer-template rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
@@ -270,7 +232,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = {
@@ -285,7 +247,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(
@@ -303,7 +265,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       visitor.BinaryExpression(
@@ -350,7 +312,7 @@ describe('prefer-template rule', () => {
 
   describe('message quality', () => {
     test('should mention template in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       visitor.BinaryExpression(
@@ -361,7 +323,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should mention concatenation in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       visitor.BinaryExpression(
@@ -372,7 +334,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should mention backticks in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       visitor.BinaryExpression(
@@ -523,7 +485,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not provide fix when range is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       const node = createBinaryExpression(createLiteral('Hello '), createIdentifier('name'), '+')
@@ -617,27 +579,27 @@ describe('prefer-template rule', () => {
 
   describe('create - visitor shape', () => {
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(typeof visitor).toBe('object')
       expect(visitor).not.toBeNull()
     })
 
     test('should have BinaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return a new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor1 = preferTemplateRule.create(context)
       const visitor2 = preferTemplateRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should not have unrelated visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const keys = Object.keys(visitor)
       expect(keys).toContain('BinaryExpression')
@@ -646,7 +608,7 @@ describe('prefer-template rule', () => {
     })
 
     test('BinaryExpression should be callable without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression({})).not.toThrow()
     })
@@ -654,7 +616,7 @@ describe('prefer-template rule', () => {
 
   describe('string concatenation detection - string literal left', () => {
     test('should report "Hello " + name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('Hello '), createIdentifier('name'), '+'),
@@ -663,7 +625,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report "Error: " + msg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('Error: '), createIdentifier('msg'), '+'),
@@ -672,7 +634,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report empty string + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral(''), createIdentifier('x'), '+'),
@@ -681,7 +643,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report single-char string + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -690,7 +652,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report long string + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(
@@ -703,7 +665,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string with special chars + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('value: \n\t'), createIdentifier('data'), '+'),
@@ -712,7 +674,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string with unicode + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('Hello 世界 '), createIdentifier('x'), '+'),
@@ -721,7 +683,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string + number literal (string left)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('count: '), createLiteral(42), '+'),
@@ -732,7 +694,7 @@ describe('prefer-template rule', () => {
 
   describe('string concatenation detection - string literal right', () => {
     test('should report name + " world"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createIdentifier('name'), createLiteral(' world'), '+'),
@@ -741,7 +703,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report identifier + empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createIdentifier('x'), createLiteral(''), '+'),
@@ -750,7 +712,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report identifier + "!"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createIdentifier('val'), createLiteral('!'), '+'),
@@ -759,7 +721,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report identifier + " suffix text"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createIdentifier('result'), createLiteral(' is done'), '+'),
@@ -768,7 +730,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report number literal + string (string right)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral(42), createLiteral(' items'), '+'),
@@ -779,14 +741,14 @@ describe('prefer-template rule', () => {
 
   describe('string concatenation detection - string literal both sides', () => {
     test('should report "a" + "b"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(createBinaryExpression(createLiteral('a'), createLiteral('b'), '+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report "Hello " + "World"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('Hello '), createLiteral('World'), '+'),
@@ -795,7 +757,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report "" + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(createBinaryExpression(createLiteral(''), createLiteral(''), '+'))
       expect(reports.length).toBe(1)
@@ -804,7 +766,7 @@ describe('prefer-template rule', () => {
 
   describe('string concatenation detection - template literals', () => {
     test('should report template literal + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createTemplateLiteral(), createIdentifier('name'), '+'),
@@ -813,7 +775,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report identifier + template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createIdentifier('name'), createTemplateLiteral(), '+'),
@@ -822,7 +784,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report template literal + string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createTemplateLiteral(), createLiteral(' extra'), '+'),
@@ -831,7 +793,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string literal + template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('prefix '), createTemplateLiteral(), '+'),
@@ -840,7 +802,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report template literal + template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createTemplateLiteral(), createTemplateLiteral(), '+'),
@@ -851,7 +813,7 @@ describe('prefer-template rule', () => {
 
   describe('nested concatenation detection', () => {
     test('should report ("a" + b) + "c"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+')
       const outer = createBinaryExpression(inner, createLiteral('c'), '+')
@@ -860,7 +822,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report "a" + (b + "c")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createIdentifier('b'), createLiteral('c'), '+')
       const outer = createBinaryExpression(createLiteral('a'), inner, '+')
@@ -869,7 +831,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report ("a" + b) + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+')
       const outer = createBinaryExpression(inner, createIdentifier('c'), '+')
@@ -878,7 +840,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report identifier + ("a" + b)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+')
       const outer = createBinaryExpression(createIdentifier('c'), inner, '+')
@@ -887,7 +849,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report deeply nested ("a" + b) + ("c" + d)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const left = createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+')
       const right = createBinaryExpression(createLiteral('c'), createIdentifier('d'), '+')
@@ -897,7 +859,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report triple nested (("a" + b) + c) + "d"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner1 = createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+')
       const inner2 = createBinaryExpression(inner1, createIdentifier('c'), '+')
@@ -907,7 +869,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report template literal nested in concatenation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createTemplateLiteral(), createIdentifier('x'), '+')
       const outer = createBinaryExpression(inner, createLiteral(' end'), '+')
@@ -918,7 +880,7 @@ describe('prefer-template rule', () => {
 
   describe('non-concatenation operators', () => {
     test('should not report for - operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '-'),
@@ -927,7 +889,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for * operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '*'),
@@ -936,7 +898,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for / operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '/'),
@@ -945,7 +907,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for % operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '%'),
@@ -954,7 +916,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for == operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '=='),
@@ -963,7 +925,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for === operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '==='),
@@ -972,7 +934,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for != operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '!='),
@@ -981,7 +943,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for !== operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '!=='),
@@ -990,7 +952,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for < operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '<'),
@@ -999,7 +961,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for > operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '>'),
@@ -1008,7 +970,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for <= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '<='),
@@ -1017,7 +979,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for >= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '>='),
@@ -1026,7 +988,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for && operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '&&'),
@@ -1035,7 +997,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for || operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '||'),
@@ -1044,7 +1006,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for ?? operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '??'),
@@ -1053,7 +1015,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), 'in'),
@@ -1062,7 +1024,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for instanceof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), 'instanceof'),
@@ -1071,7 +1033,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for ** operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '**'),
@@ -1080,7 +1042,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for & operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '&'),
@@ -1089,7 +1051,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report for | operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '|'),
@@ -1100,14 +1062,14 @@ describe('prefer-template rule', () => {
 
   describe('no report scenarios', () => {
     test('should not report number + number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(createBinaryExpression(createLiteral(5), createLiteral(3), '+'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report identifier + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createIdentifier('a'), createIdentifier('b'), '+'),
@@ -1116,35 +1078,35 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report number + identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(createBinaryExpression(createLiteral(1), createIdentifier('x'), '+'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report identifier + number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(createBinaryExpression(createIdentifier('x'), createLiteral(1), '+'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when node type is not BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression({ type: 'CallExpression', callee: createIdentifier('fn') })
       expect(reports.length).toBe(0)
     })
 
     test('should not report when node is a plain object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression({ foo: 'bar' })
       expect(reports.length).toBe(0)
     })
 
     test('should not report for MemberExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression({
         type: 'MemberExpression',
@@ -1157,7 +1119,7 @@ describe('prefer-template rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+', 1, 0),
@@ -1167,7 +1129,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+', 5, 10),
@@ -1177,7 +1139,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+', 100, 50),
@@ -1187,7 +1149,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+', 3, 5),
@@ -1198,7 +1160,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report location for nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+', 2, 3)
       const outer = createBinaryExpression(inner, createLiteral('c'), '+', 2, 3)
@@ -1208,7 +1170,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1224,7 +1186,7 @@ describe('prefer-template rule', () => {
 
   describe('report message content', () => {
     test('message should contain the word template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1233,7 +1195,7 @@ describe('prefer-template rule', () => {
     })
 
     test('message should contain the word concatenation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1242,7 +1204,7 @@ describe('prefer-template rule', () => {
     })
 
     test('message should contain the word backticks', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1251,7 +1213,7 @@ describe('prefer-template rule', () => {
     })
 
     test('message should contain the word Prefer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1260,7 +1222,7 @@ describe('prefer-template rule', () => {
     })
 
     test('message should mention + operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1269,7 +1231,7 @@ describe('prefer-template rule', () => {
     })
 
     test('message is consistent across different string concatenations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
 
       visitor.BinaryExpression(
@@ -1458,7 +1420,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not provide fix without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1505,54 +1467,54 @@ describe('prefer-template rule', () => {
 
   describe('edge cases - null/undefined/invalid inputs', () => {
     test('should handle null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression('node')).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression(42)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression(true)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression([])).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1565,7 +1527,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle node with null right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1578,7 +1540,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle node with undefined operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1590,7 +1552,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle node with missing left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = { type: 'BinaryExpression', right: createIdentifier('b'), operator: '+' }
       expect(() => visitor.BinaryExpression(node)).not.toThrow()
@@ -1598,7 +1560,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle node with missing right and string left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = { type: 'BinaryExpression', left: createLiteral('a'), operator: '+' }
       expect(() => visitor.BinaryExpression(node)).not.toThrow()
@@ -1607,7 +1569,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle BinaryExpression with left as boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1620,7 +1582,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should handle BinaryExpression with right as null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1635,7 +1597,7 @@ describe('prefer-template rule', () => {
 
   describe('context options handling', () => {
     test('should work with empty options object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1666,7 +1628,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should work with config options containing extra properties', () => {
-      const { context, reports } = createMockContext({ extra: true, someFlag: false })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, someFlag: false }], source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1675,7 +1637,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.tsx')
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;', filePath: '/custom/path/file.tsx' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1684,7 +1646,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = "a" + b;')
+      const { context, reports } = createMockRuleContext({ source: 'const x = "a" + b;', filePath: '/src/file.ts' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1695,7 +1657,7 @@ describe('prefer-template rule', () => {
 
   describe('multiple invocations', () => {
     test('should report for each invocation with string concatenation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1707,7 +1669,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report only for string concatenation invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1722,7 +1684,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report for mixed valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(null)
       visitor.BinaryExpression(
@@ -1736,7 +1698,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should accumulate reports across 10 invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       for (let i = 0; i < 10; i++) {
         visitor.BinaryExpression(
@@ -1767,7 +1729,7 @@ describe('prefer-template rule', () => {
 
   describe('node without operator +', () => {
     test('should not report BinaryExpression with + operator but number left and right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1780,7 +1742,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not report BinaryExpression with + operator but boolean values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1793,7 +1755,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report when left is string and right is identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1806,7 +1768,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report when right is string and left is identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const node = {
         type: 'BinaryExpression',
@@ -1821,7 +1783,7 @@ describe('prefer-template rule', () => {
 
   describe('recursive detection', () => {
     test('should detect concatenation through left recursion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const deep = createBinaryExpression(createLiteral('a'), createIdentifier('x'), '+')
       const mid = createBinaryExpression(deep, createIdentifier('y'), '+')
@@ -1831,7 +1793,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should detect concatenation through right recursion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const deep = createBinaryExpression(createIdentifier('x'), createLiteral('a'), '+')
       const mid = createBinaryExpression(createIdentifier('y'), deep, '+')
@@ -1841,7 +1803,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should detect when string is deeply nested in left branch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const l1 = createBinaryExpression(createLiteral('start'), createIdentifier('a'), '+')
       const l2 = createBinaryExpression(l1, createIdentifier('b'), '+')
@@ -1851,7 +1813,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should detect when string is deeply nested in right branch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const r1 = createBinaryExpression(createIdentifier('a'), createLiteral('end'), '+')
       const r2 = createBinaryExpression(createIdentifier('b'), r1, '+')
@@ -1861,7 +1823,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should not detect when no string anywhere in tree', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const inner = createBinaryExpression(createIdentifier('a'), createIdentifier('b'), '+')
       const outer = createBinaryExpression(inner, createIdentifier('c'), '+')
@@ -1872,7 +1834,7 @@ describe('prefer-template rule', () => {
 
   describe('mixed node types in concatenation', () => {
     test('should report CallExpression + string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const callNode = { type: 'CallExpression', callee: createIdentifier('fn') }
       const node = createBinaryExpression(callNode, createLiteral(' result'), '+')
@@ -1881,7 +1843,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string literal + CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const callNode = { type: 'CallExpression', callee: createIdentifier('fn') }
       const node = createBinaryExpression(createLiteral('result: '), callNode, '+')
@@ -1890,7 +1852,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report MemberExpression + string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const memberNode = {
         type: 'MemberExpression',
@@ -1903,7 +1865,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string literal + MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const memberNode = {
         type: 'MemberExpression',
@@ -1916,7 +1878,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report ConditionalExpression + string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const condNode = { type: 'ConditionalExpression', test: createIdentifier('x') }
       const node = createBinaryExpression(condNode, createLiteral(' end'), '+')
@@ -1925,7 +1887,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report string + ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const arrNode = { type: 'ArrayExpression', elements: [] }
       const node = createBinaryExpression(createLiteral('items: '), arrNode, '+')
@@ -1934,7 +1896,7 @@ describe('prefer-template rule', () => {
     })
 
     test('should report ObjectExpression + string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const objNode = { type: 'ObjectExpression', properties: [] }
       const node = createBinaryExpression(objNode, createLiteral(' data'), '+')
@@ -1945,13 +1907,13 @@ describe('prefer-template rule', () => {
 
   describe('visitor method behavior', () => {
     test('should not throw when BinaryExpression is called with 0 args', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       expect(() => visitor.BinaryExpression()).not.toThrow()
     })
 
     test('should return undefined from BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const result = visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -1960,14 +1922,14 @@ describe('prefer-template rule', () => {
     })
 
     test('should return undefined from BinaryExpression with null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const result = visitor.BinaryExpression(null)
       expect(result).toBeUndefined()
     })
 
     test('should return undefined from BinaryExpression with no args', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       const result = visitor.BinaryExpression()
       expect(result).toBeUndefined()
@@ -2090,7 +2052,7 @@ describe('prefer-template rule', () => {
 
   describe('createMockContext helper validation', () => {
     test('createMockContext should provide working context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       expect(context.report).toBeDefined()
       expect(typeof context.report).toBe('function')
       expect(context.getFilePath()).toBe('/src/file.ts')
@@ -2099,17 +2061,17 @@ describe('prefer-template rule', () => {
     })
 
     test('createMockContext with custom source returns correct source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'custom source')
+      const { context } = createMockRuleContext({ source: 'custom source', filePath: '/src/file.ts' })
       expect(context.getSource()).toBe('custom source')
     })
 
     test('createMockContext with custom path returns correct path', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: '"Hello " + name;', filePath: '/custom/path.ts' })
       expect(context.getFilePath()).toBe('/custom/path.ts')
     })
 
     test('createMockContext logger methods should be vi fns', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '"Hello " + name;' })
       expect(vi.isMockFunction(context.logger.debug)).toBe(true)
       expect(vi.isMockFunction(context.logger.info)).toBe(true)
       expect(vi.isMockFunction(context.logger.warn)).toBe(true)
@@ -2186,8 +2148,8 @@ describe('prefer-template rule', () => {
 
   describe('concurrent visitor instances', () => {
     test('two visitors should be independent', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: '"Hello " + name;' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor1 = preferTemplateRule.create(ctx1)
       const visitor2 = preferTemplateRule.create(ctx2)
 
@@ -2206,9 +2168,9 @@ describe('prefer-template rule', () => {
     })
 
     test('three visitors should be independent', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
-      const { context: ctx3, reports: r3 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: '"Hello " + name;' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: '"Hello " + name;' })
+      const { context: ctx3, reports: r3 } = createMockRuleContext({ source: '"Hello " + name;' })
       const v1 = preferTemplateRule.create(ctx1)
       const v2 = preferTemplateRule.create(ctx2)
       const v3 = preferTemplateRule.create(ctx3)
@@ -2225,7 +2187,7 @@ describe('prefer-template rule', () => {
 
   describe('report descriptor completeness', () => {
     test('report should always have message and location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -2236,7 +2198,7 @@ describe('prefer-template rule', () => {
     })
 
     test('report message should not be empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -2245,7 +2207,7 @@ describe('prefer-template rule', () => {
     })
 
     test('report should have loc with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -2255,7 +2217,7 @@ describe('prefer-template rule', () => {
     })
 
     test('report loc start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),
@@ -2265,7 +2227,7 @@ describe('prefer-template rule', () => {
     })
 
     test('report loc end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '"Hello " + name;' })
       const visitor = preferTemplateRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression(createLiteral('a'), createIdentifier('b'), '+'),

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noReturnOrAwaitRule } from '../../../../src/rules/patterns/no-return-or-await.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFunctionDeclaration(
   type: 'FunctionDeclaration' | 'FunctionExpression' | 'ArrowFunctionExpression',
@@ -166,28 +130,28 @@ describe('no-return-or-await rule', () => {
 
   describe('create', () => {
     test('should return visitor object with FunctionDeclaration method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
     })
 
     test('should return visitor object with FunctionExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionExpression')
     })
 
     test('should return visitor object with ArrowFunctionExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(visitor).toHaveProperty('ArrowFunctionExpression')
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -195,41 +159,41 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should return visitor with exactly 3 keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(Object.keys(visitor).length).toBe(3)
     })
 
     test('should have FunctionDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(typeof visitor.FunctionDeclaration).toBe('function')
     })
 
     test('should have FunctionExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(typeof visitor.FunctionExpression).toBe('function')
     })
 
     test('should have ArrowFunctionExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(typeof visitor.ArrowFunctionExpression).toBe('function')
     })
 
     test('should not throw when creating visitor with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
 
       expect(() => noReturnOrAwaitRule.create(context)).not.toThrow()
     })
 
     test('should return independent visitors on multiple create calls', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noReturnOrAwaitRule.create(context)
       const visitor2 = noReturnOrAwaitRule.create(context)
 
@@ -246,7 +210,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should allow calling same visitor method multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = { type: 'FunctionDeclaration', async: true, body: null }
@@ -259,7 +223,7 @@ describe('no-return-or-await rule', () => {
 
   describe('detecting async functions', () => {
     test('should not report non-async function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([])
@@ -269,7 +233,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([])
@@ -279,7 +243,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([])
@@ -291,7 +255,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([])
@@ -301,7 +265,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function without BlockStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -317,7 +281,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -332,7 +296,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report multiple violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node1 = {
@@ -360,7 +324,7 @@ describe('no-return-or-await rule', () => {
 
   describe('non-async functions', () => {
     test('should not report non-async FunctionDeclaration with return in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -372,7 +336,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async FunctionExpression with await in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -387,7 +351,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async ArrowFunctionExpression with complex body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -405,7 +369,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -419,7 +383,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -433,7 +397,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -447,7 +411,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -461,7 +425,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -475,7 +439,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async FunctionDeclaration with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -489,7 +453,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async FunctionExpression with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -503,7 +467,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async ArrowFunctionExpression with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -517,7 +481,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report non-async FunctionDeclaration with complex nested body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -536,7 +500,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is string "true"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -550,7 +514,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report when async is 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -566,7 +530,7 @@ describe('no-return-or-await rule', () => {
 
   describe('async functions - no report cases', () => {
     test('should not report async function with expression body - Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = { type: 'Literal', value: 42 }
@@ -578,7 +542,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -594,7 +558,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -611,7 +575,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = { type: 'Identifier', name: 'value' }
@@ -623,7 +587,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -639,7 +603,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -654,7 +618,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -669,7 +633,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -685,7 +649,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with expression body - ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {
@@ -702,7 +666,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing only VariableDeclarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -724,7 +688,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing ExpressionStatements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -743,7 +707,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -762,7 +726,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -780,7 +744,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -796,7 +760,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing TryStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -812,7 +776,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with BlockStatement containing nested FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -829,7 +793,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with empty object body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = {}
@@ -841,7 +805,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with array body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body: unknown[] = []
@@ -853,7 +817,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with SwitchStatement in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -869,7 +833,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async function with ThrowStatement only in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -886,7 +850,7 @@ describe('no-return-or-await rule', () => {
 
   describe('async functions - report cases', () => {
     test('should report async FunctionDeclaration with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('FunctionDeclaration', true, null))
@@ -895,7 +859,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async FunctionExpression with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionExpression(createFunctionDeclaration('FunctionExpression', true, null))
@@ -904,7 +868,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async ArrowFunctionExpression with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.ArrowFunctionExpression(
@@ -915,7 +879,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -929,7 +893,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with body as 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -943,7 +907,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with body as false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -957,7 +921,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with body as NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -971,7 +935,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with body as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -985,7 +949,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async FunctionDeclaration with BlockStatement containing ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -997,7 +961,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async FunctionExpression with BlockStatement containing ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -1009,7 +973,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async ArrowFunctionExpression with BlockStatement containing ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -1023,7 +987,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with BlockStatement containing AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -1041,7 +1005,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with BlockStatement containing both ReturnStatement and AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -1060,7 +1024,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with BlockStatement containing nested ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -1079,7 +1043,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async function with deeply nested AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -1108,7 +1072,7 @@ describe('no-return-or-await rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).toThrow()
@@ -1117,7 +1081,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle undefined node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).toThrow()
@@ -1126,7 +1090,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle non-object node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -1136,7 +1100,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node without async property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1149,7 +1113,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node without body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1162,7 +1126,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1176,7 +1140,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([])
@@ -1217,7 +1181,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1231,7 +1195,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with extra unknown properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1249,7 +1213,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with lowercase type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1263,7 +1227,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle boolean node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(true)).not.toThrow()
@@ -1273,7 +1237,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {}
@@ -1283,7 +1247,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with only type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = { type: 'FunctionDeclaration' }
@@ -1293,7 +1257,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with only async property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = { async: true }
@@ -1303,7 +1267,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle array as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = [{ type: 'FunctionDeclaration', async: true, body: null }]
@@ -1313,7 +1277,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle Date object as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = new Date()
@@ -1323,7 +1287,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with body as RegExp', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1337,7 +1301,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with body as Map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1351,7 +1315,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle node with body as Set', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1365,7 +1329,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle null node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.FunctionExpression(null)).toThrow()
@@ -1374,7 +1338,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle null node in ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(null)).toThrow()
@@ -1383,7 +1347,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle undefined node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.FunctionExpression(undefined)).toThrow()
@@ -1392,7 +1356,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle undefined node in ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(undefined)).toThrow()
@@ -1401,7 +1365,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle non-standard node type with async true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1417,7 +1381,7 @@ describe('no-return-or-await rule', () => {
 
   describe('message quality', () => {
     test('should mention async in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1431,7 +1395,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should mention await in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1445,7 +1409,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should mention return in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1459,7 +1423,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node1 = {
@@ -1480,7 +1444,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1494,7 +1458,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have message as type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1508,7 +1472,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1522,7 +1486,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not contain placeholder tokens in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1537,7 +1501,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have same message for all three visitor methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -1553,7 +1517,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have message without undefined or null substrings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1568,7 +1532,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have consistent message across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = { type: 'FunctionDeclaration', async: true, body: null }
@@ -1583,7 +1547,7 @@ describe('no-return-or-await rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1602,7 +1566,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1621,7 +1585,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1636,7 +1600,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report multi-line location span', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1655,7 +1619,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report location with column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1673,7 +1637,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report location with large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1692,7 +1656,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report different locations for different nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node1 = {
@@ -1715,7 +1679,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report location for FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1734,7 +1698,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report location for ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1753,7 +1717,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should use default location when loc has null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1772,7 +1736,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should use default when start.line is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1791,7 +1755,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should use default column when start.column is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1810,7 +1774,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should use default when start.line is non-numeric', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1828,7 +1792,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should use default column when start.column is non-numeric', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1846,7 +1810,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should preserve individual locations across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node1 = {
@@ -1870,7 +1834,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1889,7 +1853,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should use default when loc.end is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const node = {
@@ -1909,7 +1873,7 @@ describe('no-return-or-await rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/helper.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/utils/helper.ts' })
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -1918,11 +1882,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'async function foo() { return await bar(); }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'async function foo() { return await bar(); }', filePath: '/src/file.ts' })
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -1931,7 +1891,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -1940,7 +1900,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should work with source code containing async keyword', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'async function test() {}')
+      const { context, reports } = createMockRuleContext({ source: 'async function test() {}', filePath: '/src/file.ts' })
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2004,7 +1964,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have accessible getFilePath in context', () => {
-      const { context } = createMockContext({}, '/src/my-file.ts')
+      const { context } = createMockRuleContext({ filePath: '/src/my-file.ts' })
       expect(context.getFilePath()).toBe('/src/my-file.ts')
 
       const visitor = noReturnOrAwaitRule.create(context)
@@ -2012,7 +1972,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have accessible getSource in context', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = 1;')
+      const { context } = createMockRuleContext({ source: 'const x = 1;', filePath: '/src/file.ts' })
       expect(context.getSource()).toBe('const x = 1;')
 
       const visitor = noReturnOrAwaitRule.create(context)
@@ -2020,11 +1980,11 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should work with complex options object', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         checkArrowFunctions: true,
         allowForEach: false,
         maxDepth: 5,
-      })
+      }] })
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2033,8 +1993,8 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should produce same result for visitors from separate contexts', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noReturnOrAwaitRule.create(ctx1)
       const visitor2 = noReturnOrAwaitRule.create(ctx2)
@@ -2049,7 +2009,7 @@ describe('no-return-or-await rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/long/path/to/project/src/deeply/nested/directory/structure/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ filePath: longPath })
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2058,7 +2018,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have accessible logger in context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(context.logger).toBeDefined()
       expect(typeof context.logger.debug).toBe('function')
       expect(typeof context.logger.info).toBe('function')
@@ -2067,7 +2027,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have accessible config in context', () => {
-      const { context } = createMockContext({ key: 'value' })
+      const { context } = createMockRuleContext({ options: [{ key: 'value' }] })
       expect(context.config).toBeDefined()
       expect(context.config.options).toBeDefined()
     })
@@ -2159,7 +2119,7 @@ describe('no-return-or-await rule', () => {
 
   describe('report descriptor structure', () => {
     test('should have message property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2168,7 +2128,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2177,7 +2137,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc.start in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2186,7 +2146,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc.end in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2195,7 +2155,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc.start.line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2204,7 +2164,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc.start.column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2213,7 +2173,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc.end.line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2222,7 +2182,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have loc.end.column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2231,7 +2191,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should have exact expected message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2240,7 +2200,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report message for each visitor method independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2259,7 +2219,7 @@ describe('no-return-or-await rule', () => {
 
   describe('hasReturnOrAwait behavior', () => {
     test('should not report async with BlockStatement containing only BreakStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2274,7 +2234,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async with BlockStatement containing only ContinueStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2289,7 +2249,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async with BlockStatement containing only VariableDeclarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2311,7 +2271,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async with BlockStatement containing ExpressionStatement with regular call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2330,7 +2290,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with BlockStatement containing ReturnStatement in nested function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2350,7 +2310,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with AwaitExpression in arrow function argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2378,7 +2338,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with ReturnStatement in IfStatement consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2395,7 +2355,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with AwaitExpression in TryStatement catch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2426,7 +2386,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with AwaitExpression in CallExpression arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2450,7 +2410,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with ReturnStatement in ForStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2471,7 +2431,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with AwaitExpression in WhileStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2498,7 +2458,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should report async with ReturnStatement in SwitchCase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2520,7 +2480,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async with ThrowStatement without return/await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2539,7 +2499,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not report async with only LabeledStatement in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -2560,7 +2520,7 @@ describe('no-return-or-await rule', () => {
 
   describe('visitor independence and isolation', () => {
     test('should report independently for each visitor method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2575,7 +2535,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should not cross-contaminate between visitor methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2593,7 +2553,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle rapid sequential calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2608,7 +2568,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle mix of reporting and non-reporting calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2628,7 +2588,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should produce fresh visitor for each create call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor1 = noReturnOrAwaitRule.create(context)
       const visitor2 = noReturnOrAwaitRule.create(context)
 
@@ -2647,7 +2607,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle all three visitor methods with same node data', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const nodeData = {
@@ -2667,7 +2627,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle async FunctionDeclaration followed by non-async FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'FunctionDeclaration', async: true, body: null })
@@ -2682,7 +2642,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle non-async ArrowFunction followed by async FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.ArrowFunctionExpression({
@@ -2696,7 +2656,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle alternating valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       const validNode = {
@@ -2719,7 +2679,7 @@ describe('no-return-or-await rule', () => {
     })
 
     test('should handle single valid node producing no reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noReturnOrAwaitRule.create(context)
 
       visitor.FunctionDeclaration(

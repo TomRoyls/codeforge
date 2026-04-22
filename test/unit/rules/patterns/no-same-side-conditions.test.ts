@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noSameSideConditionsRule } from '../../../../src/rules/patterns/no-same-side-conditions.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'a && a',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string): unknown {
   return {
@@ -200,7 +162,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('create', () => {
     test('should return visitor object with LogicalExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(visitor).toHaveProperty('LogicalExpression')
@@ -208,7 +170,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -216,14 +178,14 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should return visitor as object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should return new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor1 = noSameSideConditionsRule.create(context)
       const visitor2 = noSameSideConditionsRule.create(context)
 
@@ -231,28 +193,28 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should have exactly one property on visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['LogicalExpression'])
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/project/src/utils.ts')
+      const { context } = createMockRuleContext({ source: 'a && a', filePath: '/project/src/utils.ts' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(visitor).toHaveProperty('LogicalExpression')
     })
 
     test('should accept context with different source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'x || x && y')
+      const { context } = createMockRuleContext({ source: 'x || x && y', filePath: '/src/file.ts' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(visitor).toHaveProperty('LogicalExpression')
     })
 
     test('should create visitor that is callable', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(() =>
@@ -265,7 +227,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('AND operator (&&) - same side detection', () => {
     test('should report a && a', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -278,7 +240,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report foo && foo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('foo'), createIdentifier('foo'))
@@ -289,7 +251,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report true && true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -304,7 +266,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report false && false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -319,7 +281,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report 1 && 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createNumericLiteral(1), createNumericLiteral(1))
@@ -330,7 +292,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report "test" && "test"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -345,7 +307,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same numeric values with &&', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createNumericLiteral(42), createNumericLiteral(42))
@@ -355,7 +317,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same string values with &&', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -369,7 +331,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same identifier with underscore names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -383,7 +345,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same identifier with dollar sign names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -397,7 +359,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report 0 && 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createNumericLiteral(0), createNumericLiteral(0))
@@ -407,7 +369,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report negative numbers -1 && -1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createNumericLiteral(-1), createNumericLiteral(-1))
@@ -417,7 +379,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report empty string && empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createStringLiteral(''), createStringLiteral(''))
@@ -427,7 +389,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report Literal true && Literal true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral(true), createLiteral(true))
@@ -437,7 +399,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report Literal false && Literal false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral(false), createLiteral(false))
@@ -447,7 +409,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same large number with &&', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -461,7 +423,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same decimal with &&', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -477,7 +439,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('OR operator (||) - same side detection', () => {
     test('should report a || a', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('a'), createIdentifier('a'))
@@ -490,7 +452,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report x || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('x'), createIdentifier('x'))
@@ -501,7 +463,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report true || true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -516,7 +478,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report false || false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -531,7 +493,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report 0 || 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createNumericLiteral(0), createNumericLiteral(0))
@@ -542,7 +504,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same string values with ||', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -556,7 +518,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same negative numbers with ||', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createNumericLiteral(-5), createNumericLiteral(-5))
@@ -566,7 +528,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same identifier with camelCase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -580,7 +542,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report Literal number || Literal number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createLiteral(42), createLiteral(42))
@@ -590,7 +552,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same long string with ||', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const longStr = 'a very long string value for testing'
@@ -607,7 +569,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('member expressions - same side detection', () => {
     test('should report obj.prop && obj.prop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'))
@@ -620,7 +582,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report data.value || data.value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('data'), createIdentifier('value'))
@@ -633,7 +595,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report nested member expressions obj.inner.prop && obj.inner.prop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const inner = createMemberExpression(createIdentifier('obj'), createIdentifier('inner'))
@@ -647,7 +609,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report this.value && this.value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('this'), createIdentifier('value'))
@@ -659,7 +621,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report config.settings.enabled || config.settings.enabled', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const settings = createMemberExpression(
@@ -681,7 +643,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('call expressions - same side detection', () => {
     test('should report func() && func()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('func'))
@@ -694,7 +656,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report getData() || getData()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('getData'))
@@ -707,7 +669,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report same method call obj.method() && obj.method()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const calleeLeft = createMemberExpression(createIdentifier('obj'), createIdentifier('method'))
@@ -724,7 +686,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report isReady() && isReady()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('isReady'))
@@ -736,7 +698,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report check() || check()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('check'))
@@ -750,7 +712,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('valid cases - different sides (NOT reporting)', () => {
     test('should not report a && b', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('b'))
@@ -760,7 +722,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report x || y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('x'), createIdentifier('y'))
@@ -770,7 +732,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report true && false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -784,7 +746,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report 1 && 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createNumericLiteral(1), createNumericLiteral(0))
@@ -794,7 +756,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report "a" && "b"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createStringLiteral('a'), createStringLiteral('b'))
@@ -804,7 +766,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report obj.prop && obj.other', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'))
@@ -816,7 +778,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report func1() && func2()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('func1'))
@@ -828,7 +790,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report true || false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -842,7 +804,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report false && true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -856,7 +818,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report different numeric values 1 || 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createNumericLiteral(1), createNumericLiteral(2))
@@ -866,7 +828,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report identifier && member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const right = createMemberExpression(createIdentifier('a'), createIdentifier('b'))
@@ -877,7 +839,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report member expression && call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('obj'), createIdentifier('fn'))
@@ -889,7 +851,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report "hello" && "world"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -903,7 +865,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report 42 || 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createNumericLiteral(42), createNumericLiteral(0))
@@ -913,7 +875,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report Literal different string values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral('a'), createLiteral('b'))
@@ -923,7 +885,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report Literal different number values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral(1), createLiteral(2))
@@ -933,7 +895,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report Literal different boolean values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createLiteral(true), createLiteral(false))
@@ -943,7 +905,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report obj.a && obj.b', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('obj'), createIdentifier('a'))
@@ -955,7 +917,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report obj.prop1 || obj.prop2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('obj'), createIdentifier('prop1'))
@@ -967,7 +929,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report a.obj && b.obj', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('a'), createIdentifier('obj'))
@@ -979,7 +941,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report case-sensitive different identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -993,7 +955,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report empty string && non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createStringLiteral(''), createStringLiteral('x'))
@@ -1003,7 +965,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report single-char difference in string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1017,7 +979,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report negative and positive same absolute value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createNumericLiteral(-1), createNumericLiteral(1))
@@ -1027,7 +989,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report with different call expression callees', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('fn1'))
@@ -1039,7 +1001,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report obj.fn() && other.fn()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const calleeLeft = createMemberExpression(createIdentifier('obj'), createIdentifier('fn'))
@@ -1053,7 +1015,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report different boolean literal types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1067,7 +1029,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report Literal string vs StringLiteral same value (different types)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral('test'), createStringLiteral('test'))
@@ -1079,7 +1041,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('non-logical expressions', () => {
     test('should not report binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1095,7 +1057,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report with operator other than && or ||', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1113,21 +1075,21 @@ describe('no-same-side-conditions rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(() => visitor.LogicalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(() => visitor.LogicalExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(() => visitor.LogicalExpression('string')).not.toThrow()
@@ -1135,7 +1097,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node without left property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1150,7 +1112,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node without right property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1165,7 +1127,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1176,7 +1138,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with incomplete loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1192,7 +1154,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle complex expressions that cannot be compared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = {
@@ -1221,7 +1183,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle nested member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(
@@ -1240,7 +1202,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1256,7 +1218,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with null right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1272,7 +1234,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with undefined left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1288,7 +1250,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with undefined right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1304,7 +1266,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with null left and right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1320,7 +1282,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node without operator property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1335,7 +1297,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with empty object as left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1350,7 +1312,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with array as left and right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1365,21 +1327,21 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle boolean node value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(() => visitor.LogicalExpression(true)).not.toThrow()
     })
 
     test('should handle numeric node value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       expect(() => visitor.LogicalExpression(0)).not.toThrow()
     })
 
     test('should handle node with loc containing only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -1395,7 +1357,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle node with numeric identifier name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = { type: 'Identifier', name: 123 }
@@ -1408,7 +1370,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for AND operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1426,7 +1388,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report correct location for OR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1444,7 +1406,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1455,7 +1417,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'), 3, 5)
@@ -1466,7 +1428,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1483,7 +1445,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'), 0, 0)
@@ -1494,7 +1456,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location for member expression same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'))
@@ -1508,7 +1470,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location for call expression same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const left = createCallExpression(createIdentifier('fn'))
@@ -1522,7 +1484,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location for literal same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral(42), createLiteral(42), 20, 3)
@@ -1533,7 +1495,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should include loc in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'), 2, 4)
@@ -1544,7 +1506,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location for boolean literal same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1561,7 +1523,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location for string literal same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1578,7 +1540,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location for numeric literal same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1595,7 +1557,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report location with column offset applied', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1614,7 +1576,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('message quality', () => {
     test('should mention operator type in message for AND', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1624,7 +1586,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should mention operator type in message for OR', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('a'), createIdentifier('a'))
@@ -1634,7 +1596,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should mention "identical" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1644,7 +1606,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should mention "redundant" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('a'), createIdentifier('a'))
@@ -1654,7 +1616,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1664,7 +1626,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should have string type message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1674,7 +1636,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should mention "sides" in message for AND', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1684,7 +1646,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should mention "sides" in message for OR', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('a'), createIdentifier('a'))
@@ -1694,7 +1656,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should produce consistent messages for same operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node1 = createLogicalExpression('&&', createIdentifier('x'), createIdentifier('x'))
@@ -1709,7 +1671,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should produce different messages for AND vs OR', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const nodeAnd = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1726,7 +1688,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('Literal type (SWC compatibility)', () => {
     test('should detect same Literal with boolean value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral(true), createLiteral(true))
@@ -1736,7 +1698,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should detect same Literal with number value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral(42), createLiteral(42))
@@ -1746,7 +1708,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should detect same Literal with string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createLiteral('test'), createLiteral('test'))
@@ -1756,7 +1718,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report different Literal values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createLiteral('a'), createLiteral('b'))
@@ -1768,7 +1730,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('SWC-specific literals', () => {
     test('should detect same BooleanLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1782,7 +1744,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should detect same NumericLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1796,7 +1758,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should detect same StringLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1810,7 +1772,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report different StringLiteral values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -1826,7 +1788,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('multiple reports', () => {
     test('should report separately for each detected violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node1 = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -1839,7 +1801,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should accumulate reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1851,7 +1813,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not accumulate reports for non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const validNode = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('b'))
@@ -1863,7 +1825,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should mix valid and invalid reports correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const invalidNode = createLogicalExpression(
@@ -1881,7 +1843,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report each node independently with different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node1 = createLogicalExpression(
@@ -1908,7 +1870,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle rapid alternating valid/invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1925,7 +1887,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle many consecutive valid calls followed by invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1944,7 +1906,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should report AND and OR violations separately in same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const andNode = createLogicalExpression('&&', createIdentifier('x'), createIdentifier('x'))
@@ -1959,7 +1921,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle call after null node input without affecting later reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       visitor.LogicalExpression(null)
@@ -1971,7 +1933,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle call after undefined node input without affecting later reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       visitor.LogicalExpression(undefined)
@@ -1985,7 +1947,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('config handling', () => {
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -2029,7 +1991,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should work with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'a && a', filePath: '/custom/path/file.ts' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -2039,7 +2001,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should work with custom source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x && x || y')
+      const { context, reports } = createMockRuleContext({ source: 'x && x || y', filePath: '/src/file.ts' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('x'), createIdentifier('x'))
@@ -2081,7 +2043,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle config with extra options', () => {
-      const { context, reports } = createMockContext({ strict: true, customFlag: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, customFlag: 42 }], source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('&&', createIdentifier('a'), createIdentifier('a'))
@@ -2091,7 +2053,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not be affected by config options for detection', () => {
-      const { context, reports } = createMockContext({ someOption: 'value' })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: 'value' }], source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression('||', createIdentifier('x'), createIdentifier('x'))
@@ -2101,7 +2063,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle context with null AST', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       expect(context.getAST()).toBeNull()
 
       const visitor = noSameSideConditionsRule.create(context)
@@ -2112,7 +2074,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle context with empty tokens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       expect(context.getTokens()).toEqual([])
 
       const visitor = noSameSideConditionsRule.create(context)
@@ -2123,7 +2085,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should handle context with empty comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       expect(context.getComments()).toEqual([])
 
       const visitor = noSameSideConditionsRule.create(context)
@@ -2136,7 +2098,7 @@ describe('no-same-side-conditions rule', () => {
 
   describe('operator variations', () => {
     test('should not report ?? operator (nullish coalescing)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -2152,7 +2114,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report other logical operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -2168,7 +2130,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report & operator (bitwise AND)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -2184,7 +2146,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report | operator (bitwise OR)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -2200,7 +2162,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should not report empty string operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -2216,7 +2178,7 @@ describe('no-same-side-conditions rule', () => {
     })
 
     test('should only report && and || operators with same sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const operators = ['&&', '||', '??', '&', '|', '^', '']
@@ -2247,7 +2209,7 @@ describe('no-same-side-conditions rule', () => {
       ['b', '||', true],
       ['foo', '||', true],
     ])('should%s report for identifier "%s" with %s', (name, op, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(op, createIdentifier(name), createIdentifier(name))
@@ -2274,7 +2236,7 @@ describe('no-same-side-conditions rule', () => {
       [-100, '||', true],
       [0.5, '||', true],
     ])('should report same NumericLiteral %s with %s', (value, op, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -2305,7 +2267,7 @@ describe('no-same-side-conditions rule', () => {
       ['special chars !@#', '||', true],
       ['unicode \u00e9\u00e8\u00ea', '||', true],
     ])('should report same StringLiteral "%s" with %s', (value, op, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -2330,7 +2292,7 @@ describe('no-same-side-conditions rule', () => {
       [true, '||', true],
       [false, '||', true],
     ])('should report same BooleanLiteral %s with %s', (value, op, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -2356,7 +2318,7 @@ describe('no-same-side-conditions rule', () => {
       ['a1', 'a2', '&&'],
       ['UPPER', 'lower', '||'],
     ])('should not report different identifiers "%s" vs "%s" with %s', (left, right, op) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(op, createIdentifier(left), createIdentifier(right))
@@ -2374,7 +2336,7 @@ describe('no-same-side-conditions rule', () => {
       [3.14, 2.71, '||'],
       [100, 200, '&&'],
     ])('should not report different numbers %s vs %s with %s', (left, right, op) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -2396,7 +2358,7 @@ describe('no-same-side-conditions rule', () => {
       ['foo', 'bar', '||'],
       ['test1', 'test2', '&&'],
     ])('should not report different strings "%s" vs "%s" with %s', (left, right, op) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -2417,7 +2379,7 @@ describe('no-same-side-conditions rule', () => {
       [true, false, '||'],
       [false, true, '&&'],
     ])('should not report different booleans %s vs %s with %s', (left, right, op) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(
@@ -2444,7 +2406,7 @@ describe('no-same-side-conditions rule', () => {
       ['+', false],
       ['', false],
     ])('should%s report for operator "%s" with same identifiers', (op, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = {
@@ -2478,7 +2440,7 @@ describe('no-same-side-conditions rule', () => {
       [false, '||', true],
       [999, '&&', true],
     ])('should report same Literal value %j with %s', (value, op, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(op, createLiteral(value), createLiteral(value))
@@ -2496,7 +2458,7 @@ describe('no-same-side-conditions rule', () => {
     test.each([[null], [undefined], ['string'], [123], [true], [false]])(
       'should handle %j input without throwing',
       (input) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: 'a && a' })
         const visitor = noSameSideConditionsRule.create(context)
 
         expect(() => visitor.LogicalExpression(input)).not.toThrow()
@@ -2515,7 +2477,7 @@ describe('no-same-side-conditions rule', () => {
       [10, 5],
       [50, 100],
     ])('should report location at line %d, column %d', (line, column) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a && a' })
       const visitor = noSameSideConditionsRule.create(context)
 
       const node = createLogicalExpression(

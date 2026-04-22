@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noExplicitAnyRule } from '../../../../src/rules/patterns/no-explicit-any.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x: any = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createAnyKeywordNode(line = 1, column = 0): unknown {
   return {
@@ -447,7 +409,7 @@ describe('no-explicit-any rule', () => {
   // ===== CREATE / VISITOR TESTS =====
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(visitor).toHaveProperty('TSAnyKeyword')
@@ -457,44 +419,44 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should return TSAnyKeyword as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       expect(typeof visitor.TSAnyKeyword).toBe('function')
     })
 
     test('should return TSArrayType as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       expect(typeof visitor.TSArrayType).toBe('function')
     })
 
     test('should return TSAsExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       expect(typeof visitor.TSAsExpression).toBe('function')
     })
 
     test('should return TSTypeAssertion as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       expect(typeof visitor.TSTypeAssertion).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor1 = noExplicitAnyRule.create(context)
       const visitor2 = noExplicitAnyRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should return exactly 4 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(4)
     })
 
     test('should not return undefined visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       expect(visitor.TSAnyKeyword).toBeDefined()
       expect(visitor.TSArrayType).toBeDefined()
@@ -506,7 +468,7 @@ describe('no-explicit-any rule', () => {
   // ===== DETECTING ANY USAGE (5 existing) =====
   describe('detecting any usage', () => {
     test('should report TSAnyKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -516,7 +478,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report array with any element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -526,7 +488,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report as expression with any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -536,7 +498,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report type assertion with any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -546,7 +508,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report non-any types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createStringTypeNode())
@@ -558,7 +520,7 @@ describe('no-explicit-any rule', () => {
   // ===== DETECTING ANY - EXTENDED =====
   describe('detecting any usage - extended', () => {
     test('should not report number type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createNumberTypeNode())
@@ -567,7 +529,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report boolean type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createBooleanTypeNode())
@@ -576,7 +538,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report void type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createVoidTypeNode())
@@ -585,7 +547,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report never type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createNeverTypeNode())
@@ -594,7 +556,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report null type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createNullTypeNode())
@@ -603,7 +565,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report undefined type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createUndefinedTypeNode())
@@ -612,7 +574,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report ArrayType (non-TS) with any element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeNode())
@@ -622,7 +584,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report TSArrayType with string element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithString())
@@ -631,7 +593,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report TSArrayType with number element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithNumber())
@@ -640,7 +602,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report TSAsExpression with string type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithString())
@@ -649,7 +611,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report TSAsExpression with number type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithNumber())
@@ -658,7 +620,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report TSTypeAssertion with string type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithString())
@@ -667,7 +629,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not report TSTypeAssertion with number type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithNumber())
@@ -676,7 +638,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report exactly one violation for a single any keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -685,7 +647,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report multiple violations for multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -695,7 +657,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report violation from each visitor method for any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -707,7 +669,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report only once for TSAnyKeyword even if called twice with same node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
       const node = createAnyKeywordNode()
 
@@ -718,7 +680,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle multiple any keyword detections across different lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       for (let line = 1; line <= 10; line++) {
@@ -732,7 +694,7 @@ describe('no-explicit-any rule', () => {
   // ===== OPTIONS - allowInGenericArrays (2 existing) =====
   describe('options - allowInGenericArrays', () => {
     test('should allow any in arrays when option is true', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -741,7 +703,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should still report any keyword even when allowInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -750,7 +712,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report any in arrays when option is false', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: false }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -759,7 +721,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report any in arrays when option is not provided', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -768,7 +730,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not affect TSAsExpression when allowInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -777,7 +739,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not affect TSTypeAssertion when allowInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -786,7 +748,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should allow ArrayType (non-TS) when allowInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeNode())
@@ -795,7 +757,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should still report non-any array elements when allowInGenericArrays is false', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: false }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithString())
@@ -807,7 +769,7 @@ describe('no-explicit-any rule', () => {
   // ===== OPTIONS - allowAsTypeAssertion (3 existing) =====
   describe('options - allowAsTypeAssertion', () => {
     test('should allow type assertion to any when option is true', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -816,7 +778,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should allow TSTypeAssertion to any when option is true', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -825,7 +787,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should still report any keyword even when allowAsTypeAssertion is true', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -834,7 +796,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report TSAsExpression when option is false', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: false }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -843,7 +805,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report TSTypeAssertion when option is false', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: false }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -852,7 +814,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not affect TSAnyKeyword when allowAsTypeAssertion is true', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -861,7 +823,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not affect TSArrayType when allowAsTypeAssertion is true', () => {
-      const { context, reports } = createMockContext({ allowAsTypeAssertion: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAsTypeAssertion: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -870,7 +832,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report when allowAsTypeAssertion is not provided', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -879,7 +841,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report when allowAsTypeAssertion is not provided for TSTypeAssertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -891,10 +853,10 @@ describe('no-explicit-any rule', () => {
   // ===== COMBINED OPTIONS =====
   describe('options - combined', () => {
     test('should suppress both array and assertion reports when both options are true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: true,
         allowAsTypeAssertion: true,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -905,10 +867,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should still report any keyword when both options are true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: true,
         allowAsTypeAssertion: true,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -917,10 +879,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report all violations when both options are false', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: false,
         allowAsTypeAssertion: false,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -932,10 +894,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should allow only arrays when only allowInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: true,
         allowAsTypeAssertion: false,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -945,10 +907,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should allow only assertions when only allowAsTypeAssertion is true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: false,
         allowAsTypeAssertion: true,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -961,21 +923,21 @@ describe('no-explicit-any rule', () => {
   // ===== EDGE CASES (11 existing) =====
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword('string')).not.toThrow()
@@ -983,7 +945,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -995,7 +957,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(10, 5))
@@ -1005,7 +967,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1044,7 +1006,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node with partial loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1059,7 +1021,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle array type without element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1072,7 +1034,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle as expression without type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1088,14 +1050,14 @@ describe('no-explicit-any rule', () => {
   // ===== EDGE CASES - EXTENDED =====
   describe('edge cases - extended', () => {
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword(true)).not.toThrow()
     })
 
     test('should handle numeric node 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword(0)).not.toThrow()
@@ -1103,7 +1065,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle empty string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword('')).not.toThrow()
@@ -1111,7 +1073,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       expect(() => visitor.TSAnyKeyword({})).not.toThrow()
@@ -1119,7 +1081,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node with null prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = Object.create(null)
@@ -1130,7 +1092,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAnyKeyword node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1145,7 +1107,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSTypeAssertion without type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1158,7 +1120,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSArrayType with null element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1172,7 +1134,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAsExpression with null type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1186,7 +1148,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSTypeAssertion with null type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1200,7 +1162,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSArrayType with non-any element type object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1214,7 +1176,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAsExpression with non-any type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1228,7 +1190,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSTypeAssertion with non-any type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1242,7 +1204,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAnyKeyword node with loc end only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1257,7 +1219,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node with string loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1270,7 +1232,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAnyKeyword node with array type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1345,7 +1307,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node with range property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = createAnyKeywordNodeWithRange(1, 0, 8, 11)
@@ -1357,7 +1319,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSArrayType with undefined element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1371,7 +1333,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAsExpression with undefined type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1385,7 +1347,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSArrayType node passed to TSAnyKeyword handler', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createArrayTypeWithAny())
@@ -1394,7 +1356,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSAnyKeyword node passed to TSArrayType handler', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createAnyKeywordNode())
@@ -1403,7 +1365,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle unknown option values gracefully', () => {
-      const { context, reports } = createMockContext({ unknownOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownOption: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1412,7 +1374,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle NaN in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1428,7 +1390,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle negative line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(-1, 0))
@@ -1437,7 +1399,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(99999, 99999))
@@ -1448,7 +1410,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(0, 0))
@@ -1457,7 +1419,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle node with Symbol properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const sym = Symbol('test')
@@ -1475,7 +1437,7 @@ describe('no-explicit-any rule', () => {
   // ===== LOCATION TESTS =====
   describe('location tracking', () => {
     test('should report correct start location for any keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(3, 8))
@@ -1485,7 +1447,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report correct end location for any keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(3, 8))
@@ -1495,7 +1457,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report correct location for array type with any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny(5, 2))
@@ -1507,7 +1469,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report correct location for as expression with any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny(7, 4))
@@ -1519,7 +1481,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report correct location for type assertion with any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny(12, 6))
@@ -1531,7 +1493,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should report location spanning multiple lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = {
@@ -1551,7 +1513,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should provide default location for node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const node = { type: 'TSAnyKeyword' }
@@ -1563,7 +1525,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle multiple reports at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(1, 0))
@@ -1579,7 +1541,7 @@ describe('no-explicit-any rule', () => {
   // ===== FIX / AUTOFIX TESTS =====
   describe('fix capability', () => {
     test('should provide fix for TSAnyKeyword with range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNodeWithRange(1, 0, 8, 11))
@@ -1589,7 +1551,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should provide fix with correct range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNodeWithRange(1, 0, 5, 8))
@@ -1598,7 +1560,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not provide fix when node has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1607,7 +1569,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should suggest unknown as replacement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNodeWithRange(1, 0, 0, 3))
@@ -1616,7 +1578,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not provide fix for array type violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAnyAndRange(1, 0, 0, 5))
@@ -1625,7 +1587,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not provide fix for as expression violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -1634,7 +1596,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not provide fix for type assertion violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -1643,7 +1605,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should provide fix with text unknown for any keyword with range at different positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNodeWithRange(1, 0, 100, 200))
@@ -1653,7 +1615,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle fix for any keyword with range starting at 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNodeWithRange(1, 0, 0, 3))
@@ -1665,7 +1627,7 @@ describe('no-explicit-any rule', () => {
   // ===== MESSAGE QUALITY (3 existing) =====
   describe('message quality', () => {
     test('should mention type safety in any keyword message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1674,7 +1636,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention array type in array message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -1683,7 +1645,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention type assertion in assertion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -1695,7 +1657,7 @@ describe('no-explicit-any rule', () => {
   // ===== MESSAGE QUALITY - EXTENDED =====
   describe('message quality - extended', () => {
     test('should mention unexpected in any keyword message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1704,7 +1666,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should contain the word any in all report messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1718,7 +1680,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention specific in any keyword message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1727,7 +1689,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention unexpected in array message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -1736,7 +1698,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention unexpected in as expression message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -1745,7 +1707,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention unexpected in type assertion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -1754,7 +1716,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention bypasses in as expression message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -1763,7 +1725,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention bypasses in type assertion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -1772,7 +1734,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention element in array message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -1781,7 +1743,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have non-empty messages for all reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1795,7 +1757,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have descriptive messages longer than 20 characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1804,7 +1766,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention assertion in TSTypeAssertion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -1813,7 +1775,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention type safety in as expression message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -1822,7 +1784,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should mention type safety in type assertion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSTypeAssertion(createTypeAssertionWithAny())
@@ -1831,7 +1793,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have unique messages for array vs keyword violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1841,7 +1803,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have same message for TSAsExpression and TSTypeAssertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAsExpression(createAsExpressionWithAny())
@@ -1854,7 +1816,7 @@ describe('no-explicit-any rule', () => {
   // ===== REPORT DESCRIPTOR SHAPE =====
   describe('report descriptor shape', () => {
     test('should include message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1863,7 +1825,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should include loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1872,7 +1834,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have loc with start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1881,7 +1843,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have loc with end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1890,7 +1852,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have loc.start with line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1899,7 +1861,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have loc.start with column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1908,7 +1870,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have loc.end with line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1917,7 +1879,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have loc.end with column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1926,7 +1888,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have numeric loc.start.line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1935,7 +1897,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have numeric loc.start.column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1944,7 +1906,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should have string message type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -1956,8 +1918,8 @@ describe('no-explicit-any rule', () => {
   // ===== ISOLATION TESTS =====
   describe('visitor isolation', () => {
     test('should not share state between different create calls', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const x: any = 1;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor1 = noExplicitAnyRule.create(ctx1)
       const visitor2 = noExplicitAnyRule.create(ctx2)
 
@@ -1968,8 +1930,8 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should not share reports between different visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const x: any = 1;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor1 = noExplicitAnyRule.create(ctx1)
       const visitor2 = noExplicitAnyRule.create(ctx2)
 
@@ -1982,10 +1944,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should track reports independently per context', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext({ allowInGenericArrays: true })
-      const { context: ctx2, reports: reports2 } = createMockContext({
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ options: [{
         allowInGenericArrays: false,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor1 = noExplicitAnyRule.create(ctx1)
       const visitor2 = noExplicitAnyRule.create(ctx2)
 
@@ -2017,7 +1979,7 @@ describe('no-explicit-any rule', () => {
   // ===== INTEGRATION-LIKE TESTS =====
   describe('integration scenarios', () => {
     test('should detect any in a simulated variable declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const variableNode = {
@@ -2032,7 +1994,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in a simulated function parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const paramNode = {
@@ -2047,7 +2009,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in a simulated return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const returnNode = {
@@ -2062,7 +2024,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in a simulated generic type argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const genericNode = {
@@ -2077,7 +2039,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle mixed violations and non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -2091,7 +2053,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle rapid successive calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2102,11 +2064,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle different source code strings', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'function foo(x: any) { return x; }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x: any) { return x; }', filePath: '/src/file.ts' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -2115,7 +2073,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/helper.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;', filePath: '/src/utils/helper.ts' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -2124,7 +2082,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle TSX file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;', filePath: '/src/components/App.tsx' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -2133,7 +2091,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle deeply nested type with any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       const nestedNode = {
@@ -2156,7 +2114,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in class property type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword({
@@ -2169,7 +2127,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in interface property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword({
@@ -2181,7 +2139,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in tuple type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword({
@@ -2193,7 +2151,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in union type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -2202,7 +2160,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in mapped type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNodeWithRange(1, 0, 20, 23))
@@ -2212,7 +2170,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should detect any in conditional type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(4, 10))
@@ -2223,7 +2181,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle ArrayType with string element that is not any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType({
@@ -2236,7 +2194,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle ArrayType with any element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType({
@@ -2249,7 +2207,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should allow ArrayType any with allowInGenericArrays true', () => {
-      const { context, reports } = createMockContext({ allowInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInGenericArrays: true }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType({
@@ -2262,7 +2220,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle multiple any keywords across all handlers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(1, 0))
@@ -2277,7 +2235,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle context with empty source string', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())
@@ -2286,11 +2244,7 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should handle context with multiline source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/multi.ts',
-        'const a: any = 1;\nconst b: any = 2;\nconst c: string = "hello";',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const a: any = 1;\nconst b: any = 2;\nconst c: string = "hello";', filePath: '/src/multi.ts' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode(1, 8))
@@ -2300,10 +2254,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should allow both options simultaneously with no reports for suppression targets', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: true,
         allowAsTypeAssertion: true,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSArrayType(createArrayTypeWithAny())
@@ -2315,10 +2269,10 @@ describe('no-explicit-any rule', () => {
     })
 
     test('should still report TSAnyKeyword when both options suppress other handlers', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowInGenericArrays: true,
         allowAsTypeAssertion: true,
-      })
+      }], source: 'const x: any = 1;' })
       const visitor = noExplicitAnyRule.create(context)
 
       visitor.TSAnyKeyword(createAnyKeywordNode())

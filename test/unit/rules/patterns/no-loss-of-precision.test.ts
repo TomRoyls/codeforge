@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noLossOfPrecisionRule } from '../../../../src/rules/patterns/no-loss-of-precision.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '0.1 + 0.2;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBinaryExpression(
   operator: string,
@@ -165,21 +129,21 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should return visitor with BinaryExpression as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return a new visitor for each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor1 = noLossOfPrecisionRule.create(context)
       const visitor2 = noLossOfPrecisionRule.create(context)
 
@@ -187,22 +151,22 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
       expect(() => noLossOfPrecisionRule.create(context)).not.toThrow()
     })
 
     test('should accept context with source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = 0.1 + 0.2;')
+      const { context } = createMockRuleContext({ source: 'const x = 0.1 + 0.2;', filePath: '/src/file.ts' })
       expect(() => noLossOfPrecisionRule.create(context)).not.toThrow()
     })
 
     test('should not throw when creating visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
       expect(() => noLossOfPrecisionRule.create(context)).not.toThrow()
     })
 
     test('should return non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
       expect(visitor).not.toBeNull()
     })
@@ -218,7 +182,7 @@ describe('no-loss-of-precision rule', () => {
   describe('detecting precision problems', () => {
     describe('addition', () => {
       test('should report 0.1 + 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -231,7 +195,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.2 + 0.1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -242,7 +206,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 19.08 + 2.01', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -253,7 +217,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.99 + 0.01', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -264,7 +228,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.7 + 0.3', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -275,7 +239,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.2 + 0.4', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -286,7 +250,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.0001 + 0.0002', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -297,7 +261,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report x + 0.1 (variable with decimal)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -313,7 +277,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('subtraction', () => {
       test('should report 0.3 - 0.1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -324,7 +288,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 - 0.01', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -335,7 +299,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 1.5 - 0.5', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -346,7 +310,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.8 - 0.1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -357,7 +321,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.6 - 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -368,7 +332,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report x - 0.5 (variable minus float)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -379,7 +343,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.5 - x (float minus variable)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -395,7 +359,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('multiplication', () => {
       test('should report 0.07 * 100', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -406,7 +370,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.55 * 100', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -417,7 +381,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 * 0.2 (float * float)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -428,7 +392,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.33 * 3 (repeating decimal)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('*', createLiteral(0.33), createLiteral(3)))
@@ -437,7 +401,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 * 3 (float * integer)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('*', createLiteral(0.1), createLiteral(3)))
@@ -446,7 +410,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.9 * 0.9', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -457,7 +421,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.5 * x (float * variable)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -473,7 +437,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('division', () => {
       test('should report 0.5 / 3 (division with non-power-of-2)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(3)))
@@ -482,7 +446,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.5 / 0.5 (float divisor)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -493,7 +457,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 1.5 / 3', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(1.5), createLiteral(3)))
@@ -502,7 +466,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 / 0.3', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -513,7 +477,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.7 / 3', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.7), createLiteral(3)))
@@ -522,7 +486,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.5 / 0 (division by zero)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(0)))
@@ -531,7 +495,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.5 / -2 (negative divisor)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(-2)))
@@ -540,7 +504,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report x / 0.5 (variable divided by float)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -558,7 +522,7 @@ describe('no-loss-of-precision rule', () => {
   describe('not reporting safe operations', () => {
     describe('safe operators', () => {
       test('should not report x + y (no literals)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -569,7 +533,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x > 0.1 (comparison)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -580,7 +544,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x < 0.1 (comparison)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -591,7 +555,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x === y (strict equality)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -602,7 +566,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x !== y (strict inequality)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -613,7 +577,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x >= 0.1 (comparison)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -624,7 +588,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x <= 0.1 (comparison)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -635,7 +599,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 % 0.2 (modulo not checked)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -651,7 +615,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('integer operands', () => {
       test('should not report 1 + 2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('+', createLiteral(1), createLiteral(2)))
@@ -660,7 +624,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 10 + 20', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('+', createLiteral(10), createLiteral(20)))
@@ -669,7 +633,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 100 * 50', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('*', createLiteral(100), createLiteral(50)))
@@ -678,7 +642,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x + 1 (variable with integer)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -689,7 +653,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report x - 1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -700,7 +664,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 10 / 2 (integer division)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(10), createLiteral(2)))
@@ -709,7 +673,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0 + 0', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0), createLiteral(0)))
@@ -723,7 +687,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('comparison operators with floats', () => {
       test('should not report 0.1 > 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -734,7 +698,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 < 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -745,7 +709,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 >= 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -756,7 +720,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 <= 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -767,7 +731,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 == 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -778,7 +742,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 != 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -789,7 +753,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 === 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -800,7 +764,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.1 !== 0.2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -816,7 +780,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('safe division by power of 2', () => {
       test('should not report 0.5 / 1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(1)))
@@ -825,7 +789,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.5 / 2', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(2)))
@@ -834,7 +798,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.5 / 4', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(4)))
@@ -843,7 +807,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.5 / 8', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(8)))
@@ -852,7 +816,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.5 / 16', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(16)))
@@ -861,7 +825,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.5 / 32', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(32)))
@@ -870,7 +834,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report 0.5 / 64', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(64)))
@@ -886,35 +850,35 @@ describe('no-loss-of-precision rule', () => {
   describe('edge cases', () => {
     describe('null/undefined/malformed nodes', () => {
       test('should handle null node gracefully', () => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         expect(() => visitor.BinaryExpression(null)).not.toThrow()
       })
 
       test('should handle undefined node gracefully', () => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
       })
 
       test('should handle non-object node (string)', () => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         expect(() => visitor.BinaryExpression('string')).not.toThrow()
       })
 
       test('should handle non-object node (number)', () => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         expect(() => visitor.BinaryExpression(123)).not.toThrow()
       })
 
       test('should handle node without loc', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         const node = {
@@ -929,7 +893,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should handle empty options', () => {
-        const { context, reports } = createMockContext({})
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -940,7 +904,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should handle node without operator', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         const node = {
@@ -954,7 +918,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should handle node without left/right', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         const node = {
@@ -967,7 +931,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should handle node with null left', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         const node = createBinaryExpression('+', null, createLiteral(0.2))
@@ -977,7 +941,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should handle node with null right', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         const node = createBinaryExpression('+', createLiteral(0.1), null)
@@ -992,7 +956,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('special number values', () => {
       test('should report NaN + 0.1 (NaN treated as float)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1003,7 +967,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report Infinity + 0.1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1014,7 +978,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 + NaN', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1025,7 +989,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report NaN + NaN', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1036,7 +1000,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report Infinity - Infinity', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1047,7 +1011,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report Number.EPSILON + 0.1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1058,7 +1022,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report Number.MIN_VALUE + 0.1', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1069,7 +1033,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report -0.1 + 0.1 (negative float)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1085,7 +1049,7 @@ describe('no-loss-of-precision rule', () => {
     // ============================================================
     describe('non-numeric literals', () => {
       test('should not report non-number literals ("a" + "b")', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1096,7 +1060,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 + "a" (float with string operand)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1107,7 +1071,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report true + false (boolean operands)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1118,7 +1082,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report null + null', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1129,7 +1093,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report with undefined literal values', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(
@@ -1140,7 +1104,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should not report empty string + empty string', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('+', createLiteral(''), createLiteral('')))
@@ -1149,7 +1113,7 @@ describe('no-loss-of-precision rule', () => {
       })
 
       test('should report 0.1 + empty string (float with non-number)', () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
         const visitor = noLossOfPrecisionRule.create(context)
 
         visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral('')))
@@ -1164,7 +1128,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location at line 25 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1176,7 +1140,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1188,7 +1152,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1200,7 +1164,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location at line 5 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1212,7 +1176,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should include both start and end in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1224,7 +1188,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1236,7 +1200,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location for subtraction operations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1247,7 +1211,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location for multiplication operations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1258,7 +1222,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location for division operations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1269,7 +1233,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should preserve exact column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1280,7 +1244,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should preserve exact line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1291,7 +1255,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location with column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1302,7 +1266,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location at large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1313,7 +1277,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report different locations for different nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1330,7 +1294,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report location for single float operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1347,7 +1311,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention floating-point in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1356,7 +1320,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should mention IEEE 754 in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1365,7 +1329,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should include both operands in message for two floats', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1375,7 +1339,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should include operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1384,7 +1348,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should mention integer arithmetic as alternative', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1393,7 +1357,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should use ellipsis for non-float right operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1404,7 +1368,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should use ellipsis for non-float left operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1415,7 +1379,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should include both values when both are floats', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(0.1), createLiteral(0.2)))
@@ -1424,7 +1388,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should mention decimal library in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1433,7 +1397,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should mention Math.round in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1447,7 +1411,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('multiple reports', () => {
     test('should report for each BinaryExpression call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1457,7 +1421,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should accumulate reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1468,7 +1432,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report for two different precision issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1478,7 +1442,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report for three different operations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1489,7 +1453,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report only once per node (same node twice)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2))
@@ -1501,7 +1465,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle reportable then non-reportable sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1511,7 +1475,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle non-reportable then reportable sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(1), createLiteral(2)))
@@ -1521,7 +1485,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report for 5 different precision issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1536,7 +1500,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should maintain separate report messages for different nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1547,7 +1511,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should maintain correct report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1567,7 +1531,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('context handling', () => {
     test('should work with default context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1576,7 +1540,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1585,7 +1549,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should work with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;', filePath: '/custom/path/file.ts' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1594,7 +1558,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = 0.1 + 0.2;')
+      const { context, reports } = createMockRuleContext({ source: 'const x = 0.1 + 0.2;', filePath: '/src/file.ts' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1603,7 +1567,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report regardless of file path', () => {
-      const { context, reports } = createMockContext({}, '/another/directory/test.js')
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;', filePath: '/another/directory/test.js' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1612,7 +1576,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report regardless of source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'console.log("hello")')
+      const { context, reports } = createMockRuleContext({ source: 'console.log("hello")', filePath: '/src/file.ts' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1621,7 +1585,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle options with extra properties', () => {
-      const { context, reports } = createMockContext({ customOption: true, level: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ customOption: true, level: 5 }], source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1630,7 +1594,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should work when called multiple times with same context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1667,7 +1631,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should work with deeply nested options', () => {
-      const { context, reports } = createMockContext({ nested: { deep: { value: 42 } } })
+      const { context, reports } = createMockRuleContext({ options: [{ nested: { deep: { value: 42 } } }], source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(0.1), createLiteral(0.2)))
@@ -1709,7 +1673,7 @@ describe('no-loss-of-precision rule', () => {
     ]
 
     test.each(detectionCases)('should report for $left $op $right', ({ left, op, right }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1753,7 +1717,7 @@ describe('no-loss-of-precision rule', () => {
     ]
 
     test.each(noReportCases)('should not report for $desc', ({ left, op, right }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1769,7 +1733,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('additional detection scenarios', () => {
     test('should report 0.1 + x (decimal with variable)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1780,7 +1744,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report x * 0.1 (variable multiplied by float)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1791,7 +1755,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.1 * x (float multiplied by variable)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1802,7 +1766,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.5 / x (float divided by variable)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1813,7 +1777,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report x - 0.3 (variable minus float)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1824,7 +1788,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.3 - x (float minus variable)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1835,7 +1799,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 1.1 + 2.2 (classic precision loss)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(1.1), createLiteral(2.2)))
@@ -1844,7 +1808,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.7 - 0.4 (precision loss subtraction)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('-', createLiteral(0.7), createLiteral(0.4)))
@@ -1853,7 +1817,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 3.14 * 2 (pi approximation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(3.14), createLiteral(2)))
@@ -1862,7 +1826,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report very small floats 1e-10 + 2e-10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1873,7 +1837,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report negative float -1.5 + 0.1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(-1.5), createLiteral(0.1)))
@@ -1882,7 +1846,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.3 / 10 (float divided by non-power-of-2)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.3), createLiteral(10)))
@@ -1891,7 +1855,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.001 + 0.002 (small decimals)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1902,7 +1866,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 2.5 / 3 (non-representable result)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createLiteral(2.5), createLiteral(3)))
@@ -1911,7 +1875,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.15 * 100 (multiplication with scaling)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(0.15), createLiteral(100)))
@@ -1925,7 +1889,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('additional safe operations', () => {
     test('should not report x / 2 (division by power-of-2 integer)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createIdentifier('x'), createLiteral(2)))
@@ -1934,7 +1898,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x / 4 (division by power-of-2 integer)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createIdentifier('x'), createLiteral(4)))
@@ -1943,7 +1907,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x / 8 (division by power-of-2 integer)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createIdentifier('x'), createLiteral(8)))
@@ -1952,7 +1916,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x / 16 (division by power-of-2 integer)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1963,7 +1927,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x / 1 (division by 1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createIdentifier('x'), createLiteral(1)))
@@ -1972,7 +1936,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report "hello" + "world" (string concatenation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1983,7 +1947,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x ** 0.5 (exponentiation operator)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1994,7 +1958,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x & 0.1 (bitwise AND)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -2005,7 +1969,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x | 0.1 (bitwise OR)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -2016,7 +1980,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x ^ 0.1 (bitwise XOR)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -2032,7 +1996,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('multiplication with integer operand optimization', () => {
     test('should not report x * 5 (integer literal right, no float left)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createIdentifier('x'), createLiteral(5)))
@@ -2041,7 +2005,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report 5 * x (integer literal left, no float right)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(5), createIdentifier('x')))
@@ -2050,7 +2014,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x * 10 (integer literal right, no float left)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -2061,7 +2025,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report 100 * x (integer literal left, no float right)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -2072,7 +2036,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.1 * 5 (float literal left with integer right)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(0.1), createLiteral(5)))
@@ -2081,7 +2045,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 5 * 0.1 (integer left with float literal right)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(5), createLiteral(0.1)))
@@ -2090,7 +2054,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.1 * 100 (float * integer literal)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(0.1), createLiteral(100)))
@@ -2099,7 +2063,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 100 * 0.1 (integer literal * float)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(100), createLiteral(0.1)))
@@ -2108,7 +2072,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report 2 * 3 (both integer literals)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(2), createLiteral(3)))
@@ -2117,7 +2081,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 3.14 * 2 (float * integer literal)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', createLiteral(3.14), createLiteral(2)))
@@ -2131,7 +2095,7 @@ describe('no-loss-of-precision rule', () => {
   // ============================================================
   describe('node type variations', () => {
     test('should not report for non-BinaryExpression type (CallExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2146,7 +2110,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report for non-BinaryExpression type (MemberExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2161,7 +2125,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with loc.start as non-number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2180,7 +2144,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with empty loc.start and loc.end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2196,7 +2160,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with boolean true as type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2211,7 +2175,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with numeric type value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2226,7 +2190,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with extra properties gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = {
@@ -2246,7 +2210,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with array as left operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = createBinaryExpression('+', [1, 2, 3], createLiteral(0.1))
@@ -2256,7 +2220,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should handle node with array as right operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(0.1), [1, 2, 3])
@@ -2268,7 +2232,7 @@ describe('no-loss-of-precision rule', () => {
 
   describe('division edge cases', () => {
     test('should not report 5 / 2 (integer division)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createLiteral(5), createLiteral(2)))
@@ -2277,7 +2241,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.5 / -3 (negative non-power-of-2 divisor)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(-3)))
@@ -2286,7 +2250,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should report 0.5 / 5 (non-power-of-2 divisor)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', createLiteral(0.5), createLiteral(5)))
@@ -2295,7 +2259,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x / 128 (large power-of-2 divisor)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(
@@ -2306,7 +2270,7 @@ describe('no-loss-of-precision rule', () => {
     })
 
     test('should not report x / 256 (power-of-2 divisor)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '0.1 + 0.2;' })
       const visitor = noLossOfPrecisionRule.create(context)
 
       visitor.BinaryExpression(

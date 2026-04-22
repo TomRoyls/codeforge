@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noDivRegexRule } from '../../../../src/rules/patterns/no-div-regex.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'x = /foo/',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBinaryExpression(
   operator: string,
@@ -175,36 +139,36 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('create', () => {
     test('should return visitor object with BinaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should return object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should return visitor that is not null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should have BinaryExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return same visitor shape for different contexts', () => {
-      const { context: ctx1 } = createMockContext({}, '/a.ts')
-      const { context: ctx2 } = createMockContext({}, '/b.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'x = /foo/', filePath: '/a.ts' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'x = /foo/', filePath: '/b.ts' })
       const visitor1 = noDivRegexRule.create(ctx1)
       const visitor2 = noDivRegexRule.create(ctx2)
 
@@ -212,19 +176,19 @@ describe('no-div-regex rule', () => {
     })
 
     test('should have exactly one visitor key (BinaryExpression)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['BinaryExpression'])
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'x = /foo/' })
       expect(() => noDivRegexRule.create(context)).not.toThrow()
     })
 
     test('should accept context with populated options', () => {
-      const { context } = createMockContext({ strict: true, level: 3 })
+      const { context } = createMockRuleContext({ options: [{ strict: true, level: 3 }], source: 'x = /foo/' })
       expect(() => noDivRegexRule.create(context)).not.toThrow()
     })
   })
@@ -234,7 +198,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('detecting ambiguous regex', () => {
     test('should report x = /foo/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -243,7 +207,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report x = /bar/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('bar'))
@@ -252,7 +216,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report x = /test\\d+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test\\d+'))
@@ -261,7 +225,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report x = /^hello/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('^hello'))
@@ -270,7 +234,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report x = /world$/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('world$'))
@@ -279,7 +243,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report empty regex pattern x = //', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex(''))
@@ -288,7 +252,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with single character pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a'))
@@ -297,7 +261,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with dot pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('.'))
@@ -306,7 +270,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with unicode pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('\\u0041'))
@@ -315,7 +279,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with backreference pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('(a)\\1'))
@@ -324,7 +288,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with lookahead pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo(?=bar)'))
@@ -333,7 +297,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with negative lookahead pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo(?!bar)'))
@@ -342,7 +306,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with alternation pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('cat|dog'))
@@ -351,7 +315,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with anchor patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('^start$'))
@@ -360,7 +324,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with word boundary pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('\\bword\\b'))
@@ -369,7 +333,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with character class range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('[a-zA-Z0-9]'))
@@ -378,7 +342,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with negated character class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('[^abc]'))
@@ -387,7 +351,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with non-capturing group', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('(?:foo)'))
@@ -396,7 +360,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with named capture group', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('(?<name>foo)'))
@@ -405,7 +369,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with escaped forward slash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a\\/b'))
@@ -414,7 +378,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with hex escape pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('\\x41'))
@@ -423,7 +387,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with tab escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('\\t'))
@@ -432,7 +396,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with newline escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('\\n'))
@@ -441,7 +405,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with exact quantifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a{3}'))
@@ -450,7 +414,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with range quantifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a{2,5}'))
@@ -459,7 +423,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with lazy quantifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a+?'))
@@ -468,7 +432,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with complex email pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('[\\w.+-]+@[\\w-]+\\.[\\w.]+'))
@@ -477,7 +441,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with URL-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('https?://\\S+'))
@@ -486,7 +450,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with IP address pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'))
@@ -495,7 +459,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report regex with whitespace-only string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex(' '))
@@ -509,7 +473,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('allowing non-ambiguous expressions', () => {
     test('should not report regular division', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', 'Literal', 5))
@@ -518,7 +482,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report addition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', 'Literal', 'foo'))
@@ -527,7 +491,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report subtraction', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('-', 'Literal', 10))
@@ -536,7 +500,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report multiplication', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('*', 'Literal', 3))
@@ -545,7 +509,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report modulo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('%', 'Literal', 2))
@@ -554,7 +518,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report comparison operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('===', 'Literal', 'foo'))
@@ -565,7 +529,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report division with non-string right operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', 'Identifier', 'y'))
@@ -576,7 +540,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report exponentiation operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('**', 'Literal', 'foo'))
@@ -585,7 +549,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report less-than operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('<', 'Literal', 'foo'))
@@ -594,7 +558,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report greater-than operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('>', 'Literal', 'foo'))
@@ -603,7 +567,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report less-than-or-equal operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('<=', 'Literal', 'foo'))
@@ -612,7 +576,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report greater-than-or-equal operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('>=', 'Literal', 'foo'))
@@ -621,7 +585,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('in', 'Literal', 'foo'))
@@ -630,7 +594,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report instanceof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('instanceof', 'Literal', 'foo'))
@@ -639,7 +603,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report bitwise AND operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('&', 'Literal', 'foo'))
@@ -648,7 +612,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report bitwise OR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('|', 'Literal', 'foo'))
@@ -657,7 +621,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report bitwise XOR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('^', 'Literal', 'foo'))
@@ -666,7 +630,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report left shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('<<', 'Literal', 'foo'))
@@ -675,7 +639,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report right shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('>>', 'Literal', 'foo'))
@@ -684,7 +648,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report unsigned right shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('>>>', 'Literal', 'foo'))
@@ -693,7 +657,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report logical AND operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('&&', 'Literal', 'foo'))
@@ -702,7 +666,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report logical OR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('||', 'Literal', 'foo'))
@@ -711,7 +675,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report nullish coalescing operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('??', 'Literal', 'foo'))
@@ -720,7 +684,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report assignment operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       for (const op of ['+=', '-=', '*=', '/=', '%=']) {
@@ -731,7 +695,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right is a boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', 'Literal', true))
@@ -740,7 +704,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', 'Literal', undefined))
@@ -749,7 +713,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right is a numeric string with division', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -766,7 +730,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -783,7 +747,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right is BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -805,7 +769,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when operator is not division with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('==', 'Literal', 'some pattern'))
@@ -819,7 +783,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
@@ -827,7 +791,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
@@ -835,7 +799,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
@@ -844,7 +808,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node without type gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = { operator: '/', right: { type: 'Literal', value: 'foo' } }
@@ -854,7 +818,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with wrong type gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -868,7 +832,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node without operator gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -881,7 +845,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node without right gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -894,7 +858,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with null right gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -908,7 +872,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with non-Literal right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -922,7 +886,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with number Literal right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -936,7 +900,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with null Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -950,7 +914,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with undefined Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -964,7 +928,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with boolean Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -978,7 +942,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with object Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -992,7 +956,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with empty string operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1006,7 +970,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with ArrayExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1020,7 +984,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with UpdateExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1034,7 +998,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with number operator (non-string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1047,7 +1011,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle deeply nested empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression({})).not.toThrow()
@@ -1055,7 +1019,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with right missing type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1069,7 +1033,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with right as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1083,7 +1047,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1102,7 +1066,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle boolean node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression(true)).not.toThrow()
@@ -1111,7 +1075,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle numeric node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression(0)).not.toThrow()
@@ -1120,7 +1084,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle array node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(() => visitor.BinaryExpression([])).not.toThrow()
@@ -1134,7 +1098,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('location reporting', () => {
     test('should report correct location at line 10 column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo', 10, 5))
@@ -1144,7 +1108,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo', 1, 0))
@@ -1154,7 +1118,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo', 500, 20))
@@ -1164,7 +1128,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at high column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo', 3, 200))
@@ -1174,7 +1138,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location for end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo', 5, 10))
@@ -1184,7 +1148,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle node without loc gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1199,7 +1163,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report location for multiple nodes correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a', 2, 4))
@@ -1212,7 +1176,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report location with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       const node = {
@@ -1230,7 +1194,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report location for single column position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('x', 1, 0))
@@ -1239,7 +1203,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report end location calculated from start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test', 7, 3))
@@ -1249,7 +1213,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report location at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('abc', 15, 0))
@@ -1258,7 +1222,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report location for pattern at line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('z', 1, 99))
@@ -1267,7 +1231,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should preserve location data in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test', 42, 7))
@@ -1279,7 +1243,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report distinct locations for distinct nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a', 1, 0))
@@ -1289,7 +1253,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at very end of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('end', 999, 999))
@@ -1304,7 +1268,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('message quality', () => {
     test('should mention ambiguous in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1313,7 +1277,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should mention RegExp in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1322,7 +1286,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should mention parentheses in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1331,7 +1295,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1340,7 +1304,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should have consistent message for different patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1350,7 +1314,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should have message as string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1359,7 +1323,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should contain suggestion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1368,7 +1332,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not contain placeholder markers in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1378,7 +1342,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should have message starting with capital letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1387,7 +1351,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1401,7 +1365,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('multiple violations', () => {
     test('should report multiple ambiguous regex expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1412,7 +1376,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report ambiguous but not regular division', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1423,7 +1387,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report each ambiguous regex in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1434,7 +1398,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report mixed violations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a'))
@@ -1447,7 +1411,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report only ambiguous regex among many expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       for (const op of ['+', '-', '*', '%', '===', '==', '!=', '!==', '<', '>']) {
@@ -1459,7 +1423,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should accumulate reports across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('a'))
@@ -1470,7 +1434,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle alternating valid and invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('/', 'Literal', 5))
@@ -1484,7 +1448,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should handle large number of violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1495,7 +1459,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report zero violations for all valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1506,7 +1470,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not mix up report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('first', 1, 0))
@@ -1524,7 +1488,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/helpers.ts')
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/', filePath: '/src/utils/helpers.ts' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1533,7 +1497,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = /test/')
+      const { context, reports } = createMockRuleContext({ source: 'const x = /test/', filePath: '/src/file.ts' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test'))
@@ -1542,7 +1506,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should work with config options present', () => {
-      const { context, reports } = createMockContext({ customOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ customOption: true }], source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1551,7 +1515,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should work with empty config options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1560,7 +1524,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not call logger methods during detection', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
@@ -1569,7 +1533,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should use report function from context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
 
       expect(reports.length).toBe(0)
@@ -1599,7 +1563,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should work with .ts file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/app.ts')
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/', filePath: '/src/app.ts' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test'))
@@ -1608,7 +1572,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/', filePath: '/src/component.tsx' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test'))
@@ -1617,7 +1581,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/', filePath: '/src/index.js' })
       const visitor = noDivRegexRule.create(context)
 
       visitor.BinaryExpression(createAmbiguousRegex('test'))
@@ -1631,70 +1595,70 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('parameterized pattern detection', () => {
     test('should report ambiguous regex with pattern /foo/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('foo'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /bar/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('bar'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /test\\d+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test\\d+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /^hello/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('^hello'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /world$/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('world$'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with empty pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex(''))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with single char pattern /a/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('a'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /[a-z]+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('[a-z]+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /[0-9]{3}/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('[0-9]{3}'))
       expect(reports.length).toBe(1)
     })
 
     test('should report ambiguous regex with pattern /(foo|bar)/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('(foo|bar)'))
       expect(reports.length).toBe(1)
@@ -1706,70 +1670,70 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('parameterized non-detection by operator', () => {
     test('should not report with addition operator +', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('+', 'Literal', 5))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with subtraction operator -', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('-', 'Literal', 10))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with multiplication operator *', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('*', 'Literal', 3))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with modulo operator %', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('%', 'Literal', 2))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with exponentiation operator **', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('**', 'Literal', 2))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with strict equality operator ===', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('===', 'Literal', 'foo'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with loose equality operator ==', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('==', 'Literal', 'foo'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with strict inequality operator !==', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('!==', 'Literal', 'bar'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with loose inequality operator !=', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('!=', 'Literal', 'bar'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with less-than operator <', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('<', 'Literal', 5))
       expect(reports.length).toBe(0)
@@ -1781,14 +1745,14 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('parameterized right-type non-detection', () => {
     test('should not report when right type is Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('/', 'Identifier', 'y'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when right type is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', 'MemberExpression', {
@@ -1799,7 +1763,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right type is CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', 'CallExpression', {
@@ -1810,7 +1774,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right type is BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', 'BinaryExpression', {
@@ -1823,14 +1787,14 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right type is TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('/', 'TemplateLiteral', { quasis: [] }))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when right type is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', 'ArrowFunctionExpression', {
@@ -1842,7 +1806,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right type is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', 'FunctionExpression', {
@@ -1854,21 +1818,21 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when right type is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('/', 'ObjectExpression', { properties: [] }))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when right type is ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('/', 'ArrayExpression', { elements: [] }))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when right type is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', 'NewExpression', {
@@ -1884,7 +1848,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('parameterized node type non-detection', () => {
     test('should not report when node type is CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'CallExpression',
@@ -1895,7 +1859,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'MemberExpression',
@@ -1906,7 +1870,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'ArrayExpression',
@@ -1917,7 +1881,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'ObjectExpression',
@@ -1928,7 +1892,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'FunctionExpression',
@@ -1939,7 +1903,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'ArrowFunctionExpression',
@@ -1950,7 +1914,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'ConditionalExpression',
@@ -1961,7 +1925,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is LogicalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'LogicalExpression',
@@ -1972,7 +1936,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'AssignmentExpression',
@@ -1983,7 +1947,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should not report when node type is SequenceExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression({
         type: 'SequenceExpression',
@@ -1999,70 +1963,70 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('parameterized regex escape sequence detection', () => {
     test('should report regex with word character escape /\\w+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\w+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with digit escape /\\d+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\d+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with whitespace escape /\\s+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\s+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with non-word escape /\\W+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\W+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with non-digit escape /\\D+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\D+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with non-whitespace escape /\\S+/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\S+'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with word boundary /\\b/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\b'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with non-word boundary /\\B/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\B'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with tab escape /\\t/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\t'))
       expect(reports.length).toBe(1)
     })
 
     test('should report regex with newline escape /\\n/', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('\\n'))
       expect(reports.length).toBe(1)
@@ -2074,7 +2038,7 @@ describe('no-div-regex rule', () => {
   // =========================================================================
   describe('parameterized location verification', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -2082,7 +2046,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 2 column 3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 2, 3))
       expect(reports[0].loc?.start.line).toBe(2)
@@ -2090,7 +2054,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 10 column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 10, 5))
       expect(reports[0].loc?.start.line).toBe(10)
@@ -2098,7 +2062,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 50 column 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 50, 100))
       expect(reports[0].loc?.start.line).toBe(50)
@@ -2106,7 +2070,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 1 column 999', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 1, 999))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -2114,7 +2078,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 999 column 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 999, 1))
       expect(reports[0].loc?.start.line).toBe(999)
@@ -2122,7 +2086,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 5 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 5, 0))
       expect(reports[0].loc?.start.line).toBe(5)
@@ -2130,7 +2094,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 0, 0))
       expect(reports[0].loc?.start.line).toBe(0)
@@ -2138,7 +2102,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 100, 50))
       expect(reports[0].loc?.start.line).toBe(100)
@@ -2146,7 +2110,7 @@ describe('no-div-regex rule', () => {
     })
 
     test('should report correct location at line 25 column 75', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x = /foo/' })
       const visitor = noDivRegexRule.create(context)
       visitor.BinaryExpression(createAmbiguousRegex('test', 25, 75))
       expect(reports[0].loc?.start.line).toBe(25)

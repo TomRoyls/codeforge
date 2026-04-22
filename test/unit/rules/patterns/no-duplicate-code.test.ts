@@ -1,43 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { noDuplicateCodeRule } from '../../../../src/rules/patterns/no-duplicate-code.js'
 import type { RuleContext, RuleVisitor } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function test() { return 1; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBlockStatement(lineCount: number, startLine = 1, startColumn = 0): unknown {
   const lines = Array(lineCount).fill('  const x = 1;')
@@ -136,7 +100,7 @@ describe('no-duplicate-code rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toHaveProperty('BlockStatement')
@@ -146,49 +110,49 @@ describe('no-duplicate-code rule', () => {
     })
 
     test('should handle BlockStatement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(createBlockStatement(10))).not.toThrow()
     })
 
     test('should handle FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(createFunctionDeclaration('test', 10))).not.toThrow()
     })
 
     test('should handle ClassDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration('Test', 10))).not.toThrow()
     })
 
     test('should handle null node gracefully in BlockStatement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(null)).not.toThrow()
     })
 
     test('should handle null node gracefully in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
     })
 
     test('should handle null node gracefully in ClassDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.ClassDeclaration(null)).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       const node = { type: 'BlockStatement', body: [] }
@@ -197,14 +161,14 @@ describe('no-duplicate-code rule', () => {
     })
 
     test('should not process imports when ignoreImports is true', () => {
-      const { context } = createMockContext({ ignoreImports: true })
+      const { context } = createMockRuleContext({ options: [{ ignoreImports: true }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(createImportDeclaration())).not.toThrow()
     })
 
     test('should skip small blocks', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement(createBlockStatement(2)) // Less than minLines
@@ -216,42 +180,42 @@ describe('no-duplicate-code rule', () => {
 
   describe('options', () => {
     test('should respect minLines option', () => {
-      const { context } = createMockContext({ minLines: 3 })
+      const { context } = createMockRuleContext({ options: [{ minLines: 3 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should respect minTokens option', () => {
-      const { context } = createMockContext({ minTokens: 20 })
+      const { context } = createMockRuleContext({ options: [{ minTokens: 20 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should respect ignoreComments option', () => {
-      const { context } = createMockContext({ ignoreComments: true })
+      const { context } = createMockRuleContext({ options: [{ ignoreComments: true }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should respect ignoreImports option', () => {
-      const { context } = createMockContext({ ignoreImports: false })
+      const { context } = createMockRuleContext({ options: [{ ignoreImports: false }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should respect threshold option', () => {
-      const { context } = createMockContext({ threshold: 80 })
+      const { context } = createMockRuleContext({ options: [{ threshold: 80 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should handle empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -283,7 +247,7 @@ describe('no-duplicate-code rule', () => {
 
   describe('edge cases', () => {
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement('string')).not.toThrow()
@@ -291,7 +255,7 @@ describe('no-duplicate-code rule', () => {
     })
 
     test('should handle node with partial loc', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       const node = {
@@ -304,7 +268,7 @@ describe('no-duplicate-code rule', () => {
     })
 
     test('should handle empty source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', '')
+      const { context } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(createBlockStatement(10))).not.toThrow()
@@ -320,7 +284,7 @@ function a() {
 }
       `.trim()
 
-      const { context, reports } = createMockContext({ minLines: 2 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 2 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -343,7 +307,7 @@ class A {
 }
       `.trim()
 
-      const { context, reports } = createMockContext({ minLines: 2 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 2 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -373,7 +337,7 @@ if (false) {
 }
       `.trim()
 
-      const { context, reports } = createMockContext({ minLines: 3 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 3 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -394,14 +358,14 @@ if (false) {
     })
 
     test('should handle export declarations', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(createExportDeclaration())).not.toThrow()
     })
 
     test('should handle node without end location', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       const node = {
@@ -613,86 +577,86 @@ if (false) {
 
   describe('visitor structure', () => {
     test('visitor should have exactly 4 methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(4)
     })
 
     test('BlockStatement should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(typeof visitor.BlockStatement).toBe('function')
     })
 
     test('FunctionDeclaration should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(typeof visitor.FunctionDeclaration).toBe('function')
     })
 
     test('ClassDeclaration should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(typeof visitor.ClassDeclaration).toBe('function')
     })
 
     test('Program:exit should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(typeof visitor['Program:exit']).toBe('function')
     })
 
     test('BlockStatement returns undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor.BlockStatement(createBlockStatement(10))).toBeUndefined()
     })
 
     test('FunctionDeclaration returns undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor.FunctionDeclaration(createFunctionDeclaration('test', 10))).toBeUndefined()
     })
 
     test('ClassDeclaration returns undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor.ClassDeclaration(createClassDeclaration('Test', 10))).toBeUndefined()
     })
 
     test('Program:exit returns undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor['Program:exit']?.(undefined)).toBeUndefined()
     })
 
     test('create returns new visitor instance each time', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor1 = noDuplicateCodeRule.create(context)
       const visitor2 = noDuplicateCodeRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('visitor has BlockStatement key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor).toHaveProperty('BlockStatement')
     })
 
     test('visitor has FunctionDeclaration key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor).toHaveProperty('FunctionDeclaration')
     })
 
     test('visitor has ClassDeclaration key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor).toHaveProperty('ClassDeclaration')
     })
 
     test('visitor has Program:exit key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(visitor).toHaveProperty('Program:exit')
     })
@@ -700,7 +664,7 @@ if (false) {
 
   describe('import and export handling', () => {
     test('ImportDeclaration is skipped when ignoreImports is true in BlockStatement', () => {
-      const { context, reports } = createMockContext({ ignoreImports: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -715,7 +679,7 @@ if (false) {
     })
 
     test('ExportNamedDeclaration is skipped when ignoreImports is true in BlockStatement', () => {
-      const { context, reports } = createMockContext({ ignoreImports: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -731,7 +695,7 @@ if (false) {
     })
 
     test('ExportDefaultDeclaration is skipped when ignoreImports is true in BlockStatement', () => {
-      const { context, reports } = createMockContext({ ignoreImports: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -745,7 +709,7 @@ if (false) {
     })
 
     test('ExportAllDeclaration is skipped when ignoreImports is true in BlockStatement', () => {
-      const { context, reports } = createMockContext({ ignoreImports: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -759,7 +723,7 @@ if (false) {
     })
 
     test('ImportDeclaration is skipped in FunctionDeclaration when ignoreImports is true', () => {
-      const { context, reports } = createMockContext({ ignoreImports: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -774,7 +738,7 @@ if (false) {
     })
 
     test('ExportNamedDeclaration is skipped in FunctionDeclaration when ignoreImports is true', () => {
-      const { context, reports } = createMockContext({ ignoreImports: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -805,11 +769,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext(
-        { ignoreImports: true, minLines: 5 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: true, minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -829,11 +789,7 @@ if (false) {
 
     test('ignoreImports false processes import-like nodes in BlockStatement', () => {
       const source = "import { x } from 'mod';\nimport { y } from 'mod';"
-      const { context, reports } = createMockContext(
-        { ignoreImports: false, minLines: 1 },
-        '/src/file.ts',
-        source,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreImports: false, minLines: 1 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -852,7 +808,7 @@ if (false) {
     })
 
     test('default ignoreImports value is true', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'import x from "a";')
+      const { context } = createMockRuleContext({ source: 'import x from "a";', filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -868,7 +824,7 @@ if (false) {
 
   describe('comment handling', () => {
     test('Block comment type is skipped when ignoreComments is true', () => {
-      const { context, reports } = createMockContext({ ignoreComments: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreComments: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -882,7 +838,7 @@ if (false) {
     })
 
     test('Line comment type is skipped when ignoreComments is true', () => {
-      const { context, reports } = createMockContext({ ignoreComments: true, minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreComments: true, minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -897,11 +853,7 @@ if (false) {
 
     test('Block comment is processed when ignoreComments is false', () => {
       const source = '/* block comment line 1\nblock comment line 2\nblock comment line 3 */'
-      const { context } = createMockContext(
-        { ignoreComments: false, minLines: 2 },
-        '/src/file.ts',
-        source,
-      )
+      const { context } = createMockRuleContext({ options: [{ ignoreComments: false, minLines: 2 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -914,7 +866,7 @@ if (false) {
     })
 
     test('default ignoreComments value is true', () => {
-      const { context, reports } = createMockContext({ minLines: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 2 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -929,11 +881,7 @@ if (false) {
 
     test('BlockStatement type is not treated as comment', () => {
       const source = '{\n  const x = 1;\n  const y = 2;\n  const z = 3;\n  return x;\n}'
-      const { context } = createMockContext(
-        { ignoreComments: true, minLines: 5 },
-        '/src/file.ts',
-        source,
-      )
+      const { context } = createMockRuleContext({ options: [{ ignoreComments: true, minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -964,11 +912,7 @@ if (false) {
     ].join('\n')
 
     test('detects two identical BlockStatements as duplicates', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -987,11 +931,7 @@ if (false) {
     })
 
     test('reports exactly one duplicate for two identical blocks', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1010,11 +950,7 @@ if (false) {
     })
 
     test('report message contains duplicate line range', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1033,11 +969,7 @@ if (false) {
     })
 
     test('report message contains original line range', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1056,11 +988,7 @@ if (false) {
     })
 
     test('report has loc with correct duplicate lines', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1081,11 +1009,7 @@ if (false) {
     })
 
     test('report loc columns are 0', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1105,11 +1029,7 @@ if (false) {
     })
 
     test('single BlockStatement produces no report', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1138,7 +1058,7 @@ if (false) {
         '  return x + y;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', diffSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: diffSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1157,11 +1077,7 @@ if (false) {
     })
 
     test('blocks below minLines are not tracked as duplicates', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 10 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 10 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1180,11 +1096,7 @@ if (false) {
     })
 
     test('no reports without calling Program:exit', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1202,7 +1114,7 @@ if (false) {
     })
 
     test('Program:exit with no blocks produces no reports', () => {
-      const { context, reports } = createMockContext({ minLines: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor['Program:exit']?.(undefined)
@@ -1211,11 +1123,7 @@ if (false) {
     })
 
     test('block with null loc is skipped', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupBlockSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupBlockSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({ type: 'BlockStatement', body: [] })
@@ -1248,7 +1156,7 @@ if (false) {
     ].join('\n')
 
     test('detects two identical FunctionDeclarations as duplicates', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupFuncSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1271,7 +1179,7 @@ if (false) {
     })
 
     test('reports exactly one duplicate for two identical functions', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupFuncSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1294,7 +1202,7 @@ if (false) {
     })
 
     test('report message includes duplicate line numbers', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupFuncSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1317,7 +1225,7 @@ if (false) {
     })
 
     test('single function does not report duplicate', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupFuncSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1348,11 +1256,7 @@ if (false) {
         '  return x + y;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        diffFuncSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: diffFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1375,11 +1279,7 @@ if (false) {
     })
 
     test('function below minLines is not tracked', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 10 },
-        '/src/file.ts',
-        dupFuncSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 10 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1402,7 +1302,7 @@ if (false) {
     })
 
     test('function without loc is skipped', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupFuncSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1417,7 +1317,7 @@ if (false) {
     })
 
     test('null function node does not throw', () => {
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', dupFuncSource)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupFuncSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -1446,11 +1346,7 @@ if (false) {
     ].join('\n')
 
     test('detects two identical ClassDeclarations as duplicates', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupClassSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupClassSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1471,11 +1367,7 @@ if (false) {
     })
 
     test('reports exactly one duplicate for two identical classes', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupClassSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupClassSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1496,11 +1388,7 @@ if (false) {
     })
 
     test('report location uses duplicate class lines', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupClassSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupClassSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1522,11 +1410,7 @@ if (false) {
     })
 
     test('single class does not report duplicate', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        dupClassSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupClassSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1560,11 +1444,7 @@ if (false) {
         '  }',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        diffClassSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: diffClassSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1585,11 +1465,7 @@ if (false) {
     })
 
     test('class below minLines is not tracked', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 15 },
-        '/src/file.ts',
-        dupClassSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 15 }], source: dupClassSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1610,14 +1486,14 @@ if (false) {
     })
 
     test('null class node does not throw', () => {
-      const { context } = createMockContext({ minLines: 5 })
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.ClassDeclaration(null)).not.toThrow()
     })
 
     test('class without loc is skipped', () => {
-      const { context, reports } = createMockContext({ minLines: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.ClassDeclaration({
@@ -1649,7 +1525,7 @@ if (false) {
     ].join('\n')
 
     test('BlockStatement and FunctionDeclaration with same content are duplicates', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', mixedSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: mixedSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1670,7 +1546,7 @@ if (false) {
     })
 
     test('mixed type duplicate reports correct line numbers', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', mixedSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: mixedSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1715,7 +1591,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', triSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: triSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1757,11 +1633,7 @@ if (false) {
         '  return x + y;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        diffMixedSource,
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: diffMixedSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1807,7 +1679,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1861,7 +1733,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1920,7 +1792,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -1972,7 +1844,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2029,7 +1901,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2076,7 +1948,7 @@ if (false) {
     ].join('\n')
 
     test('message starts with Duplicate code block detected', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2095,7 +1967,7 @@ if (false) {
     })
 
     test('message contains Original block at lines', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2114,7 +1986,7 @@ if (false) {
     })
 
     test('message contains Consider extracting', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2133,7 +2005,7 @@ if (false) {
     })
 
     test('message contains line range of duplicate', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2152,7 +2024,7 @@ if (false) {
     })
 
     test('message is a non-empty string', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2172,7 +2044,7 @@ if (false) {
     })
 
     test('report has a message property', () => {
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', dupSource)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: dupSource, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2209,7 +2081,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2244,7 +2116,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2279,7 +2151,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2315,7 +2187,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 6 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 6 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2348,7 +2220,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2383,7 +2255,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2418,7 +2290,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2441,7 +2313,7 @@ if (false) {
     test('minLines 2 detects smaller blocks', () => {
       const source = ['{', '  const x = 1;', '}', '', '{', '  const x = 1;', '}'].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 2 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 2 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2476,7 +2348,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 100 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 100 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2509,7 +2381,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2544,7 +2416,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 6 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 6 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2579,7 +2451,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2614,7 +2486,7 @@ if (false) {
         '}',
       ].join('\n')
 
-      const { context, reports } = createMockContext({ minLines: 7 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 7 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2635,13 +2507,13 @@ if (false) {
 
   describe('options behavior - combined', () => {
     test('multiple options work together', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         minLines: 3,
         minTokens: 10,
         ignoreComments: true,
         ignoreImports: true,
         threshold: 80,
-      })
+      }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -2649,19 +2521,19 @@ if (false) {
     })
 
     test('all options disabled', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         ignoreComments: false,
         ignoreImports: false,
         minLines: 2,
         threshold: 50,
-      })
+      }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('options do not affect meta', () => {
-      const { context } = createMockContext({ minLines: 100 })
+      const { context } = createMockRuleContext({ options: [{ minLines: 100 }], source: 'function test() { return 1; }' })
       noDuplicateCodeRule.create(context)
 
       expect(noDuplicateCodeRule.meta.type).toBe('suggestion')
@@ -2671,14 +2543,14 @@ if (false) {
 
   describe('edge cases - primitive nodes', () => {
     test('undefined node in BlockStatement does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(undefined)).not.toThrow()
     })
 
     test('boolean node in BlockStatement does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement(true)).not.toThrow()
@@ -2686,7 +2558,7 @@ if (false) {
     })
 
     test('number node in FunctionDeclaration does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(42)).not.toThrow()
@@ -2694,7 +2566,7 @@ if (false) {
     })
 
     test('string node in ClassDeclaration does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.ClassDeclaration('class')).not.toThrow()
@@ -2702,14 +2574,14 @@ if (false) {
     })
 
     test('array node in BlockStatement does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement([])).not.toThrow()
     })
 
     test('empty object node does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement({})).not.toThrow()
@@ -2720,28 +2592,28 @@ if (false) {
 
   describe('edge cases - malformed nodes', () => {
     test('node with null loc does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement({ type: 'BlockStatement', loc: null })).not.toThrow()
     })
 
     test('node with numeric loc does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement({ type: 'BlockStatement', loc: 42 })).not.toThrow()
     })
 
     test('node with string loc does not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() => visitor.BlockStatement({ type: 'BlockStatement', loc: 'invalid' })).not.toThrow()
     })
 
     test('node with start only missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2756,7 +2628,7 @@ if (false) {
     })
 
     test('node with end only missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2771,7 +2643,7 @@ if (false) {
     })
 
     test('node with string line numbers does not crash', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2784,7 +2656,7 @@ if (false) {
     })
 
     test('node with negative line numbers does not crash', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2797,7 +2669,7 @@ if (false) {
     })
 
     test('node with very large line numbers does not crash', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2810,7 +2682,7 @@ if (false) {
     })
 
     test('node with zero line numbers does not crash', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2823,7 +2695,7 @@ if (false) {
     })
 
     test('node with missing column in loc', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2838,11 +2710,7 @@ if (false) {
 
   describe('edge cases - source content', () => {
     test('source with only whitespace', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 2 },
-        '/src/file.ts',
-        '   \n   \n   \n   \n   ',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 2 }], source: '   \n   \n   \n   \n   ', filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2856,7 +2724,7 @@ if (false) {
     test('source with unicode content', () => {
       const source =
         '{\n  const x = "héllo";\n  const y = "wörld";\n  const z = "日本語";\n  return x;\n}'
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2871,7 +2739,7 @@ if (false) {
     test('source with special characters', () => {
       const source =
         '{\n  const x = "<>&\\"";\n  const y = null;\n  const z = undefined;\n  return x;\n}'
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2886,7 +2754,7 @@ if (false) {
     test('source with very long lines', () => {
       const longLine = '  const x = ' + 'a'.repeat(10000) + ';'
       const source = '{\n' + longLine + '\n' + longLine + '\n' + longLine + '\n' + longLine + '\n}'
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2899,11 +2767,7 @@ if (false) {
     })
 
     test('single line source', () => {
-      const { context, reports } = createMockContext(
-        { minLines: 5 },
-        '/src/file.ts',
-        'const x = 1;',
-      )
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: 'const x = 1;', filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2918,7 +2782,7 @@ if (false) {
 
     test('source with CRLF-like content', () => {
       const source = '{\r\n  const x = 1;\r\n  const y = 2;\r\n  const z = 3;\r\n  return x;\r\n}'
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2937,7 +2801,7 @@ if (false) {
       }
       lines.push('}')
       const source = lines.join('\n')
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -2952,7 +2816,7 @@ if (false) {
 
   describe('Program:exit behavior', () => {
     test('Program:exit with no registered blocks', () => {
-      const { context, reports } = createMockContext({ minLines: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor['Program:exit']?.(undefined)
@@ -2962,7 +2826,7 @@ if (false) {
 
     test('Program:exit with one block no report', () => {
       const source = '{\n  const x = 1;\n  const y = 2;\n  const z = 3;\n  return x;\n}'
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -2991,7 +2855,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3025,7 +2889,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3059,7 +2923,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor['Program:exit']?.(undefined)
@@ -3088,7 +2952,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3168,7 +3032,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3201,7 +3065,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3236,7 +3100,7 @@ if (false) {
     })
 
     test('meta and create are consistent', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() { return 1; }' })
       const visitor = noDuplicateCodeRule.create(context)
       expect(typeof visitor).toBe('object')
       expect(visitor).not.toBeNull()
@@ -3245,21 +3109,21 @@ if (false) {
 
   describe('file path handling', () => {
     test('different file paths work', () => {
-      const { context } = createMockContext({ minLines: 5 }, '/different/path.ts', '{}')
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: '{}', filePath: '/different/path.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('empty file path works', () => {
-      const { context } = createMockContext({ minLines: 5 }, '', '{}')
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: '{}', filePath: '' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('file path with special characters works', () => {
-      const { context } = createMockContext({ minLines: 5 }, '/src/[test]/file.ts', '{}')
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: '{}', filePath: '/src/[test]/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -3267,7 +3131,7 @@ if (false) {
 
     test('long file path works', () => {
       const longPath = '/src/' + 'subdir/'.repeat(50) + 'file.ts'
-      const { context } = createMockContext({ minLines: 5 }, longPath, '{}')
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: '{}', filePath: longPath })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -3283,7 +3147,7 @@ if (false) {
       lines.push('}')
       const source = lines.join('\n')
 
-      const { context } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       expect(() =>
@@ -3313,7 +3177,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3348,7 +3212,7 @@ if (false) {
         '    return x;',
         '  }',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3382,7 +3246,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3416,7 +3280,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3450,7 +3314,7 @@ if (false) {
         '  return x + y;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({
@@ -3484,7 +3348,7 @@ if (false) {
         '  return x;',
         '}',
       ].join('\n')
-      const { context, reports } = createMockContext({ minLines: 5 }, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ options: [{ minLines: 5 }], source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateCodeRule.create(context)
 
       visitor.BlockStatement({

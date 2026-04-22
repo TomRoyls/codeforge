@@ -3,43 +3,7 @@ import { describe, expect, test, vi } from 'vitest'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
 import { noPrototypeBuiltinsRule } from '../../../../src/rules/patterns/no-prototype-builtins.js'
-
-interface ReportDescriptor {
-  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
-  message: string
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'obj.hasOwnProperty("key")',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    config: { options: [options] },
-    getAST: () => null,
-    getComments: () => [],
-    getFilePath: () => filePath,
-    getSource: () => source,
-    getTokens: () => [],
-    logger: {
-      debug: vi.fn(),
-      error: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-    },
-    report(descriptor: ReportDescriptor) {
-      reports.push({
-        loc: descriptor.loc,
-        message: descriptor.message,
-      })
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string, line = 1, column = 0): unknown {
   return {
@@ -185,40 +149,40 @@ describe('no-prototype-builtins rule', () => {
 
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       expect(typeof visitor).toBe('object')
       expect(visitor).not.toBeNull()
     })
 
     test('should return a visitor with exactly CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       expect(Object.keys(visitor)).toContain('CallExpression')
     })
 
     test('should have CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor1 = noPrototypeBuiltinsRule.create(context)
       const visitor2 = noPrototypeBuiltinsRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should create visitor with different context options', () => {
-      const { context: ctx1 } = createMockContext({ strict: true })
-      const { context: ctx2 } = createMockContext({ strict: false })
+      const { context: ctx1 } = createMockRuleContext({ options: [{ strict: true }], source: 'obj.hasOwnProperty("key")' })
+      const { context: ctx2 } = createMockRuleContext({ options: [{ strict: false }], source: 'obj.hasOwnProperty("key")' })
       const visitor1 = noPrototypeBuiltinsRule.create(ctx1)
       const visitor2 = noPrototypeBuiltinsRule.create(ctx2)
       expect(typeof visitor1.CallExpression).toBe('function')
@@ -230,25 +194,25 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context)).not.toThrow()
     })
 
     test('should accept context with no options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context)).not.toThrow()
     })
   })
 
   describe('detecting hasOwnProperty calls', () => {
     test('should report hasOwnProperty called on object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with correct message for hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'myObj'))
@@ -256,13 +220,13 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report with suggestion to use call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('Object.prototype.hasOwnProperty.call()')
     })
 
     test('should report hasOwnProperty on variable named foo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'foo'))
@@ -270,7 +234,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable named obj', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'obj'))
@@ -278,7 +242,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable named myObject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'myObject'))
@@ -286,7 +250,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop)
@@ -297,7 +261,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty with string literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('data')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop)
@@ -308,7 +272,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'this'))
@@ -318,13 +282,13 @@ describe('no-prototype-builtins rule', () => {
 
   describe('detecting isPrototypeOf calls', () => {
     test('should report isPrototypeOf called on object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isPrototypeOf'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with correct message for isPrototypeOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'parent'))
@@ -332,13 +296,13 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report with suggestion to use call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isPrototypeOf'))
       expect(reports[0].message).toContain('Object.prototype.isPrototypeOf.call()')
     })
 
     test('should report isPrototypeOf on variable named foo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'foo'))
@@ -346,7 +310,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf with an argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('proto')
       const prop = createIdentifier('isPrototypeOf')
       const member = createMemberExpression(obj, prop)
@@ -357,7 +321,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'this'))
@@ -367,7 +331,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('detecting propertyIsEnumerable calls', () => {
     test('should report propertyIsEnumerable called on object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable'))
@@ -375,7 +339,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report with correct message for propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable'))
@@ -383,7 +347,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report with suggestion to use call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable'))
@@ -391,7 +355,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable named config', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'config'))
@@ -399,7 +363,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable with an argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('propertyIsEnumerable')
       const member = createMemberExpression(obj, prop)
@@ -410,7 +374,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'this'))
@@ -420,19 +384,19 @@ describe('no-prototype-builtins rule', () => {
 
   describe('valid code cases', () => {
     test('should not report call to non-prototype method toString', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('toString'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to custom method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('customMethod'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report Object.prototype method with call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       const objProto = createIdentifier('Object')
       const protoProp = createIdentifier('prototype')
@@ -447,14 +411,14 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report simple function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression(createIdentifier('myFunction'))
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
     })
 
     test('should not report method call on this for non-prototype method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('customMethod', 'this'))
@@ -462,55 +426,55 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report call to valueOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('valueOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to toLocaleString', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('toLocaleString'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('constructor'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('map'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to filter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('filter'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to reduce', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('reduce'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to push', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('push'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to forEach', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('forEach'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report call to split', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('split'))
       expect(reports.length).toBe(0)
     })
@@ -576,7 +540,7 @@ describe('no-prototype-builtins rule', () => {
     ]
     for (const methodName of safeMethods) {
       test(`should not report "${methodName}" method call`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
         noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall(methodName))
         expect(reports.length).toBe(0)
       })
@@ -585,35 +549,35 @@ describe('no-prototype-builtins rule', () => {
 
   describe('non-matching callee types', () => {
     test('should not report when callee type is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression({ type: 'ArrowFunctionExpression' })
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when callee type is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression({ type: 'FunctionExpression' })
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when callee type is Super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression({ type: 'Super' })
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when callee type is Import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression({ type: 'Import' })
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when callee type is ThisExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression({ type: 'ThisExpression' })
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
@@ -622,43 +586,43 @@ describe('no-prototype-builtins rule', () => {
 
   describe('case sensitivity', () => {
     test('should not report HasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('HasOwnProperty'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report hasownproperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasownproperty'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report HASOWNPROPERTY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('HASOWNPROPERTY'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report IsPrototypeOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('IsPrototypeOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report isprototypeof', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isprototypeof'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ISPROTOOTYPEOF', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('ISPROTOOTYPEOF'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report PropertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('PropertyIsEnumerable'))
@@ -666,7 +630,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report propertyisenumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyisenumerable'))
@@ -674,7 +638,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report PROPERTYISENUMERABLE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('PROPERTYISENUMERABLE'))
@@ -684,21 +648,21 @@ describe('no-prototype-builtins rule', () => {
 
   describe('matching prototype methods', () => {
     test('should report prototype method hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
       expect(reports[0].message).toContain('hasOwnProperty')
     })
 
     test('should report prototype method isPrototypeOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isPrototypeOf'))
       expect(reports.length).toBe(1)
       expect(reports[0].message).toContain('isPrototypeOf')
     })
 
     test('should report prototype method propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable'))
@@ -709,37 +673,37 @@ describe('no-prototype-builtins rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context).CallExpression(null)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle undefined node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context).CallExpression()).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle non-object node in CallExpression (string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context).CallExpression('string')).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle non-object node in CallExpression (number)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context).CallExpression(123)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle non-object node in CallExpression (boolean)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context).CallExpression(true)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle CallExpression without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression({ arguments: [], type: 'CallExpression' })
@@ -747,14 +711,14 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const call = createCallExpression(createIdentifier('myFunction'))
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
       expect(reports.length).toBe(0)
     })
 
     test('should handle MemberExpression without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = { object: createIdentifier('obj'), type: 'MemberExpression' }
       const call = createCallExpression(member)
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
@@ -762,7 +726,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle non-Identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const prop = { type: 'Literal', value: 'hasOwnProperty' }
       const member = createMemberExpression(createIdentifier('obj'), prop)
       const call = createCallExpression(member)
@@ -771,7 +735,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle property without name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const prop = { type: 'Identifier' }
       const member = createMemberExpression(createIdentifier('obj'), prop)
       const call = createCallExpression(member)
@@ -780,19 +744,19 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       expect(() => noPrototypeBuiltinsRule.create(context).CallExpression({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with type but no callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression({ type: 'CallExpression' })
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with callee being null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression({ type: 'CallExpression', callee: null })
@@ -800,7 +764,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle node with callee being a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression({ type: 'CallExpression', callee: 'someString' })
@@ -808,13 +772,13 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle node with callee being a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression({ type: 'CallExpression', callee: 42 })
       expect(reports.length).toBe(0)
     })
 
     test('should handle MemberExpression with null property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = { object: createIdentifier('obj'), property: null, type: 'MemberExpression' }
       const call = createCallExpression(member)
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
@@ -822,7 +786,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle MemberExpression with undefined property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = {
         object: createIdentifier('obj'),
         property: undefined,
@@ -834,7 +798,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle MemberExpression with empty object property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = { object: createIdentifier('obj'), property: {}, type: 'MemberExpression' }
       const call = createCallExpression(member)
       noPrototypeBuiltinsRule.create(context).CallExpression(call)
@@ -842,7 +806,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle MemberExpression with numeric name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = {
         object: createIdentifier('obj'),
         property: { type: 'Identifier', name: 123 },
@@ -854,7 +818,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle deeply nested member expression as callee object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const deep1 = createIdentifier('a')
       const deep2 = createMemberExpression(deep1, createIdentifier('b'))
       const deep3 = createMemberExpression(deep2, createIdentifier('c'))
@@ -865,7 +829,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle computed member expression with hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = {
         computed: true,
         loc: { end: { column: 10, line: 1 }, start: { column: 0, line: 1 } },
@@ -881,7 +845,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for hasOwnProperty call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 10, 5)
@@ -892,7 +856,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location for isPrototypeOf call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('parent')
       const prop = createIdentifier('isPrototypeOf')
       const member = createMemberExpression(obj, prop, 20, 10)
@@ -903,7 +867,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location for propertyIsEnumerable call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('propertyIsEnumerable')
       const member = createMemberExpression(obj, prop, 30, 15)
@@ -914,7 +878,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should include end location in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 5, 2)
@@ -926,14 +890,14 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = createMemberExpression(
         createIdentifier('obj'),
         createIdentifier('hasOwnProperty'),
@@ -946,7 +910,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle node with partial loc missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = createMemberExpression(
         createIdentifier('obj'),
         createIdentifier('hasOwnProperty'),
@@ -964,7 +928,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle node with partial loc missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = createMemberExpression(
         createIdentifier('obj'),
         createIdentifier('hasOwnProperty'),
@@ -980,7 +944,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report location on line 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 100, 0)
@@ -990,7 +954,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report location with column offset 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 1, 50)
@@ -1000,7 +964,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = createMemberExpression(
         createIdentifier('obj'),
         createIdentifier('hasOwnProperty'),
@@ -1012,7 +976,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle node with undefined loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const member = createMemberExpression(
         createIdentifier('obj'),
         createIdentifier('hasOwnProperty'),
@@ -1031,7 +995,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('locations at various lines and columns', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 1, 0)
@@ -1042,7 +1006,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location at line 1 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 1, 50)
@@ -1053,7 +1017,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location at line 10 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 10, 0)
@@ -1064,7 +1028,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location at line 10 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 10, 20)
@@ -1075,7 +1039,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location at line 50 column 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 50, 100)
@@ -1086,7 +1050,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location at line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 100, 0)
@@ -1097,7 +1061,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct location at line 500 column 500', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const prop = createIdentifier('hasOwnProperty')
       const member = createMemberExpression(obj, prop, 500, 500)
@@ -1110,31 +1074,31 @@ describe('no-prototype-builtins rule', () => {
 
   describe('message content', () => {
     test('should mention method name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('hasOwnProperty')
     })
 
     test('should mention Object.prototype in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('Object.prototype')
     })
 
     test('should suggest using call() method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('.call()')
     })
 
     test('should use single quotes around method name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain("'hasOwnProperty'")
     })
 
     test('should have consistent message format across all methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       visitor.CallExpression(createPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('isPrototypeOf'))
@@ -1145,31 +1109,31 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should have "Do not call" prefix in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toMatch(/^Do not call/)
     })
 
     test('should have "instead" suffix in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('instead')
     })
 
     test('should have "directly on an object" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toContain('directly on an object')
     })
 
     test('should use single quotes around isPrototypeOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isPrototypeOf'))
       expect(reports[0].message).toContain("'isPrototypeOf'")
     })
 
     test('should use single quotes around propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable'))
@@ -1177,7 +1141,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should have exact message for hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports[0].message).toBe(
         "Do not call 'hasOwnProperty' directly on an object. Use Object.prototype.hasOwnProperty.call() instead.",
@@ -1185,7 +1149,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should have exact message for isPrototypeOf', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isPrototypeOf'))
       expect(reports[0].message).toBe(
         "Do not call 'isPrototypeOf' directly on an object. Use Object.prototype.isPrototypeOf.call() instead.",
@@ -1193,7 +1157,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should have exact message for propertyIsEnumerable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable'))
@@ -1205,7 +1169,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('multiple violations', () => {
     test('should report multiple prototype method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       visitor.CallExpression(createPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('isPrototypeOf'))
@@ -1214,7 +1178,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report prototype method calls on different objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       visitor.CallExpression(createPrototypeCall('hasOwnProperty', 'obj1'))
       visitor.CallExpression(createPrototypeCall('hasOwnProperty', 'obj2'))
@@ -1222,7 +1186,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report 5 hasOwnProperty calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       for (let i = 0; i < 5; i++) {
         visitor.CallExpression(createPrototypeCall('hasOwnProperty', `obj${i}`))
@@ -1231,7 +1195,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report 10 mixed prototype method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       const methods = ['hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable']
       for (let i = 0; i < 10; i++) {
@@ -1241,7 +1205,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report interleaved safe and unsafe calls mixed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       visitor.CallExpression(createPrototypeCall('toString'))
       visitor.CallExpression(createPrototypeCall('hasOwnProperty'))
@@ -1252,7 +1216,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report correct message for each violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       visitor.CallExpression(createPrototypeCall('hasOwnProperty'))
       visitor.CallExpression(createPrototypeCall('isPrototypeOf'))
@@ -1265,53 +1229,49 @@ describe('no-prototype-builtins rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")', filePath: '/project/src/utils.ts' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'obj.hasOwnProperty("key")',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")', filePath: '/src/file.ts' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with options containing extra keys', () => {
-      const { context, reports } = createMockContext({ extra: true, mode: 'strict' })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, mode: 'strict' }], source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")', filePath: '/src/file.js' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")', filePath: '/src/component.tsx' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
 
     test('should work with nested directory path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/deep/nested/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")', filePath: '/project/src/deep/nested/path/file.ts' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProperty'))
       expect(reports.length).toBe(1)
     })
@@ -1360,7 +1320,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('hasOwnProperty on various object names', () => {
     test('should report hasOwnProperty on variable "obj"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'obj'))
@@ -1369,7 +1329,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "foo"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'foo'))
@@ -1378,7 +1338,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "bar"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'bar'))
@@ -1387,7 +1347,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "data"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'data'))
@@ -1396,7 +1356,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "config"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'config'))
@@ -1405,7 +1365,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "item"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'item'))
@@ -1414,7 +1374,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "result"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'result'))
@@ -1423,7 +1383,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "options"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'options'))
@@ -1432,7 +1392,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "props"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'props'))
@@ -1441,7 +1401,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report hasOwnProperty on variable "state"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('hasOwnProperty', 'state'))
@@ -1452,7 +1412,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('isPrototypeOf on various object names', () => {
     test('should report isPrototypeOf on variable "obj"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'obj'))
@@ -1461,7 +1421,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "foo"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'foo'))
@@ -1470,7 +1430,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "bar"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'bar'))
@@ -1479,7 +1439,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "data"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'data'))
@@ -1488,7 +1448,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "config"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'config'))
@@ -1497,7 +1457,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "item"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'item'))
@@ -1506,7 +1466,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "result"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'result'))
@@ -1515,7 +1475,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "options"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'options'))
@@ -1524,7 +1484,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "props"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'props'))
@@ -1533,7 +1493,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on variable "state"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPrototypeOf', 'state'))
@@ -1544,7 +1504,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('propertyIsEnumerable on various object names', () => {
     test('should report propertyIsEnumerable on variable "obj"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'obj'))
@@ -1553,7 +1513,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "foo"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'foo'))
@@ -1562,7 +1522,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "bar"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'bar'))
@@ -1571,7 +1531,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "data"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'data'))
@@ -1580,7 +1540,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "config"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'config'))
@@ -1589,7 +1549,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "item"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'item'))
@@ -1598,7 +1558,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "result"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'result'))
@@ -1607,7 +1567,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "options"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'options'))
@@ -1616,7 +1576,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "props"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'props'))
@@ -1625,7 +1585,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report propertyIsEnumerable on variable "state"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyIsEnumerable', 'state'))
@@ -1636,7 +1596,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('safe method names batch 2', () => {
     test('should not report built-in method "addEventListener"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('addEventListener'))
@@ -1644,7 +1604,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report built-in method "removeEventListener"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('removeEventListener'))
@@ -1652,31 +1612,31 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report built-in method "getAttribute"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('getAttribute'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "setAttribute"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('setAttribute'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "removeAttribute"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('removeAttribute'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "querySelector"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('querySelector'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "querySelectorAll"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('querySelectorAll'))
@@ -1684,145 +1644,145 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report built-in method "createElement"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('createElement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "appendChild"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('appendChild'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "removeChild"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('removeChild'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "then"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('then'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "catch"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('catch'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "finally"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('finally'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "pipe"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('pipe'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "subscribe"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('subscribe'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "next"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('next'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "error"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('error'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "complete"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('complete'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "emit"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('emit'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "on"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('on'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "off"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('off'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "once"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('once'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "bind"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('bind'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "apply"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('apply'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "call"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('call'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "freeze"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('freeze'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "assign"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('assign'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "keys"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('keys'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "values"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('values'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "entries"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('entries'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report built-in method "getPrototypeOf"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('getPrototypeOf'))
       expect(reports.length).toBe(0)
     })
@@ -1830,7 +1790,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('repeated visitor calls', () => {
     test('should report same violation on repeated calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       const call = createPrototypeCall('hasOwnProperty')
       visitor.CallExpression(call)
@@ -1840,7 +1800,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not accumulate reports from safe calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       const call = createPrototypeCall('toString')
       visitor.CallExpression(call)
@@ -1849,7 +1809,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle 50 sequential calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       for (let i = 0; i < 50; i++) {
         visitor.CallExpression(createPrototypeCall('hasOwnProperty', `obj${i}`))
@@ -1858,7 +1818,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should handle 100 sequential safe calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const visitor = noPrototypeBuiltinsRule.create(context)
       for (let i = 0; i < 100; i++) {
         visitor.CallExpression(createPrototypeCall('toString', `obj${i}`))
@@ -1869,7 +1829,7 @@ describe('no-prototype-builtins rule', () => {
 
   describe('chained calls', () => {
     test('should report hasOwnProperty on chained member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const nested = createMemberExpression(obj, createIdentifier('nested'))
       const member = createMemberExpression(nested, createIdentifier('hasOwnProperty'))
@@ -1879,7 +1839,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should report isPrototypeOf on triple-chained member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const level1 = createMemberExpression(createIdentifier('a'), createIdentifier('b'))
       const level2 = createMemberExpression(level1, createIdentifier('c'))
       const member = createMemberExpression(level2, createIdentifier('isPrototypeOf'))
@@ -1889,7 +1849,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report safe method on chained member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       const obj = createIdentifier('obj')
       const nested = createMemberExpression(obj, createIdentifier('nested'))
       const member = createMemberExpression(nested, createIdentifier('toString'))
@@ -1901,37 +1861,37 @@ describe('no-prototype-builtins rule', () => {
 
   describe('similar but different method names', () => {
     test('should not report similar-but-different method "hasOwn"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwn'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "hasOwnProp"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('hasOwnProp'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "ownProperty"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('ownProperty'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "protoIsOf"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('protoIsOf'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "isEnum"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('isEnum'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "isPropertyEnumerable"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('isPropertyEnumerable'))
@@ -1939,7 +1899,7 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report similar-but-different method "propertyEnumerable"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule
         .create(context)
         .CallExpression(createPrototypeCall('propertyEnumerable'))
@@ -1947,49 +1907,49 @@ describe('no-prototype-builtins rule', () => {
     })
 
     test('should not report similar-but-different method "enumerable"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('enumerable'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "protoType"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('protoType'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "proto"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('proto'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "has"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('has'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "own"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('own'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "property"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('property'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "is"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('is'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report similar-but-different method "of"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('of'))
       expect(reports.length).toBe(0)
     })
@@ -1997,145 +1957,145 @@ describe('no-prototype-builtins rule', () => {
 
   describe('safe method names batch 3 misc', () => {
     test('should not report misc method "log"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('log'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "warn"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('warn'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "error"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('error'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "info"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('info'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "debug"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('debug'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "assert"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('assert'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "time"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('time'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "timeEnd"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('timeEnd'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "parse"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('parse'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "stringify"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('stringify'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "fetch"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('fetch'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "json"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('json'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "text"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('text'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "blob"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('blob'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "arrayBuffer"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('arrayBuffer'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "formData"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('formData'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "clone"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('clone'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "abort"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('abort'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "resolve"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('resolve'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "reject"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('reject'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "all"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('all'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "race"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('race'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "allSettled"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('allSettled'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report misc method "any"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'obj.hasOwnProperty("key")' })
       noPrototypeBuiltinsRule.create(context).CallExpression(createPrototypeCall('any'))
       expect(reports.length).toBe(0)
     })

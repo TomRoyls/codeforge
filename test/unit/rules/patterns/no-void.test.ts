@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noVoidRule } from '../../../../src/rules/patterns/no-void.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'void 0',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createUnaryVoidExpression(argument: unknown, line = 1, column = 0): unknown {
   return {
@@ -159,35 +121,35 @@ describe('no-void rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(visitor).toHaveProperty('UnaryExpression')
     })
 
     test('should return a function for UnaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(typeof visitor.UnaryExpression).toBe('function')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should create new visitor each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor1 = noVoidRule.create(context)
       const visitor2 = noVoidRule.create(context)
 
@@ -195,19 +157,19 @@ describe('no-void rule', () => {
     })
 
     test('should accept context with valid properties', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       expect(() => noVoidRule.create(context)).not.toThrow()
     })
 
     test('should return visitor that is callable', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(() => visitor.UnaryExpression({})).not.toThrow()
     })
 
     test('should only have UnaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -217,7 +179,7 @@ describe('no-void rule', () => {
 
   describe('void expression detection', () => {
     test('should report void 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0))
@@ -229,7 +191,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createIdentifier('undefined'))
@@ -240,7 +202,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -255,7 +217,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -271,7 +233,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -286,7 +248,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -301,7 +263,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -317,7 +279,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -333,7 +295,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -347,7 +309,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -363,7 +325,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -378,7 +340,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -393,7 +355,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -407,7 +369,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -423,7 +385,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with await expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -437,7 +399,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with yield expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -451,7 +413,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -466,7 +428,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with class expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -480,7 +442,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with tagged template expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -495,7 +457,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with spread element argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -509,7 +471,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with nested call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -528,7 +490,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(true))
@@ -539,7 +501,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with negative number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(-1))
@@ -550,7 +512,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with regex literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -565,7 +527,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(''))
@@ -578,7 +540,7 @@ describe('no-void rule', () => {
 
   describe('non-void expressions (valid cases)', () => {
     test('should not report typeof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -595,7 +557,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report delete operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -612,7 +574,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ! operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -629,7 +591,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report - operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -646,7 +608,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report + operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -663,7 +625,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ~ operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -680,7 +642,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report BinaryExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -697,7 +659,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report CallExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -713,7 +675,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report Identifier node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createIdentifier('x'))
@@ -722,7 +684,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report Literal node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createLiteral(42))
@@ -731,7 +693,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report MemberExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -744,7 +706,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ObjectExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -756,7 +718,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ArrayExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -768,7 +730,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report FunctionExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -781,7 +743,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ArrowFunctionExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -794,7 +756,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report UnaryExpression with VOID (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -811,7 +773,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report UnaryExpression with Void (capitalized)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -828,7 +790,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report empty string operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -845,7 +807,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ConditionalExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -859,7 +821,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report AssignmentExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -873,7 +835,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report SequenceExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -885,7 +847,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report TemplateLiteral node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -898,7 +860,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report ClassExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -910,7 +872,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report NewExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({
@@ -923,7 +885,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report UnaryExpression with postfix void (non-standard)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -940,7 +902,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report plain object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({ foo: 'bar' })
@@ -949,7 +911,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report number primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(42)
@@ -958,7 +920,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report string primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression('void')
@@ -967,7 +929,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report boolean primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(true)
@@ -978,7 +940,7 @@ describe('no-void rule', () => {
 
   describe('auto-fix', () => {
     test('should provide fix for void 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -999,7 +961,7 @@ describe('no-void rule', () => {
     })
 
     test('should provide fix for void undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1019,7 +981,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix for void with non-zero literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1038,7 +1000,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix for void with function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1061,7 +1023,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix when node has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0))
@@ -1073,7 +1035,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix for void with other identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1092,7 +1054,7 @@ describe('no-void rule', () => {
     })
 
     test('should provide fix with correct range for void 0 at offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1110,7 +1072,7 @@ describe('no-void rule', () => {
     })
 
     test('should provide fix with undefined text for void undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1129,7 +1091,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix for void with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1147,7 +1109,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix for void with boolean argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1165,7 +1127,7 @@ describe('no-void rule', () => {
     })
 
     test('should provide fix for void 0 with range at end of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1184,7 +1146,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix when argument is an object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1202,7 +1164,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix when argument is an array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1220,7 +1182,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix when argument is a binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1243,7 +1205,7 @@ describe('no-void rule', () => {
     })
 
     test('should not provide fix when argument is an arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1267,21 +1229,21 @@ describe('no-void rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(() => visitor.UnaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(() => visitor.UnaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       expect(() => visitor.UnaryExpression('string')).not.toThrow()
@@ -1289,7 +1251,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1305,7 +1267,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with incomplete loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1321,7 +1283,7 @@ describe('no-void rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 10, 5)
@@ -1333,7 +1295,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node without argument property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1352,7 +1314,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle non-UnaryExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1372,7 +1334,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node without operator property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1391,7 +1353,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with numeric operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1408,7 +1370,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1427,7 +1389,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with undefined argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1445,7 +1407,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with empty object argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({})
@@ -1456,7 +1418,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with array argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression([1, 2, 3])
@@ -1467,7 +1429,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with deeply nested argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -1490,7 +1452,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with only start loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1507,7 +1469,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with only end loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1524,7 +1486,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1539,7 +1501,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 0, 0)
@@ -1552,7 +1514,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 99999, 50)
@@ -1565,7 +1527,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with range as zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1584,7 +1546,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle argument with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -1601,7 +1563,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle void with prefix true explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1620,7 +1582,7 @@ describe('no-void rule', () => {
 
   describe('location', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 1, 0)
@@ -1632,7 +1594,7 @@ describe('no-void rule', () => {
     })
 
     test('should report correct location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 5, 10)
@@ -1644,7 +1606,7 @@ describe('no-void rule', () => {
     })
 
     test('should report correct location at line 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 100, 0)
@@ -1655,7 +1617,7 @@ describe('no-void rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 1, 5)
@@ -1667,7 +1629,7 @@ describe('no-void rule', () => {
     })
 
     test('should report location for void undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createIdentifier('undefined'), 7, 3)
@@ -1679,7 +1641,7 @@ describe('no-void rule', () => {
     })
 
     test('should report location for void with call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(
@@ -1699,7 +1661,7 @@ describe('no-void rule', () => {
     })
 
     test('should preserve exact column offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 1, 42)
@@ -1710,7 +1672,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle multi-line location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1733,7 +1695,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle location at column 0 with different lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 42, 0)
@@ -1745,7 +1707,7 @@ describe('no-void rule', () => {
     })
 
     test('should include location in every report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0), 3, 7))
@@ -1755,7 +1717,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle location with high column value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 1, 120)
@@ -1766,7 +1728,7 @@ describe('no-void rule', () => {
     })
 
     test('should report location for each independent call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0), 2, 4))
@@ -1776,7 +1738,7 @@ describe('no-void rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -1796,7 +1758,7 @@ describe('no-void rule', () => {
     })
 
     test('should report location for void with call at origin', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(
@@ -1816,7 +1778,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle location for void with nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(
@@ -1839,7 +1801,7 @@ describe('no-void rule', () => {
 
   describe('messages', () => {
     test('should report correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1848,7 +1810,7 @@ describe('no-void rule', () => {
     })
 
     test('should mention void in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1857,7 +1819,7 @@ describe('no-void rule', () => {
     })
 
     test('should mention operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1866,7 +1828,7 @@ describe('no-void rule', () => {
     })
 
     test('should have consistent message for all void patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1885,7 +1847,7 @@ describe('no-void rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1894,7 +1856,7 @@ describe('no-void rule', () => {
     })
 
     test('should have message starting with uppercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1903,7 +1865,7 @@ describe('no-void rule', () => {
     })
 
     test('should have message as a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1912,7 +1874,7 @@ describe('no-void rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1921,7 +1883,7 @@ describe('no-void rule', () => {
     })
 
     test('should have message shorter than 100 characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1930,7 +1892,7 @@ describe('no-void rule', () => {
     })
 
     test('should have same message for void 0 and void undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1942,7 +1904,7 @@ describe('no-void rule', () => {
 
   describe('multiple reports', () => {
     test('should report multiple void expressions independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1952,7 +1914,7 @@ describe('no-void rule', () => {
     })
 
     test('should report three void expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1963,7 +1925,7 @@ describe('no-void rule', () => {
     })
 
     test('should not affect report count after non-void expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -1980,7 +1942,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle many void expressions in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1991,7 +1953,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle mixed valid and invalid expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2016,7 +1978,7 @@ describe('no-void rule', () => {
     })
 
     test('should report correctly with interleaved null nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2027,7 +1989,7 @@ describe('no-void rule', () => {
     })
 
     test('should report correctly with interleaved undefined nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2038,7 +2000,7 @@ describe('no-void rule', () => {
     })
 
     test('should maintain separate report state across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0), 1, 0))
@@ -2049,7 +2011,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle alternating void and non-void operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const operators = ['void', '!', 'void', 'typeof', 'void', 'delete', 'void']
@@ -2067,7 +2029,7 @@ describe('no-void rule', () => {
     })
 
     test('should report each void even with same location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0), 1, 1))
@@ -2079,7 +2041,7 @@ describe('no-void rule', () => {
 
   describe('context handling', () => {
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2120,7 +2082,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/different.ts')
+      const { context, reports } = createMockRuleContext({ source: 'void 0', filePath: '/src/different.ts' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2129,7 +2091,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'void foo()')
+      const { context, reports } = createMockRuleContext({ source: 'void foo()', filePath: '/src/file.ts' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2138,7 +2100,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle context with extra config options', () => {
-      const { context, reports } = createMockContext({ someOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: true }], source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2178,7 +2140,7 @@ describe('no-void rule', () => {
     })
 
     test('should work with .ts file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/app.ts')
+      const { context, reports } = createMockRuleContext({ source: 'void 0', filePath: '/src/app.ts' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2187,7 +2149,7 @@ describe('no-void rule', () => {
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'void 0', filePath: '/src/component.tsx' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2196,7 +2158,7 @@ describe('no-void rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'void 0', filePath: '/src/index.js' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2205,7 +2167,7 @@ describe('no-void rule', () => {
     })
 
     test('should work with nested file path', () => {
-      const { context, reports } = createMockContext({}, '/src/deeply/nested/dir/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'void 0', filePath: '/src/deeply/nested/dir/file.ts' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(createLiteral(0)))
@@ -2216,7 +2178,7 @@ describe('no-void rule', () => {
 
   describe('common void patterns', () => {
     test('should report void 0 (common undefined pattern)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 5, 10)
@@ -2228,7 +2190,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void functionCall() (minifier pattern)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2243,7 +2205,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void in IIFE pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2262,7 +2224,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2276,7 +2238,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral('ignored'))
@@ -2287,7 +2249,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(null))
@@ -2300,7 +2262,7 @@ describe('no-void rule', () => {
 
   describe('literal edge cases', () => {
     test('should handle literal with string value 0 (not autofixed)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2320,7 +2282,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle literal with no value property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({ type: 'Literal' })
@@ -2331,7 +2293,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle identifier that is not undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createIdentifier('foo'))
@@ -2342,7 +2304,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle literal with boolean false value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(false))
@@ -2353,7 +2315,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle literal with numeric 1 value (not autofixed)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2372,7 +2334,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle literal with NaN value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(NaN))
@@ -2383,7 +2345,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle literal with Infinity value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(Infinity))
@@ -2396,7 +2358,7 @@ describe('no-void rule', () => {
 
   describe('additional detection tests', () => {
     test('should report void with chained member call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2415,7 +2377,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with nested void (void void 0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const innerVoid = createUnaryVoidExpression(createLiteral(0))
@@ -2427,7 +2389,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with template string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2444,7 +2406,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with numeric literal 0.0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2463,7 +2425,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with -0 literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2481,7 +2443,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with ThisExpression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({ type: 'ThisExpression' })
@@ -2492,7 +2454,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with Super argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({ type: 'Super' })
@@ -2503,7 +2465,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle void with argument that has null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({ type: 'Literal', value: null, raw: 'null' })
@@ -2514,7 +2476,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report when node type is not string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2531,7 +2493,7 @@ describe('no-void rule', () => {
     })
 
     test('should not report when type is an object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2548,7 +2510,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with empty array argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression([])
@@ -2559,7 +2521,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with number primitive argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(42)
@@ -2570,7 +2532,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with string primitive argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression('hello')
@@ -2581,7 +2543,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with boolean primitive argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(true)
@@ -2592,7 +2554,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with function as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(() => {})
@@ -2603,7 +2565,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with Symbol argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({ type: 'Identifier', name: 'Symbol' })
@@ -2614,7 +2576,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with BigInt literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({ type: 'BigIntLiteral', value: '0n' })
@@ -2625,7 +2587,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with RegExp literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2640,7 +2602,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with chained calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2663,7 +2625,7 @@ describe('no-void rule', () => {
     })
 
     test('should report void with ternary result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2679,7 +2641,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with range but no fixable argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2698,7 +2660,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle node with zero-length range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2717,7 +2679,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle void with single element array argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2731,7 +2693,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle void with object with properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression({
@@ -2747,7 +2709,7 @@ describe('no-void rule', () => {
     })
 
     test('should handle void in expression statement context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = createUnaryVoidExpression(createLiteral(0), 5, 2)
@@ -2764,7 +2726,7 @@ describe('no-void rule', () => {
     test.each([['typeof'], ['delete'], ['!'], ['-'], ['+'], ['~']])(
       'should not report operator "%s"',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'void 0' })
         const visitor = noVoidRule.create(context)
 
         visitor.UnaryExpression({
@@ -2897,7 +2859,7 @@ describe('no-void rule', () => {
       ['empty object', {}],
       ['object with extra props', { type: 'Literal', value: 0, raw: '0', extra: true }],
     ])('should report void with %s argument', (_name, argument) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(createUnaryVoidExpression(argument))
@@ -2921,7 +2883,7 @@ describe('no-void rule', () => {
       ['void bar', createIdentifier('bar'), false],
       ['void myVar', createIdentifier('myVar'), false],
     ])('should %s have autofix = %s', (_name, argument, hasFix) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       const node = {
@@ -2999,7 +2961,7 @@ describe('no-void rule', () => {
       ['Identifier', createIdentifier('x')],
       ['Literal', createLiteral(42)],
     ])('should not report for %s node type', (_name, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression(node)
@@ -3017,7 +2979,7 @@ describe('no-void rule', () => {
       ['+5', '+', createLiteral(5)],
       ['~5', '~', createLiteral(5)],
     ])('should not report or fix for %s', (_name, operator, argument) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'void 0' })
       const visitor = noVoidRule.create(context)
 
       visitor.UnaryExpression({

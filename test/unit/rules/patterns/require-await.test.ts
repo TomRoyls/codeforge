@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { requireAwaitRule } from '../../../../src/rules/patterns/require-await.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'async function foo() { return 1; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFunctionDeclaration(
   async: boolean,
@@ -170,7 +134,7 @@ describe('require-await rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
@@ -181,7 +145,9 @@ describe('require-await rule', () => {
 
   describe('detecting async functions without await', () => {
     test('should report async function declaration without await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -194,7 +160,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function expression without await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -206,7 +174,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async arrow function without await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = createArrowFunction(true, createIdentifier('x'))
@@ -217,7 +187,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async arrow function with block body but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -229,7 +201,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with only synchronous operations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -254,7 +228,9 @@ describe('require-await rule', () => {
 
   describe('not reporting valid async functions', () => {
     test('should not report sync function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -266,7 +242,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = createArrowFunction(false, createIdentifier('x'))
@@ -277,7 +255,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -291,7 +271,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with nested await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([
@@ -312,7 +294,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async arrow function with await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = createArrowFunction(true, createAwaitExpression(createIdentifier('promise')))
@@ -323,7 +307,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async generator function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = {
@@ -340,7 +326,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('args'))])
@@ -354,21 +342,21 @@ describe('require-await rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -376,7 +364,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = {
@@ -392,7 +382,9 @@ describe('require-await rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -405,7 +397,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -415,7 +409,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle node without body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = {
@@ -429,7 +425,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle node without params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const node = {
@@ -446,7 +444,9 @@ describe('require-await rule', () => {
 
   describe('message quality', () => {
     test('should mention async in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -456,7 +456,9 @@ describe('require-await rule', () => {
     })
 
     test('should mention await in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -466,9 +468,15 @@ describe('require-await rule', () => {
     })
 
     test('should have consistent message across function types', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
-      const { context: ctx3, reports: r3 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
+      const { context: ctx3, reports: r3 } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
 
       const visitor1 = requireAwaitRule.create(ctx1)
       const visitor2 = requireAwaitRule.create(ctx2)
@@ -486,7 +494,9 @@ describe('require-await rule', () => {
 
   describe('isAsync helper - comprehensive', () => {
     test('should not report non-async function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(false, body))
@@ -494,7 +504,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report function with async=false explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -508,7 +520,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report function with async=undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -522,7 +536,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report function with async=null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -536,7 +552,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report function with async="true" string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -550,7 +568,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report function with async=1 number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -564,7 +584,9 @@ describe('require-await rule', () => {
     })
 
     test('should report function with async=true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -574,7 +596,9 @@ describe('require-await rule', () => {
 
   describe('isGenerator helper - comprehensive', () => {
     test('should not report async generator function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -588,7 +612,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async generator function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionExpression',
@@ -602,7 +628,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async generator arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'ArrowFunctionExpression',
@@ -616,7 +644,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async non-generator function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -630,7 +660,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with generator=undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -643,7 +675,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with generator=null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -657,7 +691,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with generator="true"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -673,7 +709,9 @@ describe('require-await rule', () => {
 
   describe('hasRestParameter helper - comprehensive', () => {
     test('should not report async function with single rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('args'))])
       const node = createFunctionDeclaration(true, body, [createRestParameter('args')])
@@ -682,7 +720,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with multiple params ending in rest', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('result'))])
       const node = createFunctionDeclaration(true, body, [
@@ -695,7 +735,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with regular params only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const node = createFunctionDeclaration(true, body, [
@@ -707,7 +749,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with empty params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const node = createFunctionDeclaration(true, body, [])
@@ -716,7 +760,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async arrow with rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = createArrowFunction(true, createIdentifier('args'), [
         createRestParameter('args'),
@@ -726,7 +772,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function expression with rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('args'))])
       const node = createFunctionExpression(true, body, [createRestParameter('args')])
@@ -735,7 +783,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with non-rest last param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const node = createFunctionDeclaration(true, body, [createIdentifier('a')])
@@ -744,7 +794,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with rest in middle (only last matters)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const node = createFunctionDeclaration(true, body, [
@@ -758,7 +810,9 @@ describe('require-await rule', () => {
 
   describe('containsAwait - recursive search', () => {
     test('should find await in deeply nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -773,7 +827,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -788,7 +844,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -801,7 +859,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in object expression value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -820,7 +880,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in member expression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -837,7 +899,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in call expression arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -854,7 +918,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in try-catch block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -877,7 +943,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in catch clause body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -900,7 +968,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in if statement consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -920,7 +990,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in if statement alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -940,7 +1012,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in while loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -959,7 +1033,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in for loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -980,7 +1056,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in for-in loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1000,7 +1078,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in for-of loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1020,7 +1100,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in switch case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1045,7 +1127,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -1059,7 +1143,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in new expression arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1076,7 +1162,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -1091,7 +1179,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in unary expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -1105,7 +1195,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in assignment expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1123,7 +1215,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in throw statement argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1136,7 +1230,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in yield expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -1153,7 +1249,9 @@ describe('require-await rule', () => {
     })
 
     test('should find deeply nested await 5 levels deep', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const deepAwait = {
         type: 'BinaryExpression',
@@ -1182,7 +1280,9 @@ describe('require-await rule', () => {
     })
 
     test('should not find await when body only has identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -1190,7 +1290,9 @@ describe('require-await rule', () => {
     })
 
     test('should not find await when body only has literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement({ type: 'Literal', value: 42 })])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -1198,7 +1300,9 @@ describe('require-await rule', () => {
     })
 
     test('should not find await in empty block statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -1206,7 +1310,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in arrow function expression body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = createArrowFunction(true, createAwaitExpression(createIdentifier('p')))
       visitor.ArrowFunctionExpression(node)
@@ -1214,7 +1320,9 @@ describe('require-await rule', () => {
     })
 
     test('should not find await in arrow function with string body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = createArrowFunction(true, 'just a string')
       visitor.ArrowFunctionExpression(node)
@@ -1224,7 +1332,9 @@ describe('require-await rule', () => {
 
   describe('location reporting - comprehensive', () => {
     test('should report start line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 1, 0))
@@ -1233,7 +1343,9 @@ describe('require-await rule', () => {
     })
 
     test('should report location at line 5 column 3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 5, 3))
@@ -1242,7 +1354,9 @@ describe('require-await rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 100, 50))
@@ -1251,7 +1365,9 @@ describe('require-await rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 10, 5))
@@ -1260,7 +1376,9 @@ describe('require-await rule', () => {
     })
 
     test('should report location for function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionExpression(createFunctionExpression(true, body, [], 7, 12))
@@ -1269,7 +1387,9 @@ describe('require-await rule', () => {
     })
 
     test('should report location for arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(createArrowFunction(true, createIdentifier('x'), [], 15, 8))
       expect(reports[0].loc?.start.line).toBe(15)
@@ -1277,7 +1397,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 0, 0))
@@ -1286,7 +1408,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle negative line gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], -1, 0))
@@ -1295,7 +1419,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle very large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 99999, 0))
@@ -1303,7 +1429,9 @@ describe('require-await rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1318,7 +1446,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle loc with missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1333,7 +1463,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle loc with missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1367,7 +1499,9 @@ describe('require-await rule', () => {
     for (const ft of funcTypes) {
       describe(ft.name, () => {
         test(`should report async ${ft.name} without await`, () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({
+            source: 'async function foo() { return 1; }',
+          })
           const visitor = requireAwaitRule.create(context)
           const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
           const node =
@@ -1379,7 +1513,9 @@ describe('require-await rule', () => {
         })
 
         test(`should not report sync ${ft.name}`, () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({
+            source: 'async function foo() { return 1; }',
+          })
           const visitor = requireAwaitRule.create(context)
           const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
           const node =
@@ -1391,7 +1527,9 @@ describe('require-await rule', () => {
         })
 
         test(`should not report async ${ft.name} with await`, () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({
+            source: 'async function foo() { return 1; }',
+          })
           const visitor = requireAwaitRule.create(context)
           const bodyWithAwait = createBlockStatement([
             createReturnStatement(createAwaitExpression(createIdentifier('p'))),
@@ -1405,7 +1543,9 @@ describe('require-await rule', () => {
         })
 
         test(`should report async ${ft.name} with empty body`, () => {
-          const { context, reports } = createMockContext()
+          const { context, reports } = createMockRuleContext({
+            source: 'async function foo() { return 1; }',
+          })
           const visitor = requireAwaitRule.create(context)
           const node =
             ft.name === 'ArrowFunctionExpression'
@@ -1416,7 +1556,9 @@ describe('require-await rule', () => {
         })
 
         test(`should handle null body for async ${ft.name}`, () => {
-          const { context } = createMockContext()
+          const { context } = createMockRuleContext({
+            source: 'async function foo() { return 1; }',
+          })
           const visitor = requireAwaitRule.create(context)
           const node = ft.create(true, null)
           expect(() => visitor[ft.key](node)).not.toThrow()
@@ -1427,7 +1569,9 @@ describe('require-await rule', () => {
 
   describe('multiple calls and state', () => {
     test('should report each async function independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
 
@@ -1439,7 +1583,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle mix of valid and invalid async functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const bodyNoAwait = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const bodyWithAwait = createBlockStatement([
@@ -1454,8 +1600,12 @@ describe('require-await rule', () => {
     })
 
     test('should not accumulate state across calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const v1 = requireAwaitRule.create(ctx1)
       const v2 = requireAwaitRule.create(ctx2)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -1468,7 +1618,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle many sequential reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
 
@@ -1480,7 +1632,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle interleaved valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const bodyNoAwait = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const bodyWithAwait = createBlockStatement([
@@ -1498,37 +1652,39 @@ describe('require-await rule', () => {
 
   describe('edge cases - extended', () => {
     test('should handle node that is a boolean true', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       expect(() => visitor.FunctionDeclaration(true)).not.toThrow()
     })
 
     test('should handle node that is a boolean false', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       expect(() => visitor.FunctionDeclaration(false)).not.toThrow()
     })
 
     test('should handle node that is a number zero', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       expect(() => visitor.FunctionDeclaration(0)).not.toThrow()
     })
 
     test('should handle node that is an empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       expect(() => visitor.FunctionDeclaration([])).not.toThrow()
     })
 
     test('should handle node that is a Date object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       expect(() => visitor.FunctionDeclaration(new Date())).not.toThrow()
     })
 
     test('should handle node with async as function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1542,7 +1698,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle node with async as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1556,7 +1714,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle node with body as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1570,7 +1730,7 @@ describe('require-await rule', () => {
     })
 
     test('should handle node with body as primitive string', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1583,7 +1743,7 @@ describe('require-await rule', () => {
     })
 
     test('should handle node with body as number', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1596,7 +1756,7 @@ describe('require-await rule', () => {
     })
 
     test('should handle node with circular reference in body', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       const circularNode: Record<string, unknown> = { type: 'Identifier', name: 'x' }
       circularNode.self = circularNode
@@ -1615,7 +1775,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle params as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1629,7 +1791,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle params with null elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1643,7 +1807,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle params with undefined elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1657,7 +1823,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle loc with string line/column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1676,7 +1844,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle loc with null line/column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1694,7 +1864,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle NaN line value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1712,7 +1884,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle Infinity line value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1733,7 +1907,10 @@ describe('require-await rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+        filePath: '/custom/path/file.ts',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -1741,7 +1918,10 @@ describe('require-await rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = 1;')
+      const { context, reports } = createMockRuleContext({
+        source: 'const x = 1;',
+        filePath: '/src/file.ts',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -1749,7 +1929,10 @@ describe('require-await rule', () => {
     })
 
     test('should work with options in context', () => {
-      const { context, reports } = createMockContext({ checkArrowFunctions: true })
+      const { context, reports } = createMockRuleContext({
+        options: [{ checkArrowFunctions: true }],
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = createArrowFunction(true, createIdentifier('x'))
       visitor.ArrowFunctionExpression(node)
@@ -1757,10 +1940,15 @@ describe('require-await rule', () => {
     })
 
     test('should work with complex options', () => {
-      const { context, reports } = createMockContext({
-        ignorePatterns: ['**/test/**'],
-        allowEmpty: true,
-        threshold: 5,
+      const { context, reports } = createMockRuleContext({
+        options: [
+          {
+            ignorePatterns: ['**/test/**'],
+            allowEmpty: true,
+            threshold: 5,
+          },
+        ],
+        source: 'async function foo() { return 1; }',
       })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -1840,14 +2028,14 @@ describe('require-await rule', () => {
 
   describe('create - return value', () => {
     test('should return exactly 3 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       const keys = Object.keys(visitor)
       expect(keys.length).toBe(3)
     })
 
     test('should return visitor with only function-related keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       const keys = Object.keys(visitor)
       expect(keys).toContain('FunctionDeclaration')
@@ -1856,7 +2044,7 @@ describe('require-await rule', () => {
     })
 
     test('should return callable visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor = requireAwaitRule.create(context)
       expect(typeof visitor.FunctionDeclaration).toBe('function')
       expect(typeof visitor.FunctionExpression).toBe('function')
@@ -1864,14 +2052,16 @@ describe('require-await rule', () => {
     })
 
     test('should return new visitor object on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'async function foo() { return 1; }' })
       const visitor1 = requireAwaitRule.create(context)
       const visitor2 = requireAwaitRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should allow calling visitor methods multiple times on same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
 
@@ -1885,7 +2075,9 @@ describe('require-await rule', () => {
 
   describe('sync function variants - no report', () => {
     test('should not report sync function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionExpression(createFunctionExpression(false, body))
@@ -1893,7 +2085,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync function expression with complex body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         { type: 'VariableDeclaration', declarations: [] },
@@ -1904,7 +2098,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync arrow with block body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.ArrowFunctionExpression(createArrowFunction(false, body))
@@ -1912,14 +2108,18 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync arrow with expression body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(createArrowFunction(false, createIdentifier('x')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report sync function with params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(false, body, [createIdentifier('a')]))
@@ -1927,7 +2127,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync function with many params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(
@@ -1942,7 +2144,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync generator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -1956,7 +2160,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report sync function with rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(
@@ -1968,7 +2174,9 @@ describe('require-await rule', () => {
 
   describe('async with various body contents', () => {
     test('should report async function with only variable declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         { type: 'VariableDeclaration', declarations: [] },
@@ -1979,7 +2187,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with only expression statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         { type: 'ExpressionStatement', expression: createIdentifier('x') },
@@ -1990,7 +2200,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with if but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2005,7 +2217,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with switch but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2019,7 +2233,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with try-catch but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2037,7 +2253,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with while loop but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2051,7 +2269,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with for loop but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2067,7 +2287,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function that only returns undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(null)])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -2075,7 +2297,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([{ type: 'ReturnStatement', argument: null }])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -2083,7 +2307,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with throw of non-await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         { type: 'ThrowStatement', argument: createIdentifier('err') },
@@ -2093,7 +2319,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with break statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([{ type: 'BreakStatement', label: null }])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -2101,7 +2329,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with continue statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([{ type: 'ContinueStatement', label: null }])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -2109,7 +2339,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with debugger statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([{ type: 'DebuggerStatement' }])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -2117,7 +2349,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with labeled statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2131,7 +2365,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with with statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2145,7 +2381,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with chained await calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -2159,7 +2397,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with await in finally block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2178,7 +2418,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with try-finally but no await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2192,7 +2434,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with await in destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2211,7 +2455,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with await in spread element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement({
@@ -2226,7 +2472,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function with nested sync function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const innerBody = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const body = createBlockStatement([
@@ -2243,7 +2491,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function with nested async function containing await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2269,7 +2519,9 @@ describe('require-await rule', () => {
 
   describe('report descriptor completeness', () => {
     test('report should have both message and loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [], 3, 5))
@@ -2281,7 +2533,9 @@ describe('require-await rule', () => {
     })
 
     test('report message should be exact string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
@@ -2290,18 +2544,22 @@ describe('require-await rule', () => {
     })
 
     test('report should not have fix property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body))
 
-      expect(reports[0]).not.toHaveProperty('fix')
+      expect(reports[0].fix).toBeUndefined()
     })
   })
 
   describe('async function expression variants', () => {
     test('should report async function expression assigned to variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       const node = createFunctionExpression(true, body, [createIdentifier('a')])
@@ -2310,7 +2568,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async function expression as IIFE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement({ type: 'Literal', value: 1 })])
       const node = createFunctionExpression(true, body)
@@ -2319,7 +2579,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function expression with await in return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement(createAwaitExpression(createIdentifier('data'))),
@@ -2330,7 +2592,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function expression that is a generator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionExpression',
@@ -2344,7 +2608,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async function expression with rest param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('args'))])
       const node = createFunctionExpression(true, body, [createRestParameter('args')])
@@ -2355,21 +2621,27 @@ describe('require-await rule', () => {
 
   describe('async arrow function variants', () => {
     test('should report async arrow returning identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(createArrowFunction(true, createIdentifier('x')))
       expect(reports.length).toBe(1)
     })
 
     test('should report async arrow returning literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(createArrowFunction(true, { type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('should report async arrow returning object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(
         createArrowFunction(true, { type: 'ObjectExpression', properties: [] }),
@@ -2378,7 +2650,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async arrow returning array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(
         createArrowFunction(true, { type: 'ArrayExpression', elements: [] }),
@@ -2387,14 +2661,18 @@ describe('require-await rule', () => {
     })
 
     test('should report async arrow with block returning nothing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(createArrowFunction(true, createBlockStatement([])))
       expect(reports.length).toBe(1)
     })
 
     test('should not report async arrow returning await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(
         createArrowFunction(true, createAwaitExpression(createIdentifier('p'))),
@@ -2403,7 +2681,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async arrow with block containing await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement(createAwaitExpression(createIdentifier('p'))),
@@ -2413,7 +2693,9 @@ describe('require-await rule', () => {
     })
 
     test('should report async arrow with multiple statements none await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         { type: 'ExpressionStatement', expression: createIdentifier('a') },
@@ -2425,7 +2707,9 @@ describe('require-await rule', () => {
     })
 
     test('should not report async arrow with params containing rest', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       visitor.ArrowFunctionExpression(
         createArrowFunction(true, createIdentifier('args'), [createRestParameter('args')]),
@@ -2436,7 +2720,9 @@ describe('require-await rule', () => {
 
   describe('combined conditions', () => {
     test('async=true, generator=true, hasRestParam - should not report (generator wins)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -2450,7 +2736,9 @@ describe('require-await rule', () => {
     })
 
     test('async=true, generator=false, hasRestParam - should not report (rest wins)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -2464,7 +2752,9 @@ describe('require-await rule', () => {
     })
 
     test('async=true, generator=false, no rest, has await - should not report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         createReturnStatement(createAwaitExpression(createIdentifier('p'))),
@@ -2474,7 +2764,9 @@ describe('require-await rule', () => {
     })
 
     test('async=true, generator=false, no rest, no await - should report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
       visitor.FunctionDeclaration(createFunctionDeclaration(true, body, [createIdentifier('x')]))
@@ -2482,7 +2774,9 @@ describe('require-await rule', () => {
     })
 
     test('async=false with all other flags true - should not report (async check first)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -2498,7 +2792,9 @@ describe('require-await rule', () => {
 
   describe('additional coverage', () => {
     test('should handle async function with do-while loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2512,7 +2808,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in do-while loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2531,7 +2829,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle async function with sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2547,7 +2847,9 @@ describe('require-await rule', () => {
     })
 
     test('should find await in sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {
@@ -2563,7 +2865,9 @@ describe('require-await rule', () => {
     })
 
     test('should handle async function with update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({
+        source: 'async function foo() { return 1; }',
+      })
       const visitor = requireAwaitRule.create(context)
       const body = createBlockStatement([
         {

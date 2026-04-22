@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferRegexLiteralsRule } from '../../../../src/rules/patterns/prefer-regex-literals.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'new RegExp("abc");',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -277,22 +241,22 @@ describe('prefer-regex-literals rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       expect(visitor).toHaveProperty('NewExpression')
     })
 
     test('should return NewExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       expect(typeof visitor.NewExpression).toBe('function')
     })
 
     test('should create independent visitors for each context', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'new RegExp("abc");' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor1 = preferRegexLiteralsRule.create(ctx1)
       const visitor2 = preferRegexLiteralsRule.create(ctx2)
 
@@ -302,7 +266,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('detecting new RegExp() with string literal pattern', () => {
     test('should report new RegExp("abc")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')])
@@ -314,7 +278,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("test", "i")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [
@@ -329,7 +293,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("pattern", "gi")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [
@@ -344,7 +308,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp() with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [])
@@ -355,7 +319,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("") with empty pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [createLiteral('')])
@@ -366,7 +330,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("x") with single character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('x')]))
@@ -376,7 +340,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("hello world") with space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -388,7 +352,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("  ") with only spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('  ')]))
@@ -398,7 +362,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("\\t") with tab character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('\t')]))
@@ -409,7 +373,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('individual regex flags', () => {
     test('should report new RegExp("abc", "g")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -421,7 +385,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("abc", "i")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -433,7 +397,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("abc", "m")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -445,7 +409,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("abc", "s")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -457,7 +421,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("abc", "u")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -469,7 +433,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("abc", "y")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -483,7 +447,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('two-flag combinations', () => {
     test('should report new RegExp("ab", "gi")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -495,7 +459,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "gm")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -507,7 +471,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "gs")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -519,7 +483,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "gu")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -531,7 +495,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "im")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -543,7 +507,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "is")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -555,7 +519,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "iu")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -567,7 +531,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "iy")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -579,7 +543,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "ms")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -591,7 +555,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("ab", "su")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -605,7 +569,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('three-plus flag combinations', () => {
     test('should report new RegExp("x", "gim")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -617,7 +581,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("x", "giy")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -629,7 +593,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("x", "gms")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -641,7 +605,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("x", "imsu")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -656,7 +620,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("x", "gimsuy")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -673,7 +637,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('patterns with regex special characters', () => {
     test('should report new RegExp(".")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('.')]))
@@ -683,7 +647,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("a*")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('a*')]))
@@ -693,7 +657,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("a+")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('a+')]))
@@ -703,7 +667,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("a?")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('a?')]))
@@ -713,7 +677,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("^abc")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -725,7 +689,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("abc$")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -737,7 +701,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("a|b")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('a|b')]))
@@ -747,7 +711,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("(abc)")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -759,7 +723,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("[abc]")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -771,7 +735,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("a{3}")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -783,7 +747,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("\\\\d") with backslash-d', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('\\d')]))
@@ -793,7 +757,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("\\\\w+") with backslash-w', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -805,7 +769,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("\\\\s+") with backslash-s', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -817,7 +781,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("\\\\b") with backslash-b', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('\\b')]))
@@ -827,7 +791,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("[^abc]") with negated character class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -841,7 +805,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('patterns needing escape (forward slash)', () => {
     test('should report new RegExp("a/b") with forward slash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('a/b')]))
@@ -851,7 +815,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("http://") with multiple forward slashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -863,7 +827,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("/") with only forward slash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('/')]))
@@ -875,7 +839,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('patterns needing escape (backslash sequences)', () => {
     test('should report new RegExp with backslash-n in pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('\\n')]))
@@ -885,7 +849,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp with backslash-r in pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('\\r')]))
@@ -895,7 +859,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp with both backslash-n and backslash-r', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -909,7 +873,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('empty pattern with flags', () => {
     test('should report new RegExp("", "g")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -921,7 +885,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("", "i")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -932,7 +896,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("", "m")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -943,7 +907,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("", "gi")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -954,7 +918,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report new RegExp("", "u")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -965,7 +929,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report empty pattern with special empty message when no flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('')]))
@@ -977,7 +941,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('template literal patterns', () => {
     test('should not report new RegExp with simple template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const templateLit = createTemplateLiteral([createTemplateElement('abc')], [])
@@ -988,7 +952,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with template literal containing expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const templateLit = createTemplateLiteral(
@@ -1002,7 +966,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with tagged template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const taggedTemplate = createTaggedTemplateExpression(
@@ -1016,7 +980,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report template literal flags with literal pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const flagsTemplate = createTemplateLiteral([createTemplateElement('gi')], [])
@@ -1029,7 +993,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report both args as template literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const patternTemplate = createTemplateLiteral([createTemplateElement('abc')], [])
@@ -1043,7 +1007,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report empty template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const emptyTemplate = createTemplateLiteral([createTemplateElement('')], [])
@@ -1056,7 +1020,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('not reporting dynamic patterns', () => {
     test('should not report new RegExp(variable)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [createIdentifier('variable')])
@@ -1067,7 +1031,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp(getPattern())', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const callExpr = createCallExpression(createIdentifier('getPattern'), [])
@@ -1079,7 +1043,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp(pattern, flagsVar)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [
@@ -1093,7 +1057,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp(userInput, "i")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [
@@ -1107,7 +1071,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with binary expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const binaryExpr = createBinaryExpression(createLiteral('a'), '+', createLiteral('b'))
@@ -1118,7 +1082,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with object expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const objExpr = createObjectExpression([])
@@ -1129,7 +1093,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with array expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const arrExpr = createArrayExpression([createLiteral('a')])
@@ -1140,7 +1104,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with conditional expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const condExpr = createConditionalExpression(
@@ -1155,7 +1119,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with arrow function as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const arrowFn = createArrowFunctionExpression()
@@ -1166,7 +1130,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with unary expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const unaryExpr = createUnaryExpression('!', createIdentifier('x'))
@@ -1177,7 +1141,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with logical expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const logicalExpr = createLogicalExpression(
@@ -1192,7 +1156,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with spread element as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const spread = createSpreadElement(createIdentifier('args'))
@@ -1203,7 +1167,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with function expression as pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const fnExpr = createFunctionExpression()
@@ -1214,7 +1178,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with update expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const updateExpr = createUpdateExpression('++', createIdentifier('i'), false)
@@ -1225,7 +1189,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with assignment expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const assignExpr = createAssignmentExpression(
@@ -1240,7 +1204,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with sequence expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const seqExpr = createSequenceExpression([createLiteral('a'), createLiteral('b')])
@@ -1251,7 +1215,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with await expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const awaitExpr = createAwaitExpression(createIdentifier('promise'))
@@ -1262,7 +1226,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with yield expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const yieldExpr = createYieldExpression(createLiteral('val'))
@@ -1273,7 +1237,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new RegExp with nested new expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const nestedNew = createNewExpressionExpression(createIdentifier('Pattern'), [])
@@ -1286,7 +1250,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('not reporting other constructors', () => {
     test('should not report new Other()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('Other'), [])
@@ -1297,7 +1261,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('Array'), [])
@@ -1308,7 +1272,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Set()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('Set'), [])
@@ -1319,7 +1283,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Map()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Map'), []))
@@ -1328,7 +1292,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new WeakMap()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('WeakMap'), []))
@@ -1337,7 +1301,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Promise()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Promise'), []))
@@ -1346,7 +1310,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Error()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Error'), []))
@@ -1355,7 +1319,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Date()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Date'), []))
@@ -1364,7 +1328,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new Object()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), []))
@@ -1373,7 +1337,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report new MyRegExp() with custom class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1384,7 +1348,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report with member expression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('obj'), createIdentifier('RegExp'))
@@ -1395,7 +1359,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report with deeply nested member expression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const innerMember = createMemberExpression(
@@ -1410,7 +1374,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should be case-sensitive - should not report new regexp()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('regexp'), [createLiteral('abc')]))
@@ -1419,7 +1383,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should be case-sensitive - should not report new REGEXP()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('REGEXP'), [createLiteral('abc')]))
@@ -1430,21 +1394,21 @@ describe('prefer-regex-literals rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       expect(() => visitor.NewExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       expect(() => visitor.NewExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       expect(() => visitor.NewExpression('string')).not.toThrow()
@@ -1452,7 +1416,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1466,7 +1430,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [createLiteral('test')], 25, 10)
@@ -1478,7 +1442,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -1487,7 +1451,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1500,7 +1464,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle node without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1512,7 +1476,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle non-string pattern literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [createLiteral(123)])
@@ -1523,7 +1487,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle non-string flags literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = createNewExpression(createIdentifier('RegExp'), [
@@ -1537,7 +1501,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1556,7 +1520,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1575,7 +1539,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1594,7 +1558,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1613,7 +1577,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1629,7 +1593,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle boolean pattern literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral(true)]))
@@ -1638,7 +1602,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle null pattern literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral(null)]))
@@ -1647,7 +1611,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle undefined pattern literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1658,7 +1622,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle boolean flags literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1672,7 +1636,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle callee that is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1686,7 +1650,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle callee that is a literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1700,7 +1664,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle arguments as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1713,7 +1677,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle three arguments to RegExp', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1729,7 +1693,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle many arguments to RegExp', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1747,7 +1711,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1767,7 +1731,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle empty string flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1779,7 +1743,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle single character flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1793,7 +1757,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('location reporting variations', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1805,7 +1769,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1816,7 +1780,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report location at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1827,7 +1791,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report both start and end locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1840,7 +1804,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1860,7 +1824,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1881,7 +1845,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle negative line number gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -1902,7 +1866,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('complex realistic patterns', () => {
     test('should report email-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1915,7 +1879,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report URL-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1926,7 +1890,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report phone-like pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1937,7 +1901,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report IP address pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1950,7 +1914,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report hex color pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1961,7 +1925,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report date pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1972,7 +1936,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report word boundary pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1983,7 +1947,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report non-capturing group pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -1994,7 +1958,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report lookahead pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2005,7 +1969,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report lookbehind pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2016,7 +1980,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report unicode pattern with u flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2031,7 +1995,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report named group pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2042,7 +2006,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report complex alternation pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2053,7 +2017,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report quantifier range pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2064,7 +2028,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report character class range pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2077,7 +2041,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('message quality', () => {
     test('should mention regex literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2086,7 +2050,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should include pattern in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2097,7 +2061,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should include flags in message when present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2111,7 +2075,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should mention new RegExp in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2120,7 +2084,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should show pattern without flags correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2132,7 +2096,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should show pattern with flags correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2147,7 +2111,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should mention (?:) for empty pattern without flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('')]))
@@ -2156,7 +2120,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should mention empty pattern for no args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), []))
@@ -2166,7 +2130,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should include literal suggestion for special chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2177,7 +2141,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should include literal suggestion for anchors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2190,7 +2154,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('repeated invocations', () => {
     test('should report each invocation separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2200,7 +2164,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report three separate invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('a')]))
@@ -2211,7 +2175,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report mixed valid and invalid invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2224,7 +2188,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not report for non-RegExp invocations between valid ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2235,7 +2199,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle many invocations without issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2313,10 +2277,10 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should work with custom option properties', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         customOption: true,
         anotherOption: 'value',
-      })
+      }], source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2325,7 +2289,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/to/file.js')
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");', filePath: '/custom/path/to/file.js' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('abc')]))
@@ -2336,7 +2300,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('pattern with unicode and special chars', () => {
     test('should report pattern with unicode escape sequences', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2348,7 +2312,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with hex escape sequences', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2360,7 +2324,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with escaped special chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2371,7 +2335,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with tab escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('\\t')]))
@@ -2380,7 +2344,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with backreference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2394,7 +2358,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('boundary value patterns', () => {
     test('should report very long pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const longPattern = 'a'.repeat(1000)
@@ -2407,7 +2371,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with repeated groups', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2418,7 +2382,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with nested groups', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2429,7 +2393,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with only anchors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('^$')]))
@@ -2439,7 +2403,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report pattern with only alternation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('|')]))
@@ -2451,7 +2415,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('combined pattern and flag scenarios', () => {
     test('should report special char pattern with global flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2466,7 +2430,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report anchor pattern with multiline flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2481,7 +2445,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report dot pattern with dotall flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2493,7 +2457,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report complex pattern with all common flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2508,7 +2472,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should report forward slash pattern with flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2526,7 +2490,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('node type filtering', () => {
     test('should not process CallExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -2541,7 +2505,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not process ExpressionStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -2555,7 +2519,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not process Literal node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createLiteral('abc'))
@@ -2564,7 +2528,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should not process empty string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -2581,7 +2545,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('callee edge cases', () => {
     test('should handle callee as undefined identifier name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const node = {
@@ -2596,7 +2560,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle callee identifier with empty name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier(''), [createLiteral('abc')]))
@@ -2605,7 +2569,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle callee identifier with RegExp-like name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2616,7 +2580,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle callee identifier with XRegExp name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2629,7 +2593,7 @@ describe('prefer-regex-literals rule', () => {
 
   describe('argument edge cases', () => {
     test('should handle first arg as null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral(null)]))
@@ -2638,7 +2602,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle regex literal as first argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const regexLiteral = {
@@ -2653,7 +2617,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle first arg as numeric string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), [createLiteral('123')]))
@@ -2663,7 +2627,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle pattern with whitespace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2674,7 +2638,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle pattern with newlines in string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2685,7 +2649,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle pattern with carriage returns in string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(
@@ -2696,7 +2660,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle second arg as non-Literal non-identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       const objExpr = createObjectExpression([])
@@ -2709,7 +2673,7 @@ describe('prefer-regex-literals rule', () => {
     })
 
     test('should handle empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new RegExp("abc");' })
       const visitor = preferRegexLiteralsRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp'), []))

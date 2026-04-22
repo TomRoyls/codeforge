@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noSequencesRule } from '../../../../src/rules/patterns/no-sequences.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'a, b, c',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { rules: { 'no-sequences': ['error', options] } },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 // Factory functions for creating AST nodes
 function createSequenceExpression(expressions: unknown[], lineNumber = 1, column = 0): unknown {
@@ -290,7 +254,7 @@ describe('no-sequences rule', () => {
 
   describe('create', () => {
     test('should return visitor object with SequenceExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(visitor).toHaveProperty('SequenceExpression')
@@ -298,36 +262,36 @@ describe('no-sequences rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return a plain object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should have exactly one key in visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(1)
     })
 
     test('should have SequenceExpression as the only key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['SequenceExpression'])
     })
 
     test('should create independent visitors for each context', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'a, b, c' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'a, b, c' })
 
       const visitor1 = noSequencesRule.create(ctx1)
       const visitor2 = noSequencesRule.create(ctx2)
@@ -340,8 +304,8 @@ describe('no-sequences rule', () => {
     })
 
     test('should create visitor that does not share report state', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'a, b, c' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'a, b, c' })
 
       const visitor1 = noSequencesRule.create(ctx1)
       const visitor2 = noSequencesRule.create(ctx2)
@@ -352,7 +316,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'a, b, c', filePath: '/custom/path.ts' })
       const visitor = noSequencesRule.create(context)
 
       expect(visitor).toHaveProperty('SequenceExpression')
@@ -361,7 +325,7 @@ describe('no-sequences rule', () => {
 
   describe('detecting sequence expressions', () => {
     test('should report sequence expression with 2 expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -371,7 +335,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence expression with 3 expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2), createLiteral(3)])
@@ -381,7 +345,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence expression with many expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -397,7 +361,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report correct message for sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -407,7 +371,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with mixed expression types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -421,7 +385,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with exactly 2 identifier expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createIdentifier('x'), createIdentifier('y')])
@@ -431,7 +395,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with 10 expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const exprs = Array.from({ length: 10 }, (_, i) => createIdentifier(`v${i}`))
@@ -442,7 +406,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with 20 expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const exprs = Array.from({ length: 20 }, (_, i) => createLiteral(i))
@@ -453,7 +417,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with call and identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -466,7 +430,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with assignment expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -479,7 +443,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -492,7 +456,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with conditional expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -505,7 +469,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with unary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -518,7 +482,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with logical expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -531,7 +495,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with update expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -544,7 +508,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with new expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -557,7 +521,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with await expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -570,7 +534,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with template literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createTemplateLiteral(), createLiteral('x')])
@@ -580,7 +544,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with array expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -593,7 +557,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with object expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createObjectExpression(), createLiteral(1)])
@@ -603,7 +567,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createFunctionExpression(), createLiteral(null)])
@@ -613,7 +577,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with arrow function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createArrowFunctionExpression(), createLiteral(42)])
@@ -623,7 +587,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report deeply nested sequence in expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -636,7 +600,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral('hello'), createLiteral('world')])
@@ -646,7 +610,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with boolean literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(true), createLiteral(false)])
@@ -656,7 +620,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with null and undefined literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(null), createIdentifier('undefined')])
@@ -666,7 +630,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with numeric literal and identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(0), createIdentifier('x')])
@@ -676,7 +640,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with float literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(3.14), createLiteral(2.71)])
@@ -686,7 +650,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with regex literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -699,7 +663,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with negative number literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(-1), createLiteral(-2)])
@@ -711,7 +675,7 @@ describe('no-sequences rule', () => {
 
   describe('NOT reporting', () => {
     test('should not report sequence expression with 1 expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1)])
@@ -721,7 +685,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report sequence expression with 0 expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([])
@@ -731,7 +695,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report sequence expression with undefined expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression' }
@@ -741,7 +705,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for non-SequenceExpression node types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'Literal', value: 42 }
@@ -751,7 +715,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single literal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(42)]))
@@ -760,7 +724,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single identifier expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createIdentifier('onlyOne')]))
@@ -769,7 +733,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -780,7 +744,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -791,7 +755,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -804,7 +768,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -817,7 +781,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -830,7 +794,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -841,7 +805,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -854,7 +818,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -865,7 +829,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -876,7 +840,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single await expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -887,7 +851,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createTemplateLiteral()]))
@@ -896,7 +860,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -907,7 +871,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createObjectExpression()]))
@@ -916,7 +880,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createFunctionExpression()]))
@@ -925,7 +889,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for single arrow function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createArrowFunctionExpression()]))
@@ -934,7 +898,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report when expressions is empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: [] }
@@ -944,7 +908,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report when called with a number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(42)
@@ -953,7 +917,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report when called with a string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression('not a node')
@@ -962,7 +926,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report when called with a boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(true)
@@ -971,7 +935,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for deeply nested single expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const inner = createSequenceExpression([createLiteral(1)])
@@ -981,7 +945,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report when expressions has length exactly 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: [createLiteral(1)] }
@@ -991,7 +955,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for plain object with no expressions key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression({})
@@ -1000,7 +964,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not report for NaN value as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(Number.NaN)
@@ -1011,7 +975,7 @@ describe('no-sequences rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(() => visitor.SequenceExpression(null)).not.toThrow()
@@ -1019,7 +983,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(() => visitor.SequenceExpression(undefined)).not.toThrow()
@@ -1027,7 +991,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(() => visitor.SequenceExpression('string')).not.toThrow()
@@ -1036,7 +1000,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { expressions: [createLiteral(1), createLiteral(2)] }
@@ -1046,7 +1010,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with null expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: null }
@@ -1056,7 +1020,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: 'not-an-array' }
@@ -1066,7 +1030,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -1107,7 +1071,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions array with null elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), null])
@@ -1117,7 +1081,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions array with undefined elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), undefined])
@@ -1127,7 +1091,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions as a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: 42 }
@@ -1137,7 +1101,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions as boolean true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: true }
@@ -1147,7 +1111,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions as an object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: { length: 2 } }
@@ -1157,7 +1121,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with only loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1170,7 +1134,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1185,7 +1149,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with range property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1199,7 +1163,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle expressions as sparse array with length > 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const sparse: unknown[] = []
@@ -1211,7 +1175,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node frozen with Object.freeze', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = Object.freeze({
@@ -1228,7 +1192,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node sealed with Object.seal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = Object.seal({
@@ -1241,7 +1205,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with Symbol properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const sym = Symbol('test')
@@ -1256,7 +1220,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle repeated calls on the same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1271,7 +1235,7 @@ describe('no-sequences rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)], 10, 5)
@@ -1282,7 +1246,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)], 5, 10)
@@ -1293,7 +1257,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report correct location for multiple sequence expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node1 = createSequenceExpression([createLiteral(1), createLiteral(2)], 1, 0)
@@ -1311,7 +1275,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report correct start column for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -1326,7 +1290,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report location with line 1 and column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1340,7 +1304,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report correct end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)], 3, 7)
@@ -1351,7 +1315,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)], 9999, 0)
@@ -1361,7 +1325,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle location at high column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)], 1, 500)
@@ -1371,7 +1335,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle location at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)], 0, 0)
@@ -1382,7 +1346,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report location even when node has extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1398,7 +1362,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { expressions: [createLiteral(1), createLiteral(2)] }
@@ -1409,7 +1373,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle multi-line location spans', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1427,7 +1391,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with partial loc - only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1441,7 +1405,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle node with loc.start having string values gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = {
@@ -1461,7 +1425,7 @@ describe('no-sequences rule', () => {
 
   describe('messages', () => {
     test('should mention comma operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -1471,7 +1435,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should mention sequence in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -1481,7 +1445,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should mention unexpected in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -1491,7 +1455,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node1 = createSequenceExpression([createIdentifier('a'), createIdentifier('b')])
@@ -1505,7 +1469,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should always report the same message regardless of expression count', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1523,7 +1487,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should always report the same message regardless of expression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -1537,7 +1501,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should have a non-empty message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1547,7 +1511,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should end message with a period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1556,7 +1520,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not contain placeholder tokens in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1567,7 +1531,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should mention operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1578,7 +1542,7 @@ describe('no-sequences rule', () => {
 
   describe('multiple reports', () => {
     test('should report each sequence expression independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1589,7 +1553,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should only report sequences with > 1 expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       // Single expression - no report
@@ -1610,7 +1574,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle mixed valid and invalid sequence expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       // Valid: empty
@@ -1637,7 +1601,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report 5 sequence expressions correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1650,7 +1614,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report 50 sequence expressions correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1663,7 +1627,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should interleave valid and invalid correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       // valid: 0 exprs
@@ -1681,7 +1645,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should maintain correct order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -1700,7 +1664,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle alternating valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(null)
@@ -1713,7 +1677,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should track each report with correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1724,7 +1688,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should handle same node reported multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(1), createLiteral(2)])
@@ -1739,7 +1703,7 @@ describe('no-sequences rule', () => {
 
   describe('context', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c', filePath: '/project/src/utils.ts' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1748,7 +1712,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x, y, z')
+      const { context, reports } = createMockRuleContext({ source: 'x, y, z', filePath: '/src/file.ts' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -1759,7 +1723,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1770,7 +1734,7 @@ describe('no-sequences rule', () => {
     test('should work with long file path', () => {
       const longPath =
         '/very/long/path/that/goes/on/and/on/and/on/src/components/deep/nested/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c', filePath: longPath })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1779,7 +1743,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should work with special characters in file path', () => {
-      const { context, reports } = createMockContext({}, '/src/[special]/file.test.ts')
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c', filePath: '/src/[special]/file.test.ts' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1879,7 +1843,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should not call logger during normal operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -1927,7 +1891,7 @@ describe('no-sequences rule', () => {
 
   describe('expression types in sequences', () => {
     test('should report sequence with identifier expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createIdentifier('foo'), createIdentifier('bar')])
@@ -1937,7 +1901,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with literal expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral('string'), createLiteral(42)])
@@ -1947,7 +1911,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -1960,7 +1924,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -1973,7 +1937,7 @@ describe('no-sequences rule', () => {
     })
 
     test('should report sequence with mixed expression types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -2002,7 +1966,7 @@ describe('no-sequences rule', () => {
       [9, true],
       [10, true],
     ] as const)('expressions.length = %i should report = %s', (count, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const exprs = Array.from({ length: count }, (_, i) => createLiteral(i))
@@ -2074,7 +2038,7 @@ describe('no-sequences rule', () => {
       ['function + null', [createFunctionExpression(), createLiteral(null)]],
       ['arrow + number', [createArrowFunctionExpression(), createLiteral(42)]],
     ] as const)('should report sequence with %s', (_name, expressions) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([...expressions]))
@@ -2093,7 +2057,7 @@ describe('no-sequences rule', () => {
       [100, 50],
       [1, 999],
     ] as const)('should preserve location line=%i column=%i', (line, column) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(
@@ -2114,7 +2078,7 @@ describe('no-sequences rule', () => {
       ['0', 0],
       ['NaN', Number.NaN],
     ] as const)('should not report and not throw for input: %s', (_name, input) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       expect(() => visitor.SequenceExpression(input)).not.toThrow()
@@ -2146,7 +2110,7 @@ describe('no-sequences rule', () => {
       ['NewExpression', createNewExpression(createIdentifier('Constructor'))],
       ['AwaitExpression', createAwaitExpression(createIdentifier('promise'))],
     ] as const)('should NOT report single %s', (_name, expr) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([expr]))
@@ -2179,7 +2143,7 @@ describe('no-sequences rule', () => {
       ['NewExpression', createNewExpression(createIdentifier('Constructor'))],
       ['AwaitExpression', createAwaitExpression(createIdentifier('promise'))],
     ] as const)('should report pair of %s', (_name, expr) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([expr, createLiteral(0)]))
@@ -2212,7 +2176,7 @@ describe('no-sequences rule', () => {
       ['object with length', { length: 2 }, true],
       ['empty object', {}, false],
     ] as const)('expressions = %s should report = %s', (_name, expressionsValue, shouldReport) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = { type: 'SequenceExpression', expressions: expressionsValue }
@@ -2236,7 +2200,7 @@ describe('no-sequences rule', () => {
       ['<<'],
       ['>>'],
     ] as const)('should report sequence with binary %s operator', (operator) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([
@@ -2253,7 +2217,7 @@ describe('no-sequences rule', () => {
     test.each([['&&'], ['||'], ['??']] as const)(
       'should report sequence with logical %s operator',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
         const visitor = noSequencesRule.create(context)
 
         const node = createSequenceExpression([
@@ -2271,7 +2235,7 @@ describe('no-sequences rule', () => {
     test.each([['!'], ['~'], ['-'], ['+'], ['typeof'], ['void'], ['delete']] as const)(
       'should report sequence with unary %s operator',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
         const visitor = noSequencesRule.create(context)
 
         const node = createSequenceExpression([
@@ -2289,7 +2253,7 @@ describe('no-sequences rule', () => {
     test.each([['++'], ['--']] as const)(
       'should report sequence with update %s operator',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
         const visitor = noSequencesRule.create(context)
 
         const node = createSequenceExpression([
@@ -2311,7 +2275,7 @@ describe('no-sequences rule', () => {
       ['boolean false', false],
       ['null', null],
     ] as const)('should report sequence with %s literal', (_name, value) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
       const visitor = noSequencesRule.create(context)
 
       const node = createSequenceExpression([createLiteral(value), createLiteral(0)])
@@ -2325,7 +2289,7 @@ describe('no-sequences rule', () => {
     test.each([['comma'], ['sequence'], ['unexpected'], ['operator']] as const)(
       'message should contain word: %s',
       (word) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a, b, c' })
         const visitor = noSequencesRule.create(context)
 
         visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -2343,7 +2307,7 @@ describe('no-sequences rule', () => {
       ['/root.test.ts'],
       ['C:\\project\\file.ts'],
     ] as const)('should work with file path: %s', (filePath) => {
-      const { context, reports } = createMockContext({}, filePath)
+      const { context, reports } = createMockRuleContext({ source: 'a, b, c', filePath: filePath })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))
@@ -2360,7 +2324,7 @@ describe('no-sequences rule', () => {
       ['1, 2, 3, 4, 5'],
       ['(a, b)'],
     ] as const)('should work with source: %s', (source) => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noSequencesRule.create(context)
 
       visitor.SequenceExpression(createSequenceExpression([createLiteral(1), createLiteral(2)]))

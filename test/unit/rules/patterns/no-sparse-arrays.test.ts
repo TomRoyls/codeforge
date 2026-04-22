@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noSparseArraysRule } from '../../../../src/rules/patterns/no-sparse-arrays.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const arr = [1, , 3];',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createArrayExpression(elements: unknown[], line = 1, column = 0): unknown {
   return {
@@ -282,7 +246,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(visitor).toHaveProperty('ArrayExpression')
@@ -291,7 +255,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('valid arrays (no holes)', () => {
     test('should not report array with all elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -302,7 +266,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([]))
@@ -311,7 +275,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with single element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1)]))
@@ -322,7 +286,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('invalid arrays (with holes)', () => {
     test('should report sparse array with one hole in middle', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null, createLiteral(3)]))
@@ -332,7 +296,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with hole at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null, createLiteral(2), createLiteral(3)]))
@@ -341,7 +305,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with hole at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), createLiteral(2), null]))
@@ -350,7 +314,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with multiple holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -361,7 +325,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with consecutive holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -372,7 +336,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with only holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null, null, null]))
@@ -383,21 +347,21 @@ describe('no-sparse-arrays rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression('string')).not.toThrow()
@@ -405,7 +369,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -417,7 +381,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -430,7 +394,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node without elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -442,7 +406,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle non-array elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -455,7 +419,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle null elements array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -468,7 +432,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle undefined elements array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -481,7 +445,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -494,7 +458,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 10, 5))
@@ -504,7 +468,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -547,7 +511,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('message quality', () => {
     test('should mention sparse in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -556,7 +520,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should mention array in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -565,7 +529,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should start with unexpected for sparse arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -576,7 +540,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('loc edge cases', () => {
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -595,7 +559,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -614,7 +578,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -631,7 +595,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -648,7 +612,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -726,32 +690,32 @@ describe('no-sparse-arrays rule', () => {
 
   describe('create visitor exhaustive', () => {
     test('visitor should be an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('visitor should not be null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
       expect(visitor).not.toBeNull()
     })
 
     test('ArrayExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
       expect(typeof visitor.ArrayExpression).toBe('function')
     })
 
     test('ArrayExpression should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
       expect(visitor.ArrayExpression.length).toBeLessThanOrEqual(1)
     })
 
     test('should create independent visitor instances', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor1 = noSparseArraysRule.create(ctx1)
       const visitor2 = noSparseArraysRule.create(ctx2)
       expect(visitor1).not.toBe(visitor2)
@@ -760,7 +724,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('valid arrays - various element types', () => {
     test('should not report array with two string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -771,7 +735,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with boolean literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(true), createLiteral(false)]))
@@ -780,7 +744,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with null literal elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       // createLiteral(null) produces { type: 'Literal', value: null } - NOT a hole
@@ -790,7 +754,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with identifier elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createIdentifier('x'), createIdentifier('y')]))
@@ -799,7 +763,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -810,7 +774,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -821,7 +785,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with object expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -834,7 +798,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -847,7 +811,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with arrow functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -858,7 +822,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with template literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -869,7 +833,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with unary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createUnaryExpression('-', createLiteral(5))]))
@@ -878,7 +842,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with conditional expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -891,7 +855,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with logical expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -904,7 +868,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with assignment expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -917,7 +881,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with spread elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createSpreadElement(createIdentifier('arr'))]))
@@ -926,7 +890,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with new expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -937,7 +901,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -948,7 +912,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with mixed element types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -964,7 +928,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with only string elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -981,7 +945,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with undefined literal elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -992,7 +956,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with regex literal elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1005,7 +969,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('valid arrays - size variations', () => {
     test('should not report array with two elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), createLiteral(2)]))
@@ -1014,7 +978,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with ten elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1036,7 +1000,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with 50 elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const elements = Array.from({ length: 50 }, (_, i) => createLiteral(i))
@@ -1046,7 +1010,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with 100 elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const elements = Array.from({ length: 100 }, (_, i) => createLiteral(i))
@@ -1056,7 +1020,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with 500 elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const elements = Array.from({ length: 500 }, (_, i) => createLiteral(i))
@@ -1068,7 +1032,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('valid arrays - nested structures', () => {
     test('should not report nested arrays without holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1079,7 +1043,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report deeply nested arrays without holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const inner = createArrayExpression([createLiteral(1)])
@@ -1092,7 +1056,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array of objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1106,7 +1070,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array of arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1120,7 +1084,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report array with mixed nested structures', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1138,7 +1102,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('invalid arrays - single hole variations', () => {
     test('should report array with hole between two numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null, createLiteral(2)]))
@@ -1147,7 +1111,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with hole between two strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral('a'), null, createLiteral('b')]))
@@ -1156,7 +1120,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with hole between identifier and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1167,7 +1131,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with hole between literal and identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1178,7 +1142,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with single hole at position 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null]))
@@ -1187,7 +1151,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with two holes at positions 0 and 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null, null]))
@@ -1196,7 +1160,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with hole followed by element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null, createLiteral(1)]))
@@ -1205,7 +1169,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with element followed by hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -1214,7 +1178,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with hole before spread element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1225,7 +1189,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with hole after spread element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1238,7 +1202,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('invalid arrays - multiple holes', () => {
     test('should report array with 3 non-consecutive holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1249,7 +1213,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with 4 consecutive holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1260,7 +1224,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with alternating elements and holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1271,7 +1235,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with 10 holes at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1294,7 +1258,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with 10 holes at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1317,7 +1281,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report large sparse array with 100 elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const elements = Array.from({ length: 100 }, (_, i) =>
@@ -1329,7 +1293,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with 5 consecutive holes at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1340,7 +1304,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report array with 5 consecutive holes at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1353,7 +1317,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('invalid arrays - mixed element types with holes', () => {
     test('should report sparse array with object element and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1367,7 +1331,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with nested array and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1378,7 +1342,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with call expression and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1393,7 +1357,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with binary expression and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1407,7 +1371,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with arrow function and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1418,7 +1382,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with member expression and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1432,7 +1396,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with template literal and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createTemplateLiteral([], []), null]))
@@ -1441,7 +1405,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with unary expression and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1452,7 +1416,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with conditional and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1466,7 +1430,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with logical and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1480,7 +1444,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with new expression and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1491,7 +1455,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with function expression and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1505,7 +1469,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report sparse array with spread element and hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1522,7 +1486,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('report count - exactly one report per sparse array', () => {
     test('should report exactly once for array with one hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -1531,7 +1495,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report exactly once for array with two holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -1542,7 +1506,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report exactly once for array with five holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null, null, null, null, null]))
@@ -1551,7 +1515,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report exactly once for array with 20 holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression(Array.from({ length: 20 }, () => null)))
@@ -1560,7 +1524,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report exactly once for array with 50 holes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression(Array.from({ length: 50 }, () => null)))
@@ -1571,7 +1535,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('multiple visitor invocations', () => {
     test('should report each sparse array separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -1581,7 +1545,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report 3 sparse arrays separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -1592,7 +1556,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report valid arrays between sparse ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -1603,7 +1567,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle mix of valid and invalid arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([]))
@@ -1616,7 +1580,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle 10 sparse arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1627,7 +1591,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle 20 sparse arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1638,7 +1602,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle 50 sparse arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1649,7 +1613,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle empty arrays interleaved with sparse', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([]))
@@ -1663,7 +1627,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 1, 0))
@@ -1673,7 +1637,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 5, 10))
@@ -1683,7 +1647,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 100, 50))
@@ -1693,7 +1657,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 0, 0))
@@ -1703,7 +1667,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report location at line 9999 column 9999', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 9999, 9999))
@@ -1713,7 +1677,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 1, 0))
@@ -1723,7 +1687,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should report different locations for different sparse arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null], 1, 0))
@@ -1738,56 +1702,56 @@ describe('no-sparse-arrays rule', () => {
 
   describe('node type guards', () => {
     test('should not crash for boolean true node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(true)).not.toThrow()
     })
 
     test('should not crash for boolean false node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(false)).not.toThrow()
     })
 
     test('should not crash for number 0 node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(0)).not.toThrow()
     })
 
     test('should not crash for negative number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(-1)).not.toThrow()
     })
 
     test('should not crash for empty string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression('')).not.toThrow()
     })
 
     test('should not crash for NaN node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(Number.NaN)).not.toThrow()
     })
 
     test('should not crash for Infinity node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       expect(() => visitor.ArrayExpression(Number.POSITIVE_INFINITY)).not.toThrow()
     })
 
     test('should not report for ArrayPattern node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayPattern([createIdentifier('a'), null]))
@@ -1796,7 +1760,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report for FunctionExpression node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1810,7 +1774,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report for CallExpression node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1824,7 +1788,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not report for ObjectExpression node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1840,7 +1804,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('elements type variations', () => {
     test('should handle elements as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1853,7 +1817,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle elements as plain object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1866,7 +1830,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle elements as Set-like object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1878,7 +1842,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle empty array elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([]))
@@ -1887,7 +1851,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle array-like with only nulls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null]))
@@ -1898,7 +1862,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('node edge cases', () => {
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1917,7 +1881,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with Symbol properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const sym = Symbol('test')
@@ -1934,7 +1898,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle frozen node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = Object.freeze({
@@ -1949,7 +1913,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle sealed node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = Object.seal({
@@ -1964,7 +1928,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with Array.prototype in chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = Object.create({
@@ -1979,7 +1943,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with numeric type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -1993,7 +1957,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with boolean type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2007,7 +1971,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with null type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2021,7 +1985,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with undefined type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2035,7 +1999,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with empty string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2049,7 +2013,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with lowercase arrayexpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2063,7 +2027,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle node with whitespace-padded type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2079,7 +2043,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('loc edge cases - additional', () => {
     test('should handle loc as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2096,7 +2060,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2111,7 +2075,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2126,7 +2090,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2141,7 +2105,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with NaN line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2160,7 +2124,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with Infinity line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2179,7 +2143,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with negative line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2198,7 +2162,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with negative column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2217,7 +2181,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with fractional line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2236,7 +2200,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with fractional column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2255,7 +2219,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2275,7 +2239,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc.start as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2293,7 +2257,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc.end as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2311,7 +2275,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with array start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2329,7 +2293,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle loc with string values in start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2351,7 +2315,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];', filePath: '/project/src/utils.ts' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2360,7 +2324,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'let x = [,,];')
+      const { context, reports } = createMockRuleContext({ source: 'let x = [,,];', filePath: '/src/file.ts' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null, null]))
@@ -2369,7 +2333,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should work with minimal source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '[]')
+      const { context, reports } = createMockRuleContext({ source: '[]', filePath: '/src/file.ts' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2435,7 +2399,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle config with extra options', () => {
-      const { context, reports } = createMockContext({ extraOption: true, anotherOption: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ extraOption: true, anotherOption: 42 }], source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2446,7 +2410,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('message content', () => {
     test('should contain exact message text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2455,7 +2419,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should have consistent message for different sparse patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2468,7 +2432,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2478,7 +2442,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('message should start with capital letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2487,7 +2451,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2496,7 +2460,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('message should contain word hole or sparse', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2508,7 +2472,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('report descriptor structure', () => {
     test('should have message property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2517,7 +2481,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should have loc property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2526,7 +2490,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2535,7 +2499,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2544,7 +2508,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('loc.start should have line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2553,7 +2517,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('loc.start should have column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2562,7 +2526,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('loc.end should have line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2571,7 +2535,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('loc.end should have column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1), null]))
@@ -2582,7 +2546,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('no side effects', () => {
     test('reporting should not modify the node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2601,7 +2565,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('reporting should not modify the elements array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const elements = [createLiteral(1), null]
@@ -2615,7 +2579,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('creating visitor should not trigger any reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
 
       noSparseArraysRule.create(context)
 
@@ -2623,7 +2587,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('calling ArrayExpression on valid array should not trigger reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createLiteral(1)]))
@@ -2636,7 +2600,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('various element node types as non-holes', () => {
     test('should treat AwaitExpression as non-hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createAwaitExpression(createIdentifier('p'))]))
@@ -2645,7 +2609,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should treat YieldExpression as non-hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -2656,7 +2620,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should treat SequenceExpression as non-hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -2667,7 +2631,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should treat TaggedTemplateExpression as non-hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -2680,7 +2644,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should treat ClassExpression as non-hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -2693,7 +2657,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should treat MetaProperty as non-hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([createMetaProperty('import', 'meta')]))
@@ -2704,7 +2668,7 @@ describe('no-sparse-arrays rule', () => {
 
   describe('boundary conditions', () => {
     test('should handle array with maximum safe integer as line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = {
@@ -2723,7 +2687,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle array with very large element count', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const elements = Array.from({ length: 1000 }, (_, i) => (i === 500 ? null : createLiteral(i)))
@@ -2733,7 +2697,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should handle elements array with only one hole', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(createArrayExpression([null]))
@@ -2743,7 +2707,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should distinguish between Literal(null) and hole null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       // createLiteral(null) produces { type: 'Literal', value: null } - NOT a hole
@@ -2753,7 +2717,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should distinguish between Literal(undefined) and hole null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       visitor.ArrayExpression(
@@ -2785,8 +2749,8 @@ describe('no-sparse-arrays rule', () => {
 
   describe('idempotency', () => {
     test('should produce same result for same input', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
 
       const visitor1 = noSparseArraysRule.create(ctx1)
       const visitor2 = noSparseArraysRule.create(ctx2)
@@ -2800,7 +2764,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should produce same result when called twice with same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       const node = createArrayExpression([createLiteral(1), null])
@@ -2813,7 +2777,7 @@ describe('no-sparse-arrays rule', () => {
     })
 
     test('should not accumulate state across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const arr = [1, , 3];' })
       const visitor = noSparseArraysRule.create(context)
 
       // First call: valid

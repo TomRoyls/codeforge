@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferStringReplaceAllRule } from '../../../../src/rules/patterns/prefer-string-replace-all.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createReplaceWithGlobalRegex(line = 1, column = 0): unknown {
   return {
@@ -239,14 +203,14 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should report replace() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -256,7 +220,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report replace() with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithStringArg())
@@ -265,7 +229,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report replace() with non-global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithNonGlobalRegex())
@@ -274,7 +238,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report replaceAll() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceAllCall())
@@ -283,7 +247,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createOtherMethodCall())
@@ -292,7 +256,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report replace() with case-insensitive regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithCaseInsensitiveRegex())
@@ -301,7 +265,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithGlobalRegex(5, 10))
@@ -311,7 +275,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should include pattern in suggestion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -325,21 +289,21 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -347,7 +311,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = { type: 'CallExpression', arguments: [] }
@@ -357,7 +321,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -374,7 +338,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -400,7 +364,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -414,7 +378,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle MemberExpression with computed property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -447,7 +411,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('message quality', () => {
     test('should include actionable guidance', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -456,7 +420,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should mention explicit alternative', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -470,7 +434,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('missing edge cases', () => {
     test('should handle RegexLiteral without pattern property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -502,7 +466,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle string regex without raw property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -531,7 +495,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle MemberExpression with non-Identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -557,7 +521,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle non-CallExpression node in isStringReplaceCall', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -571,7 +535,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle empty arguments array explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -594,7 +558,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle Literal argument with non-Literal non-RegExpLiteral type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -623,7 +587,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle case-sensitive global regex with multiple flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -654,7 +618,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle string regex with raw but not global flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -684,7 +648,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle complex regex with escape sequences', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
 
       const node = {
@@ -785,45 +749,45 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('visitor structure additional', () => {
     test('create should not throw', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(() => preferStringReplaceAllRule.create(context)).not.toThrow()
     })
 
     test('visitor should be a non-null object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       expect(visitor).not.toBeNull()
       expect(typeof visitor).toBe('object')
     })
 
     test('CallExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('visitor should only have CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       expect(Object.keys(visitor)).toEqual(['CallExpression'])
     })
 
     test('create returns a new visitor each time', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = preferStringReplaceAllRule.create(context)
       const visitor2 = preferStringReplaceAllRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('CallExpression should accept one argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       expect(() => visitor.CallExpression(createReplaceWithGlobalRegex())).not.toThrow()
       expect(reports).toHaveLength(1)
     })
 
     test('CallExpression returns undefined or void', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const result = visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(result).toBeUndefined()
@@ -835,14 +799,14 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('detection positive - various patterns', () => {
     test('should report /hello/g pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('hello', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /[a-z]+/g pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('[a-z]+', 'g'))
       expect(reports.length).toBe(1)
@@ -850,14 +814,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report /^\\s+/g pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('^\\s+', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /\\d{2,4}/g pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\d{2,4}', 'g'))
       expect(reports.length).toBe(1)
@@ -865,7 +829,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report /(foo|bar)/g pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('(foo|bar)', 'g'))
       expect(reports.length).toBe(1)
@@ -873,14 +837,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report /\\w+/g pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\w+', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /./g dot pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('.', 'g'))
       expect(reports.length).toBe(1)
@@ -888,7 +852,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report with RegExpLiteral type argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -913,7 +877,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report /\\s+/g whitespace pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\s+', 'g'))
       expect(reports.length).toBe(1)
@@ -921,7 +885,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report /\\bword\\b/g boundary pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\bword\\b', 'g'))
       expect(reports.length).toBe(1)
@@ -929,14 +893,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report with different object names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('test', 'g', 1, 0, 'myString'))
       expect(reports.length).toBe(1)
     })
 
     test('should report with chained call on this.replace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -957,14 +921,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report empty string pattern //g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report unicode escape pattern /\\u0041/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\u0041', 'g'))
       expect(reports.length).toBe(1)
@@ -972,7 +936,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report hex escape pattern /\\x41/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\x41', 'g'))
       expect(reports.length).toBe(1)
@@ -980,7 +944,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report character class /[^a-z]/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('[^a-z]', 'g'))
       expect(reports.length).toBe(1)
@@ -988,21 +952,21 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report quantifier /a{3}/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('a{3}', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report lazy quantifier /a+?/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('a+?', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should report lookahead /foo(?=bar)/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo(?=bar)', 'g'))
       expect(reports.length).toBe(1)
@@ -1010,7 +974,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report lookbehind /(?<=foo)bar/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('(?<=foo)bar', 'g'))
       expect(reports.length).toBe(1)
@@ -1022,105 +986,105 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('detection negative - flag combinations', () => {
     test('should not report /foo/i (i only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'i'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/m (m only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'm'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/s (s only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 's'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/u (u only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'u'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/v (v only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'v'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/y (y only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'y'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/ (no flags)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', ''))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/im (no g)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'im'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/gim (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gim'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/gis (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gis'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/giv (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'giv'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/giu (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'giu'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/gimsvy (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gimsvy'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/gi with complex pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\d+\\s*\\w+', 'gi'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report /foo/ig (flags as ig not gi)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'ig'))
       expect(reports.length).toBe(0)
@@ -1132,70 +1096,70 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('detection positive - multi-flag without i', () => {
     test('should report /foo/gm (g and m)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gm'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gs (g and s)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gs'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gu (g and u)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gu'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gv (g and v)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gv'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gy (g and y)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gy'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gms (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gms'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gmu (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gmu'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gsuv (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gsuv'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gmsv (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gmsv'))
       expect(reports.length).toBe(1)
     })
 
     test('should report /foo/gmy (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'gmy'))
       expect(reports.length).toBe(1)
@@ -1207,56 +1171,56 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('detection negative - method names', () => {
     test('should not report match() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'str', 'match'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report split() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'str', 'split'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report search() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'str', 'search'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report test() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'regex', 'test'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report exec() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'regex', 'exec'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report Replace (capital R)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'str', 'Replace'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report REPLACE (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'str', 'REPLACE'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report replaceAll() with global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g', 1, 0, 'str', 'replaceAll'))
       expect(reports.length).toBe(0)
@@ -1268,7 +1232,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('detection negative - argument types', () => {
     test('should not report when first arg is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1289,7 +1253,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1310,7 +1274,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1331,7 +1295,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1352,7 +1316,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1373,7 +1337,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1398,7 +1362,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1423,7 +1387,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when first arg is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1444,7 +1408,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when replace has only one argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1462,7 +1426,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when replace has three arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1489,7 +1453,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('edge cases - malformed nodes additional', () => {
     test('should handle node with type null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: null,
@@ -1505,7 +1469,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node with callee null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = { type: 'CallExpression', callee: null, arguments: [] }
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1513,7 +1477,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node with arguments undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1529,7 +1493,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle first arg with regex flags undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1550,7 +1514,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle first arg with regex flags null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1571,7 +1535,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should throw when first arg has regex flags as number', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1591,20 +1555,20 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       expect(() => visitor.CallExpression({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with loc.start.line as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1626,7 +1590,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node with loc.start.column as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1648,7 +1612,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node with loc.start undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1671,7 +1635,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle node with loc.end undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1700,7 +1664,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('edge cases - callee variations', () => {
     test('should handle callee with object as non-Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1725,7 +1689,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle callee with property as different Identifier name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1746,7 +1710,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle callee with empty property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1767,7 +1731,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle callee property missing type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1788,7 +1752,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle callee property missing name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1809,7 +1773,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle callee property as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1830,7 +1794,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle callee with undefined object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1851,7 +1815,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle Super as callee object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1877,7 +1841,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('location exhaustive', () => {
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(5, 10))
       expect(reports[0].loc?.end.line).toBe(5)
@@ -1885,7 +1849,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report location at origin', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -1893,21 +1857,21 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report location with large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(999, 0))
       expect(reports[0].loc?.start.line).toBe(999)
     })
 
     test('should report location with large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(1, 500))
       expect(reports[0].loc?.start.column).toBe(500)
     })
 
     test('should report default location when loc missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1928,7 +1892,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should report default location when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1950,7 +1914,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should preserve location across different line/column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(10, 20))
       visitor.CallExpression(createReplaceWithGlobalRegex(30, 40))
@@ -1961,14 +1925,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle location with same start and end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(5, 10))
       expect(reports[0].loc?.start.line).toBe(reports[0].loc?.end.line)
     })
 
     test('should handle loc with start having missing properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1990,7 +1954,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle loc with end having missing properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2014,7 +1978,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle loc where start.line is zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2035,7 +1999,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle loc where start and end are identical', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2058,7 +2022,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle loc with negative column value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2079,7 +2043,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle loc with fractional line values (uses default)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2105,28 +2069,28 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('message content additional', () => {
     test('should start with Prefer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].message).toContain('Prefer')
     })
 
     test('should mention replace()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].message).toContain('replace()')
     })
 
     test('should mention global regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].message).toContain('global regex')
     })
 
     test('should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(typeof reports[0].message).toBe('string')
@@ -2134,21 +2098,21 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should include str.replaceAll in suggestion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].message).toContain("str.replaceAll('foo'")
     })
 
     test('should include str.replace in suggestion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].message).toContain('str.replace(')
     })
 
     test('should include generic message when no pattern available', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2171,7 +2135,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should include pattern in suggestion format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('hello', 'g'))
       expect(reports[0].message).toContain("str.replaceAll('hello', ...)")
@@ -2179,7 +2143,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should produce consistent messages for same pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -2187,7 +2151,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should produce different messages for different patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('foo', 'g'))
       visitor.CallExpression(createReplaceWithRegex('bar', 'g'))
@@ -2195,14 +2159,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should include special regex chars in message verbatim', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('[a-z]+', 'g'))
       expect(reports[0].message).toContain('[a-z]+')
     })
 
     test('should include newline escape in message verbatim', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\n', 'g'))
       expect(reports[0].message).toContain('\\n')
@@ -2214,7 +2178,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('multiple reports', () => {
     test('should produce two reports for two global regex calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -2222,7 +2186,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should produce three reports for three global regex calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -2231,7 +2195,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should produce one report for mixed positive then negative', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       visitor.CallExpression(createReplaceWithStringArg())
@@ -2239,7 +2203,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should produce correct count for mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       visitor.CallExpression(createReplaceWithStringArg())
@@ -2249,7 +2213,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should preserve report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('first', 'g'))
       visitor.CallExpression(createReplaceWithRegex('second', 'g'))
@@ -2258,7 +2222,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should give each report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex(1, 0))
       visitor.CallExpression(createReplaceWithGlobalRegex(5, 10))
@@ -2267,8 +2231,8 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not carry state across different visitor instances', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext()
+      const { context: ctx2, reports: rep2 } = createMockRuleContext()
       const visitor1 = preferStringReplaceAllRule.create(ctx1)
       const visitor2 = preferStringReplaceAllRule.create(ctx2)
       visitor1.CallExpression(createReplaceWithGlobalRegex())
@@ -2279,7 +2243,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle zero reports when all calls are negative', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithStringArg())
       visitor.CallExpression(createReplaceWithNonGlobalRegex())
@@ -2290,7 +2254,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle many calls without performance issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       for (let i = 0; i < 50; i++) {
         visitor.CallExpression(createReplaceWithGlobalRegex())
@@ -2299,7 +2263,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle alternating positive and negative calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       visitor.CallExpression(createReplaceWithStringArg())
@@ -2315,32 +2279,28 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/custom/path.ts' })
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'str.replace(/foo/g, "bar")',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'str.replace(/foo/g, "bar")', filePath: '/src/file.ts' })
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ extraOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ extraOption: true }] })
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
@@ -2368,21 +2328,21 @@ describe('prefer-string-replace-all rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/long/path/to/some/deeply/nested/directory/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ filePath: longPath })
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
     })
 
     test('should not affect logger calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
@@ -2420,7 +2380,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('report descriptor', () => {
     test('should include message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].message).toBeDefined()
@@ -2428,14 +2388,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should include loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].loc).toBeDefined()
     })
 
     test('should have start in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].loc?.start).toBeDefined()
@@ -2444,7 +2404,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should have end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports[0].loc?.end).toBeDefined()
@@ -2453,7 +2413,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should have numeric line and column in start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(typeof reports[0].loc?.start.line).toBe('number')
@@ -2461,7 +2421,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should have numeric line and column in end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(typeof reports[0].loc?.end.line).toBe('number')
@@ -2469,14 +2429,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not report when no matching pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithStringArg())
       expect(reports.length).toBe(0)
     })
 
     test('should report once per matching node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithGlobalRegex())
       expect(reports.length).toBe(1)
@@ -2488,7 +2448,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('raw string detection', () => {
     test('should detect raw string /test/g format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2510,7 +2470,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect raw string /test/gi (has i flag)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2531,7 +2491,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect raw string /test/ (no g flag)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2552,7 +2512,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect raw string /test/gm (does not end with /g)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2573,7 +2533,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect raw string without leading /', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2594,7 +2554,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect raw string when value is not string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2615,7 +2575,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect when raw is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2636,7 +2596,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should extract pattern from raw string /pattern/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2658,7 +2618,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should detect raw string //g (empty pattern)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2679,7 +2639,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should prefer regex property over raw string when both exist', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2706,7 +2666,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should not detect raw string /test/gim (has i in flags)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -2732,7 +2692,7 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('regex pattern edge cases', () => {
     test('should handle pattern with forward slashes /\\/path/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\/', 'g'))
       expect(reports.length).toBe(1)
@@ -2740,7 +2700,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle pattern with caret /^start/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('^start', 'g'))
       expect(reports.length).toBe(1)
@@ -2748,7 +2708,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle pattern with dollar /end$/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('end$', 'g'))
       expect(reports.length).toBe(1)
@@ -2756,21 +2716,21 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle pattern with asterisk /a*/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('a*', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should handle pattern with question mark /a?/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('a?', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should handle pattern with pipe /cat|dog/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('cat|dog', 'g'))
       expect(reports.length).toBe(1)
@@ -2778,7 +2738,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle very long pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       const longPattern = 'a'.repeat(100)
       visitor.CallExpression(createReplaceWithRegex(longPattern, 'g'))
@@ -2787,14 +2747,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle pattern with backreference /\\1/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\1', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should handle pattern with non-capturing group /(?:foo)/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('(?:foo)', 'g'))
       expect(reports.length).toBe(1)
@@ -2802,14 +2762,14 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle pattern with named group /(?<name>foo)/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('(?<name>foo)', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('should handle pattern with tab escape /\\t/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\t', 'g'))
       expect(reports.length).toBe(1)
@@ -2817,7 +2777,7 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('should handle pattern with carriage return /\\r\\n/g', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('\\r\\n', 'g'))
       expect(reports.length).toBe(1)
@@ -2830,21 +2790,21 @@ describe('prefer-string-replace-all rule', () => {
   // ────────────────────────────────────────────────────────────────
   describe('global flag exhaustive combinations', () => {
     test('flags "g" alone triggers report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'g'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "ig" triggers no report (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'ig'))
       expect(reports.length).toBe(0)
     })
 
     test('flags "mg" triggers no report (ends /mg not /g via raw)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       // regex path: has g, no i => reports
       visitor.CallExpression(createReplaceWithRegex('x', 'mg'))
@@ -2852,91 +2812,91 @@ describe('prefer-string-replace-all rule', () => {
     })
 
     test('flags "sg" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'sg'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "ug" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'ug'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "vg" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'vg'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "yg" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'yg'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "gms" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'gms'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "gmu" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'gmu'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "gmsuvy" triggers report (no i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'gmsuvy'))
       expect(reports.length).toBe(1)
     })
 
     test('flags "gims" triggers no report (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'gims'))
       expect(reports.length).toBe(0)
     })
 
     test('flags "gimu" triggers no report (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'gimu'))
       expect(reports.length).toBe(0)
     })
 
     test('flags "gimsvy" triggers no report (has i)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'gimsvy'))
       expect(reports.length).toBe(0)
     })
 
     test('flags "" (empty) triggers no report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', ''))
       expect(reports.length).toBe(0)
     })
 
     test('flags "i" triggers no report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'i'))
       expect(reports.length).toBe(0)
     })
 
     test('flags "m" triggers no report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferStringReplaceAllRule.create(context)
       visitor.CallExpression(createReplaceWithRegex('x', 'm'))
       expect(reports.length).toBe(0)

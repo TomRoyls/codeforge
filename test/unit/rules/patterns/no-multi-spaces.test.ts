@@ -2,43 +2,7 @@ import { describe, test, expect, vi } from 'vitest'
 import { noMultiSpacesRule } from '../../../../src/rules/patterns/no-multi-spaces.js'
 import noMultiSpacesRuleDefault from '../../../../src/rules/patterns/no-multi-spaces.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = "test";',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 describe('no-multi-spaces rule', () => {
   describe('meta properties', () => {
@@ -141,7 +105,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('create() method', () => {
     test('returns visitor object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -149,7 +113,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('visitor has Literal method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(visitor.Literal).toBeDefined()
@@ -157,7 +121,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('visitor has TemplateElement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(visitor.TemplateElement).toBeDefined()
@@ -169,21 +133,21 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('visitor has exactly 2 methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(2)
     })
 
     test('visitor keys are Literal and TemplateElement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['Literal', 'TemplateElement'])
     })
 
     test('create returns a new visitor each time', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor1 = noMultiSpacesRule.create(context)
       const visitor2 = noMultiSpacesRule.create(context)
 
@@ -207,21 +171,21 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('visitor is not null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('Literal method takes one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(visitor.Literal.length).toBe(1)
     })
 
     test('TemplateElement method takes one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       expect(visitor.TemplateElement.length).toBe(1)
@@ -230,7 +194,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('Literal visitor - detecting multiple spaces', () => {
     test('reports multiple spaces in string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -244,7 +208,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports multiple spaces at start of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -258,7 +222,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports multiple spaces at end of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -272,7 +236,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports multiple spaces with more than 2 spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -286,7 +250,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports exactly 2 spaces between words', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -299,7 +263,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports 3 spaces between words', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -312,7 +276,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports 5 spaces between words', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -325,7 +289,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports 10 spaces between words', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -338,7 +302,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces around punctuation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -351,7 +315,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces around equals sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -364,7 +328,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports leading spaces followed by text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -377,7 +341,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports trailing spaces after text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -390,7 +354,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces in sentence with punctuation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -403,7 +367,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces with numbers in string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -416,7 +380,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces around braces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -429,7 +393,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces with special characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -442,7 +406,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces with unicode text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -455,7 +419,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces in path-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -468,7 +432,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces in SQL-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -481,7 +445,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces in alignment pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -494,7 +458,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports string that is only spaces with a letter at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -507,7 +471,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports string that is only spaces with a letter at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -522,7 +486,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('Literal visitor - not reporting', () => {
     test('does not report single spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -535,7 +499,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report newlines only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -548,7 +512,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report numeric literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -561,7 +525,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report boolean literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -574,7 +538,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -587,7 +551,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -600,7 +564,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with no spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -613,7 +577,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report single character string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -626,7 +590,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with only one space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -639,7 +603,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with tabs only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -652,7 +616,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with single space and newlines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -665,7 +629,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with single spaces and newlines mixed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -678,7 +642,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report regex literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -691,7 +655,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with carriage return only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -704,7 +668,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report zero number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -717,7 +681,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report negative number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -730,7 +694,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report float number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -743,7 +707,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report false boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -756,7 +720,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -771,7 +735,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('Literal visitor - edge cases', () => {
     test('handles null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal(null)
@@ -780,7 +744,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal(undefined)
@@ -789,7 +753,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -802,7 +766,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({})
@@ -811,7 +775,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as number primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal(42)
@@ -820,7 +784,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as string primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal('not an object')
@@ -829,7 +793,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as boolean primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal(true)
@@ -838,7 +802,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -851,7 +815,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node with value as object instead of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -864,7 +828,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node with value as array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -877,7 +841,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -889,7 +853,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -903,7 +867,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles loc with large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -917,7 +881,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles loc with large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -931,7 +895,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles multi-line loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -946,7 +910,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles loc with partial start only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -960,7 +924,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -977,7 +941,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('TemplateElement visitor - detecting multiple spaces', () => {
     test('reports multiple spaces in template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -991,7 +955,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports multiple spaces at start of template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1004,7 +968,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports multiple spaces at end of template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1017,7 +981,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports 3 spaces in template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1030,7 +994,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports 5 spaces in template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1043,7 +1007,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces in template with punctuation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1056,7 +1020,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces in template with numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1069,7 +1033,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports leading spaces in template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1082,7 +1046,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports trailing spaces in template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1095,7 +1059,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports spaces with unicode in template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1110,7 +1074,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('TemplateElement visitor - not reporting', () => {
     test('does not report single spaces in template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1123,7 +1087,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report newlines in template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1136,7 +1100,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report template element with no spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1149,7 +1113,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report template element with single space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1162,7 +1126,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report template element with tabs only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1175,7 +1139,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report template element with mixed newlines and single spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1188,7 +1152,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report template element with carriage returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1203,7 +1167,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('TemplateElement visitor - edge cases', () => {
     test('handles null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement(null)
@@ -1212,7 +1176,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement(undefined)
@@ -1221,7 +1185,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node without value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1233,7 +1197,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1246,7 +1210,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({})
@@ -1255,7 +1219,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as number primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement(42)
@@ -1264,7 +1228,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node as string primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement('not an object')
@@ -1273,7 +1237,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1286,7 +1250,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value as string instead of object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1299,7 +1263,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value with empty raw string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1312,7 +1276,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value with raw as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1325,7 +1289,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value with raw as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1338,7 +1302,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value with raw as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1351,7 +1315,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles value object with no raw property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1364,7 +1328,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('uses raw value not cooked for detection', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1377,7 +1341,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports when raw has multi-spaces even if cooked differs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1390,7 +1354,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles loc with zero values on template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1403,7 +1367,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles loc with large line numbers on template element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1417,7 +1381,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1434,7 +1398,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('location reporting accuracy', () => {
     test('default location when no loc for Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1449,7 +1413,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('default location when no loc for TemplateElement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1464,7 +1428,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('preserves exact loc from node for Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1480,7 +1444,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('preserves exact loc from node for TemplateElement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1496,7 +1460,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('location column 0 is preserved', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1509,7 +1473,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('location line 1 is preserved', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1522,7 +1486,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('multi-line location end is preserved', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1536,7 +1500,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('loc with only start property uses default end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1549,7 +1513,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('loc end column is 0 when end has no column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1564,7 +1528,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('message content verification', () => {
     test('Literal report message is exact', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1577,7 +1541,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('TemplateElement report message is exact', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1590,7 +1554,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('Literal message does not contain template literal text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1603,7 +1567,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('TemplateElement message does not contain string literal text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1616,7 +1580,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('Literal message ends with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1629,7 +1593,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('TemplateElement message ends with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1644,7 +1608,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('multiple reports in same context', () => {
     test('reports multiple Literal violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1663,7 +1627,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports multiple TemplateElement violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1682,7 +1646,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports mixed Literal and TemplateElement violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1703,7 +1667,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('reports 3 Literal violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1728,7 +1692,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report when Literal is clean but TemplateElement violates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1748,7 +1712,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report when TemplateElement is clean but Literal violates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -1768,7 +1732,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('each report has independent location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1788,7 +1752,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('mixed clean and violating calls report only violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1815,7 +1779,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('context variations', () => {
     test('works with different file path', () => {
-      const { context, reports } = createMockContext({}, '/different/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";', filePath: '/different/path.ts' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1828,7 +1792,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('works with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = "hello  world"')
+      const { context, reports } = createMockRuleContext({ source: 'const x = "hello  world"', filePath: '/src/file.ts' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1841,7 +1805,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('works with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1854,7 +1818,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('works with custom options', () => {
-      const { context, reports } = createMockContext({ someOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: true }], source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1868,7 +1832,7 @@ describe('no-multi-spaces rule', () => {
 
     test('works with long file path', () => {
       const longPath = '/very/long/path/to/some/deeply/nested/directory/structure/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";', filePath: longPath })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1881,7 +1845,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('works with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1894,7 +1858,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('works with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js')
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";', filePath: '/src/file.js' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1907,7 +1871,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('works with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";', filePath: '/src/component.tsx' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1947,8 +1911,8 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('rule behavior is consistent across multiple contexts', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'const x = "test";' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'const x = "test";' })
 
       const visitor1 = noMultiSpacesRule.create(ctx1)
       const visitor2 = noMultiSpacesRule.create(ctx2)
@@ -1970,7 +1934,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('report descriptor structure', () => {
     test('report descriptor has message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1983,7 +1947,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report descriptor has loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -1996,7 +1960,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report descriptor loc has start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2009,7 +1973,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report descriptor loc has end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2022,7 +1986,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report descriptor loc.start has line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2035,7 +1999,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report descriptor loc.start has column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2048,7 +2012,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report is called exactly once per violating node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2061,7 +2025,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('report is not called for clean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2074,7 +2038,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('TemplateElement report descriptor has correct structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -2116,7 +2080,7 @@ describe('no-multi-spaces rule', () => {
 
   describe('hasMultipleSpaces pattern edge cases via Literal', () => {
     test('detects two spaces at very start of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2129,7 +2093,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects two spaces at very end of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2142,7 +2106,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report single space between words with unicode', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2155,7 +2119,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces around angle brackets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2168,7 +2132,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces in URL-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2181,7 +2145,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with emoji characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2194,7 +2158,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string of only tabs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2207,7 +2171,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report tab followed by single space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2220,7 +2184,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces in multiline string with tabs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2233,7 +2197,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with dollar sign in string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2246,7 +2210,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with hash symbol', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2259,7 +2223,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with at sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2272,7 +2236,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with only one word and no spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2285,7 +2249,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces in JSON-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2298,7 +2262,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with pipe character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2311,7 +2275,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with semicolons', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2324,7 +2288,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with backslash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2337,7 +2301,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with forward slashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2350,7 +2314,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with parentheses', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2363,7 +2327,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with square brackets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2376,7 +2340,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report carriage return followed by newline with single space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2389,7 +2353,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces in template element with escape sequences', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.TemplateElement({
@@ -2402,7 +2366,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with dots in string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2415,7 +2379,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('does not report string with just whitespace chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({
@@ -2428,7 +2392,7 @@ describe('no-multi-spaces rule', () => {
     })
 
     test('detects spaces with plus sign in string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = "test";' })
       const visitor = noMultiSpacesRule.create(context)
 
       visitor.Literal({

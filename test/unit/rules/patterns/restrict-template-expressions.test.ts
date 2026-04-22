@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { restrictTemplateExpressionsRule } from '../../../../src/rules/patterns/restrict-template-expressions.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = `${y}`;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createTemplateLiteral(expressions: unknown[], line = 1, column = 0): unknown {
   return {
@@ -334,7 +298,7 @@ function createOptionsContext(options: Record<string, unknown> = {}): {
   context: RuleContext
   reports: ReportDescriptor[]
 } {
-  return createMockContext(options)
+  return createMockRuleContext({ options: [options], source: 'const x = `${y}`;' })
 }
 
 function createNoOptionsContext(): { context: RuleContext; reports: ReportDescriptor[] } {
@@ -446,22 +410,22 @@ describe('restrict-template-expressions rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(visitor).toHaveProperty('TemplateLiteral')
     })
 
     test('should return a callable TemplateLiteral function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(typeof visitor.TemplateLiteral).toBe('function')
     })
 
     test('should return the same visitor shape for different contexts', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext({ allowNumber: true })
+      const { context: ctx1 } = createMockRuleContext({ source: 'const x = `${y}`;' })
+      const { context: ctx2 } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor1 = restrictTemplateExpressionsRule.create(ctx1)
       const visitor2 = restrictTemplateExpressionsRule.create(ctx2)
 
@@ -471,7 +435,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('detecting non-string expressions', () => {
     test('should report identifier in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -482,7 +446,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report number literal in template by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -493,7 +457,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report boolean literal in template by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -504,7 +468,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report null in template by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -515,7 +479,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report call expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createCallExpression(createIdentifier('fn'))])
@@ -526,7 +490,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report binary expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -539,7 +503,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('hello')])
@@ -549,7 +513,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report multiple non-string expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -563,7 +527,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report member expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -576,7 +540,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report arrow function expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createArrowFunctionExpression()])
@@ -587,7 +551,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report object expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createObjectExpression()])
@@ -598,7 +562,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report array expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createArrayExpression()])
@@ -609,7 +573,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report conditional expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -626,7 +590,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report logical expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -639,7 +603,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report unary expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createUnaryExpression(createIdentifier('x'))])
@@ -650,7 +614,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report new expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNewExpression(createIdentifier('MyClass'))])
@@ -661,7 +625,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report assignment expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -674,7 +638,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report update expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createUpdateExpression(createIdentifier('x'))])
@@ -685,7 +649,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report sequence expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -698,7 +662,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report await expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createAwaitExpression(createIdentifier('promise'))])
@@ -709,7 +673,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report yield expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createYieldExpression(createIdentifier('value'))])
@@ -720,7 +684,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report spread element in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createSpreadElement(createIdentifier('arr'))])
@@ -731,7 +695,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report tagged template expression in template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createTaggedTemplateExpression(createIdentifier('tag'))])
@@ -743,7 +707,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('string literals (always allowed)', () => {
     test('should not report empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('')])
@@ -753,7 +717,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report single-character string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('a')])
@@ -763,7 +727,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report multi-word string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('hello world foo bar')])
@@ -773,7 +737,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal with special characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('${special} \\n \\t')])
@@ -783,7 +747,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal when allowNumber is false', () => {
-      const { context, reports } = createMockContext({ allowNumber: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: false }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('hello')])
@@ -793,12 +757,12 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal when all options are false', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: false,
         allowBoolean: false,
         allowNull: false,
         allowUndefined: false,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('hello')])
@@ -808,12 +772,12 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal when all options are true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
         allowNull: true,
         allowUndefined: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('hello')])
@@ -823,7 +787,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report multiple string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -839,7 +803,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('number literals', () => {
     test('should report integer literal by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(0)])
@@ -850,7 +814,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report positive integer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(100)])
@@ -860,7 +824,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(0)])
@@ -870,7 +834,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report float number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(3.14)])
@@ -880,7 +844,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report negative number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(-1)])
@@ -890,7 +854,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report very large number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(1e10)])
@@ -900,7 +864,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow number literals when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -910,7 +874,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow zero when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(0)])
@@ -920,7 +884,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow float when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(3.14)])
@@ -930,7 +894,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow negative number when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(-42)])
@@ -940,7 +904,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report identifiers when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -950,7 +914,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report boolean when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -960,7 +924,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report null when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -970,7 +934,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow multiple numbers when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -986,7 +950,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('boolean literals', () => {
     test('should report true literal by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -997,7 +961,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report false literal by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(false)])
@@ -1008,7 +972,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow boolean literals when allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -1018,7 +982,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow false literal when allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(false)])
@@ -1028,7 +992,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report identifiers when allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1038,7 +1002,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report number when allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -1048,7 +1012,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report null when allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -1058,7 +1022,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow both true and false with allowBoolean true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true), createBooleanLiteral(false)])
@@ -1070,7 +1034,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('null literals', () => {
     test('should report null by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -1081,7 +1045,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow null when allowNull is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -1091,7 +1055,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report identifiers when allowNull is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1101,7 +1065,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report number when allowNull is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -1111,7 +1075,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report boolean when allowNull is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -1123,7 +1087,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('undefined identifier', () => {
     test('should report undefined identifier by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('undefined')])
@@ -1134,7 +1098,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow undefined when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('undefined')])
@@ -1144,7 +1108,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report other identifiers when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1154,7 +1118,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report number when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -1164,7 +1128,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report boolean when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -1174,7 +1138,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report null when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -1184,7 +1148,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report undefined-like identifier that is not exactly "undefined"', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('Undefined')])
@@ -1194,7 +1158,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report undefined-like identifier "undefine" when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('undefine')])
@@ -1206,7 +1170,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('options - allowNumber', () => {
     test('should allow number literals when option is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -1216,7 +1180,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report other types when allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1228,7 +1192,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('options - allowBoolean', () => {
     test('should allow boolean literals when option is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -1238,7 +1202,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report other types when allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1250,7 +1214,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('options - allowNull', () => {
     test('should allow null when option is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -1260,7 +1224,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report other types when allowNull is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1272,7 +1236,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('options - allowUndefined', () => {
     test('should allow undefined when option is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('undefined')])
@@ -1282,7 +1246,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report other types when allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1294,12 +1258,12 @@ describe('restrict-template-expressions rule', () => {
 
   describe('multiple options', () => {
     test('should allow multiple types when multiple options are true', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
         allowNull: true,
         allowUndefined: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1314,10 +1278,10 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report disallowed types with mixed options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1332,7 +1296,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report all disallowed when only allowNumber is true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1348,7 +1312,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report all disallowed when only allowBoolean is true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1363,7 +1327,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report all disallowed when only allowNull is true', () => {
-      const { context, reports } = createMockContext({ allowNull: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1378,7 +1342,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report all disallowed when only allowUndefined is true', () => {
-      const { context, reports } = createMockContext({ allowUndefined: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1394,10 +1358,10 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow number and boolean with combined options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1411,10 +1375,10 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow number and null with combined options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowNull: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1428,10 +1392,10 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow boolean and null with combined options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowBoolean: true,
         allowNull: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1445,11 +1409,11 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should allow number, boolean, null with combined options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
         allowNull: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1464,11 +1428,11 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should still report identifiers with three options enabled', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
         allowNull: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1485,21 +1449,21 @@ describe('restrict-template-expressions rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(() => visitor.TemplateLiteral(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(() => visitor.TemplateLiteral(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(() => visitor.TemplateLiteral('string')).not.toThrow()
@@ -1507,7 +1471,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle template without expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([])
@@ -1517,7 +1481,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle template with undefined expressions array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = {
@@ -1536,7 +1500,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = {
@@ -1551,7 +1515,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const expr = createIdentifier('x', 10, 5)
@@ -1563,7 +1527,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1605,7 +1569,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = {
@@ -1619,7 +1583,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(() => visitor.TemplateLiteral(true)).not.toThrow()
@@ -1627,7 +1591,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       expect(() => visitor.TemplateLiteral(42)).not.toThrow()
@@ -1635,7 +1599,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expressions with null entries', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([null, createIdentifier('x')])
@@ -1643,7 +1607,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression that is a plain object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1658,7 +1622,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression with type but no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([{ type: 'SomeType' }])
@@ -1669,7 +1633,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression that is empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([{}])
@@ -1679,7 +1643,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle node with missing quasis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = {
@@ -1697,7 +1661,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expressions array with undefined entry', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([undefined])
@@ -1707,7 +1671,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('location reporting', () => {
     test('should report location from expression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const expr = createIdentifier('myVar', 5, 10)
@@ -1720,7 +1684,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report end location from expression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const expr = createIdentifier('myVar', 3, 5)
@@ -1732,7 +1696,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report default location for expression without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([{ type: 'SomeType' }])
@@ -1744,7 +1708,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report different locations for multiple expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const expr1 = createIdentifier('a', 2, 3)
@@ -1757,7 +1721,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report location for null expression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([null])
@@ -1765,7 +1729,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression with partial loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1782,7 +1746,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression with loc containing non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1798,7 +1762,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression with loc as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1816,7 +1780,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('message quality', () => {
     test('should mention string conversion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1826,7 +1790,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should mention template literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1836,7 +1800,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should include expression type in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('myVar')])
@@ -1846,7 +1810,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should include "Unexpected" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1856,7 +1820,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should suggest String() conversion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -1866,7 +1830,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe number literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -1876,7 +1840,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe boolean literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -1886,7 +1850,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe null literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -1896,7 +1860,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe function call in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createCallExpression(createIdentifier('fn'))])
@@ -1906,7 +1870,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe binary expression in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1918,7 +1882,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe member expression in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1930,7 +1894,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe unknown type in message using type name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createTemplateExpressionWithType('CustomExpression')])
@@ -1942,7 +1906,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('getExpressionDescription edge cases', () => {
     test('should describe member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1960,7 +1924,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe expression without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -1974,7 +1938,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe identifier with specific name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('fooBar')])
@@ -1984,7 +1948,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should describe identifier "undefined" specifically', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('undefined')])
@@ -1996,7 +1960,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('options handling variations', () => {
     test('should treat allowNumber: false as disallowing numbers', () => {
-      const { context, reports } = createMockContext({ allowNumber: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: false }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -2006,7 +1970,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should treat allowBoolean: false as disallowing booleans', () => {
-      const { context, reports } = createMockContext({ allowBoolean: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: false }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createBooleanLiteral(true)])
@@ -2016,7 +1980,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should treat allowNull: false as disallowing null', () => {
-      const { context, reports } = createMockContext({ allowNull: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNull: false }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNullLiteral()])
@@ -2026,7 +1990,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should treat allowUndefined: false as disallowing undefined', () => {
-      const { context, reports } = createMockContext({ allowUndefined: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowUndefined: false }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('undefined')])
@@ -2036,10 +2000,10 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle options with extra unknown properties', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         someOtherOption: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createNumberLiteral(42)])
@@ -2049,7 +2013,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should use defaults when options is empty object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2177,7 +2141,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('complex expression types', () => {
     test('should report nested call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('inner'))
@@ -2190,7 +2154,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report chained member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const inner = createMemberExpression(createIdentifier('obj'), {
@@ -2206,7 +2170,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report binary expression with string literal left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2219,7 +2183,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report complex nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const call = createCallExpression(createIdentifier('fn'))
@@ -2231,7 +2195,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report template expression within template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const inner = createTemplateLiteral([createIdentifier('nested')])
@@ -2242,7 +2206,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle expression with computed property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2261,7 +2225,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report typeof expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createUnaryExpression(createIdentifier('x'))])
@@ -2271,7 +2235,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report template with many expressions of different types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2289,7 +2253,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle mixed allowed and disallowed in long template', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2310,7 +2274,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('call expressions - various forms', () => {
     test('should report call with identifier callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createCallExpression(createIdentifier('myFunc'))])
@@ -2321,7 +2285,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report call with member expression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('obj'), {
@@ -2336,7 +2300,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report call with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2356,7 +2320,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('binary expressions - various forms', () => {
     test('should report addition binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2368,7 +2332,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report subtraction binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2387,7 +2351,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report strict equality binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2408,7 +2372,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('idempotency and re-use', () => {
     test('should report same violation on repeated calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('x')])
@@ -2420,7 +2384,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should produce consistent reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node1 = createTemplateLiteral([createIdentifier('a')])
@@ -2435,7 +2399,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle alternating report and no-report calls', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([createStringLiteral('ok')]))
@@ -2449,8 +2413,8 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not carry state between different context instances', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext({ allowNumber: true })
-      const { context: ctx2, reports: reports2 } = createMockContext({ allowNumber: false })
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ options: [{ allowNumber: false }], source: 'const x = `${y}`;' })
 
       const visitor1 = restrictTemplateExpressionsRule.create(ctx1)
       const visitor2 = restrictTemplateExpressionsRule.create(ctx2)
@@ -2465,7 +2429,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('distinguishing between literal types', () => {
     test('should not report number literal that looks like string (value is number)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2483,7 +2447,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should distinguish string literal from number literal with same display', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const stringNode = createTemplateLiteral([createStringLiteral('42')])
@@ -2493,7 +2457,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report Literal with boolean value as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2510,7 +2474,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report Literal with null value as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2527,7 +2491,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report Literal with string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2543,7 +2507,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report Literal with regex value as expression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2560,7 +2524,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle Literal with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2578,7 +2542,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('mixed expression patterns', () => {
     test('should handle template with string and identifier alternating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2593,12 +2557,12 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle template with all allowed types and one disallowed', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: true,
         allowBoolean: true,
         allowNull: true,
         allowUndefined: true,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2617,7 +2581,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle template with string then number then identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2631,7 +2595,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report correctly when string literal is between two identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2649,7 +2613,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('visitor does not modify input', () => {
     test('should not modify the node passed to TemplateLiteral', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const originalExpr = createIdentifier('x')
@@ -2707,7 +2671,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('stringLiteral always safe regardless of options', () => {
     test('should not report string literal with allowNumber true', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([createStringLiteral('hello')]))
@@ -2716,7 +2680,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal with allowBoolean true', () => {
-      const { context, reports } = createMockContext({ allowBoolean: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowBoolean: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([createStringLiteral('hello')]))
@@ -2725,12 +2689,12 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should not report string literal with all options false', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNumber: false,
         allowBoolean: false,
         allowNull: false,
         allowUndefined: false,
-      })
+      }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([createStringLiteral('hello')]))
@@ -2784,7 +2748,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('expression with no value property', () => {
     test('should handle Literal without value property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2799,7 +2763,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle Literal with value as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2817,7 +2781,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('multiple expressions with various types', () => {
     test('should count reports correctly for each expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2833,7 +2797,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report all expressions when none are strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2848,7 +2812,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should report no expressions when all are strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([
@@ -2864,7 +2828,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle single string literal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createStringLiteral('only')])
@@ -2874,7 +2838,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('should handle single identifier expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       const node = createTemplateLiteral([createIdentifier('only')])
@@ -2887,7 +2851,7 @@ describe('restrict-template-expressions rule', () => {
 
   describe('allowed type combinations with string always allowed', () => {
     test('string + number should be reported for number with default options', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(
@@ -2898,7 +2862,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('string + number should not report with allowNumber', () => {
-      const { context, reports } = createMockContext({ allowNumber: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNumber: true }], source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(
@@ -2909,7 +2873,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('string + boolean should be reported for boolean with default options', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(
@@ -2920,7 +2884,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('string + null should be reported for null with default options', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(
@@ -2931,7 +2895,7 @@ describe('restrict-template-expressions rule', () => {
     })
 
     test('string + undefined should be reported with default options', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = `${y}`;' })
       const visitor = restrictTemplateExpressionsRule.create(context)
 
       visitor.TemplateLiteral(

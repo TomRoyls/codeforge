@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnnecessaryTemplateExpressionRule } from '../../../../src/rules/patterns/no-unnecessary-template-expression.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const s = `hello`;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createTemplateLiteral(
   quasis: { raw: string; cooked?: string }[],
@@ -165,35 +129,35 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(visitor).toHaveProperty('TemplateLiteral')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return visitor as an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should have TemplateLiteral as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(typeof visitor.TemplateLiteral).toBe('function')
     })
 
     test('should return new visitor on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor1 = noUnnecessaryTemplateExpressionRule.create(context)
       const visitor2 = noUnnecessaryTemplateExpressionRule.create(context)
 
@@ -201,21 +165,21 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/other/path.ts')
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;', filePath: '/other/path.ts' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(visitor).toHaveProperty('TemplateLiteral')
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(visitor).toHaveProperty('TemplateLiteral')
     })
 
     test('should accept context with populated options', () => {
-      const { context } = createMockContext({ strict: true, level: 5 })
+      const { context } = createMockRuleContext({ options: [{ strict: true, level: 5 }], source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(visitor).toHaveProperty('TemplateLiteral')
@@ -224,7 +188,7 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('detecting unnecessary template literals', () => {
     test('should report simple string template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello' }])
@@ -235,7 +199,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report empty template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '' }])
@@ -245,7 +209,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with only text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'some text here' }])
@@ -255,7 +219,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '12345' }])
@@ -265,7 +229,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '   ' }])
@@ -275,7 +239,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with special characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '!@#$%^&*()' }])
@@ -285,7 +249,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with URL-safe characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'path/to/file' }])
@@ -295,7 +259,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with dashes and underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'my-variable_name' }])
@@ -305,7 +269,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with camelCase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'myVariableName' }])
@@ -315,7 +279,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with PascalCase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'MyClassName' }])
@@ -325,7 +289,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with UPPER_CASE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'CONSTANT_VALUE' }])
@@ -335,7 +299,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with tab character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\t' }])
@@ -345,7 +309,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with single character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'a' }])
@@ -355,7 +319,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with comma', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'a, b, c' }])
@@ -365,7 +329,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with semicolon', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'a; b' }])
@@ -375,7 +339,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with colon', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'key: value' }])
@@ -385,7 +349,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with parentheses', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '(grouped)' }])
@@ -395,7 +359,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with brackets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '[array]' }])
@@ -405,7 +369,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with curly braces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '{object}' }])
@@ -415,7 +379,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with angle brackets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '<tag>' }])
@@ -425,7 +389,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with equals sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'key=value' }])
@@ -435,7 +399,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with plus sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '1+1' }])
@@ -445,7 +409,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with pipe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'a | b' }])
@@ -455,7 +419,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with dollar sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '$100' }])
@@ -465,7 +429,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with at sign', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'user@email.com' }])
@@ -475,7 +439,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with hash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '#heading' }])
@@ -485,7 +449,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with tilde', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '~/.config' }])
@@ -495,7 +459,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with backtick-like escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\\`test\\`' }])
@@ -505,7 +469,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with unicode content', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello world' }])
@@ -515,7 +479,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with em dash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'left\u2014right' }])
@@ -525,7 +489,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with ellipsis character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'loading\u2026' }])
@@ -535,7 +499,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report template literal with zero width space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\u200B' }])
@@ -547,7 +511,7 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('not reporting necessary template literals', () => {
     test('should not report template literal with interpolation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -563,7 +527,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with multi-line content', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'line1\nline2' }])
@@ -573,7 +537,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with newline escape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const stringWithNewline = 'line1' + '\n' + 'line2'
@@ -584,7 +548,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with single quote', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: "it's" }])
@@ -594,7 +558,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with double quote', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'say "hello"' }])
@@ -604,7 +568,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with both quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'it\'s "quoted"' }])
@@ -614,7 +578,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with carriage return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'line1\rline2' }])
@@ -624,7 +588,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with multiple expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -641,7 +605,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with CRLF line endings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'line1\r\nline2' }])
@@ -651,7 +615,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with multiple newlines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'a\nb\nc' }])
@@ -661,7 +625,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with only a single quote character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: "'" }])
@@ -671,7 +635,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with only a double quote character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '"' }])
@@ -681,7 +645,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with leading newline', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\ntext' }])
@@ -691,7 +655,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with trailing newline', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'text\n' }])
@@ -701,7 +665,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with carriage return only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\r' }])
@@ -711,7 +675,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with expression at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -727,7 +691,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with expression at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -743,7 +707,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with single expression wrapping entire value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -759,7 +723,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -775,7 +739,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -797,7 +761,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with complex expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -820,7 +784,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with three expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral(
@@ -838,7 +802,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with newline and quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'it\'s\n"quoted"' }])
@@ -848,7 +812,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with escaped single quote via raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: "don't stop" }])
@@ -858,7 +822,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with only newline character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\n' }])
@@ -868,7 +832,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with mixed quotes - single then double', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '\'hello"world"' }])
@@ -878,7 +842,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with multiple single quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: "it's John's book" }])
@@ -888,7 +852,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with multiple double quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'say "hello" and "goodbye"' }])
@@ -898,7 +862,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with JSON-like content', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '{"key": "value"}' }])
@@ -908,7 +872,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with apostrophe in contractions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: "can't won't shouldn't" }])
@@ -918,7 +882,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should not report template literal with Windows path containing newline', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'C:\\path\ncontinued' }])
@@ -930,21 +894,21 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral('string')).not.toThrow()
@@ -952,7 +916,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -966,7 +930,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello' }], [], 42, 15)
@@ -977,7 +941,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'test' }])
@@ -987,7 +951,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node without quasis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1000,7 +964,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node without expressions array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1013,7 +977,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle tagged template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1028,7 +992,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle multiple quasis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1045,7 +1009,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1059,7 +1023,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with boolean type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1073,21 +1037,21 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with number type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral(42)).not.toThrow()
     })
 
     test('should handle node with boolean value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral(true)).not.toThrow()
     })
 
     test('should handle node as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral({})).not.toThrow()
@@ -1095,7 +1059,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi without value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1109,7 +1073,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1123,7 +1087,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi with non-string raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1137,7 +1101,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi as non-object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1151,7 +1115,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle expressions as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1165,7 +1129,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasis as empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1179,7 +1143,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasis with multiple elements but no expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1196,7 +1160,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1211,7 +1175,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle template literal with undefined tag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1226,7 +1190,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi with undefined raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1240,7 +1204,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi with empty string raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '' }])
@@ -1250,7 +1214,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasis as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1264,7 +1228,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with tag as null (falsy, should report)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1279,7 +1243,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with tag as empty string (falsy, should report)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1294,7 +1258,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with tag as 0 (falsy, should report)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1309,7 +1273,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node with tag as false (falsy, should report)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1324,7 +1288,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi with empty value object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1338,7 +1302,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle tagged template with function call tag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1353,7 +1317,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle quasi with number raw as zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1367,7 +1331,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1380,7 +1344,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle node where quasis is a string instead of array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1396,7 +1360,7 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('location', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello' }], [], 1, 0)
@@ -1407,7 +1371,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report correct location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'test' }], [], 500, 20)
@@ -1418,7 +1382,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report correct location at large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'test' }], [], 10, 200)
@@ -1429,7 +1393,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'test' }], [], 3, 5)
@@ -1440,7 +1404,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1459,7 +1423,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1478,7 +1442,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1495,7 +1459,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1512,7 +1476,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should default to line 1 when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1528,7 +1492,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should default to column 0 when start column is non-number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1548,7 +1512,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1568,7 +1532,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc where end line is non-number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1587,7 +1551,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle loc where end column is non-number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1606,7 +1570,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'x' }], [], 0, 0)
@@ -1617,7 +1581,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should preserve both start and end from loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
@@ -1641,7 +1605,7 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('message quality', () => {
     test('should mention unnecessary in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello' }])
@@ -1651,7 +1615,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should mention template literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello' }])
@@ -1661,7 +1625,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should include suggestion with the value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'hello' }])
@@ -1671,7 +1635,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should suggest using regular string syntax', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'test' }])
@@ -1681,7 +1645,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should include the specific value in suggestion for single word', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'word' }])
@@ -1691,7 +1655,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should include the specific value in suggestion for empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '' }])
@@ -1701,7 +1665,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should include the specific value for special chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '!@#' }])
@@ -1711,7 +1675,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should include the specific value for path-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'src/index.ts' }])
@@ -1721,7 +1685,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should include the specific value for whitespace string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: '   ' }])
@@ -1731,7 +1695,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should start with Unnecessary template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: 'test' }])
@@ -1743,7 +1707,7 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('multiple reports', () => {
     test('should report each invocation separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node1 = createTemplateLiteral([{ raw: 'hello' }])
@@ -1756,7 +1720,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report correct messages for multiple invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'first' }]))
@@ -1767,7 +1731,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report correct locations for multiple invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'a' }], [], 1, 0))
@@ -1779,7 +1743,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should only report simple templates when mixed with complex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'simple' }]))
@@ -1798,7 +1762,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle many sequential reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1809,7 +1773,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should report for alternating simple and complex templates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'a' }]))
@@ -1838,7 +1802,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle report followed by null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1848,7 +1812,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle report followed by undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1858,7 +1822,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should handle 50 sequential reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1869,7 +1833,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should maintain correct messages across many reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'first' }]))
@@ -1884,7 +1848,7 @@ describe('no-unnecessary-template-expression rule', () => {
 
   describe('context variations', () => {
     test('should work with default context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1893,7 +1857,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/different/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;', filePath: '/different/path.ts' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1902,7 +1866,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = `hello`')
+      const { context, reports } = createMockRuleContext({ source: 'const x = `hello`', filePath: '/src/file.ts' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1911,7 +1875,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with options containing extra fields', () => {
-      const { context, reports } = createMockContext({ extra: true, nested: { deep: 1 } })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, nested: { deep: 1 } }], source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1920,7 +1884,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1956,7 +1920,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/Component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;', filePath: '/src/Component.tsx' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1965,7 +1929,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;', filePath: '/src/index.js' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1974,7 +1938,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/a/b/c/d/e/f/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;', filePath: '/a/b/c/d/e/f/file.ts' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -1983,7 +1947,7 @@ describe('no-unnecessary-template-expression rule', () => {
     })
 
     test('should work with special characters in file path', () => {
-      const { context, reports } = createMockContext({}, '/src/[special]/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;', filePath: '/src/[special]/file.ts' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       visitor.TemplateLiteral(createTemplateLiteral([{ raw: 'test' }]))
@@ -2020,7 +1984,7 @@ describe('no-unnecessary-template-expression rule', () => {
       ['a | b', 'pipe separated'],
       ['\\`test\\`', 'escaped backticks'],
     ])('should report template literal with raw value "%s" (%s)', (rawValue: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: rawValue }])
@@ -2053,7 +2017,7 @@ describe('no-unnecessary-template-expression rule', () => {
       ["'", 'single quote only'],
       ['"', 'double quote only'],
     ])('should NOT report template literal with raw value "%s" (%s)', (rawValue: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = createTemplateLiteral([{ raw: rawValue }])
@@ -2078,7 +2042,7 @@ describe('no-unnecessary-template-expression rule', () => {
     ] as const)(
       'should report correct location at line %s column %s (%s)',
       (line: number, column: number) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
         const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
         const node = createTemplateLiteral([{ raw: 'test' }], [], line, column)
@@ -2100,7 +2064,7 @@ describe('no-unnecessary-template-expression rule', () => {
       [{}, 'empty object'],
       [[], 'empty array'],
     ])('should handle %s without throwing', (node: unknown) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       expect(() => visitor.TemplateLiteral(node)).not.toThrow()
@@ -2117,7 +2081,7 @@ describe('no-unnecessary-template-expression rule', () => {
       ['gql', 'graphql tag'],
       ['raw', 'raw tag'],
     ])('should not report tagged template with tag "%s" (%s)', (tagName: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = `hello`;' })
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {

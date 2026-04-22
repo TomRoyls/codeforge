@@ -4,43 +4,7 @@ import {
   default as defaultExport,
 } from '../../../../src/rules/patterns/no-unused-expressions.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createExpressionStatement(
   expression: unknown,
@@ -257,7 +221,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('create', () => {
     test('should return visitor object with ExpressionStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(visitor).toHaveProperty('ExpressionStatement')
@@ -265,7 +229,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should return a new visitor object each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noUnusedExpressionsRule.create(context)
       const visitor2 = noUnusedExpressionsRule.create(context)
 
@@ -273,14 +237,14 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should return visitor with only ExpressionStatement key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['ExpressionStatement'])
     })
 
     test('ExpressionStatement should return undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const result = visitor.ExpressionStatement(
@@ -290,7 +254,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should not throw when called with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(() => noUnusedExpressionsRule.create(context)).not.toThrow()
     })
 
@@ -314,13 +278,13 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should not call report during create', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       noUnusedExpressionsRule.create(context)
       expect(reports.length).toBe(0)
     })
 
     test('visitor should accept single argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
       expect(visitor.ExpressionStatement.length).toBe(1)
     })
@@ -328,7 +292,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting comparison expressions', () => {
     test('should report strict equality expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('===')))
@@ -337,7 +301,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report strict inequality expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('!==')))
@@ -346,7 +310,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report loose equality expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('==')))
@@ -355,7 +319,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report loose inequality expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('!=')))
@@ -364,7 +328,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report less than expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('<')))
@@ -373,7 +337,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report greater than expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('>')))
@@ -382,7 +346,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report less than or equal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('<=')))
@@ -391,7 +355,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report greater than or equal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('>=')))
@@ -402,7 +366,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting arithmetic expressions', () => {
     test('should report addition expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -411,7 +375,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report subtraction expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('-')))
@@ -420,7 +384,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report multiplication expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('*')))
@@ -429,7 +393,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report division expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('/')))
@@ -438,7 +402,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report modulo expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('%')))
@@ -447,7 +411,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report exponentiation expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('**')))
@@ -458,7 +422,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting bitwise expressions', () => {
     test('should report bitwise AND expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('&')))
@@ -467,7 +431,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report bitwise OR expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('|')))
@@ -476,7 +440,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report bitwise XOR expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('^')))
@@ -487,7 +451,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting shift expressions', () => {
     test('should report left shift expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('<<')))
@@ -496,7 +460,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report right shift expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('>>')))
@@ -505,7 +469,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report unsigned right shift expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('>>>')))
@@ -516,7 +480,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting relational expressions', () => {
     test('should report in expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('in')))
@@ -525,7 +489,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report instanceof expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('instanceof')))
@@ -536,7 +500,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting logical expressions', () => {
     test('should report logical AND expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLogicalExpression('&&')))
@@ -545,7 +509,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report logical OR expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLogicalExpression('||')))
@@ -554,7 +518,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report nullish coalescing expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLogicalExpression('??')))
@@ -563,7 +527,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report deeply nested logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createLogicalExpression(
@@ -579,7 +543,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting literal and identifier expressions', () => {
     test('should report numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(42)))
@@ -588,7 +552,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral('hello')))
@@ -597,7 +561,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(true)))
@@ -606,7 +570,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createIdentifier('x')))
@@ -615,7 +579,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(null)))
@@ -624,7 +588,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report undefined literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(undefined)))
@@ -633,7 +597,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report regex literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(
@@ -650,7 +614,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting template literal expressions', () => {
     test('should report template literal without tag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createTemplateLiteral()))
@@ -659,7 +623,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report template literal with interpolations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const templateLiteral = {
@@ -678,7 +642,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting conditional expressions', () => {
     test('should report ternary expression with no side effects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createConditionalExpression()))
@@ -687,7 +651,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report nested conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const nested = createConditionalExpression(
@@ -703,7 +667,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting sequence expressions', () => {
     test('should report sequence of identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const seq = createSequenceExpression([createIdentifier('a'), createIdentifier('b')])
@@ -713,7 +677,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report sequence of literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const seq = createSequenceExpression([createLiteral(1), createLiteral(2), createLiteral(3)])
@@ -725,7 +689,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting member expressions', () => {
     test('should report simple member access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'))
@@ -735,7 +699,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report computed member access with no side effects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('obj'), createLiteral('key'), true)
@@ -745,7 +709,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report deep member access chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const inner = createMemberExpression(createIdentifier('a'), createIdentifier('b'))
@@ -758,7 +722,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting chain expressions', () => {
     test('should report optional chain with no side effects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'))
@@ -769,7 +733,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report optional chain with computed access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(
@@ -786,7 +750,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting valid expressions with side effects', () => {
     test('should NOT report assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('=')))
@@ -795,7 +759,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report compound assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('+=')))
@@ -806,7 +770,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createCallExpression()))
@@ -815,7 +779,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report increment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUpdateExpression('++')))
@@ -824,7 +788,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report decrement expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUpdateExpression('--')))
@@ -833,7 +797,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const newExpr = {
@@ -846,7 +810,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report await expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const awaitExpr = {
@@ -859,7 +823,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report yield expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const yieldExpr = {
@@ -874,7 +838,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting unary expressions', () => {
     test('should NOT report logical NOT expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('!')))
@@ -883,7 +847,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report void expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('void')))
@@ -892,7 +856,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report typeof expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('typeof')))
@@ -901,7 +865,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report delete expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('delete')))
@@ -910,7 +874,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report unary minus expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('-')))
@@ -919,7 +883,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report unary plus expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('+')))
@@ -928,7 +892,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report bitwise NOT expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression('~')))
@@ -939,7 +903,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting additional assignment operators', () => {
     test('should NOT report division assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('/=')))
@@ -948,7 +912,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report modulo assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('%=')))
@@ -957,7 +921,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report exponentiation assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('**=')))
@@ -966,7 +930,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report left shift assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('<<=')))
@@ -975,7 +939,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report right shift assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('>>=')))
@@ -984,7 +948,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report unsigned right shift assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('>>>=')))
@@ -993,7 +957,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report bitwise AND assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('&=')))
@@ -1002,7 +966,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report bitwise OR assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('|=')))
@@ -1011,7 +975,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report bitwise XOR assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('^=')))
@@ -1022,7 +986,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting tagged template expressions', () => {
     test('should NOT report tagged template expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createTaggedTemplateExpression()))
@@ -1031,7 +995,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report tagged template with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const tagged = {
@@ -1047,7 +1011,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting conditional expressions with side effects', () => {
     test('should NOT report ternary with call in test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const condExpr = createConditionalExpression(
@@ -1061,7 +1025,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report ternary with call in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const condExpr = createConditionalExpression(
@@ -1075,7 +1039,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report ternary with call in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const condExpr = createConditionalExpression(
@@ -1091,7 +1055,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting sequence expressions with side effects', () => {
     test('should NOT report sequence with one function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const seq = createSequenceExpression([createCallExpression(), createIdentifier('x')])
@@ -1101,7 +1065,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report sequence with all function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const seq = createSequenceExpression([createCallExpression(), createCallExpression()])
@@ -1111,7 +1075,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report sequence with assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const seq = createSequenceExpression([createAssignmentExpression('='), createIdentifier('x')])
@@ -1123,7 +1087,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting member expressions with side effects', () => {
     test('should NOT report member access on call result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(createCallExpression(), createIdentifier('prop'))
@@ -1133,7 +1097,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report computed member with call as property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(
@@ -1149,7 +1113,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('NOT reporting chain expressions with side effects', () => {
     test('should NOT report optional chain with call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const chainExpr = createChainExpression(createCallExpression())
@@ -1159,7 +1123,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report optional chain with member on call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const member = createMemberExpression(createCallExpression(), createIdentifier('prop'))
@@ -1172,7 +1136,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('detecting nested expressions without side effects', () => {
     test('should report binary expression with literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createBinaryExpression('+', createLiteral(1), createLiteral(2))
@@ -1182,7 +1146,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report logical expression with identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createLogicalExpression('&&')
@@ -1192,7 +1156,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report deeply nested binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const inner = createBinaryExpression('+', createLiteral(1), createLiteral(2))
@@ -1203,7 +1167,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report binary expression with identifier operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -1213,7 +1177,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report logical expression with mixed operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createLogicalExpression(
@@ -1227,7 +1191,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report mixed binary and logical nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const inner = createBinaryExpression('+', createIdentifier('a'), createLiteral(1))
@@ -1240,7 +1204,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('nested expressions with side effects', () => {
     test('should NOT report binary expression with assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createBinaryExpression('+', createAssignmentExpression('='), createLiteral(1))
@@ -1250,7 +1214,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report logical expression with function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createLogicalExpression('&&', createIdentifier('x'), createCallExpression())
@@ -1260,7 +1224,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report binary expression with update in left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createBinaryExpression('+', createUpdateExpression('++'), createLiteral(1))
@@ -1270,7 +1234,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report binary expression with call in right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createBinaryExpression('+', createLiteral(1), createCallExpression())
@@ -1280,7 +1244,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report logical expression with assignment in right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createLogicalExpression(
@@ -1294,7 +1258,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should NOT report logical expression with new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const newExpr = { type: 'NewExpression', callee: { type: 'Identifier', name: 'Cls' } }
@@ -1307,7 +1271,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement(null)).not.toThrow()
@@ -1316,7 +1280,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement(undefined)).not.toThrow()
@@ -1325,7 +1289,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement('string')).not.toThrow()
@@ -1335,7 +1299,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1347,7 +1311,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle node without expression property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1359,7 +1323,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle null expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1372,7 +1336,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1411,7 +1375,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle NaN as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement(NaN)).not.toThrow()
@@ -1419,7 +1383,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle Infinity as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement(Infinity)).not.toThrow()
@@ -1427,7 +1391,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle array as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement([1, 2, 3])).not.toThrow()
@@ -1435,7 +1399,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle function as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement(() => {})).not.toThrow()
@@ -1443,7 +1407,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle expression as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1456,7 +1420,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle expression as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1469,7 +1433,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1485,7 +1449,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle deeply nested binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       let expr: unknown = createLiteral(1)
@@ -1542,7 +1506,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle node with falsey but existent expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1555,7 +1519,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle empty string expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1568,7 +1532,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle prefix increment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const updateExpr = {
@@ -1585,7 +1549,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for unused expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 10, 5))
@@ -1595,7 +1559,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 5, 10))
@@ -1605,7 +1569,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report correct line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 1, 0))
@@ -1615,7 +1579,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 3, 2))
@@ -1625,7 +1589,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report location for literal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(42), 7, 4))
@@ -1635,7 +1599,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report location for identifier expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createIdentifier('x'), 15, 20))
@@ -1644,7 +1608,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report location for logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLogicalExpression('&&'), 2, 8))
@@ -1654,7 +1618,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should use default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1668,7 +1632,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 9999, 0))
@@ -1677,7 +1641,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 1, 5000))
@@ -1686,7 +1650,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report different locations for different expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 1, 0))
@@ -1698,7 +1662,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle node with loc containing only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1715,7 +1679,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle node with partial loc - missing end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1732,7 +1696,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should provide end column from createExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 4, 6))
@@ -1741,7 +1705,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should preserve location for nested binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const inner = createBinaryExpression('+', createLiteral(1), createLiteral(2))
@@ -1751,7 +1715,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = {
@@ -1771,7 +1735,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('message quality', () => {
     test('should mention unused expression in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1780,7 +1744,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should mention no effect in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1789,7 +1753,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1800,7 +1764,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should have string message for literal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(42)))
@@ -1809,7 +1773,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should have same message for all expression types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1824,7 +1788,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('*')))
@@ -1833,7 +1797,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should include both message and location in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 5, 3))
@@ -1845,7 +1809,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should not include expression type in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1855,7 +1819,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should have consistent message for deeply nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       let expr: unknown = createLiteral(1)
@@ -1870,7 +1834,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('multiple reports', () => {
     test('should report each unused expression independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1880,7 +1844,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report three unused expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1891,7 +1855,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should not report valid expressions mixed with invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1902,7 +1866,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report zero when all expressions are valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createCallExpression()))
@@ -1913,7 +1877,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report all when all expressions are invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1924,7 +1888,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should maintain report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+'), 1, 0))
@@ -1937,7 +1901,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report same expression at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const expr = createBinaryExpression('+')
@@ -1950,7 +1914,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle alternating valid and invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createCallExpression()))
@@ -1962,7 +1926,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle many reports without errors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1975,7 +1939,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle valid-then-invalid-then-valid pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression('=')))
@@ -1989,7 +1953,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/custom/path.ts' })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -1998,7 +1962,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should work with different source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x === 1')
+      const { context, reports } = createMockRuleContext({ source: 'x === 1', filePath: '/src/file.ts' })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('===')))
@@ -2007,7 +1971,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -2016,7 +1980,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should work with options having custom properties', () => {
-      const { context, reports } = createMockContext({ custom: true, value: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ custom: true, value: 42 }] })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -2025,8 +1989,8 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should work with multiple calls to create', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const visitor1 = noUnusedExpressionsRule.create(ctx1)
       const visitor2 = noUnusedExpressionsRule.create(ctx2)
@@ -2039,8 +2003,8 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should not affect other visitor instances', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const v1 = noUnusedExpressionsRule.create(ctx1)
       const v2 = noUnusedExpressionsRule.create(ctx2)
@@ -2057,7 +2021,7 @@ describe('no-unused-expressions rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/deep/nested/directory/structure/src/components/utils/helpers.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ filePath: longPath })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -2066,7 +2030,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should work with source containing unicode', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const 你好 = 1;')
+      const { context, reports } = createMockRuleContext({ source: 'const 你好 = 1;', filePath: '/src/file.ts' })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -2097,7 +2061,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle workspaceRoot correctly', () => {
-      const { context, reports } = createMockContext({}, '/home/user/project/src/file.ts', 'x + 1')
+      const { context, reports } = createMockRuleContext({ source: 'x + 1', filePath: '/home/user/project/src/file.ts' })
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression('+')))
@@ -2108,7 +2072,7 @@ describe('no-unused-expressions rule', () => {
 
   describe('idempotency and immutability', () => {
     test('should not modify input node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const node = createExpressionStatement(createBinaryExpression('+'), 1, 0)
@@ -2118,7 +2082,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should not modify context during detection', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const originalGetFilePath = context.getFilePath
 
       const visitor = noUnusedExpressionsRule.create(context)
@@ -2129,7 +2093,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle call on member expression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('obj'), createIdentifier('method'))
@@ -2140,7 +2104,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle deeply nested member then call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const inner = createMemberExpression(createIdentifier('a'), createIdentifier('b'))
@@ -2152,7 +2116,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report ArrayExpression without side effects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const arrayExpr = {
@@ -2165,7 +2129,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report ObjectExpression without side effects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const objectExpr = {
@@ -2178,7 +2142,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report ArrowFunctionExpression as unused', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const arrowExpr = {
@@ -2192,7 +2156,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report FunctionExpression as unused', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const funcExpr = {
@@ -2207,7 +2171,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle prefix decrement expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const updateExpr = {
@@ -2222,7 +2186,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report empty array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const emptyArray = { type: 'ArrayExpression', elements: [] }
@@ -2232,7 +2196,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should report empty object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const emptyObject = { type: 'ObjectExpression', properties: [] }
@@ -2242,7 +2206,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle sequence with update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const seq = createSequenceExpression([createUpdateExpression('++'), createIdentifier('x')])
@@ -2252,7 +2216,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle conditional with assignment in all branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const cond = createConditionalExpression(
@@ -2266,7 +2230,7 @@ describe('no-unused-expressions rule', () => {
     })
 
     test('should handle member expression with computed number index', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('arr'), createLiteral(0), true)
@@ -2301,7 +2265,7 @@ describe('no-unused-expressions rule', () => {
       ['in'],
       ['instanceof'],
     ] as const)('should report binary expression with operator "%s"', (operator) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createBinaryExpression(operator)))
@@ -2326,7 +2290,7 @@ describe('no-unused-expressions rule', () => {
       ['|='],
       ['^='],
     ] as const)('should NOT report assignment expression with operator "%s"', (operator) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createAssignmentExpression(operator)))
@@ -2339,7 +2303,7 @@ describe('no-unused-expressions rule', () => {
     test.each([['&&'], ['||'], ['??']] as const)(
       'should report logical expression with operator "%s"',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noUnusedExpressionsRule.create(context)
 
         visitor.ExpressionStatement(createExpressionStatement(createLogicalExpression(operator)))
@@ -2353,7 +2317,7 @@ describe('no-unused-expressions rule', () => {
     test.each([['!'], ['void'], ['typeof'], ['delete'], ['-'], ['+'], ['~']] as const)(
       'should NOT report unary expression with operator "%s"',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noUnusedExpressionsRule.create(context)
 
         visitor.ExpressionStatement(createExpressionStatement(createUnaryExpression(operator)))
@@ -2371,7 +2335,7 @@ describe('no-unused-expressions rule', () => {
       [null, 'null'],
       [undefined, 'undefined'],
     ])('should report %s literal (type: %s)', (value, _typeLabel) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(createLiteral(value)))
@@ -2384,7 +2348,7 @@ describe('no-unused-expressions rule', () => {
     test.each([['++'], ['--']] as const)(
       'should NOT report update expression with operator "%s"',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noUnusedExpressionsRule.create(context)
 
         visitor.ExpressionStatement(createExpressionStatement(createUpdateExpression(operator)))
@@ -2401,7 +2365,7 @@ describe('no-unused-expressions rule', () => {
       ['AwaitExpression', { type: 'AwaitExpression', argument: { type: 'Identifier', name: 'p' } }],
       ['YieldExpression', { type: 'YieldExpression', argument: { type: 'Identifier', name: 'v' } }],
     ] as const)('should NOT report %s', (_typeName, expr) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(createExpressionStatement(expr))
@@ -2418,7 +2382,7 @@ describe('no-unused-expressions rule', () => {
       [123, 'number node'],
       [true, 'boolean node'],
     ] as const)('should not report for %s', (node, _label) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       expect(() => visitor.ExpressionStatement(node)).not.toThrow()
@@ -2436,7 +2400,7 @@ describe('no-unused-expressions rule', () => {
     ] as const)(
       'should report nested binary(%s) in logical expression',
       (operator, left, right) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noUnusedExpressionsRule.create(context)
 
         const inner = createBinaryExpression(operator, left, right)
@@ -2456,7 +2420,7 @@ describe('no-unused-expressions rule', () => {
       [100, 0],
       [1, 50],
     ] as const)('should report correct location at line %d, column %d', (line, column) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedExpressionsRule.create(context)
 
       visitor.ExpressionStatement(

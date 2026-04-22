@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferStringSliceOverSubstringRule } from '../../../../src/rules/patterns/prefer-string-slice-over-substring.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'str.substring(0, 5);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -170,22 +134,22 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('CallExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return same visitor shape for different contexts', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext({}, '/other/file.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'str.substring(0, 5);' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'str.substring(0, 5);', filePath: '/other/file.ts' })
 
       const visitor1 = preferStringSliceOverSubstringRule.create(ctx1)
       const visitor2 = preferStringSliceOverSubstringRule.create(ctx2)
@@ -194,34 +158,34 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('visitor should only have CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['CallExpression'])
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
 
       expect(() => preferStringSliceOverSubstringRule.create(context)).not.toThrow()
     })
 
     test('CallExpression handler should not throw with empty object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
     })
 
     test('CallExpression handler should not throw with type-only node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression({ type: 'CallExpression' })).not.toThrow()
@@ -232,7 +196,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('detecting substring() calls', () => {
     test('should report str.substring(0, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -246,7 +210,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report str.substring(start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -258,7 +222,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report str.substring(start, end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -273,7 +237,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report text.substring()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('text'), 'substring')
@@ -285,7 +249,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report myString.substring(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('myString'), 'substring')
@@ -297,7 +261,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report value.substring(a, b)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('value'), 'substring')
@@ -309,7 +273,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report result.substring(0, n)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('result'), 'substring')
@@ -321,7 +285,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report input.substring(1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('input'), 'substring')
@@ -333,7 +297,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report data.substring(startIndex, endIndex)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('data'), 'substring')
@@ -348,7 +312,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report name.substring(0, name.length)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('name'), 'substring')
@@ -361,7 +325,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report chained.substring(2, 8)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const innerCall = createCallExpression(
@@ -377,7 +341,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report obj.prop.substring(0, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const objProp = createMemberExpression(createIdentifier('obj'), 'prop')
@@ -390,7 +354,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report arr[0].substring(1, 4)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const arrAccess = {
@@ -408,7 +372,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report content.substring()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('content'), 'substring')
@@ -420,7 +384,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report buffer.substring(offset)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('buffer'), 'substring')
@@ -432,7 +396,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report s.substring(0, 10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('s'), 'substring')
@@ -444,7 +408,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report header.substring(0, 5) with numeric literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('header'), 'substring')
@@ -456,7 +420,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report path.substring(5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('path'), 'substring')
@@ -468,7 +432,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report url.substring(0, url.indexOf("?"))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const indexOfCall = createCallExpression(
@@ -484,7 +448,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report self.substring(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('self'), 'substring')
@@ -496,7 +460,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report template.substring(0, template.length)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const lenAccess = createMemberExpression(createIdentifier('template'), 'length')
@@ -509,7 +473,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report output.substring(3, 7) with specific numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('output'), 'substring')
@@ -521,7 +485,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report msg.substring(msg.length - 3)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const lenAccess = createMemberExpression(createIdentifier('msg'), 'length')
@@ -534,7 +498,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report response.substring(0, 100)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('response'), 'substring')
@@ -546,7 +510,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report text.substring(0, text.length - 1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const lenAccess = createMemberExpression(createIdentifier('text'), 'length')
@@ -559,7 +523,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report description.substring(0, 50)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('description'), 'substring')
@@ -571,7 +535,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report file.substring(file.lastIndexOf("/"))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const lastIndexOf = createCallExpression(
@@ -587,7 +551,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report body.substring(start, end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('body'), 'substring')
@@ -602,7 +566,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report raw.substring()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('raw'), 'substring')
@@ -614,7 +578,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report payload.substring(0, limit)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('payload'), 'substring')
@@ -626,7 +590,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report label.substring(0, 20)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('label'), 'substring')
@@ -642,7 +606,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('detecting substr() calls', () => {
     test('should report str.substr(0, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -656,7 +620,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report str.substr(start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -668,7 +632,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report str.substr(start, length)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -683,7 +647,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report text.substr(10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('text'), 'substr')
@@ -695,7 +659,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report myString.substr(0, 10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('myString'), 'substr')
@@ -707,7 +671,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report value.substr(offset, count)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('value'), 'substr')
@@ -722,7 +686,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report content.substr(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('content'), 'substr')
@@ -734,7 +698,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report data.substr()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('data'), 'substr')
@@ -746,7 +710,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report s.substr(3, 7)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('s'), 'substr')
@@ -758,7 +722,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report buf.substr(pos, len)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('buf'), 'substr')
@@ -770,7 +734,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report input.substr(0, n)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('input'), 'substr')
@@ -782,7 +746,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report name.substr(5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('name'), 'substr')
@@ -794,7 +758,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report msg.substr(-3)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('msg'), 'substr')
@@ -806,7 +770,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report filename.substr(0, filename.lastIndexOf("."))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const lastIndexOf = createCallExpression(
@@ -822,7 +786,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report raw.substr(start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('raw'), 'substr')
@@ -834,7 +798,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report result.substr(0, 50)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('result'), 'substr')
@@ -846,7 +810,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report payload.substr(offset, limit)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('payload'), 'substr')
@@ -861,7 +825,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report output.substr(2)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('output'), 'substr')
@@ -873,7 +837,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report response.substr(0, 100)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('response'), 'substr')
@@ -885,7 +849,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report body.substr(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('body'), 'substr')
@@ -901,7 +865,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('not reporting valid slice() calls', () => {
     test('should not report str.slice(0, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'slice')
@@ -913,7 +877,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.slice(start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'slice')
@@ -925,7 +889,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.slice(-5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'slice')
@@ -937,7 +901,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.slice(start, end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'slice')
@@ -952,7 +916,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'toUpperCase')
@@ -964,7 +928,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.split()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'split')
@@ -976,7 +940,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.includes()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'includes')
@@ -988,7 +952,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.indexOf()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'indexOf')
@@ -1000,7 +964,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = createCallExpression(createIdentifier('substring'), [
@@ -1014,7 +978,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.trim()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'trim')
@@ -1026,7 +990,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.replace()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'replace')
@@ -1038,7 +1002,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.charAt()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'charAt')
@@ -1050,7 +1014,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.charCodeAt()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'charCodeAt')
@@ -1062,7 +1026,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.concat()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'concat')
@@ -1074,7 +1038,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.padStart()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'padStart')
@@ -1086,7 +1050,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.padEnd()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'padEnd')
@@ -1098,7 +1062,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.repeat()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'repeat')
@@ -1110,7 +1074,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.toLowerCase()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'toLowerCase')
@@ -1122,7 +1086,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.toUpperCase()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'toUpperCase')
@@ -1134,7 +1098,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.match()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'match')
@@ -1146,7 +1110,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.search()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'search')
@@ -1158,7 +1122,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.startsWith()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'startsWith')
@@ -1170,7 +1134,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.endsWith()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'endsWith')
@@ -1182,7 +1146,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.trimStart()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'trimStart')
@@ -1194,7 +1158,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.trimEnd()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'trimEnd')
@@ -1206,7 +1170,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report standalone substr function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = createCallExpression(createIdentifier('substr'), [
@@ -1221,7 +1185,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report Array.prototype.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'slice')
@@ -1233,7 +1197,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report console.log()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('console'), 'log')
@@ -1245,7 +1209,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report parseInt()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = createCallExpression(createIdentifier('parseInt'), [
@@ -1259,7 +1223,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report str.toString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'toString')
@@ -1275,21 +1239,21 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -1297,7 +1261,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1311,7 +1275,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1321,7 +1285,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1334,7 +1298,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle node without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1346,7 +1310,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle computed member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1365,7 +1329,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle substr without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1379,7 +1343,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle missing loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1396,7 +1360,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle missing loc.end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1413,7 +1377,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle missing property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1431,7 +1395,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle non-identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1450,21 +1414,21 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle numeric node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression(42)).not.toThrow()
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
@@ -1472,7 +1436,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle callee as primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1486,7 +1450,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle callee as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1500,7 +1464,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle callee as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1514,7 +1478,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle member expression with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1533,7 +1497,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle deeply nested callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const inner = createMemberExpression(createIdentifier('a'), 'b')
@@ -1547,7 +1511,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle arguments as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1561,7 +1525,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle loc with non-numeric line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1576,7 +1540,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle loc with non-numeric column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1591,7 +1555,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1610,7 +1574,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for substring at line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1623,7 +1587,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report correct location for substring at line 25', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1636,7 +1600,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1649,7 +1613,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report correct location for substr', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -1662,7 +1626,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report location at line 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1674,7 +1638,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report location with large column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1686,7 +1650,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should include loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1698,7 +1662,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should include start in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1710,7 +1674,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should include end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1722,7 +1686,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle location at line 0 gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1735,7 +1699,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should preserve location for substr at line 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('text'), 'substr')
@@ -1748,7 +1712,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should provide default location for node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const node = {
@@ -1764,7 +1728,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report correct location for chained method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1777,7 +1741,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -1789,7 +1753,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report both start and end for substring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('s'), 'substring')
@@ -1806,7 +1770,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('message quality', () => {
     test('should mention slice in message for substring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1816,7 +1780,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should mention substring in message for substring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1826,7 +1790,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should mention substr in message for substr', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -1836,7 +1800,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should mention negative indices in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1846,7 +1810,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should mention consistent in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1856,7 +1820,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should message should mention both deprecated methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1866,7 +1830,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should produce non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1876,7 +1840,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should produce string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -1886,7 +1850,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should produce same message for substring and substr', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const reports1: ReportDescriptor[] = []
@@ -1927,7 +1891,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should mention .slice() with dot notation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -1941,7 +1905,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('multiple reports', () => {
     test('should handle multiple substring calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee1 = createMemberExpression(createIdentifier('str1'), 'substring')
@@ -1954,7 +1918,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report each call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1966,7 +1930,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should track separate locations for each call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee1 = createMemberExpression(createIdentifier('a'), 'substring')
@@ -1980,7 +1944,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle alternating substring and substr calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const sub1 = createMemberExpression(createIdentifier('a'), 'substring')
@@ -1996,7 +1960,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should not report when only valid calls exist', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee1 = createMemberExpression(createIdentifier('a'), 'slice')
@@ -2009,7 +1973,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report only substring among mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const slice = createMemberExpression(createIdentifier('a'), 'slice')
@@ -2026,7 +1990,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle 10 substring calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2038,7 +2002,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should handle 10 substr calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2050,7 +2014,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report each message with correct content', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const sub = createMemberExpression(createIdentifier('str'), 'substring')
@@ -2064,7 +2028,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should report same variable name with different methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const sub = createMemberExpression(createIdentifier('text'), 'substring')
@@ -2081,7 +2045,7 @@ describe('prefer-string-slice-over-substring rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);', filePath: '/project/src/utils.ts' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -2091,11 +2055,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/test.ts',
-        'const x = name.substring(0, 5);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = name.substring(0, 5);', filePath: '/src/test.ts' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('name'), 'substring')
@@ -2105,7 +2065,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should work with options containing extra keys', () => {
-      const { context, reports } = createMockContext({ extraKey: true, anotherKey: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ extraKey: true, anotherKey: 42 }], source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -2115,7 +2075,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should work with empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -2127,7 +2087,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     test('should work with long file path', () => {
       const longPath =
         '/very/long/path/to/some/deeply/nested/project/src/components/utils/string-helper.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);', filePath: longPath })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substr')
@@ -2137,7 +2097,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should work with windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\Users\\dev\\project\\src\\file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);', filePath: 'C:\\Users\\dev\\project\\src\\file.ts' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -2211,8 +2171,8 @@ describe('prefer-string-slice-over-substring rule', () => {
     })
 
     test('should create independent visitors for different contexts', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'str.substring(0, 5);' })
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'str.substring(0, 5);' })
 
       const v1 = preferStringSliceOverSubstringRule.create(ctx1)
       const v2 = preferStringSliceOverSubstringRule.create(ctx2)
@@ -2245,7 +2205,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     ] satisfies [string, string, number[]])(
       'should report %s.%s(%p)',
       (obj: string, method: string, _args: number[]) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
         const visitor = preferStringSliceOverSubstringRule.create(context)
 
         const callee = createMemberExpression(createIdentifier(obj), method)
@@ -2276,7 +2236,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     ] satisfies [string, string, number[]])(
       'should report %s.%s(%p)',
       (obj: string, method: string, _args: number[]) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
         const visitor = preferStringSliceOverSubstringRule.create(context)
 
         const callee = createMemberExpression(createIdentifier(obj), method)
@@ -2305,7 +2265,7 @@ describe('prefer-string-slice-over-substring rule', () => {
       ['toString'],
       ['valueOf'],
     ] satisfies [string][])('should not report str.%s()', (method: string) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), method)
@@ -2332,7 +2292,7 @@ describe('prefer-string-slice-over-substring rule', () => {
       [[]],
       [NaN],
     ] satisfies [unknown][])('should not throw for input %p', (input: unknown) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'str.substring(0, 5);' })
       const visitor = preferStringSliceOverSubstringRule.create(context)
 
       expect(() => visitor.CallExpression(input)).not.toThrow()
@@ -2356,7 +2316,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     ] satisfies [number, number][])(
       'should report correct location at line %d, column %d',
       (line: number, column: number) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
         const visitor = preferStringSliceOverSubstringRule.create(context)
 
         const callee = createMemberExpression(createIdentifier('str'), 'substring')
@@ -2387,7 +2347,7 @@ describe('prefer-string-slice-over-substring rule', () => {
     ] satisfies [string][])(
       'should report %s.substring() regardless of variable name',
       (varName: string) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'str.substring(0, 5);' })
         const visitor = preferStringSliceOverSubstringRule.create(context)
 
         const callee = createMemberExpression(createIdentifier(varName), 'substring')

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noConstructorReturnRule } from '../../../../src/rules/patterns/no-constructor-return.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'class Foo {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createMethodDefinition(
   kind: 'constructor' | 'method' | 'get' | 'set',
@@ -217,14 +181,14 @@ describe('no-constructor-return rule', () => {
 
   describe('create', () => {
     test('should return visitor object with MethodDefinition method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(visitor).toHaveProperty('MethodDefinition')
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -232,36 +196,36 @@ describe('no-constructor-return rule', () => {
     })
 
     test('MethodDefinition visitor should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(typeof visitor.MethodDefinition).toBe('function')
     })
 
     test('create should not return null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('create should not return undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('visitor should only have MethodDefinition key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['MethodDefinition'])
     })
 
     test('calling create multiple times should return independent visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'class Foo {}' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor1 = noConstructorReturnRule.create(ctx1)
       const visitor2 = noConstructorReturnRule.create(ctx2)
 
@@ -272,13 +236,13 @@ describe('no-constructor-return rule', () => {
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
 
       expect(() => noConstructorReturnRule.create(context)).not.toThrow()
     })
 
     test('MethodDefinition should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(visitor.MethodDefinition.length).toBe(1)
@@ -287,7 +251,7 @@ describe('no-constructor-return rule', () => {
 
   describe('detecting return statements in constructors', () => {
     test('should report constructor with return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -296,7 +260,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor without return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', false))
@@ -305,7 +269,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report method with return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('method', true))
@@ -314,7 +278,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report getter with return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('get', true))
@@ -323,7 +287,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report setter with return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('set', true))
@@ -332,7 +296,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report correct message for constructor with return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -341,7 +305,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report multiple constructors with returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -352,7 +316,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report only constructors with returns among other methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('method', true))
@@ -366,7 +330,7 @@ describe('no-constructor-return rule', () => {
 
   describe('detection - return value types', () => {
     test('should detect constructor returning a number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -384,7 +348,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -402,7 +366,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning an identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -420,7 +384,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -443,7 +407,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning an object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -466,7 +430,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning an array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -489,7 +453,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -517,7 +481,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -544,7 +508,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -570,7 +534,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -598,7 +562,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -621,7 +585,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning an arrow function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -648,7 +612,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -676,7 +640,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -703,7 +667,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning an update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -730,7 +694,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning an assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -758,7 +722,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning this expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -776,7 +740,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -794,7 +758,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -812,7 +776,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a boolean literal true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -830,7 +794,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a boolean literal false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -848,7 +812,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a yield expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -871,7 +835,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor returning a sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -900,7 +864,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor with return statement with no argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -918,7 +882,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor with multiple return statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -939,7 +903,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect constructor with return among other statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -964,7 +928,7 @@ describe('no-constructor-return rule', () => {
 
   describe('detection - PropertyDefinition type', () => {
     test('should detect PropertyDefinition with kind constructor and return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -982,7 +946,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report PropertyDefinition with kind constructor and no return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1002,7 +966,7 @@ describe('no-constructor-return rule', () => {
 
   describe('detection - negative cases (should not report)', () => {
     test('should not report constructor with only expression statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1023,7 +987,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with only variable declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1044,7 +1008,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with only if statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1068,7 +1032,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with only while loops', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1092,7 +1056,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with only for loops', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1118,7 +1082,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with only try-catch blocks', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1146,7 +1110,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with switch statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1170,7 +1134,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with throw statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1193,7 +1157,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report regular method kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1211,7 +1175,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report get kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1229,7 +1193,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report set kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1249,7 +1213,7 @@ describe('no-constructor-return rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in MethodDefinition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(null)).not.toThrow()
@@ -1258,7 +1222,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle undefined node in MethodDefinition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(undefined)).not.toThrow()
@@ -1267,7 +1231,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle non-object node in MethodDefinition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition('string')).not.toThrow()
@@ -1277,7 +1241,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1290,7 +1254,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node without kind property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1303,7 +1267,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node without body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1316,7 +1280,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1334,7 +1298,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle constructor with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1348,7 +1312,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1389,7 +1353,7 @@ describe('no-constructor-return rule', () => {
 
   describe('edge cases - primitive nodes', () => {
     test('should handle boolean true as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(true)).not.toThrow()
@@ -1397,7 +1361,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle boolean false as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(false)).not.toThrow()
@@ -1405,7 +1369,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle number 0 as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(0)).not.toThrow()
@@ -1413,7 +1377,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle negative number as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(-1)).not.toThrow()
@@ -1421,7 +1385,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle empty string as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition('')).not.toThrow()
@@ -1429,7 +1393,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle array as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition([])).not.toThrow()
@@ -1437,7 +1401,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle function as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(() => {})).not.toThrow()
@@ -1445,7 +1409,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle Date object as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(new Date())).not.toThrow()
@@ -1453,7 +1417,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle RegExp as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(/test/)).not.toThrow()
@@ -1463,7 +1427,7 @@ describe('no-constructor-return rule', () => {
 
   describe('edge cases - malformed nodes', () => {
     test('should handle node with body as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1477,7 +1441,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1491,7 +1455,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1505,7 +1469,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1519,7 +1483,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1533,7 +1497,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1547,7 +1511,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body containing null elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1561,7 +1525,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body containing undefined elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1575,7 +1539,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body containing string elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1589,7 +1553,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.body containing number elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1603,7 +1567,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with body.type not BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1617,7 +1581,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with kind as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1631,7 +1595,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with kind as Constructor (capital C)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1648,7 +1612,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with kind as CONSTRUCTOR (all caps)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1665,7 +1629,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with type as FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1682,7 +1646,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with type as ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1699,7 +1663,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with type as Property (not MethodDefinition)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1716,7 +1680,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with type as FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1733,7 +1697,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with undefined type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1750,7 +1714,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with undefined kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1767,7 +1731,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -1783,7 +1747,7 @@ describe('no-constructor-return rule', () => {
 
   describe('message quality', () => {
     test('should mention constructor in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1792,7 +1756,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should mention return in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1801,7 +1765,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1812,7 +1776,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1822,7 +1786,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should start with uppercase letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1831,7 +1795,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1840,7 +1804,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should be exactly "Unexpected return in constructor."', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1849,7 +1813,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should not have extra leading whitespace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1858,7 +1822,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should not have extra trailing whitespace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1867,7 +1831,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should contain the word Unexpected', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1876,7 +1840,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('message should be the same across multiple invocations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1892,7 +1856,7 @@ describe('no-constructor-return rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for constructor with return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 10, 5))
@@ -1902,7 +1866,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 5, 10))
@@ -1912,7 +1876,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report location at line 1, column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -1922,7 +1886,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 500, 20))
@@ -1932,7 +1896,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report location at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 10, 100))
@@ -1942,7 +1906,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report end position with correct line offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 5, 0))
@@ -1951,7 +1915,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should report correct locations for multiple violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -1967,7 +1931,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should include loc in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -1978,7 +1942,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should have numeric line and column in start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 3, 7))
@@ -1988,7 +1952,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should have numeric line and column in end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 3, 7))
@@ -2000,7 +1964,7 @@ describe('no-constructor-return rule', () => {
 
   describe('report descriptor structure', () => {
     test('report should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2009,7 +1973,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('report should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2018,16 +1982,17 @@ describe('no-constructor-return rule', () => {
     })
 
     test('report should have exactly 2 properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
 
-      expect(Object.keys(reports[0])).toHaveLength(2)
+      expect(reports[0]).toHaveProperty('message')
+      expect(reports[0]).toHaveProperty('loc')
     })
 
     test('report loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2036,7 +2001,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('report loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2045,7 +2010,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('report loc start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2055,7 +2020,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('report loc end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2067,7 +2032,10 @@ describe('no-constructor-return rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/foo.ts')
+      const { context, reports } = createMockRuleContext({
+        source: 'class Foo {}',
+        filePath: '/project/src/foo.ts',
+      })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2076,11 +2044,10 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'class Bar { constructor() { return 1; } }',
-      )
+      const { context, reports } = createMockRuleContext({
+        source: 'class Bar { constructor() { return 1; } }',
+        filePath: '/src/file.ts',
+      })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2111,7 +2078,10 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should work with extra options that are ignored', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 'max' })
+      const { context, reports } = createMockRuleContext({
+        options: [{ strict: true, level: 'max' }],
+        source: 'class Foo {}',
+      })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true))
@@ -2120,7 +2090,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should work when called multiple times with same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -2133,7 +2103,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should work with mix of reporting and non-reporting calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -2200,7 +2170,7 @@ describe('no-constructor-return rule', () => {
 
   describe('multiple reports', () => {
     test('should track each report separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -2211,7 +2181,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should track messages for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -2222,7 +2192,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should track locations for each report separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', true, 1, 0))
@@ -2235,7 +2205,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should accumulate reports across many calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2246,7 +2216,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not accumulate reports for non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -2257,7 +2227,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should correctly count mixed violations and non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2272,7 +2242,7 @@ describe('no-constructor-return rule', () => {
 
   describe('visitor isolation', () => {
     test('two visitors from same context should share reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor1 = noConstructorReturnRule.create(context)
       const visitor2 = noConstructorReturnRule.create(context)
 
@@ -2283,8 +2253,8 @@ describe('no-constructor-return rule', () => {
     })
 
     test('visitors from different contexts should have separate reports', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'class Foo {}' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'class Foo {}' })
 
       const visitor1 = noConstructorReturnRule.create(ctx1)
       const visitor2 = noConstructorReturnRule.create(ctx2)
@@ -2298,7 +2268,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('reusing same visitor should accumulate correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(reports).toHaveLength(0)
@@ -2311,7 +2281,7 @@ describe('no-constructor-return rule', () => {
 
   describe('body statements with non-ReturnStatement types', () => {
     test('should not report for BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2328,7 +2298,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report for BreakStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2345,7 +2315,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report for ContinueStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2362,7 +2332,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report for DebuggerStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2379,7 +2349,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report for WithStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2402,7 +2372,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report for LabeledStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2425,7 +2395,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should detect ReturnStatement among other statement types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2467,7 +2437,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('create should return new visitor object each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor1 = noConstructorReturnRule.create(context)
       const visitor2 = noConstructorReturnRule.create(context)
 
@@ -2477,7 +2447,7 @@ describe('no-constructor-return rule', () => {
 
   describe('additional edge cases', () => {
     test('should handle node with body as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2491,7 +2461,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle deeply nested body.body with ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2518,7 +2488,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2539,7 +2509,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle NaN as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(Number.NaN)).not.toThrow()
@@ -2547,7 +2517,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle BigInt as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(BigInt(123))).not.toThrow()
@@ -2555,7 +2525,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(Symbol('test'))).not.toThrow()
@@ -2563,7 +2533,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should handle Map as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       expect(() => visitor.MethodDefinition(new Map())).not.toThrow()
@@ -2573,7 +2543,7 @@ describe('no-constructor-return rule', () => {
 
   describe('constructor without return - various bodies', () => {
     test('should not report constructor with only assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2604,7 +2574,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2628,7 +2598,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {
@@ -2652,7 +2622,7 @@ describe('no-constructor-return rule', () => {
     })
 
     test('should not report constructor with do-while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noConstructorReturnRule.create(context)
 
       const node = {

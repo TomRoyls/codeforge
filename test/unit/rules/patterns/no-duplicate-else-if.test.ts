@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noDuplicateElseIfRule } from '../../../../src/rules/patterns/no-duplicate-else-if.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'if (x) {} else if (x) {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string): unknown {
   return {
@@ -220,7 +184,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(visitor).toHaveProperty('IfStatement')
@@ -228,7 +192,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -236,21 +200,21 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have IfStatement as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(typeof visitor.IfStatement).toBe('function')
     })
 
     test('should have Program:exit as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(typeof visitor['Program:exit']).toBe('function')
     })
 
     test('should create a new visitor each time', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor1 = noDuplicateElseIfRule.create(context)
       const visitor2 = noDuplicateElseIfRule.create(context)
 
@@ -258,14 +222,14 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}', filePath: '/custom/path.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(visitor).toHaveProperty('IfStatement')
     })
 
     test('should accept context with different source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = 1')
+      const { context } = createMockRuleContext({ source: 'const x = 1', filePath: '/src/file.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(visitor).toHaveProperty('IfStatement')
@@ -276,13 +240,13 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not throw when creating visitor with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
 
       expect(() => noDuplicateElseIfRule.create(context)).not.toThrow()
     })
 
     test('IfStatement should not throw when called with valid node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 1, 0)
@@ -290,14 +254,14 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('Program:exit should not throw when called without any nodes', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor['Program:exit']()).not.toThrow()
     })
 
     test('should have exactly two visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(Object.keys(visitor).length).toBe(2)
@@ -309,7 +273,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('detecting duplicate conditions', () => {
     test('should report duplicate identifier conditions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -324,7 +288,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report duplicate literal conditions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(5), createEmptyBlock(), null, 3, 5)
@@ -338,7 +302,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report duplicate binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createBinaryExpression('>', createIdentifier('x'), createLiteral(10))
@@ -353,7 +317,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report multiple duplicate conditions in same chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const conditionA = createIdentifier('a')
@@ -373,7 +337,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report second occurrence location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 10, 8)
@@ -388,7 +352,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should reference first occurrence line in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 10, 8)
@@ -402,7 +366,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral('hello'), createEmptyBlock(), null, 3, 5)
@@ -422,7 +386,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with boolean literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(true), createEmptyBlock(), null, 3, 5)
@@ -436,7 +400,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(null), createEmptyBlock(), null, 3, 5)
@@ -450,7 +414,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with numeric literal 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(0), createEmptyBlock(), null, 3, 5)
@@ -464,7 +428,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with negative numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(-1), createEmptyBlock(), null, 3, 5)
@@ -478,7 +442,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(''), createEmptyBlock(), null, 3, 5)
@@ -492,7 +456,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate unary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createUnaryExpression('!', createIdentifier('x'))
@@ -507,7 +471,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate logical expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createLogicalExpression('&&', createIdentifier('x'), createIdentifier('y'))
@@ -522,7 +486,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'))
@@ -537,7 +501,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createCallExpression(createIdentifier('fn'), [createIdentifier('x')])
@@ -552,7 +516,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate in three-branch chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -570,7 +534,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate in four-branch chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -590,7 +554,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect two separate duplicate pairs in same chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -611,7 +575,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with === operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createBinaryExpression('===', createIdentifier('x'), createLiteral(1))
@@ -626,7 +590,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with !== operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createBinaryExpression('!==', createIdentifier('x'), createLiteral(1))
@@ -641,7 +605,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with <= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createBinaryExpression('<=', createIdentifier('x'), createLiteral(5))
@@ -656,7 +620,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with >= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createBinaryExpression('>=', createIdentifier('x'), createLiteral(5))
@@ -671,7 +635,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with || logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createLogicalExpression('||', createIdentifier('x'), createIdentifier('y'))
@@ -686,7 +650,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with typeof unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createUnaryExpression('typeof', createIdentifier('x'))
@@ -701,7 +665,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate computed member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createMemberExpression(createIdentifier('arr'), createLiteral(0), true)
@@ -716,7 +680,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate call expressions with multiple args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createCallExpression(createIdentifier('fn'), [
@@ -734,7 +698,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with nested binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const innerCond = createBinaryExpression('+', createIdentifier('x'), createLiteral(1))
@@ -750,7 +714,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createConditionalExpression(
@@ -769,7 +733,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with double negation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const innerUnary = createUnaryExpression('!', createIdentifier('x'))
@@ -785,7 +749,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with - unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createUnaryExpression('-', createIdentifier('x'))
@@ -800,7 +764,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with chained member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const obj = createMemberExpression(createIdentifier('a'), createIdentifier('b'))
@@ -816,7 +780,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with same complex expression twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Build two structurally identical expressions (different objects)
@@ -838,7 +802,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate in five-branch chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -860,7 +824,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect triple duplicate in same chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -878,7 +842,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with same identifier but different casing treated as different', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createIdentifier('X'), createEmptyBlock(), null, 3, 5)
@@ -893,7 +857,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate with identical logical expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -914,7 +878,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report on first duplicate pair only when triple chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -935,7 +899,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate BooleanLiteral type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond = { type: 'BooleanLiteral', value: true }
@@ -956,7 +920,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate NumericLiteral type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
@@ -982,7 +946,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate StringLiteral type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
@@ -1008,7 +972,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicate call with no args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createCallExpression(createIdentifier('fn'))
@@ -1028,7 +992,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('not detecting duplicates', () => {
     test('should not report different conditions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createIdentifier('y'), createEmptyBlock(), null, 3, 5)
@@ -1042,7 +1006,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report single if statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const singleIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 1, 0)
@@ -1054,7 +1018,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report if without alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const singleIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null)
@@ -1066,7 +1030,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition1 = createBinaryExpression('>', createIdentifier('x'), createLiteral(10))
@@ -1083,7 +1047,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition1 = createBinaryExpression('>', createIdentifier('x'), createLiteral(10))
@@ -1100,7 +1064,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createIdentifier('y'), createEmptyBlock(), null, 3, 5)
@@ -1114,7 +1078,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createLiteral(2), createEmptyBlock(), null, 3, 5)
@@ -1128,7 +1092,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createLiteral('b'), createEmptyBlock(), null, 3, 5)
@@ -1142,7 +1106,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report true vs false literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createLiteral(false), createEmptyBlock(), null, 3, 5)
@@ -1156,7 +1120,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different binary expression operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createBinaryExpression('>', createIdentifier('x'), createLiteral(10))
@@ -1173,7 +1137,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report with no IfStatement calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       visitor['Program:exit']()
@@ -1182,7 +1146,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report when only Program:exit is called', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       visitor['Program:exit']()
@@ -1192,7 +1156,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report three unique conditions in chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const third = createIfStatement(createIdentifier('c'), createEmptyBlock(), null, 7, 5)
@@ -1208,7 +1172,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report four unique conditions in chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const fourth = createIfStatement(createIdentifier('d'), createEmptyBlock(), null, 10, 5)
@@ -1226,7 +1190,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different unary operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createUnaryExpression('!', createIdentifier('x'))
@@ -1243,7 +1207,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different logical operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createLogicalExpression('&&', createIdentifier('x'), createIdentifier('y'))
@@ -1260,7 +1224,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createMemberExpression(createIdentifier('a'), createIdentifier('x'))
@@ -1277,7 +1241,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createCallExpression(createIdentifier('fn1'))
@@ -1294,7 +1258,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report call with different argument count', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createCallExpression(createIdentifier('fn'), [createIdentifier('x')])
@@ -1314,7 +1278,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report computed vs non-computed member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createMemberExpression(createIdentifier('obj'), createIdentifier('prop'), false)
@@ -1331,7 +1295,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different conditional expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createConditionalExpression(
@@ -1356,7 +1320,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report if alternate is BlockStatement not IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const elseBlock = createBlockStatement([{ type: 'ReturnStatement' }])
@@ -1369,7 +1333,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report when conditions are in separate chains', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Chain 1: if(x) else if(y)
@@ -1394,7 +1358,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report for five unique conditions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const fifth = createIfStatement(createIdentifier('e'), createEmptyBlock(), null, 13, 5)
@@ -1414,7 +1378,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report different operands in same position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -1431,7 +1395,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report null vs undefined literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createLiteral(undefined), createEmptyBlock(), null, 3, 5)
@@ -1445,7 +1409,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report when same condition appears in different branches of separate chains', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Two completely separate if chains with same condition
@@ -1463,7 +1427,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report identical conditions in separate unrelated if statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const if1 = createIfStatement(createIdentifier('a'), createEmptyBlock(), null, 1, 0)
@@ -1482,21 +1446,21 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor.IfStatement(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor.IfStatement(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor.IfStatement('string')).not.toThrow()
@@ -1504,7 +1468,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = {
@@ -1528,7 +1492,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -1579,7 +1543,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle non-if alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const elseBlock = createBlockStatement([{ type: 'ReturnStatement' }])
@@ -1592,7 +1556,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node without test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1611,7 +1575,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should only process each chain once', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -1625,7 +1589,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle IfStatement with non-IfStatement type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1642,7 +1606,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle alternate that is not an IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const mainIf = createIfStatement(
@@ -1663,7 +1627,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor.IfStatement(true)).not.toThrow()
@@ -1671,7 +1635,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor.IfStatement(0)).not.toThrow()
@@ -1680,7 +1644,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       expect(() => visitor.IfStatement({})).not.toThrow()
@@ -1689,7 +1653,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with missing consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1707,7 +1671,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with undefined test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1727,7 +1691,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with null test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1746,7 +1710,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with string type different from IfStatement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1761,7 +1725,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with numeric type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1776,7 +1740,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with array type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1791,7 +1755,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle alternate as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1810,7 +1774,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle alternate as number', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1829,7 +1793,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with only loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = {
@@ -1860,7 +1824,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with loc but missing start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1879,7 +1843,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with string line numbers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1898,7 +1862,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle calling Program:exit multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -1914,7 +1878,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -1935,7 +1899,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -1950,7 +1914,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
@@ -1971,7 +1935,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
@@ -1992,7 +1956,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 0, 0)
@@ -2006,7 +1970,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle negative line numbers gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, -1, 0)
@@ -2026,7 +1990,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle node where alternate references itself (circular)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node: Record<string, unknown> = {
@@ -2044,7 +2008,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle test that is a plain object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = { name: 'x' }
@@ -2059,7 +2023,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle consequent as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const node = {
@@ -2083,7 +2047,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 1, 0)
@@ -2098,7 +2062,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report location at various lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 42, 0)
@@ -2112,7 +2076,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report location at various columns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 15)
@@ -2126,7 +2090,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2142,7 +2106,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should reference correct first line in message for line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 5, 0)
@@ -2156,7 +2120,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should reference correct first line in message for line 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 200, 0)
@@ -2176,7 +2140,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should include loc in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2192,7 +2156,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report correct location for second duplicate in chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -2215,7 +2179,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should use default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = {
@@ -2241,7 +2205,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report location for each duplicate pair separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -2261,7 +2225,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle location with column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 5, 0)
@@ -2275,7 +2239,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle location with same start and end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2290,7 +2254,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should include start.line in loc for first occurrence reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 15, 3)
@@ -2313,7 +2277,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report both start and end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 10)
@@ -2328,7 +2292,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle multi-line location span', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = {
@@ -2357,7 +2321,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('message quality', () => {
     test('should mention duplicate in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2371,7 +2335,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should mention if-else chain in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2385,7 +2349,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should mention the line number of first occurrence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 10, 5)
@@ -2399,7 +2363,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should mention condition in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2413,7 +2377,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should mention already checked in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2427,7 +2391,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should include line number in message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2442,7 +2406,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should produce non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2456,7 +2420,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should produce string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2470,7 +2434,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should produce unique messages for different duplicate pairs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -2492,7 +2456,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should mention was already checked at in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2506,7 +2470,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should reference correct line for first condition in triple duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -2527,7 +2491,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not mention undefined or null in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2542,7 +2506,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should be grammatically correct English', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2559,7 +2523,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should produce meaningful message for binary expression duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = createBinaryExpression('>', createIdentifier('x'), createLiteral(10))
@@ -2575,7 +2539,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have consistent message format across different expression types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Test with identifiers
@@ -2589,7 +2553,7 @@ describe('no-duplicate-else-if rule', () => {
       const identifierMessage = reports[0].message
 
       // Clear and test with literals
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor2 = noDuplicateElseIfRule.create(ctx2)
 
       const duplicateIf2 = createIfStatement(createLiteral(5), createEmptyBlock(), null, 3, 5)
@@ -2610,7 +2574,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}', filePath: '/project/src/utils.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2624,7 +2588,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2638,7 +2602,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should work with minimal source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x')
+      const { context, reports } = createMockRuleContext({ source: 'x', filePath: '/src/file.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2659,7 +2623,7 @@ describe('no-duplicate-else-if rule', () => {
           doSomethingElse();
         }
       `
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2673,7 +2637,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should work with config containing options', () => {
-      const { context, reports } = createMockContext({ allowSome: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowSome: true }], source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2687,10 +2651,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should work with long file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/very/long/path/to/some/deeply/nested/directory/structure/src/file.ts',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}', filePath: '/very/long/path/to/some/deeply/nested/directory/structure/src/file.ts' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2770,7 +2731,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not use logger during normal operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2866,7 +2827,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('report descriptor structure', () => {
     test('should have message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2880,7 +2841,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2894,7 +2855,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have start in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2908,7 +2869,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2922,7 +2883,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have line and column in start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2937,7 +2898,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have line and column in end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2952,7 +2913,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should have numeric line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -2969,7 +2930,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should report correct number of reports for each chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Chain: if(a) else if(b) else if(a) else if(c) else if(b)
@@ -2991,7 +2952,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should produce exactly one report per duplicate pair', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 3, 5)
@@ -3010,7 +2971,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('different expression types', () => {
     test('should serialize Identifier conditions correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
@@ -3036,7 +2997,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should distinguish different Identifier names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(
@@ -3062,7 +3023,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize Literal with number correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(createLiteral(42), createEmptyBlock(), null, 3, 5)
@@ -3076,7 +3037,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should distinguish different number literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const secondIf = createIfStatement(createLiteral(43), createEmptyBlock(), null, 3, 5)
@@ -3090,7 +3051,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize BinaryExpression with same structure as duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -3106,7 +3067,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should distinguish BinaryExpression with different operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -3123,7 +3084,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize UnaryExpression as duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () => createUnaryExpression('!', createIdentifier('flag'))
@@ -3138,7 +3099,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should distinguish UnaryExpression with different operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createUnaryExpression('!', createIdentifier('x'))
@@ -3155,7 +3116,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize LogicalExpression as duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -3171,7 +3132,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize MemberExpression as duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -3187,7 +3148,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize CallExpression as duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () => createCallExpression(createIdentifier('fn'))
@@ -3202,7 +3163,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should serialize ConditionalExpression as duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -3218,7 +3179,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle nested LogicalExpression duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -3239,7 +3200,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle method call expression duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('obj'), createIdentifier('method'))
@@ -3255,7 +3216,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should distinguish same call with different callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond1 = createCallExpression(createIdentifier('fnA'), [createIdentifier('x')])
@@ -3272,7 +3233,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle mixed expression types in chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condBinary = createBinaryExpression('>', createIdentifier('x'), createLiteral(5))
@@ -3292,7 +3253,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle mixed expression with one duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condBinary = createBinaryExpression('>', createIdentifier('x'), createLiteral(5))
@@ -3310,7 +3271,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle Literal with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const cond = createLiteral(undefined)
@@ -3331,7 +3292,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle unknown node type serialization', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condition = { type: 'AwaitExpression', argument: createIdentifier('x') }
@@ -3357,7 +3318,7 @@ describe('no-duplicate-else-if rule', () => {
   // ========================================
   describe('nested chains', () => {
     test('should detect duplicate in outer chain only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -3382,7 +3343,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not detect duplicate across separate unrelated chains', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Chain A: if(a) else if(b)
@@ -3416,7 +3377,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should detect duplicates in longer chain correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condA = createIdentifier('a')
@@ -3441,7 +3402,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle three separate chains with no duplicates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Chain 1
@@ -3468,7 +3429,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle chain where first and last have same condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -3490,7 +3451,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle single if with BlockStatement else', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const elseBlock = createBlockStatement([])
@@ -3503,7 +3464,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle duplicate where condition is a complex nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildComplexCond = () =>
@@ -3526,7 +3487,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle two chains each with their own duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       // Chain 1: if(a) else if(b) else if(a) - duplicate
@@ -3551,7 +3512,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle chain with same condition three times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const condX = createIdentifier('x')
@@ -3573,7 +3534,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle chain where alternate is null at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const second = createIfStatement(createIdentifier('y'), createEmptyBlock(), null, 4, 5)
@@ -3587,7 +3548,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle deeply nested binary expression duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildDeep = () =>
@@ -3611,7 +3572,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle chain with complex binary + logical mix duplicate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const buildCond = () =>
@@ -3636,7 +3597,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should not report when nodes are visited in reverse order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const second = createIfStatement(createIdentifier('y'), createEmptyBlock(), null, 4, 5)
@@ -3652,7 +3613,7 @@ describe('no-duplicate-else-if rule', () => {
     })
 
     test('should handle duplicate detection when nodes visited in reverse', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) {} else if (x) {}' })
       const visitor = noDuplicateElseIfRule.create(context)
 
       const second = createIfStatement(createIdentifier('x'), createEmptyBlock(), null, 4, 5)

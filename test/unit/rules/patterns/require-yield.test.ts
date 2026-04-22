@@ -1,43 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { requireYieldRule } from '../../../../src/rules/patterns/require-yield.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function* foo() { }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFunctionDeclaration(
   generator: boolean,
@@ -441,7 +403,7 @@ describe('require-yield rule', () => {
 
   describe('create', () => {
     test('should return visitor object with FunctionDeclaration method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
@@ -449,7 +411,7 @@ describe('require-yield rule', () => {
     })
 
     test('should return visitor object with FunctionExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionExpression')
@@ -457,14 +419,14 @@ describe('require-yield rule', () => {
     })
 
     test('should return object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
       expect(typeof visitor).toBe('object')
       expect(visitor).not.toBeNull()
     })
 
     test('visitor should only have FunctionDeclaration and FunctionExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
       const keys = Object.keys(visitor)
       expect(keys).toContain('FunctionDeclaration')
@@ -472,8 +434,8 @@ describe('require-yield rule', () => {
     })
 
     test('multiple create calls should return independent visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function* foo() { }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor1 = requireYieldRule.create(ctx1)
       const visitor2 = requireYieldRule.create(ctx2)
 
@@ -485,18 +447,18 @@ describe('require-yield rule', () => {
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       expect(() => requireYieldRule.create(context)).not.toThrow()
     })
 
     test('FunctionDeclaration should accept single argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
       expect(visitor.FunctionDeclaration.length).toBeLessThanOrEqual(1)
     })
 
     test('FunctionExpression should accept single argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
       expect(visitor.FunctionExpression.length).toBeLessThanOrEqual(1)
     })
@@ -504,7 +466,7 @@ describe('require-yield rule', () => {
 
   describe('detecting generator functions without yield', () => {
     test('should report generator function declaration without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -517,7 +479,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator function expression without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -530,7 +492,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator function with only synchronous operations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -546,7 +508,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator function with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -558,7 +520,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -571,7 +533,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only variable declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -588,7 +550,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only assignment expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -602,7 +564,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -616,7 +578,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -630,7 +592,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only conditional expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -648,7 +610,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only logical expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -662,7 +624,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -676,7 +638,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only object expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement(createObjectExpression([]))])
@@ -686,7 +648,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only array expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement(createArrayExpression([]))])
@@ -696,7 +658,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with only new expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -708,7 +670,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with throw statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createThrowStatement(createLiteral('error'))])
@@ -718,7 +680,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with while loop without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -733,7 +695,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with for loop without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -750,7 +712,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with for-in loop without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -766,7 +728,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with for-of loop without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -782,7 +744,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with switch statement without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -796,7 +758,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with try-catch without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -811,7 +773,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with do-while loop without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -826,7 +788,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with labeled statement without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -841,7 +803,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with multiple statements none yielding', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -856,7 +818,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator FunctionExpression with only return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createLiteral(42))])
@@ -866,7 +828,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with unary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -878,7 +840,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with void expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -890,7 +852,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with delete expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -907,7 +869,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator with nested function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -926,7 +888,7 @@ describe('require-yield rule', () => {
 
   describe('not reporting valid generator functions', () => {
     test('should not report non-generator function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('x'))])
@@ -938,7 +900,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator function with yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createYieldExpression(createIdentifier('value'))])
@@ -950,7 +912,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator function with yield in return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -964,7 +926,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator function with multiple yields', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -980,7 +942,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator function expression with yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createYieldExpression(createIdentifier('value'))])
@@ -992,7 +954,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator function without body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -1006,7 +968,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in if consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1021,7 +983,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in if alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1037,7 +999,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in expression statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1049,7 +1011,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in variable initializer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1066,7 +1028,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in conditional expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1082,7 +1044,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in variable declarator init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1099,7 +1061,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in nested variable init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1116,7 +1078,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in expression of if consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1128,7 +1090,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in return argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1140,7 +1102,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in nested return argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1155,7 +1117,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in if alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1171,7 +1133,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in nested if consequent through block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1188,7 +1150,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in nested if alternate through block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1204,7 +1166,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in expression statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1216,7 +1178,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in deeply nested if-return chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1236,7 +1198,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in nested init through argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1253,7 +1215,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in init of declaration in block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1273,7 +1235,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in expression of nested node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1288,7 +1250,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in alternate of nested conditional', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1308,7 +1270,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in consequent through nested blocks', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1324,7 +1286,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in init through nested declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1346,7 +1308,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield deeply nested', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1371,7 +1333,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with multiple yields scattered throughout', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1393,7 +1355,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield* (delegated yield)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1409,7 +1371,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in argument chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1423,7 +1385,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in nested if alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1443,7 +1405,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator with yield in conditional alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1461,7 +1423,7 @@ describe('require-yield rule', () => {
 
   describe('message quality', () => {
     test('should mention generator function in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1471,7 +1433,7 @@ describe('require-yield rule', () => {
     })
 
     test('should mention yield in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1481,7 +1443,7 @@ describe('require-yield rule', () => {
     })
 
     test('should mention does not have in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1491,7 +1453,7 @@ describe('require-yield rule', () => {
     })
 
     test('should have consistent message for FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1501,7 +1463,7 @@ describe('require-yield rule', () => {
     })
 
     test('should have consistent message for FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1511,7 +1473,7 @@ describe('require-yield rule', () => {
     })
 
     test('message should be the same across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1524,7 +1486,7 @@ describe('require-yield rule', () => {
 
   describe('FunctionExpression specific tests', () => {
     test('should report generator expression assigned to variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1535,7 +1497,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator expression as object property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1547,7 +1509,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report generator expression with yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createYieldExpression(createIdentifier('val'))])
@@ -1558,7 +1520,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator expression with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1569,7 +1531,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator expression with params but no yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createIdentifier('a'))])
@@ -1584,7 +1546,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator expression with correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1596,7 +1558,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator expression with yield in nested structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1612,7 +1574,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle multiple generator expressions independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const bodyWithYield = createBlockStatement([createYieldExpression(createIdentifier('val'))])
@@ -1625,7 +1587,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report generator expression with complex body but no yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1645,7 +1607,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not report non-generator function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createReturnStatement(createLiteral(1))])
@@ -1658,7 +1620,7 @@ describe('require-yield rule', () => {
 
   describe('hasYield recursion paths', () => {
     test('should find yield in consequent of IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1670,7 +1632,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in alternate of IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1686,7 +1648,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in argument of node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1698,7 +1660,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in expression of ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1710,7 +1672,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in init of VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1727,7 +1689,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in declarations array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1744,7 +1706,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield through consequent -> body chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1764,7 +1726,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield through alternate -> body chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1780,7 +1742,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield through argument -> argument chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1792,7 +1754,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield through declarations -> init -> consequent chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1812,7 +1774,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield through declarations -> init -> consequent chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1832,7 +1794,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield deeply nested in multiple levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1859,7 +1821,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not find yield when node type contains yield in name but is not YieldExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1874,7 +1836,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle non-YieldExpression type named similarly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -1889,7 +1851,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in expression property of node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement(createYieldExpression(null))])
@@ -1899,7 +1861,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([createYieldExpression(null)])
@@ -1909,7 +1871,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield with undefined argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([{ type: 'YieldExpression', argument: undefined }])
@@ -1921,7 +1883,7 @@ describe('require-yield rule', () => {
 
   describe('location/reporting details', () => {
     test('should report location with specific line/column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1932,7 +1894,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report location with line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1943,7 +1905,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report location with large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1953,7 +1915,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report location with large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1963,7 +1925,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1977,7 +1939,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report loc with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -1989,7 +1951,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report multiple reports from different nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2004,7 +1966,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report same message for FunctionDeclaration and FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2016,7 +1978,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle FunctionExpression with specific location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2027,7 +1989,7 @@ describe('require-yield rule', () => {
     })
 
     test('should default to line 1 column 0 when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2044,7 +2006,7 @@ describe('require-yield rule', () => {
     })
 
     test('should default to line 1 column 0 when loc is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2060,7 +2022,7 @@ describe('require-yield rule', () => {
     })
 
     test('should default when loc has no start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2077,7 +2039,7 @@ describe('require-yield rule', () => {
     })
 
     test('should default when loc.start has no line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2094,7 +2056,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2107,7 +2069,7 @@ describe('require-yield rule', () => {
 
   describe('options/config variations', () => {
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2117,7 +2079,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle options with irrelevant keys', () => {
-      const { context, reports } = createMockContext({ someOption: true, anotherOption: 'value' })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: true, anotherOption: 'value' }], source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2127,7 +2089,7 @@ describe('require-yield rule', () => {
     })
 
     test('should still report with arbitrary options', () => {
-      const { context, reports } = createMockContext({ allowWithoutYield: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowWithoutYield: true }], source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2137,7 +2099,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/generators.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }', filePath: '/project/src/generators.ts' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2147,11 +2109,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle different source code strings', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'function* gen() { return 1; }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'function* gen() { return 1; }', filePath: '/src/file.ts' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2161,7 +2119,7 @@ describe('require-yield rule', () => {
     })
 
     test('should work with complex file path', () => {
-      const { context, reports } = createMockContext({}, '/very/deep/nested/path/to/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }', filePath: '/very/deep/nested/path/to/file.ts' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2173,7 +2131,7 @@ describe('require-yield rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -2181,7 +2139,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle undefined node gracefully in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
@@ -2189,7 +2147,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle non-object node gracefully in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -2199,7 +2157,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle null node gracefully in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(() => visitor.FunctionExpression(null)).not.toThrow()
@@ -2207,7 +2165,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle undefined node gracefully in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(() => visitor.FunctionExpression(undefined)).not.toThrow()
@@ -2215,7 +2173,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2228,7 +2186,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node without generator property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2241,7 +2199,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node without body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2255,7 +2213,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2270,7 +2228,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2285,7 +2243,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2299,7 +2257,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2309,7 +2267,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle function declaration with incorrect type (still reports if generator true)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2323,7 +2281,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle function expression with incorrect type (still reports if generator true)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2337,7 +2295,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2352,7 +2310,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2367,7 +2325,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2382,7 +2340,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body as empty string (falsy)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2397,7 +2355,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator as truthy string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2412,7 +2370,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator as truthy number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2427,7 +2385,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator as falsy number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2442,7 +2400,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator as falsy empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2457,7 +2415,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator as null (falsy)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2472,7 +2430,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle generator as undefined (falsy)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2487,7 +2445,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node with many params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2498,7 +2456,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle calling visitor method multiple times on same node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2512,7 +2470,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle calling different visitor methods on same context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2523,7 +2481,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2542,7 +2500,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle very deeply nested body without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       let inner = createBlockStatement([createExpressionStatement(createLiteral(1))])
@@ -2556,7 +2514,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in very deeply nested body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       let inner: unknown = createYieldExpression(createIdentifier('deep'))
@@ -2570,7 +2528,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body with many statements none with yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const stmts = Array.from({ length: 100 }, () => createExpressionStatement(createLiteral(1)))
@@ -2582,7 +2540,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield among many statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const stmts = Array.from({ length: 50 }, () => createExpressionStatement(createLiteral(1)))
@@ -2596,7 +2554,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle non-object node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       expect(() => visitor.FunctionExpression('string')).not.toThrow()
@@ -2606,7 +2564,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle frozen body object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = Object.freeze(createBlockStatement([]))
@@ -2616,7 +2574,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle ArrowFunctionExpression with generator (unusual but handled)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = createArrowFunction(true, createBlockStatement([]))
@@ -2625,7 +2583,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle non-generator ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = createArrowFunction(false, createBlockStatement([]))
@@ -2635,7 +2593,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle node with prototype properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const proto = { generator: false }
@@ -2650,7 +2608,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body as array (not wrapped in BlockStatement)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2690,7 +2648,7 @@ describe('require-yield rule', () => {
 
   describe('mixed generator and non-generator', () => {
     test('should only report generator functions in mixed scenarios', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const emptyBody = createBlockStatement([])
@@ -2705,7 +2663,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle alternating generator and non-generator function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const emptyBody = createBlockStatement([])
@@ -2718,7 +2676,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report each generator without yield separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const emptyBody = createBlockStatement([])
@@ -2731,7 +2689,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle mix of declarations and expressions with and without yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const emptyBody = createBlockStatement([])
@@ -2748,7 +2706,7 @@ describe('require-yield rule', () => {
 
   describe('ArrowFunctionExpression edge cases', () => {
     test('should not crash when processing arrow function via FunctionDeclaration visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = createArrowFunction(false, createIdentifier('x'))
@@ -2757,7 +2715,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not crash when processing arrow function via FunctionExpression visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = createArrowFunction(false, createIdentifier('x'))
@@ -2766,7 +2724,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report arrow function with generator: true via FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = createArrowFunction(true, createBlockStatement([]))
@@ -2776,7 +2734,7 @@ describe('require-yield rule', () => {
     })
 
     test('should report arrow function with generator: true via FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = createArrowFunction(true, createBlockStatement([]))
@@ -2788,7 +2746,7 @@ describe('require-yield rule', () => {
 
   describe('isYieldExpression edge cases', () => {
     test('should not treat object with type YieldExpression as yield when case differs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([{ type: 'yieldexpression', argument: null }])
@@ -2798,7 +2756,7 @@ describe('require-yield rule', () => {
     })
 
     test('should treat exact type YieldExpression as yield', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([
@@ -2810,7 +2768,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle yield expression as body directly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const node = {
@@ -2827,7 +2785,7 @@ describe('require-yield rule', () => {
 
   describe('hasYield with various body structures', () => {
     test('should find yield in consequent directly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2846,7 +2804,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in alternate directly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2865,7 +2823,7 @@ describe('require-yield rule', () => {
     })
 
     test('should find yield in expression directly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2884,7 +2842,7 @@ describe('require-yield rule', () => {
     })
 
     test('should not crash when body properties are primitive values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2906,7 +2864,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body with non-array body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2925,7 +2883,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body with non-array declarations property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2944,7 +2902,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body with empty declarations array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = {
@@ -2963,7 +2921,7 @@ describe('require-yield rule', () => {
     })
 
     test('should handle body with empty body array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
       const visitor = requireYieldRule.create(context)
 
       const body = createBlockStatement([])
@@ -2981,8 +2939,8 @@ describe('require-yield rule', () => {
 
   describe('visitor independence and isolation', () => {
     test('different contexts should produce independent reports', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function* foo() { }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'function* foo() { }' })
 
       const visitor1 = requireYieldRule.create(ctx1)
       const visitor2 = requireYieldRule.create(ctx2)
@@ -2995,7 +2953,7 @@ describe('require-yield rule', () => {
     })
 
     test('same context different visitors should accumulate reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
 
       const visitor1 = requireYieldRule.create(context)
       const visitor2 = requireYieldRule.create(context)
@@ -3008,7 +2966,7 @@ describe('require-yield rule', () => {
     })
 
     test('visitor should work after multiple create calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function* foo() { }' })
 
       requireYieldRule.create(context)
       const visitor = requireYieldRule.create(context)

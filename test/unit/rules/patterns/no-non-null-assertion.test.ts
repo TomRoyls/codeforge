@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noNonNullAssertionRule } from '../../../../src/rules/patterns/no-non-null-assertion.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = value!;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createTSNonNullExpression(line = 1, column = 0): unknown {
   return {
@@ -119,7 +83,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(visitor).toHaveProperty('TSNonNullExpression')
@@ -128,7 +92,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('detecting non-null assertions', () => {
     test('should report TSNonNullExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -138,7 +102,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report with correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -149,7 +113,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('allowing other expressions', () => {
     test('should not report regular expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createRegularExpression())
@@ -158,7 +122,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createMemberExpression())
@@ -169,7 +133,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('message quality', () => {
     test('should mention ! operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -178,7 +142,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should use single quotes around !', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -189,21 +153,21 @@ describe('no-non-null-assertion rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression('string')).not.toThrow()
@@ -211,7 +175,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -227,7 +191,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node without expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -240,7 +204,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with non-TSNonNullExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -261,7 +225,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(10, 5))
@@ -271,7 +235,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -310,7 +274,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with partial loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -329,7 +293,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle different expression types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const memberExprNode = {
@@ -356,7 +320,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('multiple non-null assertions', () => {
     test('should report multiple non-null assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -367,7 +331,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report non-null but not regular expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -380,7 +344,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('additional scenarios', () => {
     test('should handle chained non-null assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -401,7 +365,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle call expression with non-null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -513,51 +477,51 @@ describe('no-non-null-assertion rule', () => {
 
   describe('create - visitor structure', () => {
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
       expect(visitor).not.toBeNull()
     })
 
     test('should return a defined visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
       expect(visitor).toBeDefined()
     })
 
     test('should return an object type visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should have TSNonNullExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
       expect(typeof visitor.TSNonNullExpression).toBe('function')
     })
 
     test('should return same structure on multiple create calls', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor1 = noNonNullAssertionRule.create(context)
       const visitor2 = noNonNullAssertionRule.create(context)
       expect(Object.keys(visitor1)).toEqual(Object.keys(visitor2))
     })
 
     test('should return independent visitors on separate create calls', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor1 = noNonNullAssertionRule.create(context)
       const visitor2 = noNonNullAssertionRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should have exactly one key in visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(1)
     })
 
     test('should have TSNonNullExpression as the only key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
       expect(Object.keys(visitor)).toEqual(['TSNonNullExpression'])
     })
@@ -573,7 +537,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('detection - various expression types inside TSNonNullExpression', () => {
     test('should detect non-null on identifier expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -582,7 +546,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -600,7 +564,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -618,7 +582,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -636,7 +600,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -655,7 +619,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -674,7 +638,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -691,7 +655,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -708,7 +672,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on parenthesized expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -725,7 +689,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should detect non-null on type assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -745,7 +709,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('detection - non-matching node types', () => {
     test('should not report for plain Identifier node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createRegularExpression())
@@ -753,7 +717,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for MemberExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createMemberExpression())
@@ -761,7 +725,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for CallExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -776,7 +740,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for NewExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -791,7 +755,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for Literal node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -805,7 +769,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for BinaryExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -821,7 +785,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for FunctionExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -837,7 +801,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for ArrowFunctionExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -852,7 +816,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({})
@@ -862,7 +826,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -872,7 +836,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(5, 10))
@@ -882,7 +846,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(100, 50))
@@ -892,7 +856,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(0, 0))
@@ -902,7 +866,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(3, 7))
@@ -912,7 +876,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(99999, 0))
@@ -921,7 +885,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 99999))
@@ -930,7 +894,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report loc as an object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -943,7 +907,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('message content', () => {
     test('should contain word Unexpected', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -952,7 +916,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should contain word assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -961,7 +925,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should contain word operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -970,7 +934,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -979,7 +943,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have consistent message across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -992,7 +956,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not contain undefined in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1001,7 +965,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not have standalone null in message outside non-null term', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1012,56 +976,56 @@ describe('no-non-null-assertion rule', () => {
 
   describe('edge cases - null/undefined/primitive nodes', () => {
     test('should handle boolean node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(true)).not.toThrow()
     })
 
     test('should handle false node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(false)).not.toThrow()
     })
 
     test('should handle zero node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(0)).not.toThrow()
     })
 
     test('should handle negative number node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(-1)).not.toThrow()
     })
 
     test('should handle empty string node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression('')).not.toThrow()
     })
 
     test('should handle NaN node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(Number.NaN)).not.toThrow()
     })
 
     test('should handle Infinity node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(Number.POSITIVE_INFINITY)).not.toThrow()
     })
 
     test('should not report for boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(true)
@@ -1069,7 +1033,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(42)
@@ -1077,7 +1041,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not report for string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression('hello')
@@ -1087,7 +1051,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('edge cases - malformed nodes', () => {
     test('should handle node with null expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1101,7 +1065,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with undefined expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1115,7 +1079,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with string expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1129,7 +1093,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with number expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1143,7 +1107,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1157,7 +1121,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with undefined loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1170,7 +1134,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with empty loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1184,7 +1148,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with string loc properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1201,7 +1165,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1218,7 +1182,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with range property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1233,7 +1197,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with only end loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1249,7 +1213,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle node with array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1265,7 +1229,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('report descriptor shape', () => {
     test('should have message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1274,7 +1238,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have loc in report when node has loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1283,7 +1247,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have loc.start.line in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1292,7 +1256,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have loc.start.column in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1301,7 +1265,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have loc.end.line in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1310,7 +1274,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have loc.end.column in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1319,7 +1283,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have message as a string in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1328,7 +1292,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1339,7 +1303,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('multiple assertions', () => {
     test('should report exactly 2 for 2 non-null assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -1349,7 +1313,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report exactly 5 for 5 non-null assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1360,7 +1324,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report exactly 10 for 10 non-null assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1371,7 +1335,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report exactly 20 for 20 non-null assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1382,7 +1346,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report correct location for each assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -1395,7 +1359,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report correct message for each assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -1405,7 +1369,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should count correctly with mixed types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -1418,7 +1382,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should count zero when only non-matching types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createRegularExpression())
@@ -1431,7 +1395,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/other/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: '/src/other/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1440,7 +1404,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: '/src/component.tsx' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1449,7 +1413,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/src/a/b/c/d/e/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: '/src/a/b/c/d/e/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1458,7 +1422,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1468,7 +1432,7 @@ describe('no-non-null-assertion rule', () => {
 
     test('should work with long source code', () => {
       const longSource = 'const x = '.repeat(1000) + 'value!;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1477,7 +1441,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ extra: true, nested: { value: 1 } })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, nested: { value: 1 } }], source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1509,7 +1473,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('report callback behavior', () => {
     test('should call report exactly once per detected assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1518,7 +1482,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not call report for non-matching nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createRegularExpression())
@@ -1527,7 +1491,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should accumulate reports across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1541,7 +1505,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not reset reports between calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1580,7 +1544,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('visitor return behavior', () => {
     test('TSNonNullExpression handler should return undefined for valid node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const result = visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1589,7 +1553,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('TSNonNullExpression handler should return undefined for null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const result = visitor.TSNonNullExpression(null)
@@ -1598,7 +1562,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('TSNonNullExpression handler should return undefined for non-matching node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const result = visitor.TSNonNullExpression(createRegularExpression())
@@ -1609,7 +1573,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('hasNonNullAssertion internal logic', () => {
     test('should return false-like for empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({})
@@ -1617,7 +1581,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should return false-like for object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ name: 'test' })
@@ -1625,7 +1589,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should return true-like for object with TSNonNullExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ type: 'TSNonNullExpression' })
@@ -1633,7 +1597,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should be case-sensitive on type check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ type: 'tsnonnullexpression' })
@@ -1641,7 +1605,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should be case-sensitive on type check with mixed case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ type: 'TsNonNullExpression' })
@@ -1649,7 +1613,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not match similar type names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ type: 'TSNonNullExpressions' })
@@ -1657,7 +1621,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not match with prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ type: 'ATSNonNullExpression' })
@@ -1665,7 +1629,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not match with suffix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({ type: 'TSNonNullExpressionX' })
@@ -1673,7 +1637,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should match exact type only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1688,8 +1652,8 @@ describe('no-non-null-assertion rule', () => {
 
   describe('idempotency and consistency', () => {
     test('should produce same message for same node type across visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'const x = value!;' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'const x = value!;' })
 
       const visitor1 = noNonNullAssertionRule.create(ctx1)
       const visitor2 = noNonNullAssertionRule.create(ctx2)
@@ -1701,7 +1665,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should produce consistent results when called twice with same input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = createTSNonNullExpression(1, 0)
@@ -1714,8 +1678,8 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not affect other visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'const x = value!;' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'const x = value!;' })
 
       const visitor1 = noNonNullAssertionRule.create(ctx1)
       const visitor2 = noNonNullAssertionRule.create(ctx2)
@@ -1734,7 +1698,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('deeply nested expression scenarios', () => {
     test('should handle deeply nested member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1760,7 +1724,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle call expression with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1781,7 +1745,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle optional chain expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1807,7 +1771,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1826,7 +1790,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1845,7 +1809,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle template literal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1863,7 +1827,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle ternary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1882,7 +1846,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle spread element expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1899,7 +1863,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle await expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1916,7 +1880,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle type assertion expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -1936,14 +1900,14 @@ describe('no-non-null-assertion rule', () => {
 
   describe('context logger interactions', () => {
     test('should not throw when logger methods are vi.fn()', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(createTSNonNullExpression())).not.toThrow()
     })
 
     test('should work when logger.debug is a function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -1977,7 +1941,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should not call report for primitive node types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(Symbol('test') as unknown)
@@ -1985,7 +1949,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle BigInt node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       expect(() => visitor.TSNonNullExpression(BigInt(42) as unknown)).not.toThrow()
@@ -2065,7 +2029,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('node with range property', () => {
     test('should report correctly when node has range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -2080,7 +2044,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should report correctly when node has range but no expression range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       const node = {
@@ -2097,7 +2061,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('stress testing', () => {
     test('should handle 50 rapid consecutive assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2108,7 +2072,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle 100 rapid consecutive assertions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -2119,7 +2083,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should handle interleaved valid and invalid 50 times each', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2133,7 +2097,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('getFilePath variations', () => {
     test('should work with root path', () => {
-      const { context, reports } = createMockContext({}, '/')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: '/' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2141,7 +2105,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with Windows-style path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\Users\\dev\\file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: 'C:\\Users\\dev\\file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2149,7 +2113,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with file in current directory', () => {
-      const { context, reports } = createMockContext({}, 'file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: 'file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2157,7 +2121,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with file having dots in name', () => {
-      const { context, reports } = createMockContext({}, '/src/my.file.name.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;', filePath: '/src/my.file.name.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2167,7 +2131,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('getSource variations', () => {
     test('should work with source containing only assertion', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x!')
+      const { context, reports } = createMockRuleContext({ source: 'x!', filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2175,7 +2139,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with source containing unicode', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const 测试 = 值!;')
+      const { context, reports } = createMockRuleContext({ source: 'const 测试 = 值!;', filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2184,7 +2148,7 @@ describe('no-non-null-assertion rule', () => {
 
     test('should work with multi-line source', () => {
       const source = 'const a = 1;\nconst b = value!;\nconst c = 3;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2192,7 +2156,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with source containing tabs', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '\tconst x = value!;')
+      const { context, reports } = createMockRuleContext({ source: '\tconst x = value!;', filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2200,7 +2164,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with single character source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '!')
+      const { context, reports } = createMockRuleContext({ source: '!', filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2208,7 +2172,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should work with whitespace-only source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '   ')
+      const { context, reports } = createMockRuleContext({ source: '   ', filePath: '/src/file.ts' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2263,7 +2227,7 @@ describe('no-non-null-assertion rule', () => {
 
   describe('sequential mixed operations', () => {
     test('should correctly track reports after null then valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(null)
@@ -2273,7 +2237,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should correctly track reports after valid then non-matching', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression())
@@ -2283,7 +2247,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should correctly track reports in alternating pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(createTSNonNullExpression(1, 0))
@@ -2298,7 +2262,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should correctly track after empty object then valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression({})
@@ -2308,7 +2272,7 @@ describe('no-non-null-assertion rule', () => {
     })
 
     test('should correctly track after boolean then valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = value!;' })
       const visitor = noNonNullAssertionRule.create(context)
 
       visitor.TSNonNullExpression(true)

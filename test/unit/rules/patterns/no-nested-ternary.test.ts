@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noNestedTernaryRule } from '../../../../src/rules/patterns/no-nested-ternary.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'condition ? a : b;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createMockContextWithSource(
   source: string,
@@ -276,32 +238,32 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should return visitor with ConditionalExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(visitor).toHaveProperty('ConditionalExpression')
     })
 
     test('ConditionalExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(typeof visitor.ConditionalExpression).toBe('function')
     })
 
     test('should return a new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor1 = noNestedTernaryRule.create(context)
       const visitor2 = noNestedTernaryRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       expect(() => noNestedTernaryRule.create(context)).not.toThrow()
     })
 
@@ -325,7 +287,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('visitor ConditionalExpression should not throw with valid input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const node = createConditionalExpression(
         createIdentifier('x'),
@@ -336,7 +298,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should accept context with various file paths', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;', filePath: '/custom/path.ts' })
       expect(() => noNestedTernaryRule.create(context)).not.toThrow()
     })
   })
@@ -346,7 +308,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('detecting nested ternary in consequent', () => {
     test('should report ternary nested in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createNestedTernary('x', 'y', 'consequent')
@@ -357,7 +319,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report deeply nested ternary in consequent (2 levels)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const level1 = createConditionalExpression(
@@ -374,7 +336,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with identifier consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -393,7 +355,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with boolean literal consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -412,7 +374,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with string literal consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -431,7 +393,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with number literal consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -450,7 +412,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with call expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const callExpr = {
@@ -470,7 +432,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with binary expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const binaryExpr = {
@@ -497,7 +459,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('detecting nested ternary in alternate', () => {
     test('should report ternary nested in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createNestedTernary('x', 'y', 'alternate')
@@ -508,7 +470,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report deeply nested ternary in alternate (2 levels)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const level1 = createConditionalExpression(
@@ -525,7 +487,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with identifier alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -544,7 +506,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with boolean literal alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -563,7 +525,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with string literal alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -582,7 +544,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with number literal alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -601,7 +563,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with call expression test in alternate branch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const callExpr = {
@@ -621,7 +583,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with logical expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const logicalExpr = {
@@ -648,7 +610,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('detecting nested ternary in both branches', () => {
     test('should report ternary nested in both consequent and alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary1 = createConditionalExpression(
@@ -668,7 +630,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report with nested ternary having identical conditions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary1 = createConditionalExpression(
@@ -690,7 +652,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('detecting deeply nested ternaries', () => {
     test('should report 3-level deep nesting in consequent chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const level1 = createConditionalExpression(
@@ -707,7 +669,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report 3-level deep nesting in alternate chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const level1 = createConditionalExpression(
@@ -724,7 +686,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report alternating consequent/alternate nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const inner = createConditionalExpression(
@@ -740,7 +702,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report 5-level deep nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       let current = createConditionalExpression(
@@ -757,7 +719,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with mixed expression types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -783,7 +745,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with null literal values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const innerTernary = createConditionalExpression(
@@ -807,7 +769,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('not reporting non-nested ternaries', () => {
     test('should not report simple ternary with literal consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -818,7 +780,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report simple ternary with identifier consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -833,7 +795,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report simple ternary with binary expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -853,7 +815,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report simple ternary with call expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -872,7 +834,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report simple ternary with member expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -891,7 +853,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with array expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -906,7 +868,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with object expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -921,7 +883,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with function expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -941,7 +903,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with arrow function expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -956,7 +918,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with new expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -971,7 +933,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with template literal consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -986,7 +948,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with unary expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1001,7 +963,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with assignment expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1021,7 +983,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with logical expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1041,7 +1003,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with spread element consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1056,7 +1018,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with typeof expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1071,7 +1033,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with sequence expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1089,7 +1051,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with update expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1109,7 +1071,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with tagged template expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1128,7 +1090,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with yield expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1143,7 +1105,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with await expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1158,7 +1120,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with class expression consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1173,7 +1135,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with both sides as member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1196,7 +1158,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with both sides as call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1211,7 +1173,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with both sides as binary expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1241,7 +1203,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with both sides as identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1256,7 +1218,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with both sides as literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1267,7 +1229,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with conditional test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1287,7 +1249,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with logical expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1307,7 +1269,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with call expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1322,7 +1284,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with mixed literal types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1342,49 +1304,49 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression('string')).not.toThrow()
     })
 
     test('should handle number node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(123)).not.toThrow()
     })
 
     test('should handle boolean node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression(true)).not.toThrow()
     })
 
     test('should handle empty object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       expect(() => visitor.ConditionalExpression({})).not.toThrow()
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1402,7 +1364,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = {
@@ -1422,7 +1384,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with missing consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = {
@@ -1436,7 +1398,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with missing alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = {
@@ -1450,7 +1412,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with null consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1464,7 +1426,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with null alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1478,7 +1440,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with undefined consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1492,7 +1454,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with undefined alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1506,7 +1468,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with string consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1520,7 +1482,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with number alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1534,7 +1496,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1579,7 +1541,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1599,7 +1561,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle nested ternary with empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const inner = createConditionalExpression(
@@ -1615,7 +1577,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle nested ternary with zero literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const inner = createConditionalExpression(
@@ -1631,7 +1593,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle nested ternary with false literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const inner = createConditionalExpression(
@@ -1647,7 +1609,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle consequent that is a ConditionalExpression but with falsy type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1661,7 +1623,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle alternate that is a ConditionalExpression but with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1680,7 +1642,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location for nested ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1702,7 +1664,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1718,7 +1680,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1736,7 +1698,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1753,7 +1715,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location at high column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1770,7 +1732,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location for nested ternary in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1788,7 +1750,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location for both-branches nested', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1806,7 +1768,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should include end location in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1825,7 +1787,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location for deeply nested ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const inner = createConditionalExpression(
@@ -1857,7 +1819,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should provide default location for node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = {
@@ -1878,7 +1840,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1896,7 +1858,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle location with large line and column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1914,7 +1876,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report correct location when only outer has loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = {
@@ -1940,7 +1902,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report location for alternate-only nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1962,7 +1924,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should preserve exact location from node loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -1987,7 +1949,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention nesting in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2002,7 +1964,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should mention ternary in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2017,7 +1979,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should mention if-else in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2032,7 +1994,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should mention switch in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2047,7 +2009,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should have a non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2062,7 +2024,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should have consistent message for consequent nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2077,7 +2039,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should have consistent message for alternate nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2092,7 +2054,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should have consistent message for both branches nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2107,7 +2069,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should have message starting with capital letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2122,7 +2084,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2142,7 +2104,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('multiple reports', () => {
     test('should report each level of nesting when visited separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const level1 = createConditionalExpression(
@@ -2162,7 +2124,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report two separate nested ternaries', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const nested1 = createConditionalExpression(
@@ -2184,7 +2146,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should accumulate reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2201,7 +2163,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report for simple ternary mixed with nested ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2226,7 +2188,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary visited after non-nested', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2244,7 +2206,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle visiting same node multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createConditionalExpression(
@@ -2260,7 +2222,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report each distinct nested ternary pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       // Consequent nesting
@@ -2294,7 +2256,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should handle alternating valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2321,8 +2283,8 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not share state between separate visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'condition ? a : b;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor1 = noNestedTernaryRule.create(ctx1)
       const visitor2 = noNestedTernaryRule.create(ctx2)
 
@@ -2343,7 +2305,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report 10 consecutive nested ternaries', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2369,7 +2331,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('context integration', () => {
     test('should use context.report for reporting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2384,7 +2346,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should accept context with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/helper.ts')
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;', filePath: '/project/src/utils/helper.ts' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2399,11 +2361,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should accept context with custom source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const result = x ? y ? 1 : 2 : 3;',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const result = x ? y ? 1 : 2 : 3;', filePath: '/src/file.ts' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2418,7 +2376,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should work with context that has empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2436,7 +2394,7 @@ describe('no-nested-ternary rule', () => {
       const source = `const x = a
   ? b ? 1 : 2
   : 3;`
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2485,7 +2443,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should work when context.getComments returns empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2500,7 +2458,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should work when context.getTokens returns empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2545,7 +2503,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should work with multiple visitors from same context', () => {
-      const { context, reports: reports1 } = createMockContext()
+      const { context, reports: reports1 } = createMockRuleContext({ source: 'condition ? a : b;' })
       const reports2: ReportDescriptor[] = []
 
       const context2: RuleContext = {
@@ -2640,7 +2598,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not provide fix when range is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2762,7 +2720,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not provide fix for alternate nesting without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2783,7 +2741,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('test.each - detection patterns', () => {
     test('should report nested in consequent with identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createNestedTernary('x', 'y', 'consequent')
@@ -2793,7 +2751,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested in alternate with identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       const node = createNestedTernary('x', 'y', 'alternate')
@@ -2805,7 +2763,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('test.each - non-nested expression types in consequent', () => {
     test('should not report when consequent is ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2818,7 +2776,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2831,7 +2789,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2849,7 +2807,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2867,7 +2825,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2880,7 +2838,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is UnaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2893,7 +2851,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2911,7 +2869,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is LogicalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2929,7 +2887,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2947,7 +2905,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2964,7 +2922,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2977,7 +2935,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -2994,7 +2952,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is SpreadElement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3007,7 +2965,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is SequenceExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3026,7 +2984,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is UpdateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3044,7 +3002,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3057,7 +3015,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is YieldExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3070,7 +3028,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is ClassExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3088,7 +3046,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when consequent is plain Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3195,7 +3153,7 @@ describe('no-nested-ternary rule', () => {
     ]
 
     test.each(nonNestedAlternateTypes)('should not report when alternate is $name', ({ node }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3221,7 +3179,7 @@ describe('no-nested-ternary rule', () => {
     test.each(literalCases)(
       'should report nested ternary with $name in consequent',
       ({ value }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
         const visitor = noNestedTernaryRule.create(context)
 
         const innerTernary = createConditionalExpression(
@@ -3250,7 +3208,7 @@ describe('no-nested-ternary rule', () => {
     ]
 
     test.each(edgeCases)('should handle $name input gracefully without throwing', ({ input }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression(input)).not.toThrow()
     })
@@ -3271,7 +3229,7 @@ describe('no-nested-ternary rule', () => {
     test.each(locationCases)(
       'should report correct location at $desc (line $line, col $column)',
       ({ line, column }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
         const visitor = noNestedTernaryRule.create(context)
 
         const node = createConditionalExpression(
@@ -3307,7 +3265,7 @@ describe('no-nested-ternary rule', () => {
     test.each(operators)(
       'should not report ternary with $desc ($op) test expression',
       ({ op, isLogical }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
         const visitor = noNestedTernaryRule.create(context)
 
         const nodeType = isLogical ? 'LogicalExpression' : 'BinaryExpression'
@@ -3333,7 +3291,7 @@ describe('no-nested-ternary rule', () => {
     ]
 
     test.each(messageFragments)('should contain $desc in report message', ({ fragment }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3370,7 +3328,7 @@ describe('no-nested-ternary rule', () => {
     ]
 
     test.each(nestingLevels)('should report $desc nested ternary', ({ depth }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       let current: unknown = createConditionalExpression(
@@ -3454,7 +3412,7 @@ describe('no-nested-ternary rule', () => {
     ]
 
     test.each(patterns)('should report $name', ({ buildNested }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
 
       visitor.ConditionalExpression(buildNested())
@@ -3467,7 +3425,7 @@ describe('no-nested-ternary rule', () => {
   // ============================================================
   describe('additional non-nested alternate types', () => {
     test('should not report when alternate is ArrayExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3479,7 +3437,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is ObjectExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3491,7 +3449,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is FunctionExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3505,7 +3463,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is ArrowFunctionExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3519,7 +3477,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is NewExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3532,7 +3490,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is UnaryExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3545,7 +3503,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is BinaryExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3559,7 +3517,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is LogicalExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3573,7 +3531,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is AssignmentExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3587,7 +3545,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is MemberExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3600,7 +3558,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is CallExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3613,7 +3571,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is TemplateLiteral type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3626,7 +3584,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report when alternate is plain Identifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(createIdentifier('x'), createLiteral(0), {
@@ -3640,7 +3598,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('additional literal value tests', () => {
     test('should report nested ternary with number 0 in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3654,7 +3612,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with number 1 in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3668,7 +3626,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with number -1 in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3682,7 +3640,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with number 3.14 in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3696,7 +3654,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with empty string in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3710,7 +3668,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with hello string in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3724,7 +3682,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with boolean true in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3738,7 +3696,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report nested ternary with boolean false in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('y'),
@@ -3754,43 +3712,43 @@ describe('no-nested-ternary rule', () => {
 
   describe('additional edge case inputs', () => {
     test('should handle null input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression(undefined)).not.toThrow()
     })
 
     test('should handle empty string input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression('')).not.toThrow()
     })
 
     test('should handle number 0 input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression(0)).not.toThrow()
     })
 
     test('should handle boolean false input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression(false)).not.toThrow()
     })
 
     test('should handle empty array input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression([])).not.toThrow()
     })
 
     test('should handle NaN input gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       expect(() => visitor.ConditionalExpression(NaN)).not.toThrow()
     })
@@ -3798,7 +3756,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('additional binary operator tests', () => {
     test('should not report ternary with strict equality test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3816,7 +3774,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with strict inequality test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3834,7 +3792,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with greater than test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3852,7 +3810,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with less than test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3870,7 +3828,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with logical and test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3888,7 +3846,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should not report ternary with logical or test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       visitor.ConditionalExpression(
         createConditionalExpression(
@@ -3922,7 +3880,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('additional nesting depth checks', () => {
     test('should report 2 levels deep nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('c'),
@@ -3935,7 +3893,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report 3 levels deep nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('d'),
@@ -3949,7 +3907,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report 4 levels deep nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('e'),
@@ -3964,7 +3922,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report 5 levels deep nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('f'),
@@ -3982,7 +3940,7 @@ describe('no-nested-ternary rule', () => {
 
   describe('additional nesting pattern checks', () => {
     test('should report consequent-consequent chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('c'),
@@ -3996,7 +3954,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report alternate-alternate chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('c'),
@@ -4010,7 +3968,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report consequent-alternate chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('c'),
@@ -4024,7 +3982,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report alternate-consequent chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const inner = createConditionalExpression(
         createIdentifier('c'),
@@ -4038,7 +3996,7 @@ describe('no-nested-ternary rule', () => {
     })
 
     test('should report both branches nested', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'condition ? a : b;' })
       const visitor = noNestedTernaryRule.create(context)
       const outer = createConditionalExpression(
         createIdentifier('a'),

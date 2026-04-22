@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noThisBeforeSuperRule } from '../../../../src/rules/patterns/no-this-before-super.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'constructor() { this.x = 1; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createMethodDefinition(kind: string, value: unknown, line = 1, column = 0): unknown {
   return {
@@ -176,35 +140,35 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(visitor).toHaveProperty('MethodDefinition')
     })
 
     test('should return MethodDefinition as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(typeof visitor.MethodDefinition).toBe('function')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return a plain object visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should not return other visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(visitor).not.toHaveProperty('FunctionDeclaration')
@@ -212,8 +176,8 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should accept different context instances', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext({}, '/other/file.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }', filePath: '/other/file.ts' })
 
       const visitor1 = noThisBeforeSuperRule.create(ctx1)
       const visitor2 = noThisBeforeSuperRule.create(ctx2)
@@ -223,8 +187,8 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should produce independent visitors per call', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
 
       const v1 = noThisBeforeSuperRule.create(ctx1)
       const v2 = noThisBeforeSuperRule.create(ctx2)
@@ -241,7 +205,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle being called multiple times', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       for (let i = 0; i < 5; i++) {
         const visitor = noThisBeforeSuperRule.create(context)
         expect(typeof visitor.MethodDefinition).toBe('function')
@@ -254,7 +218,7 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('detection', () => {
     test('should report constructor with this before super()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -271,7 +235,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report constructor with only this (no super)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -285,7 +249,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report constructor with this at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -302,7 +266,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report constructor with this without any super()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -319,7 +283,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report constructor with this before super with other statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -337,7 +301,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report bare this expression not wrapped in ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -354,7 +318,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report when super call is deeply nested after this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -373,7 +337,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report first this expression before super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -391,7 +355,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report when this is the only statement in constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -405,7 +369,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report when bare super call at top level after this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -419,7 +383,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this in ExpressionStatement wrapping', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -433,7 +397,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this when body has mixed statements before super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -452,7 +416,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect bare super call in body (not in ExpressionStatement)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -469,7 +433,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should stop scanning after super call is found', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -487,7 +451,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this when it appears before any super-like call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const notSuperCall = {
@@ -509,7 +473,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this when super is in bare CallExpression (not ExpressionStatement)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -526,7 +490,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report with single this before super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -544,7 +508,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect when super() is second statement after this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -562,7 +526,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this before super with many intervening statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const body = [
@@ -583,7 +547,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this when only other expressions present no super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -601,7 +565,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report when this is wrapped and bare super after', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -618,7 +582,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect bare ThisExpression at index 0 in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -629,7 +593,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect bare ThisExpression before bare Super call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -643,7 +607,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect wrapped this before bare super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -660,7 +624,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect bare this before wrapped super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -677,7 +641,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report only once per MethodDefinition visit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -696,7 +660,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect this in constructor with ArrowFunction value type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition({
@@ -715,7 +679,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should correctly identify Super callee vs other callee types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const regularCall = {
@@ -737,7 +701,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not detect when super callee is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const nullCalleeCall = {
@@ -759,7 +723,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should detect when ExpressionStatement has ThisExpression inside assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const assignment = {
@@ -786,7 +750,7 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('valid constructors (no this before super)', () => {
     test('should not report constructor with super() before this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -803,7 +767,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with only super()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -817,7 +781,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with only this after super()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -834,7 +798,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report empty constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', createFunctionExpression([])))
@@ -843,7 +807,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report non-constructor method with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -857,7 +821,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report method without kind property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const methodDef = {
@@ -870,7 +834,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report get accessor with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -884,7 +848,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report set accessor with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -898,7 +862,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with super() followed by multiple this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -917,7 +881,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with only literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -934,7 +898,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with super and no this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -951,7 +915,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with bare super call before this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -965,7 +929,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with bare super call only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -976,7 +940,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report non-MethodDefinition node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -990,7 +954,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when kind is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1003,7 +967,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when kind is empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1017,7 +981,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with super() in middle then this after', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1035,7 +999,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report regular method kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       for (const kind of ['method', 'get', 'set', 'foo', 'bar', 'init']) {
@@ -1051,7 +1015,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when CallExpression callee is not Super type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const callWithIdentCallee = {
@@ -1073,7 +1037,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when ExpressionStatement has no expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1090,7 +1054,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with only other identifier calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1110,7 +1074,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when bare super call is before bare this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1124,7 +1088,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with wrapped super before wrapped this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1141,7 +1105,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when expression is not ThisExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1158,7 +1122,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when ExpressionStatement has non-ThisExpression expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1175,7 +1139,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with multiple super calls and this after first', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1193,7 +1157,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report constructor with only whitespace-like statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1207,7 +1171,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when value body has no elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(createMethodDefinition('constructor', createFunctionExpression([])))
@@ -1216,7 +1180,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when ExpressionStatement wraps non-This non-Super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1234,7 +1198,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report for static method with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1253,21 +1217,21 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition('string')).not.toThrow()
@@ -1275,7 +1239,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1288,7 +1252,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1302,7 +1266,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle node without value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1315,7 +1279,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle node with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1329,7 +1293,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle value without body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1345,7 +1309,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1362,7 +1326,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle body without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1379,7 +1343,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle body with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1398,7 +1362,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle body without body array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1417,7 +1381,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle non-array body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1437,7 +1401,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle null statements in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1456,7 +1420,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle non-object statements in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1475,7 +1439,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1492,7 +1456,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1543,7 +1507,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition(true)).not.toThrow()
@@ -1552,7 +1516,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle numeric node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition(0)).not.toThrow()
@@ -1561,7 +1525,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition([])).not.toThrow()
@@ -1569,7 +1533,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle CallExpression with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const callWithUndefinedCallee = {
@@ -1591,7 +1555,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle CallExpression with string callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const callWithStringCallee = {
@@ -1613,7 +1577,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle node with number kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1627,7 +1591,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle very large body arrays', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const body = Array.from({ length: 100 }, (_, i) =>
@@ -1649,7 +1613,7 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('location', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1666,7 +1630,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1681,7 +1645,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1698,7 +1662,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1715,7 +1679,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1735,7 +1699,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1755,7 +1719,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1773,7 +1737,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1791,7 +1755,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1807,7 +1771,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1826,7 +1790,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle loc with null end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1846,7 +1810,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should use default line 1 when no loc present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1861,7 +1825,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should preserve exact column from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1877,7 +1841,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle zero line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1895,7 +1859,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle negative line number gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -1919,7 +1883,7 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('messages', () => {
     test('should mention this in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1933,7 +1897,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should mention super in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1947,7 +1911,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should mention not allowed in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -1961,8 +1925,8 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should have consistent message across different violations', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
 
       const v1 = noThisBeforeSuperRule.create(ctx1)
       const v2 = noThisBeforeSuperRule.create(ctx2)
@@ -1989,7 +1953,7 @@ describe('no-this-before-super rule', () => {
 
     test('should always produce the same message string', () => {
       const expectedMessage = "'this' is not allowed before super()."
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2003,7 +1967,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2017,7 +1981,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should have message as string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2031,7 +1995,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should include single quotes around this in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2045,7 +2009,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should include parentheses around super in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2059,7 +2023,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should have grammatically correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2080,7 +2044,7 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('multiple reports', () => {
     test('should report for each MethodDefinition visit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2101,7 +2065,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report once per violating constructor with multiple this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2119,7 +2083,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report for alternating valid and invalid constructors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2154,8 +2118,8 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should track reports independently across different context instances', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
 
       const v1 = noThisBeforeSuperRule.create(ctx1)
       const v2 = noThisBeforeSuperRule.create(ctx2)
@@ -2186,7 +2150,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report three times for three violating visits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -2202,7 +2166,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle mixed valid and invalid without double counting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const validBody = [
@@ -2231,7 +2195,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not accumulate reports across different visitors', () => {
-      const { context: ctx, reports } = createMockContext()
+      const { context: ctx, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor1 = noThisBeforeSuperRule.create(ctx)
       const visitor2 = noThisBeforeSuperRule.create(ctx)
 
@@ -2253,7 +2217,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle same visitor called 10 times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2269,7 +2233,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should handle mix of valid, invalid, and non-constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       // invalid constructor
@@ -2311,7 +2275,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should report each with correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2338,7 +2302,7 @@ describe('no-this-before-super rule', () => {
   // =====================================================
   describe('context handling', () => {
     test('should work with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }', filePath: '/custom/path/file.ts' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2352,11 +2316,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should work with custom source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/test.ts',
-        'class A extends B { constructor() { this.x = 1; super(); } }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'class A extends B { constructor() { this.x = 1; super(); } }', filePath: '/src/test.ts' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2370,7 +2330,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/test.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/test.ts' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2384,7 +2344,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not call logger for normal operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2538,7 +2498,7 @@ describe('no-this-before-super rule', () => {
     })
 
     test('should not report when visitor receives valid node after invalid one', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2599,7 +2559,7 @@ describe('no-this-before-super rule', () => {
     test.each([['constructor'], ['method'], ['get'], ['set']])(
       'should only report for constructor kind, not "%s"',
       (kind) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
         const visitor = noThisBeforeSuperRule.create(context)
 
         visitor.MethodDefinition(
@@ -2626,7 +2586,7 @@ describe('no-this-before-super rule', () => {
       ['array', []],
       ['empty object', {}],
     ])('should handle %s node without crashing', (_label, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition(node)).not.toThrow()
@@ -2645,7 +2605,7 @@ describe('no-this-before-super rule', () => {
       ['ReturnStatement'],
       ['ThrowStatement'],
     ])('should not report for non-MethodDefinition type "%s"', (nodeType) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -2665,7 +2625,7 @@ describe('no-this-before-super rule', () => {
       [1, 100],
       [50, 0],
     ])('should report correct location line=%d column=%d', (line, column) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2684,7 +2644,7 @@ describe('no-this-before-super rule', () => {
     test.each([[0], [1], [3], [5], [10], [20], [50]])(
       'should handle body with %d literal statements before this',
       (count) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
         const visitor = noThisBeforeSuperRule.create(context)
 
         const body: unknown[] = []
@@ -2714,7 +2674,7 @@ describe('no-this-before-super rule', () => {
       ['ArrayExpression', { type: 'ArrayExpression', elements: [] }],
       ['ObjectExpression', { type: 'ObjectExpression', properties: [] }],
     ])('should not detect %s as ThisExpression', (_label, expression) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2748,7 +2708,7 @@ describe('no-this-before-super rule', () => {
       ['CallExpression with string callee', { type: 'CallExpression', callee: 'super' }],
       ['CallExpression with number callee', { type: 'CallExpression', callee: 42 }],
     ])('should not detect %s as super() call', (_label, call) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2772,7 +2732,7 @@ describe('no-this-before-super rule', () => {
       ['single identifier', [createExpressionStatement({ type: 'Identifier', name: 'x' })]],
       ['single super call', [createExpressionStatement(createSuperCall())]],
     ])('should not report for valid body: %s', (_label, body) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2799,7 +2759,7 @@ describe('no-this-before-super rule', () => {
         ],
       ],
     ])('should report for invalid body: %s', (_label, body) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2834,7 +2794,7 @@ describe('no-this-before-super rule', () => {
         ],
       ],
     ])('should not report for valid order: %s', (_label, body) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2869,7 +2829,7 @@ describe('no-this-before-super rule', () => {
         ],
       ],
     ])('should report for invalid order: %s', (_label, body) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2887,7 +2847,7 @@ describe('no-this-before-super rule', () => {
       ['value is boolean', { type: 'MethodDefinition', kind: 'constructor', value: true }],
       ['value is array', { type: 'MethodDefinition', kind: 'constructor', value: [] }],
     ])('should handle malformed node where %s', (_label, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       expect(() => visitor.MethodDefinition(node)).not.toThrow()
@@ -2900,7 +2860,7 @@ describe('no-this-before-super rule', () => {
       ['body is boolean', { type: 'FunctionExpression', body: true }],
       ['body is array', { type: 'FunctionExpression', body: [] }],
     ])('should handle malformed function body where %s', (_label, value) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -2920,7 +2880,7 @@ describe('no-this-before-super rule', () => {
       [100, 0, 100, 1],
       [999, 999, 999, 999],
     ])('should preserve loc start.line=%d column=%d end.line=%d column=%d', (sl, sc, el, ec) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       const node = {
@@ -2947,7 +2907,7 @@ describe('no-this-before-super rule', () => {
       ['/deep/nested/path/to/file.ts'],
       ['/file.with.dots.ts'],
     ])('should work with file path %s', (filePath) => {
-      const { context, reports } = createMockContext({}, filePath)
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }', filePath: filePath })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(
@@ -2965,7 +2925,7 @@ describe('no-this-before-super rule', () => {
       ['OtherExpression', { type: 'OtherExpression' }],
       ['CallExpression', { type: 'CallExpression', callee: { type: 'Super' } }],
     ])('should handle bare %s in body (not wrapped in ExpressionStatement)', (_type, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'constructor() { this.x = 1; }' })
       const visitor = noThisBeforeSuperRule.create(context)
 
       visitor.MethodDefinition(

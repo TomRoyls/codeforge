@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noEvalRule } from '../../../../src/rules/patterns/no-eval.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'eval("test");',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createDirectEvalCall(line = 1, column = 0): unknown {
   return {
@@ -229,35 +193,35 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should have CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor1 = noEvalRule.create(context)
       const visitor2 = noEvalRule.create(context)
 
@@ -265,22 +229,22 @@ describe('no-eval rule', () => {
     })
 
     test('should accept context and return RuleVisitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(Object.keys(visitor)).toContain('CallExpression')
     })
 
     test('should create visitor with only CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['CallExpression'])
     })
 
     test('should allow multiple calls to create with different contexts', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'eval("test");' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'eval("test");' })
 
       const visitor1 = noEvalRule.create(ctx1)
       const visitor2 = noEvalRule.create(ctx2)
@@ -293,7 +257,7 @@ describe('no-eval rule', () => {
     })
 
     test('should have CallExpression that does not throw for valid nodes', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(() => visitor.CallExpression(createDirectEvalCall())).not.toThrow()
@@ -309,7 +273,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('detecting direct eval calls', () => {
     test('should report direct eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -319,7 +283,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -328,7 +292,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -338,7 +302,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval at arbitrary line 5 column 3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(5, 3))
@@ -348,7 +312,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(999, 50))
@@ -358,7 +322,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -369,7 +333,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -378,7 +342,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -394,7 +358,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with variable argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -410,7 +374,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with template literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -426,7 +390,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -445,7 +409,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -454,7 +418,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval inside IIFE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -472,7 +436,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval at end of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(500, 80))
@@ -482,7 +446,7 @@ describe('no-eval rule', () => {
     })
 
     test('should always report exactly one issue for one eval call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -496,7 +460,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('allowing property name usage', () => {
     test('should not report obj.eval property access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createMemberEvalCall())
@@ -505,7 +469,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report window.eval() method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createWindowEvalCall())
@@ -514,7 +478,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report global.eval() method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createGlobalEvalCall())
@@ -523,7 +487,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createMethodCall('log'))
@@ -534,7 +498,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report self.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -554,7 +518,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report foo.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -574,7 +538,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report module.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -594,7 +558,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report myClass.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -614,7 +578,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report this.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -634,7 +598,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report super.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -654,7 +618,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report computed property access obj["eval"]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -675,7 +639,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report chained member expression a.b.eval()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -704,7 +668,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('allowing other functions', () => {
     test('should not report non-eval function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createOtherFunctionCall())
@@ -713,7 +677,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report Function constructor call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -729,7 +693,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report parseInt() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -745,7 +709,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report JSON.parse() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -765,7 +729,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report fetch() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -781,7 +745,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report alert() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -797,7 +761,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report custom function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -813,7 +777,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report Array() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -829,7 +793,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report Object() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -845,7 +809,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report eval-like names that are not exact eval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const names = ['evaluate', 'myEval', 'evalExpr', 'Eval', 'EVAL', 'eval_']
@@ -868,7 +832,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('message quality', () => {
     test('should mention eval in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -877,7 +841,7 @@ describe('no-eval rule', () => {
     })
 
     test('should use single quotes around eval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -886,7 +850,7 @@ describe('no-eval rule', () => {
     })
 
     test('should have exact message text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -895,7 +859,7 @@ describe('no-eval rule', () => {
     })
 
     test('should contain word Unexpected', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -904,7 +868,7 @@ describe('no-eval rule', () => {
     })
 
     test('should contain word use', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -913,7 +877,7 @@ describe('no-eval rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -922,7 +886,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report same message for every eval call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -935,7 +899,7 @@ describe('no-eval rule', () => {
     })
 
     test('should always produce a string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -949,42 +913,42 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully (string)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
     })
 
     test('should handle non-object node gracefully (number)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(() => visitor.CallExpression(123)).not.toThrow()
     })
 
     test('should handle non-object node gracefully (boolean)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -998,7 +962,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1012,7 +976,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with non-Identifier callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1031,7 +995,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(10, 5))
@@ -1041,7 +1005,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1080,7 +1044,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with partial loc (no end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1097,7 +1061,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle computed property access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1117,7 +1081,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle different identifier names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const logCall = {
@@ -1141,7 +1105,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1156,7 +1120,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1171,7 +1135,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with empty object callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1186,7 +1150,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with callee as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1201,7 +1165,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1215,7 +1179,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with wrong type (NewExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1231,7 +1195,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle callee with non-string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1246,7 +1210,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1255,7 +1219,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node without arguments property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1269,7 +1233,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle node with loc having zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(0, 0))
@@ -1280,7 +1244,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle extremely large line/column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(99999, 99999))
@@ -1295,7 +1259,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('location reporting', () => {
     test('should report correct line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(7, 0))
@@ -1304,7 +1268,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report correct column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 12))
@@ -1313,7 +1277,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1322,7 +1286,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report end line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(3, 5))
@@ -1331,7 +1295,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report end column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(3, 5))
@@ -1340,7 +1304,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report loc object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1350,7 +1314,7 @@ describe('no-eval rule', () => {
     })
 
     test('should provide default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1366,7 +1330,7 @@ describe('no-eval rule', () => {
     })
 
     test('should provide default end location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1382,7 +1346,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with non-number line (fallback to default)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1402,7 +1366,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with non-number column (fallback to 0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1422,7 +1386,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1441,7 +1405,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1460,7 +1424,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1476,7 +1440,7 @@ describe('no-eval rule', () => {
     })
 
     test('should preserve exact start column from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(4, 7))
@@ -1485,7 +1449,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc where start has NaN line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1510,7 +1474,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('multiple eval calls', () => {
     test('should report multiple eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1521,7 +1485,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval but not member eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1532,7 +1496,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report each eval with its own location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1545,7 +1509,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report 10 consecutive eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1556,7 +1520,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle mix of eval and non-eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1569,7 +1533,7 @@ describe('no-eval rule', () => {
     })
 
     test('should report eval calls interspersed with member eval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1582,7 +1546,7 @@ describe('no-eval rule', () => {
     })
 
     test('should maintain correct message for all reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -1595,7 +1559,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle no reports when no eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createOtherFunctionCall())
@@ -1606,7 +1570,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle 50 eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1617,7 +1581,7 @@ describe('no-eval rule', () => {
     })
 
     test('should track each report independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 5))
@@ -1633,7 +1597,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/app/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");', filePath: '/app/src/utils.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1642,7 +1606,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = eval("1+1")')
+      const { context, reports } = createMockRuleContext({ source: 'const x = eval("1+1")', filePath: '/src/file.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1651,7 +1615,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1660,7 +1624,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js', 'eval("test")')
+      const { context, reports } = createMockRuleContext({ source: 'eval("test")', filePath: '/src/file.js' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1669,7 +1633,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with .jsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.jsx', 'eval("test")')
+      const { context, reports } = createMockRuleContext({ source: 'eval("test")', filePath: '/src/component.jsx' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1678,7 +1642,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with .ts file path', () => {
-      const { context, reports } = createMockContext({}, '/src/index.ts', 'eval("test")')
+      const { context, reports } = createMockRuleContext({ source: 'eval("test")', filePath: '/src/index.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1687,7 +1651,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/app.tsx', 'eval("test")')
+      const { context, reports } = createMockRuleContext({ source: 'eval("test")', filePath: '/src/app.tsx' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1696,11 +1660,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with deep nested file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/project/src/features/auth/utils/validators.ts',
-        'eval("test")',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'eval("test")', filePath: '/project/src/features/auth/utils/validators.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1709,7 +1669,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ customOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ customOption: true }], source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1747,7 +1707,7 @@ describe('no-eval rule', () => {
 
     test('should work with long source code', () => {
       const longSource = 'const a = 1;\n'.repeat(100) + 'eval("test");'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1756,11 +1716,7 @@ describe('no-eval rule', () => {
     })
 
     test('should work with multi-byte characters in source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const 中文 = "测试"; eval("test");',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const 中文 = "测试"; eval("test");', filePath: '/src/file.ts' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall())
@@ -1774,7 +1730,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('additional scenarios', () => {
     test('should handle eval with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1793,7 +1749,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle nested eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1815,7 +1771,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval inside conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1831,7 +1787,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval inside try-catch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(2, 4))
@@ -1841,7 +1797,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval inside arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 8))
@@ -1850,7 +1806,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report eval as a variable reference (not a call)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1865,7 +1821,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval in assignment context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1881,7 +1837,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval as return value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1897,7 +1853,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval with concatenated string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1920,7 +1876,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle eval with spread arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1936,7 +1892,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle globalThis.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1956,7 +1912,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle indirect eval via variable alias (not detected)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -1986,121 +1942,121 @@ describe('no-eval rule', () => {
     }
 
     test('should not report evaluate() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('evaluate'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report myEval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('myEval'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report evalExpr() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('evalExpr'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report Eval() call (capital E)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('Eval'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report EVAL() call (all caps)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('EVAL'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report eval_() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('eval_'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report _eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('_eval'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report evalString() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('evalString'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report parse() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('parse'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report execute() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('execute'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report run() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('run'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report compile() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('compile'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report interpret() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('interpret'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report compute() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('compute'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report calculate() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('calculate'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report process() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('process'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report analyze() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('analyze'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report transform() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('transform'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report render() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('render'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report resolve() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createSafeNameCall('resolve'))
       expect(reports.length).toBe(0)
     })
@@ -2130,91 +2086,91 @@ describe('no-eval rule', () => {
     }
 
     test('should not report window.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('window'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report global.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('global'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report self.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('self'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report globalThis.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('globalThis'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report obj.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('obj'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report foo.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('foo'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report bar.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('bar'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report module.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('module'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report exports.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('exports'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report this.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('this'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report super.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('super'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report that.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('that'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report service.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('service'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report handler.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('handler'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report utils.eval() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createMemberCall('utils'))
       expect(reports.length).toBe(0)
     })
@@ -2234,73 +2190,73 @@ describe('no-eval rule', () => {
     }
 
     test('should not report NewExpression node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('NewExpression'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ExpressionStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('ExpressionStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report VariableDeclaration node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('VariableDeclaration'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report FunctionDeclaration node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('FunctionDeclaration'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ReturnStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('ReturnStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report IfStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('IfStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ForStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('ForStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report WhileStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('WhileStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report SwitchStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('SwitchStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report TryStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('TryStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ThrowStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('ThrowStatement'))
       expect(reports.length).toBe(0)
     })
 
     test('should not report BlockStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createNonCallNode('BlockStatement'))
       expect(reports.length).toBe(0)
     })
@@ -2311,70 +2267,70 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('location edge cases via individual tests', () => {
     test('should report correct location for line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(0, 0))
       expect(reports[0].loc?.start.line).toBe(0)
       expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should report correct location for line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should report correct location for line 1 column 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(1, 100))
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(100)
     })
 
     test('should report correct location for line 42 column 7', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(42, 7))
       expect(reports[0].loc?.start.line).toBe(42)
       expect(reports[0].loc?.start.column).toBe(7)
     })
 
     test('should report correct location for line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(100, 0))
       expect(reports[0].loc?.start.line).toBe(100)
       expect(reports[0].loc?.start.column).toBe(0)
     })
 
     test('should report correct location for line 1000 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(1000, 50))
       expect(reports[0].loc?.start.line).toBe(1000)
       expect(reports[0].loc?.start.column).toBe(50)
     })
 
     test('should report correct location for line 2 column 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(2, 1))
       expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(1)
     })
 
     test('should report correct location for line 9999 column 999', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(9999, 999))
       expect(reports[0].loc?.start.line).toBe(9999)
       expect(reports[0].loc?.start.column).toBe(999)
     })
 
     test('should report correct location for line 3 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(3, 20))
       expect(reports[0].loc?.start.line).toBe(3)
       expect(reports[0].loc?.start.column).toBe(20)
     })
 
     test('should report correct location for line 50 column 80', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context).CallExpression(createDirectEvalCall(50, 80))
       expect(reports[0].loc?.start.line).toBe(50)
       expect(reports[0].loc?.start.column).toBe(80)
@@ -2386,7 +2342,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('extractLocation defaults', () => {
     test('should default to line 1 column 0 when no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2402,7 +2358,7 @@ describe('no-eval rule', () => {
     })
 
     test('should default end to line 1 column 1 when no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2418,7 +2374,7 @@ describe('no-eval rule', () => {
     })
 
     test('should default start.line to 1 when start is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2437,7 +2393,7 @@ describe('no-eval rule', () => {
     })
 
     test('should default start.column to 0 when start is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2456,7 +2412,7 @@ describe('no-eval rule', () => {
     })
 
     test('should default end.line to 1 when end is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2475,7 +2431,7 @@ describe('no-eval rule', () => {
     })
 
     test('should default end.column to 0 when end is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2494,7 +2450,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with start having missing line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2514,7 +2470,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle loc with start having missing column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2572,7 +2528,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('indirect eval and aliasing', () => {
     test('should not detect indirect eval via (0, eval)()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2594,7 +2550,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not detect eval aliased to variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2610,7 +2566,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not detect eval via Reflect.apply', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2630,7 +2586,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not detect eval via Function.prototype.call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2654,7 +2610,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not flag eval as object property key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2674,7 +2630,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not flag eval in callback position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2693,7 +2649,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not flag eval used as parameter name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2709,7 +2665,7 @@ describe('no-eval rule', () => {
     })
 
     test('should not report require("eval") call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = {
@@ -2730,7 +2686,7 @@ describe('no-eval rule', () => {
   // =====================================================
   describe('consecutive calls consistency', () => {
     test('should report same eval call twice if visited twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       const node = createDirectEvalCall()
@@ -2741,7 +2697,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle alternating eval and safe calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2753,8 +2709,8 @@ describe('no-eval rule', () => {
     })
 
     test('should maintain independence between different visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'eval("test");' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'eval("test");' })
 
       const visitor1 = noEvalRule.create(ctx1)
       const visitor2 = noEvalRule.create(ctx2)
@@ -2767,7 +2723,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle many non-eval calls followed by one eval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2780,7 +2736,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle one eval followed by many non-eval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       const visitor = noEvalRule.create(context)
 
       visitor.CallExpression(createDirectEvalCall(1, 0))
@@ -2793,7 +2749,7 @@ describe('no-eval rule', () => {
     })
 
     test('should handle empty visitor (no calls)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'eval("test");' })
       noEvalRule.create(context)
 
       expect(reports.length).toBe(0)

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noFloatingPromisesRule } from '../../../../src/rules/patterns/no-floating-promises.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'asyncFunction();',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFloatingPromiseStatement(line = 1, column = 0): unknown {
   return {
@@ -185,7 +149,7 @@ describe('no-floating-promises rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       expect(visitor).toHaveProperty('ExpressionStatement')
@@ -194,7 +158,7 @@ describe('no-floating-promises rule', () => {
 
   describe('detecting floating promises', () => {
     test('should report floating async function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -204,7 +168,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report floating fetch call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFetchStatement())
@@ -214,7 +178,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report floating Promise.all call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createPromiseAllStatement())
@@ -223,7 +187,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report sync function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createSyncStatement())
@@ -232,7 +196,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report non-expression statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createNonExpressionStatement())
@@ -243,7 +207,7 @@ describe('no-floating-promises rule', () => {
 
   describe('options - ignoreVoid', () => {
     test('should allow void operator when ignoreVoid is true', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createVoidAsyncStatement())
@@ -252,7 +216,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should still report floating promise when ignoreVoid is false', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: false }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -261,7 +225,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report void wrapped promise by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createVoidAsyncStatement())
@@ -272,21 +236,21 @@ describe('no-floating-promises rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       expect(() => visitor.ExpressionStatement(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       expect(() => visitor.ExpressionStatement(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       expect(() => visitor.ExpressionStatement('string')).not.toThrow()
@@ -294,7 +258,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       const node = {
@@ -314,7 +278,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement(10, 5))
@@ -324,7 +288,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -363,7 +327,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node without expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       const node = {
@@ -376,7 +340,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with non-CallExpression expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       const node = {
@@ -395,7 +359,7 @@ describe('no-floating-promises rule', () => {
 
   describe('message quality', () => {
     test('should mention await in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -404,7 +368,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should mention catch in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -413,7 +377,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should mention unhandled rejection in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -546,33 +510,33 @@ describe('no-floating-promises rule', () => {
 
   describe('create - visitor structure', () => {
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should return visitor with ExpressionStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       expect(typeof visitor.ExpressionStatement).toBe('function')
     })
 
     test('ExpressionStatement should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       expect(visitor.ExpressionStatement.length).toBe(1)
     })
 
     test('create should return new visitor on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor1 = noFloatingPromisesRule.create(context)
       const visitor2 = noFloatingPromisesRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('multiple visitors should have independent report tracking', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'asyncFunction();' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor1 = noFloatingPromisesRule.create(ctx1)
       const visitor2 = noFloatingPromisesRule.create(ctx2)
 
@@ -586,7 +550,7 @@ describe('no-floating-promises rule', () => {
 
   describe('async function name patterns - Identifier callee', () => {
     test('should report call starting with async', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -602,7 +566,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report asyncData call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -618,7 +582,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report asyncInit call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -634,7 +598,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report fetch call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -650,7 +614,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report fetchData call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -666,7 +630,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report fetchUrl call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -682,7 +646,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report call with Async in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -698,7 +662,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report call with Async in middle of name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -714,7 +678,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report sync function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -730,7 +694,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report regular function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -746,7 +710,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report getData call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -762,7 +726,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report parseJSON call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -778,7 +742,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report Async suffix only name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -796,7 +760,7 @@ describe('no-floating-promises rule', () => {
 
   describe('MemberExpression callee patterns', () => {
     test('should report obj.asyncMethod call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -816,7 +780,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report api.fetchResources call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -836,7 +800,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report client.loadAsync call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -856,7 +820,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report obj.syncMethod call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -876,7 +840,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report obj.method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -898,7 +862,7 @@ describe('no-floating-promises rule', () => {
 
   describe('Promise method calls (MemberExpression)', () => {
     test('should report .then() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -918,7 +882,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report .catch() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -938,7 +902,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report .finally() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -958,14 +922,14 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report Promise.all() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createPromiseAllStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should report Promise.race() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -985,7 +949,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report Promise.allSettled() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1005,7 +969,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report Promise.any() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1025,7 +989,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report Promise.resolve() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1045,7 +1009,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report Promise.reject() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1065,7 +1029,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report arr.map() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1085,7 +1049,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report arr.forEach() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1107,35 +1071,35 @@ describe('no-floating-promises rule', () => {
 
   describe('void operator handling', () => {
     test('should not report void asyncFunction() with ignoreVoid default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createVoidAsyncStatement())
       expect(reports.length).toBe(0)
     })
 
     test('should not report void asyncFunction() with ignoreVoid true', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createVoidAsyncStatement())
       expect(reports.length).toBe(0)
     })
 
     test('should not report void asyncFunction() with ignoreVoid false', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: false }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createVoidAsyncStatement())
       expect(reports.length).toBe(0)
     })
 
     test('should still report floating promise without void when ignoreVoid true', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('void operator node should not be reported as floating promise', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: false }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1155,7 +1119,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle void with fetch call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1177,7 +1141,7 @@ describe('no-floating-promises rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -1185,7 +1149,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(5, 10))
       expect(reports[0].loc?.start.line).toBe(5)
@@ -1193,7 +1157,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(100, 50))
       expect(reports[0].loc?.start.line).toBe(100)
@@ -1201,7 +1165,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(3, 4))
       expect(reports[0].loc?.end.line).toBe(3)
@@ -1209,7 +1173,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should use default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1226,7 +1190,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with partial loc (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1245,7 +1209,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with loc containing string values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1266,7 +1230,7 @@ describe('no-floating-promises rule', () => {
 
   describe('edge cases - malformed nodes', () => {
     test('should handle node with boolean expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1278,7 +1242,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with number expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1290,7 +1254,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with string expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1302,7 +1266,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with null expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1314,7 +1278,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle CallExpression with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1330,7 +1294,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle CallExpression with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1346,7 +1310,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle CallExpression with callee without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1362,7 +1326,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle MemberExpression with null property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1382,7 +1346,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle MemberExpression with non-Identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1402,14 +1366,14 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node that is a plain empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       expect(() => visitor.ExpressionStatement({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle node with wrong type casing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'expressionstatement',
@@ -1425,7 +1389,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1440,7 +1404,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1455,7 +1419,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1472,7 +1436,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1489,7 +1453,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1506,7 +1470,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with UnaryExpression non-void operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1526,7 +1490,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with UnaryExpression typeof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1542,7 +1506,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with delete operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1558,7 +1522,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1574,7 +1538,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle node with AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1593,7 +1557,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle deeply nested node without breaking', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1619,42 +1583,42 @@ describe('no-floating-promises rule', () => {
 
   describe('options handling', () => {
     test('should handle ignoreIIFE option set to true', () => {
-      const { context, reports } = createMockContext({ ignoreIIFE: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreIIFE: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should handle ignoreIIFE option set to false', () => {
-      const { context, reports } = createMockContext({ ignoreIIFE: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreIIFE: false }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should handle both options set to true', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: true, ignoreIIFE: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: true, ignoreIIFE: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should handle both options set to false', () => {
-      const { context, reports } = createMockContext({ ignoreVoid: false, ignoreIIFE: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreVoid: false, ignoreIIFE: false }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should handle unknown options gracefully', () => {
-      const { context, reports } = createMockContext({ unknownOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownOption: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty options object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
@@ -1705,7 +1669,7 @@ describe('no-floating-promises rule', () => {
 
   describe('multiple invocations', () => {
     test('should report each floating promise independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement(1, 0))
@@ -1716,7 +1680,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report only floating promises, not sync calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement(1, 0))
@@ -1727,7 +1691,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle mix of floating and non-floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createSyncStatement(1, 0))
@@ -1740,7 +1704,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle alternating floating and void-wrapped calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement(1, 0))
@@ -1751,7 +1715,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should track locations correctly across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement(10, 5))
@@ -1764,7 +1728,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle 10 floating promises in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1776,7 +1740,7 @@ describe('no-floating-promises rule', () => {
 
     test('should handle rapid creation and invocation of visitors', () => {
       for (let i = 0; i < 5; i++) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
         const visitor = noFloatingPromisesRule.create(context)
         visitor.ExpressionStatement(createFloatingPromiseStatement())
         expect(reports.length).toBe(1)
@@ -1786,53 +1750,49 @@ describe('no-floating-promises rule', () => {
 
   describe('different file paths and sources', () => {
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();', filePath: '/src/component.tsx' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();', filePath: '/src/index.js' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with .jsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/app.jsx')
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();', filePath: '/src/app.jsx' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with .mjs file path', () => {
-      const { context, reports } = createMockContext({}, '/src/module.mjs')
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();', filePath: '/src/module.mjs' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = await asyncFunction();',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = await asyncFunction();', filePath: '/src/file.ts' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/src/features/auth/utils/async-helper.ts')
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();', filePath: '/src/features/auth/utils/async-helper.ts' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
@@ -1841,14 +1801,14 @@ describe('no-floating-promises rule', () => {
 
   describe('message content details', () => {
     test('message should contain floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0].message.toLowerCase()).toContain('floating')
     })
 
     test('message should be consistent across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -1861,7 +1821,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('message should be the same for different promise patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       visitor.ExpressionStatement(createFloatingPromiseStatement())
@@ -1873,7 +1833,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(typeof reports[0].message).toBe('string')
@@ -1883,35 +1843,35 @@ describe('no-floating-promises rule', () => {
 
   describe('report descriptor completeness', () => {
     test('report should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0]).toHaveProperty('message')
     })
 
     test('report should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0]).toHaveProperty('loc')
     })
 
     test('report loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0].loc).toHaveProperty('start')
     })
 
     test('report loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0].loc).toHaveProperty('end')
     })
 
     test('report loc start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0].loc?.start).toHaveProperty('line')
@@ -1919,7 +1879,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('report loc end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports[0].loc?.end).toHaveProperty('line')
@@ -1929,14 +1889,14 @@ describe('no-floating-promises rule', () => {
 
   describe('non-ExpressionStatement node types', () => {
     test('should not report for VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createNonExpressionStatement())
       expect(reports.length).toBe(0)
     })
 
     test('should not report for IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -1949,7 +1909,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ForStatement',
@@ -1964,7 +1924,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'WhileStatement',
@@ -1977,7 +1937,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ReturnStatement',
@@ -1989,7 +1949,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'BlockStatement',
@@ -2001,7 +1961,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'FunctionDeclaration',
@@ -2015,7 +1975,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for TryStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'TryStatement',
@@ -2029,7 +1989,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for SwitchStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'SwitchStatement',
@@ -2042,7 +2002,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ThrowStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ThrowStatement',
@@ -2056,7 +2016,7 @@ describe('no-floating-promises rule', () => {
 
   describe('Identifier callee without name property', () => {
     test('should handle Identifier with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2072,7 +2032,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle Identifier without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2088,7 +2048,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle MemberExpression property without name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2110,28 +2070,28 @@ describe('no-floating-promises rule', () => {
 
   describe('ignoreIIFE option behavior', () => {
     test('should report floating promise regardless of ignoreIIFE true', () => {
-      const { context, reports } = createMockContext({ ignoreIIFE: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreIIFE: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should report floating promise regardless of ignoreIIFE false', () => {
-      const { context, reports } = createMockContext({ ignoreIIFE: false })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreIIFE: false }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should report fetch regardless of ignoreIIFE true', () => {
-      const { context, reports } = createMockContext({ ignoreIIFE: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreIIFE: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFetchStatement())
       expect(reports.length).toBe(1)
     })
 
     test('should report Promise.all regardless of ignoreIIFE true', () => {
-      const { context, reports } = createMockContext({ ignoreIIFE: true })
+      const { context, reports } = createMockRuleContext({ options: [{ ignoreIIFE: true }], source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createPromiseAllStatement())
       expect(reports.length).toBe(1)
@@ -2159,7 +2119,7 @@ describe('no-floating-promises rule', () => {
 
   describe('statement types that should not trigger', () => {
     test('should not report for empty ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2170,7 +2130,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with Literal expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2182,7 +2142,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with string Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2194,7 +2154,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2210,7 +2170,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with TaggedTemplateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2226,7 +2186,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with SequenceExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2244,7 +2204,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with LogicalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2261,7 +2221,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with UpdateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2278,7 +2238,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report for ExpressionStatement with YieldExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2296,7 +2256,7 @@ describe('no-floating-promises rule', () => {
 
   describe('boundary name patterns', () => {
     test('should report function named exactly async', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2312,7 +2272,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report function named asynchronizer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2328,7 +2288,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report function named async_underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2344,7 +2304,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report function starting with get', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2360,7 +2320,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report function with camelCase Async in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2376,7 +2336,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report function with lowercase async in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2392,7 +2352,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report MemberExpression with async property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2412,7 +2372,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report MemberExpression with Async in property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2432,7 +2392,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report MemberExpression with sync property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2454,7 +2414,7 @@ describe('no-floating-promises rule', () => {
 
   describe('Promise method chains on various objects', () => {
     test('should report result.then() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2474,7 +2434,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report response.catch() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2494,7 +2454,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report promise.finally() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2514,7 +2474,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report result.map() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2534,7 +2494,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report result.filter() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2554,7 +2514,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report obj.reduce() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2574,7 +2534,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report obj.find() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2594,7 +2554,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report obj.some() floating', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2616,7 +2576,7 @@ describe('no-floating-promises rule', () => {
 
   describe('CallExpression with arguments', () => {
     test('should report asyncFunction with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2635,7 +2595,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report fetch with URL argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2651,7 +2611,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report Promise.all with array argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2673,7 +2633,7 @@ describe('no-floating-promises rule', () => {
 
   describe('void operator edge cases', () => {
     test('should not report void 0 (common pattern)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2689,7 +2649,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report void identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2705,7 +2665,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report void Promise.all()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2729,7 +2689,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report void .then() chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2755,8 +2715,8 @@ describe('no-floating-promises rule', () => {
 
   describe('concurrent visitor invocations', () => {
     test('should correctly track reports from two visitors on same rule', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'asyncFunction();' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor1 = noFloatingPromisesRule.create(ctx1)
       const visitor2 = noFloatingPromisesRule.create(ctx2)
 
@@ -2770,7 +2730,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should correctly handle visitor with all sync calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2781,7 +2741,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should correctly handle visitor with all floating calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2794,7 +2754,7 @@ describe('no-floating-promises rule', () => {
 
   describe('location with zero values', () => {
     test('should handle location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(0, 0))
       expect(reports[0].loc?.start.line).toBe(0)
@@ -2802,14 +2762,14 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(9999, 0))
       expect(reports[0].loc?.start.line).toBe(9999)
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       visitor.ExpressionStatement(createFloatingPromiseStatement(1, 9999))
       expect(reports[0].loc?.start.column).toBe(9999)
@@ -2818,7 +2778,7 @@ describe('no-floating-promises rule', () => {
 
   describe('mixed async name patterns', () => {
     test('should report asyncInit call via Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2834,7 +2794,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report fetchApi call via Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2850,7 +2810,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report executeAsync via Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2866,7 +2826,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should report handleAsyncEvent via Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2882,7 +2842,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report syncInit via Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -2898,7 +2858,7 @@ describe('no-floating-promises rule', () => {
     })
 
     test('should not report processData via Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'asyncFunction();' })
       const visitor = noFloatingPromisesRule.create(context)
       const node = {
         type: 'ExpressionStatement',

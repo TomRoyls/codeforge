@@ -1,49 +1,11 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noElseReturnRule } from '../../../../src/rules/patterns/no-else-return.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 interface MockNode {
   type: string
   [key: string]: unknown
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'if (x) { return; } else { y(); }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
 }
 
 function createIdentifier(name: string): MockNode {
@@ -395,39 +357,39 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with IfStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       expect(visitor).toHaveProperty('IfStatement')
     })
 
     test('should return an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(typeof visitor).toBe('object')
       expect(visitor).not.toBeNull()
     })
 
     test('should return visitor with exactly IfStatement key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(Object.keys(visitor)).toContain('IfStatement')
     })
 
     test('IfStatement should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(typeof visitor.IfStatement).toBe('function')
     })
 
     test('IfStatement function should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(visitor.IfStatement.length).toBe(1)
     })
 
     test('should return new visitor object on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor1 = noElseReturnRule.create(context)
       const visitor2 = noElseReturnRule.create(context)
       expect(visitor1).not.toBe(visitor2)
@@ -442,44 +404,44 @@ describe('no-else-return rule', () => {
     })
 
     test('should not throw when create is called with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       expect(() => noElseReturnRule.create(context)).not.toThrow()
     })
 
     test('IfStatement should not throw when called with undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(() => visitor.IfStatement(undefined)).not.toThrow()
     })
 
     test('IfStatement should not throw when called with null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(() => visitor.IfStatement(null)).not.toThrow()
     })
 
     test('IfStatement should not throw when called with empty object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(() => visitor.IfStatement({})).not.toThrow()
     })
 
     test('calling IfStatement should return void', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const result = visitor.IfStatement(createDetectablePattern())
       expect(result).toBeUndefined()
     })
 
     test('should not throw when IfStatement is called with no arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       expect(() => visitor.IfStatement()).not.toThrow()
     })
 
     test('visitor should be usable after multiple create calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
       v1.IfStatement(createDetectablePattern())
@@ -494,7 +456,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('detecting unnecessary else blocks', () => {
     test('should report else block after return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -508,7 +470,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report else if block after return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -521,7 +483,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report when return is nested in if within consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const innerIf = createIfStatement(
@@ -541,7 +503,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report else block when return is in nested if in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -562,7 +524,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report location of else block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()], 5, 20)
@@ -588,7 +550,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('detection positive cases', () => {
     test('should detect return with identifier argument in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ret = createReturnStatementWithArg('Identifier', { name: 'result' })
       const ifNode = createDetectablePattern([ret])
@@ -597,7 +559,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return with literal argument in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ret = createReturnStatementWithArg('Literal', { value: 42 })
       const ifNode = createDetectablePattern([ret])
@@ -606,7 +568,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return with call expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ret = createReturnStatementWithArg('CallExpression', { callee: createIdentifier('fn') })
       const ifNode = createDetectablePattern([ret])
@@ -615,7 +577,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return as only statement in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern([createReturnStatement()])
       visitor.IfStatement(ifNode)
@@ -623,7 +585,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return as first statement among many in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern([
         createReturnStatement(),
@@ -635,7 +597,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return as last statement among many in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern([
         createExpressionStatement(),
@@ -647,7 +609,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return as middle statement among many in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern([
         createExpressionStatement(),
@@ -659,7 +621,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect else block with multiple statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern(
         [createReturnStatement()],
@@ -674,7 +636,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect else block with single statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern(
         [createReturnStatement()],
@@ -685,7 +647,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when consequent is directly a ReturnStatement (non-block)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const alternate = createBlockStatement([createExpressionStatement()])
       const ifNode = createIfStatement(createIdentifier('x'), createReturnStatement(), alternate)
@@ -694,7 +656,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when alternate is an IfStatement (else-if chain)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const elseIfAlternate = createIfStatement(
@@ -708,7 +670,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect with binary expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const test = {
         type: 'BinaryExpression',
@@ -726,7 +688,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect with call expression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const test = { type: 'CallExpression', callee: createIdentifier('isValid') }
       const ifNode = createIfStatement(
@@ -739,7 +701,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect with null test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         null,
@@ -751,7 +713,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when nested if in consequent has return in both branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -764,7 +726,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when nested if in consequent has return only in alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -777,7 +739,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when consequent has return and throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createDetectablePattern([createReturnStatement(), createThrowStatement()])
       visitor.IfStatement(ifNode)
@@ -785,7 +747,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect empty alternate block with return in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = createBlockStatement([])
@@ -795,7 +757,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect with deeply nested return in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const level3 = createIfStatement(
         createIdentifier('z'),
@@ -809,7 +771,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when return is nested two levels deep with returns in both inner branches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const innerIf = createIfStatement(
         createIdentifier('z'),
@@ -832,7 +794,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('not detecting necessary else blocks', () => {
     test('should not report if without else', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -844,7 +806,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report else block without return in consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createExpressionStatement()])
@@ -857,7 +819,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report if consequent has return statement directly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -878,7 +840,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('negative cases', () => {
     test('should not report when consequent has only expression statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -890,7 +852,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has only variable declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -902,7 +864,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has only function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -914,7 +876,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has while loop but no return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -926,7 +888,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has for loop but no return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -938,7 +900,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has try-catch but no return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -950,7 +912,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has switch but no return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -962,7 +924,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent is empty block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([])
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -972,7 +934,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when alternate is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -985,7 +947,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when alternate is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -998,7 +960,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when there is no alternate property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -1010,7 +972,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for non-IfStatement type ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1022,7 +984,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for type WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'WhileStatement',
@@ -1035,7 +997,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for type ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'ForStatement',
@@ -1047,7 +1009,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when nested if in consequent has no return in any branch', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -1064,7 +1026,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent has only throw statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ifNode = createIfStatement(
         createIdentifier('x'),
@@ -1079,7 +1041,7 @@ describe('no-else-return rule', () => {
       // The rule's hasReturnStatement for IfStatement checks if EITHER branch has return
       // So this WILL report. Let me make a case that won't report:
       // nested if with no return in either branch
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -1096,7 +1058,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent is a plain expression (not block, not return, not if)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createExpressionStatement()
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -1106,7 +1068,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when consequent is an IfStatement without return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createIfStatement(
         createIdentifier('y'),
@@ -1120,28 +1082,28 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report when passed a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(42)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when passed a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement('if (x) return;')
       expect(reports.length).toBe(0)
     })
 
     test('should not report when passed a boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(true)
       expect(reports.length).toBe(0)
     })
 
     test('should not report when passed an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement([createReturnStatement()])
       expect(reports.length).toBe(0)
@@ -1154,7 +1116,7 @@ describe('no-else-return rule', () => {
   describe('fix functionality', () => {
     test('should provide fix for else block with single statement', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
@@ -1175,7 +1137,7 @@ describe('no-else-return rule', () => {
 
     test('should provide fix that removes else keyword', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
@@ -1197,7 +1159,7 @@ describe('no-else-return rule', () => {
 
     test('should provide fix that extracts block content', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
@@ -1217,7 +1179,7 @@ describe('no-else-return rule', () => {
 
     test('should provide fix for else if (non-block alternate)', () => {
       const source = 'if (x) { return; } else if (y) { z(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
@@ -1246,7 +1208,7 @@ describe('no-else-return rule', () => {
   describe('fix functionality expanded', () => {
     test('should produce fix that starts at else keyword position', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1265,7 +1227,7 @@ describe('no-else-return rule', () => {
 
     test('should produce fix that ends at alternate range end', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1283,7 +1245,7 @@ describe('no-else-return rule', () => {
 
     test('should produce fix text starting with newline for block alternate', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1301,7 +1263,7 @@ describe('no-else-return rule', () => {
 
     test('should produce fix with space prefix for non-block alternate', () => {
       const source = 'if (x) { return; } else if (y) { z(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createIfStatementWithRange(
@@ -1324,7 +1286,7 @@ describe('no-else-return rule', () => {
 
     test('should handle fix for empty alternate block', () => {
       const source = 'if (x) { return; } else { }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([], [24, 27])
@@ -1343,7 +1305,7 @@ describe('no-else-return rule', () => {
 
     test('should produce fix for alternate with multiple statements', () => {
       const source = 'if (x) { return; } else { y(); z(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange(
@@ -1364,7 +1326,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not produce fix when if has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -1381,7 +1343,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not produce fix when alternate has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = {
@@ -1404,7 +1366,7 @@ describe('no-else-return rule', () => {
 
     test('fix range should be tuple of two numbers', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1425,7 +1387,7 @@ describe('no-else-return rule', () => {
 
     test('fix text should be a string', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1443,7 +1405,7 @@ describe('no-else-return rule', () => {
 
     test('fix should replace from else keyword to end of alternate', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1463,7 +1425,7 @@ describe('no-else-return rule', () => {
 
     test('should preserve content of alternate block in fix', () => {
       const source = 'if (x) { return; } else { foo(); bar(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange(
@@ -1485,7 +1447,7 @@ describe('no-else-return rule', () => {
 
     test('fix for non-block alternate should preserve original text', () => {
       const source = 'if (x) { return; } else if (y) { z(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createIfStatementWithRange(
@@ -1508,7 +1470,7 @@ describe('no-else-return rule', () => {
 
     test('should produce fix with range starting before alternate', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1527,7 +1489,7 @@ describe('no-else-return rule', () => {
 
     test('fix range start should be less than end', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1546,7 +1508,7 @@ describe('no-else-return rule', () => {
     test('should handle fix when source has no else keyword between ranges', () => {
       // Edge: source doesn't actually contain 'else' in the scanned range
       const source = 'if (x) { return; } maybe { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [26, 33])
@@ -1565,7 +1527,7 @@ describe('no-else-return rule', () => {
     test('should handle fix for very long source', () => {
       const padding = ' '.repeat(100)
       const source = `if (x) { return; } else { y(); }${padding}`
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1582,7 +1544,7 @@ describe('no-else-return rule', () => {
 
     test('fix text for non-block alternate should start with space', () => {
       const source = 'if (x) { return; } else y();'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       // Non-block alternate (just an expression statement)
@@ -1610,21 +1572,21 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       expect(() => visitor.IfStatement(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       expect(() => visitor.IfStatement(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       expect(() => visitor.IfStatement('string')).not.toThrow()
@@ -1632,7 +1594,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const node = {
@@ -1644,7 +1606,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle non-IfStatement type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const node = {
@@ -1658,7 +1620,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle empty consequent block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([])
@@ -1671,7 +1633,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle empty alternate block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -1684,7 +1646,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node without consequent', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const node = {
@@ -1697,7 +1659,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node without alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const node = {
@@ -1711,7 +1673,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node with null alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const node = {
@@ -1727,7 +1689,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -1744,7 +1706,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -1769,7 +1731,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('edge cases expanded', () => {
     test('should handle node with boolean false alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -1783,7 +1745,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node with numeric 0 alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -1797,7 +1759,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node with empty string alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -1811,7 +1773,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle very large consequent body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const statements: MockNode[] = []
       for (let i = 0; i < 100; i++) {
@@ -1824,7 +1786,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle very large alternate body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const altStatements: MockNode[] = []
       for (let i = 0; i < 100; i++) {
@@ -1836,7 +1798,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle calling IfStatement with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       // TypeScript won't allow this easily but runtime might get it
       expect(() =>
@@ -1846,7 +1808,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle node with missing test property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const node = {
         type: 'IfStatement',
@@ -1858,7 +1820,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle consequent as non-block expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createExpressionStatement()
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -1870,7 +1832,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle deeply nested if-else with returns at all levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const level4 = createIfStatement(
         createIdentifier('d'),
@@ -1885,7 +1847,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle multiple calls with same visitor independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       // First call: valid pattern
@@ -1903,8 +1865,8 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle creating multiple independent visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
 
@@ -1917,7 +1879,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not modify input node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const originalNode = createDetectablePattern()
       const originalType = originalNode.type
@@ -1930,8 +1892,8 @@ describe('no-else-return rule', () => {
     })
 
     test('should produce same result when called with same inputs', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
 
@@ -1945,7 +1907,7 @@ describe('no-else-return rule', () => {
 
     test('should handle range at position 0', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -1963,7 +1925,7 @@ describe('no-else-return rule', () => {
 
     test('should handle very large range positions', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [10007, 10018])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [10024, 10033])
@@ -1979,7 +1941,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle consequent that is an IfStatement without return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createIfStatement(
         createIdentifier('y'),
@@ -1993,7 +1955,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle consequent that is an IfStatement with return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createIfStatement(
         createIdentifier('y'),
@@ -2007,7 +1969,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate with only loc.start but no loc.end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = {
@@ -2027,7 +1989,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle consequent body as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = {
         type: 'BlockStatement',
@@ -2047,7 +2009,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention else block in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -2060,7 +2022,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should mention unnecessary in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -2073,7 +2035,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should mention return in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const consequent = createBlockStatement([createReturnStatement()])
@@ -2091,22 +2053,22 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('message quality expanded', () => {
     test('should produce exactly one report for one violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0].message.endsWith('.')).toBe(true)
     })
 
     test('should have consistent message across multiple calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
       v1.IfStatement(createDetectablePattern())
@@ -2115,36 +2077,36 @@ describe('no-else-return rule', () => {
     })
 
     test('message should not be empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0].message.length).toBeGreaterThan(0)
     })
 
     test('message should be a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(typeof reports[0].message).toBe('string')
     })
 
     test('message should match exact expected text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0].message).toBe('Unnecessary else block after return statement.')
     })
 
     test('should mention block in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0].message.toLowerCase()).toContain('block')
     })
 
     test('message should be consistent regardless of node structure', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
 
@@ -2167,7 +2129,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('deeply nested structures', () => {
     test('should detect return in nested if-else within consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const deeplyNestedReturn = createBlockStatement([createReturnStatement()])
@@ -2188,7 +2150,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return in both branches of nested if', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       const nestedIf = createIfStatement(
@@ -2213,7 +2175,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report location matching alternate node location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()], 5, 20)
       const alternate = createBlockStatement([createExpressionStatement()], 26, 40)
@@ -2225,7 +2187,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report correct end location for alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()], 5, 20)
       const alternate = createBlockStatement([createExpressionStatement()], 26, 40)
@@ -2236,7 +2198,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate at line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()], 5, 20)
       const alternate = createBlockStatement([createExpressionStatement()], 26, 40)
@@ -2246,7 +2208,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()], 5, 20)
       const alternate = {
@@ -2260,7 +2222,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()], 0, 10)
       const alternate = {
@@ -2274,7 +2236,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()], 0, 10)
       const alternate = {
@@ -2288,7 +2250,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate on different line from if', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = {
         type: 'BlockStatement',
@@ -2312,7 +2274,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should use default location when alternate has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = {
@@ -2333,7 +2295,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report location with correct start and end structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0].loc).toBeDefined()
@@ -2344,35 +2306,35 @@ describe('no-else-return rule', () => {
     })
 
     test('should report start line as a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(typeof reports[0].loc?.start.line).toBe('number')
     })
 
     test('should report start column as a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(typeof reports[0].loc?.start.column).toBe('number')
     })
 
     test('should report end line as a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(typeof reports[0].loc?.end.line).toBe('number')
     })
 
     test('should report end column as a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(typeof reports[0].loc?.end.column).toBe('number')
     })
 
     test('should handle alternate that is IfStatement with own location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = createIfStatement(
@@ -2390,7 +2352,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle location when alternate is non-BlockStatement non-IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = createExpressionStatement()
@@ -2401,7 +2363,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report location even without ranges', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -2418,7 +2380,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('multiple reports', () => {
     test('should produce separate reports for separate calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       visitor.IfStatement(createDetectablePattern())
@@ -2426,7 +2388,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not carry state between calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       // First: no report
       visitor.IfStatement(
@@ -2443,8 +2405,8 @@ describe('no-else-return rule', () => {
     })
 
     test('should report independently for different visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
       v1.IfStatement(createDetectablePattern())
@@ -2455,7 +2417,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report correctly when called twice with same pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const pattern = createDetectablePattern()
       visitor.IfStatement(pattern)
@@ -2465,7 +2427,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should report correctly for alternating valid/invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       // Invalid
@@ -2498,7 +2460,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should accumulate reports across many calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       for (let i = 0; i < 10; i++) {
         visitor.IfStatement(createDetectablePattern())
@@ -2507,7 +2469,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for valid calls interspersed with invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2525,7 +2487,7 @@ describe('no-else-return rule', () => {
     })
 
     test('each report should have its own message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       visitor.IfStatement(createDetectablePattern())
@@ -2541,14 +2503,14 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/some/other/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }', filePath: '/some/other/path.ts' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
@@ -2556,7 +2518,7 @@ describe('no-else-return rule', () => {
 
     test('should work with long source code', () => {
       const longSource = 'x'.repeat(10000) + 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
@@ -2583,21 +2545,21 @@ describe('no-else-return rule', () => {
     })
 
     test('should work with populated options in config', () => {
-      const { context, reports } = createMockContext({ allowInCatch: true, maxDepth: 3 })
+      const { context, reports } = createMockRuleContext({ options: [{ allowInCatch: true, maxDepth: 3 }], source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
     })
 
     test('should work when getAST returns null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       expect(context.getAST()).toBeNull()
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
@@ -2605,7 +2567,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should work when getTokens returns empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       expect(context.getTokens()).toEqual([])
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
@@ -2613,7 +2575,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should work when getComments returns empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       expect(context.getComments()).toEqual([])
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
@@ -2622,7 +2584,7 @@ describe('no-else-return rule', () => {
 
     test('should not crash with special characters in source', () => {
       const source = 'if (x) { return "héllo wörld"; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange(
         [createReturnStatementWithArg('Literal', { value: 'héllo wörld' })],
@@ -2673,7 +2635,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('report descriptor', () => {
     test('should include message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0]).toHaveProperty('message')
@@ -2681,7 +2643,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should include loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports[0]).toHaveProperty('loc')
@@ -2689,7 +2651,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not include fix when ranges are missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatement([createReturnStatement()])
       const alternate = createBlockStatement([createExpressionStatement()])
@@ -2707,7 +2669,7 @@ describe('no-else-return rule', () => {
 
     test('should include fix when ranges are present', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -2723,7 +2685,7 @@ describe('no-else-return rule', () => {
 
     test('fix should have range property as tuple', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -2741,7 +2703,7 @@ describe('no-else-return rule', () => {
 
     test('fix should have text property as string', () => {
       const source = 'if (x) { return; } else { y(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noElseReturnRule.create(context)
       const consequent = createBlockStatementWithRange([createReturnStatement()], [7, 18])
       const alternate = createBlockStatementWithRange([createExpressionStatement()], [24, 33])
@@ -2758,7 +2720,7 @@ describe('no-else-return rule', () => {
     })
 
     test('report loc should have start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       const loc = reports[0].loc
@@ -2768,7 +2730,7 @@ describe('no-else-return rule', () => {
     })
 
     test('report loc start should be before end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       const loc = reports[0].loc
@@ -2784,7 +2746,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('return statement detection variations', () => {
     test('should detect return statement with object expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ret = createReturnStatementWithArg('ObjectExpression', { properties: [] })
       const ifNode = createDetectablePattern([ret])
@@ -2793,7 +2755,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return statement with array expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ret = createReturnStatementWithArg('ArrayExpression', { elements: [] })
       const ifNode = createDetectablePattern([ret])
@@ -2802,7 +2764,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return statement with binary expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const ret = createReturnStatementWithArg('BinaryExpression', { operator: '+' })
       const ifNode = createDetectablePattern([ret])
@@ -2811,7 +2773,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return in nested block statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       // A block within a block that has return
       const innerBlock = createBlockStatement([createReturnStatement()])
@@ -2826,7 +2788,7 @@ describe('no-else-return rule', () => {
     test('should not detect when return is only in nested if alternate', () => {
       // Wait - hasReturnStatement for IfStatement checks if EITHER branch has return
       // So if the nested if has return in alternate, it WILL return true
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -2840,7 +2802,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect when return is in nested if consequent only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -2853,7 +2815,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return in deeply nested if (3 levels)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const level2 = createIfStatement(
         createIdentifier('z'),
@@ -2867,7 +2829,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should detect return in nested if with both branches having returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -2880,7 +2842,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not detect when no return exists anywhere in consequent tree', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const nestedIf = createIfStatement(
         createIdentifier('y'),
@@ -2902,7 +2864,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('alternate type variations', () => {
     test('should handle alternate as BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const alternate = createBlockStatement([createExpressionStatement()])
       const ifNode = createIfStatement(
@@ -2915,7 +2877,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate as IfStatement (else-if chain)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const alternate = createIfStatement(
         createIdentifier('y'),
@@ -2932,7 +2894,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate as empty BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const alternate = createBlockStatement([])
       const ifNode = createIfStatement(
@@ -2945,7 +2907,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate with nested if inside block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const alternate = createBlockStatement([
         createIfStatement(
@@ -2964,7 +2926,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle alternate as ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const alternate = createExpressionStatement()
       const ifNode = createIfStatement(
@@ -2977,7 +2939,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should handle deeply chained else-if', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const level3 = createIfStatement(
         createIdentifier('z'),
@@ -3004,7 +2966,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('isIfStatement check', () => {
     test('should not report for type VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement({
         type: 'VariableDeclaration',
@@ -3015,7 +2977,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for type FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement({
         type: 'FunctionDeclaration',
@@ -3026,7 +2988,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for type BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement({
         type: 'BlockStatement',
@@ -3037,7 +2999,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not report for type ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement({
         type: 'ReturnStatement',
@@ -3048,14 +3010,14 @@ describe('no-else-return rule', () => {
     })
 
     test('should report for type IfStatement with exact casing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement(createDetectablePattern())
       expect(reports.length).toBe(1)
     })
 
     test('should not report for type ifstatement (wrong casing)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       visitor.IfStatement({
         type: 'ifstatement',
@@ -3071,7 +3033,7 @@ describe('no-else-return rule', () => {
   // ============================================================
   describe('immutability and state', () => {
     test('should not modify input node properties', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const visitor = noElseReturnRule.create(context)
       const originalNode = createDetectablePattern()
       const before = JSON.stringify(originalNode)
@@ -3081,7 +3043,7 @@ describe('no-else-return rule', () => {
     })
 
     test('should not modify context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const getSource = context.getSource
       const getFilePath = context.getFilePath
       const visitor = noElseReturnRule.create(context)
@@ -3091,8 +3053,8 @@ describe('no-else-return rule', () => {
     })
 
     test('should produce same result for same inputs across different contexts', () => {
-      const { context: ctx1, reports: r1 } = createMockContext({}, '/a.ts')
-      const { context: ctx2, reports: r2 } = createMockContext({}, '/b.ts')
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }', filePath: '/a.ts' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }', filePath: '/b.ts' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
       const node = createDetectablePattern()
@@ -3103,8 +3065,8 @@ describe('no-else-return rule', () => {
     })
 
     test('should not have shared state between create calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (x) { return; } else { y(); }' })
       const v1 = noElseReturnRule.create(ctx1)
       const v2 = noElseReturnRule.create(ctx2)
       v1.IfStatement(createDetectablePattern())

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { sortKeysRule } from '../../../../src/rules/patterns/sort-keys.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const obj = { b: 1, a: 2 };',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createObjectExpression(
   properties: Array<{ key: string; value: unknown; line?: number; column?: number }>,
@@ -184,46 +148,46 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('create', () => {
     test('should return visitor object with ObjectExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(visitor).toHaveProperty('ObjectExpression')
     })
 
     test('should return ObjectExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(typeof visitor.ObjectExpression).toBe('function')
     })
 
     test('should return a new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor1 = sortKeysRule.create(context)
       const visitor2 = sortKeysRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should accept context with default options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       expect(() => sortKeysRule.create(context)).not.toThrow()
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       expect(() => sortKeysRule.create(context)).not.toThrow()
     })
 
     test('should accept context with natural option', () => {
-      const { context } = createMockContext({ natural: false })
+      const { context } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       expect(() => sortKeysRule.create(context)).not.toThrow()
     })
 
     test('should accept context with minKeys option', () => {
-      const { context } = createMockContext({ minKeys: 5 })
+      const { context } = createMockRuleContext({ options: [{ minKeys: 5 }], source: 'const obj = { b: 1, a: 2 };' })
       expect(() => sortKeysRule.create(context)).not.toThrow()
     })
 
     test('should have only ObjectExpression in visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(Object.keys(visitor)).toEqual(['ObjectExpression'])
     })
@@ -234,7 +198,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('detecting unsorted keys', () => {
     test('should report when keys are not in alphabetical order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -245,7 +209,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should include expected order in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'c', value: { type: 'Literal', value: 1 } },
@@ -257,7 +221,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report on first unsorted key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, column: 0 },
@@ -268,7 +232,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect two keys swapped', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -279,7 +243,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys in larger object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'alpha', value: { type: 'Literal', value: 1 } },
@@ -292,7 +256,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys in reverse order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -304,7 +268,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect keys differing only in case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'Zebra', value: { type: 'Literal', value: 1 } },
@@ -315,7 +279,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: '_b', value: { type: 'Literal', value: 1 } },
@@ -326,7 +290,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with dollar signs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: '$ref', value: { type: 'Literal', value: 1 } },
@@ -337,7 +301,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted single-char keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -348,7 +312,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted long key names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'veryLongKeyName', value: { type: 'Literal', value: 1 } },
@@ -359,7 +323,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect natural sort violation with numeric strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -371,7 +335,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with trailing numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'item10', value: { type: 'Literal', value: 1 } },
@@ -382,7 +346,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys among many sorted ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -396,7 +360,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect last two keys unsorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -409,7 +373,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect first two keys unsorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -421,7 +385,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted literal string keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -446,7 +410,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted mixed identifier and literal keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -471,7 +435,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report lexicographically sorted keys with natural false', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       // Lexicographically: a10 < a2, so a10, a2 is sorted
       const node = createObjectExpression([
@@ -483,7 +447,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report with natural true when lexicographic would pass but natural fails', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       // a1, a10, a2 — lexicographically sorted but not naturally
       const node = createObjectExpression([
@@ -496,7 +460,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with hyphens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z-key', value: { type: 'Literal', value: 1 } },
@@ -507,7 +471,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'key3', value: { type: 'Literal', value: 1 } },
@@ -518,7 +482,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted camelCase keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'myKey', value: { type: 'Literal', value: 1 } },
@@ -529,7 +493,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys at boundary of alphabet', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -541,7 +505,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should produce exactly one report for a single unsorted object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'c', value: { type: 'Literal', value: 1 } },
@@ -553,7 +517,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with only last key out of place', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -568,7 +532,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect adjacent swap in middle of sorted keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -581,7 +545,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with unicode characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'étoile', value: { type: 'Literal', value: 1 } },
@@ -592,7 +556,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should detect unsorted keys with mixed case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'Beta', value: { type: 'Literal', value: 1 } },
@@ -608,7 +572,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('allowing sorted keys', () => {
     test('should not report when keys are in alphabetical order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -620,7 +584,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report single key object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([{ key: 'a', value: { type: 'Literal', value: 1 } }])
       visitor.ObjectExpression(node)
@@ -628,7 +592,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -640,7 +604,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report two sorted keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -651,7 +615,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when keys are equal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -662,7 +626,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report naturally sorted numeric keys', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -674,7 +638,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report lexicographically sorted keys with natural false', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -686,7 +650,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report object with fewer keys than minKeys', () => {
-      const { context, reports } = createMockContext({ minKeys: 4 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 4 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -697,7 +661,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when all keys are sorted identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'alpha', value: { type: 'Literal', value: 1 } },
@@ -711,7 +675,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted literal string keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -736,7 +700,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when only SpreadElements present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -748,7 +712,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted keys with underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: '_a', value: { type: 'Literal', value: 1 } },
@@ -759,7 +723,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted keys with dollar signs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: '$id', value: { type: 'Literal', value: 1 } },
@@ -770,7 +734,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when minKeys equals property count exactly', () => {
-      const { context, reports } = createMockContext({ minKeys: 3 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 3 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -782,7 +746,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report minKeys greater than object size', () => {
-      const { context, reports } = createMockContext({ minKeys: 10 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 10 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -793,7 +757,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted keys across multiple lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 }, line: 1 },
@@ -805,7 +769,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when keys differ only by numeric suffix and are naturally sorted', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'file1', value: { type: 'Literal', value: 1 } },
@@ -818,7 +782,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted single-letter keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -831,7 +795,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when properties array is empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -843,7 +807,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when numeric literal keys are ignored (non-string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -868,7 +832,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted keys with mixed identifiers and string literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -899,7 +863,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when all keys are computed (TemplateLiteral)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -924,7 +888,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when only one valid key after spreading', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -944,7 +908,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted hyphenated keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a-key', value: { type: 'Literal', value: 1 } },
@@ -955,7 +919,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted long alphabetical keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'aaa', value: { type: 'Literal', value: 1 } },
@@ -967,7 +931,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report sorted camelCase keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'anotherKey', value: { type: 'Literal', value: 1 } },
@@ -978,7 +942,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when keys are sorted and minKeys is higher than default', () => {
-      const { context, reports } = createMockContext({ minKeys: 3 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 3 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -990,7 +954,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report keys sorted at boundary of case sensitivity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'A', value: { type: 'Literal', value: 1 } },
@@ -1008,26 +972,26 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression('string')).not.toThrow()
       expect(() => visitor.ObjectExpression(123)).not.toThrow()
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = { properties: [] }
       expect(() => visitor.ObjectExpression(node)).not.toThrow()
@@ -1035,7 +999,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'CallExpression',
@@ -1046,7 +1010,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle properties that are not Property type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1064,7 +1028,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle properties without key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1082,7 +1046,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle property with null key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1101,14 +1065,14 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle Literal keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpressionWithLiterals([{ key: 'b' }, { key: 'a', isLiteral: true }])
       expect(() => visitor.ObjectExpression(node)).not.toThrow()
     })
 
     test('should handle empty options array', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1151,7 +1115,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1173,7 +1137,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle properties that are null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1184,7 +1148,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle non-array properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1195,25 +1159,25 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression(true)).not.toThrow()
     })
 
     test('should handle numeric node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression(42)).not.toThrow()
     })
 
     test('should handle empty string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression('')).not.toThrow()
     })
 
     test('should handle node with undefined properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1224,7 +1188,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle node with null properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1235,7 +1199,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle property with undefined key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1254,7 +1218,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle property key with boolean value in Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1279,7 +1243,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle property key with null Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1298,7 +1262,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle deeply nested but unsorted properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'ObjectExpression', properties: [] } },
@@ -1309,7 +1273,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle object with only SpreadElements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1352,7 +1316,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('location', () => {
     test('should report location of first key property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, column: 5 },
@@ -1363,7 +1327,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report location with correct line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, line: 5, column: 2 },
@@ -1374,7 +1338,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report start and end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, line: 1, column: 0 },
@@ -1386,7 +1350,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should use column 0 for first property by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -1397,7 +1361,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report location at line 1 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -1408,7 +1372,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should use default location when property has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1433,7 +1397,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report location with multi-line objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 }, line: 10, column: 4 },
@@ -1445,7 +1409,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report end column greater than start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, column: 2 },
@@ -1456,7 +1420,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle location with large column offsets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, column: 100 },
@@ -1467,7 +1431,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle location with large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, line: 500 },
@@ -1478,7 +1442,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report loc as object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1490,7 +1454,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report location with column 0 for first property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1516,7 +1480,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should provide default location when property loc is missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -1541,7 +1505,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle location with zero column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 }, line: 1, column: 0 },
@@ -1552,7 +1516,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should have numeric line and column in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1571,7 +1535,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('message quality', () => {
     test('should mention sorting in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1582,7 +1546,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should mention alphabetical in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1593,7 +1557,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should include expected order in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -1604,7 +1568,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should mention natural sorting when natural is true', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1615,7 +1579,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not mention natural sorting when natural is false', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1626,7 +1590,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should include sorted key names in message', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'c', value: { type: 'Literal', value: 1 } },
@@ -1638,7 +1602,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should mention object keys in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1650,7 +1614,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should produce non-empty message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1661,7 +1625,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should show correct expected order for reverse-sorted keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'c', value: { type: 'Literal', value: 1 } },
@@ -1673,7 +1637,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should show correct expected order for partially sorted keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -1690,7 +1654,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('multiple objects', () => {
     test('should report multiple unsorted objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node1 = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1706,7 +1670,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report unsorted but not sorted objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const unsortedNode = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1722,7 +1686,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report each unsorted object independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       for (let i = 0; i < 5; i++) {
         const node = createObjectExpression([
@@ -1735,7 +1699,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report only unsorted objects in a mix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const unsorted1 = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1761,7 +1725,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should maintain independent reports for each object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node1 = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -1778,7 +1742,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle many sorted objects without reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       for (let i = 0; i < 10; i++) {
         const node = createObjectExpression([
@@ -1791,7 +1755,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle alternating sorted and unsorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       for (let i = 0; i < 4; i++) {
         const sorted = createObjectExpression([
@@ -1809,7 +1773,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle empty objects interspersed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const empty = {
         type: 'ObjectExpression',
@@ -1827,7 +1791,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should produce separate messages for each unsorted object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node1 = createObjectExpression([
         { key: 'c', value: { type: 'Literal', value: 1 } },
@@ -1843,7 +1807,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report on nested unsorted objects independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       // Outer unsorted
       const outer = createObjectExpression([
@@ -1867,7 +1831,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('context usage', () => {
     test('should call context.report with message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1879,7 +1843,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should use default options when none provided', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1890,7 +1854,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should respect natural option from context', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1901,7 +1865,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should respect minKeys option from context', () => {
-      const { context, reports } = createMockContext({ minKeys: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 5 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -1912,7 +1876,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle context with both options', () => {
-      const { context, reports } = createMockContext({ natural: false, minKeys: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false, minKeys: 2 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1924,7 +1888,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle context with extra unknown options', () => {
-      const { context, reports } = createMockContext({ unknownOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownOption: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1934,7 +1898,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not modify the context object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const originalFilePath = context.getFilePath()
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
@@ -1946,7 +1910,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };', filePath: '/project/src/utils.ts' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1957,11 +1921,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'export const x = { b: 1, a: 2 };',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'export const x = { b: 1, a: 2 };', filePath: '/src/file.ts' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -1972,7 +1932,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should create visitor that works independently of context after creation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       // Use visitor multiple times without re-creating
       const node1 = createObjectExpression([
@@ -1994,7 +1954,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('natural option', () => {
     test('should use natural sort by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2006,7 +1966,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report naturally sorted keys when natural true', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       // item2 < item10 in natural sort
       const node = createObjectExpression([
@@ -2018,7 +1978,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when natural false and keys are lexicographically sorted', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2030,7 +1990,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report when natural true and keys are naturally sorted', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2043,7 +2003,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should include naturally sorted order in message when natural is true', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a10', value: { type: 'Literal', value: 1 } },
@@ -2054,7 +2014,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should include lexicographically sorted order in message when natural is false', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a2', value: { type: 'Literal', value: 1 } },
@@ -2070,7 +2030,7 @@ describe('sort-keys rule', () => {
   // ============================================================================
   describe('minKeys option', () => {
     test('should not report when object has fewer keys than minKeys', () => {
-      const { context, reports } = createMockContext({ minKeys: 3 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 3 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -2081,7 +2041,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report when object has exactly minKeys', () => {
-      const { context, reports } = createMockContext({ minKeys: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 2 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -2092,7 +2052,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should use default minKeys of 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'b', value: { type: 'Literal', value: 1 } },
@@ -2103,7 +2063,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report single key with minKeys 2', () => {
-      const { context, reports } = createMockContext({ minKeys: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 2 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([{ key: 'a', value: { type: 'Literal', value: 1 } }])
       visitor.ObjectExpression(node)
@@ -2111,7 +2071,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report with minKeys 2 and 3 unsorted keys', () => {
-      const { context, reports } = createMockContext({ minKeys: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 2 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'c', value: { type: 'Literal', value: 1 } },
@@ -2123,7 +2083,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report with minKeys 5 and only 4 keys', () => {
-      const { context, reports } = createMockContext({ minKeys: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 5 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'd', value: { type: 'Literal', value: 1 } },
@@ -2136,7 +2096,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report with minKeys 5 and exactly 5 unsorted keys', () => {
-      const { context, reports } = createMockContext({ minKeys: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 5 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'e', value: { type: 'Literal', value: 1 } },
@@ -2150,7 +2110,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report with minKeys 2 and many unsorted keys', () => {
-      const { context, reports } = createMockContext({ minKeys: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ minKeys: 2 }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -2179,7 +2139,7 @@ describe('sort-keys rule', () => {
       ['y', 'x'],
       ['foo', 'bar'],
     ] as const)('should report unsorted keys "%s" before "%s"', (first, second) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: first, value: { type: 'Literal', value: 1 } },
@@ -2201,7 +2161,7 @@ describe('sort-keys rule', () => {
       ['bar', 'foo'],
       ['1abc', '2abc'],
     ] as const)('should not report sorted keys "%s" before "%s"', (first, second) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: first, value: { type: 'Literal', value: 1 } },
@@ -2220,7 +2180,7 @@ describe('sort-keys rule', () => {
       [['a', 'c', 'b'], 'a, b, c'],
       [['banana', 'apple', 'cherry'], 'apple, banana, cherry'],
     ] as const)('should report keys %p with expected order "%s"', (keys, expected) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression(
         keys.map((k) => ({ key: k, value: { type: 'Literal', value: k } })),
@@ -2242,7 +2202,7 @@ describe('sort-keys rule', () => {
     ] as const)(
       'minKeys=%i with %i unsorted keys should report=%s',
       (minKeys, keyCount, shouldReport) => {
-        const { context, reports } = createMockContext({ minKeys })
+        const { context, reports } = createMockRuleContext({ options: [{ minKeys }], source: 'const obj = { b: 1, a: 2 };' })
         const visitor = sortKeysRule.create(context)
         const keys = Array.from({ length: keyCount }, (_, i) => String.fromCharCode(122 - i)) // z, y, x, ...
         const node = createObjectExpression(
@@ -2264,7 +2224,7 @@ describe('sort-keys rule', () => {
       ['empty object', {}],
       ['array', [1, 2, 3]],
     ])('should handle %s node without throwing', (_, node) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       expect(() => visitor.ObjectExpression(node)).not.toThrow()
     })
@@ -2272,7 +2232,7 @@ describe('sort-keys rule', () => {
 
   describe('test.each - special key types', () => {
     test('should handle numeric literal keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -2296,7 +2256,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle mixed identifier and literal keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = {
         type: 'ObjectExpression',
@@ -2322,7 +2282,7 @@ describe('sort-keys rule', () => {
 
   describe('test.each - natural vs lexicographic sorting', () => {
     test('keys=[a1,a2,a10] natural=true should not report', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2334,7 +2294,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[a1,a10,a2] natural=true should report', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2346,7 +2306,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[a1,a10,a2] natural=false should not report', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2358,7 +2318,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[a1,a2,a10] natural=false should report', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a1', value: { type: 'Literal', value: 1 } },
@@ -2370,7 +2330,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[item1,item10,item2] natural=true should report', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'item1', value: { type: 'Literal', value: 1 } },
@@ -2382,7 +2342,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[item1,item10,item2] natural=false should not report', () => {
-      const { context, reports } = createMockContext({ natural: false })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: false }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'item1', value: { type: 'Literal', value: 1 } },
@@ -2394,7 +2354,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[file1,file2,file10] natural=true should not report', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'file1', value: { type: 'Literal', value: 1 } },
@@ -2406,7 +2366,7 @@ describe('sort-keys rule', () => {
     })
 
     test('keys=[file10,file2,file1] natural=true should report', () => {
-      const { context, reports } = createMockContext({ natural: true })
+      const { context, reports } = createMockRuleContext({ options: [{ natural: true }], source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'file10', value: { type: 'Literal', value: 1 } },
@@ -2420,7 +2380,7 @@ describe('sort-keys rule', () => {
 
   describe('comprehensive key sorting scenarios', () => {
     test('should report keys starting with same letter but different second letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'ab', value: { type: 'Literal', value: 1 } },
@@ -2431,7 +2391,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should not report keys starting with same letter in correct order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'aa', value: { type: 'Literal', value: 1 } },
@@ -2442,7 +2402,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report reversed alphabetical order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z', value: { type: 'Literal', value: 1 } },
@@ -2455,7 +2415,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle keys with double underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: '__z', value: { type: 'Literal', value: 1 } },
@@ -2466,7 +2426,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle sorted double underscore prefix keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: '__a', value: { type: 'Literal', value: 1 } },
@@ -2477,7 +2437,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report unsorted single char among many', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -2491,7 +2451,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle keys with numbers embedded', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'key2value', value: { type: 'Literal', value: 1 } },
@@ -2502,7 +2462,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle sorted keys with numbers embedded', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'key1value', value: { type: 'Literal', value: 1 } },
@@ -2513,7 +2473,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report when only middle key is out of place', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -2526,7 +2486,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle keys differing only in last character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'testz', value: { type: 'Literal', value: 1 } },
@@ -2537,7 +2497,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle sorted keys differing in last character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'testa', value: { type: 'Literal', value: 1 } },
@@ -2548,7 +2508,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle keys with dots', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'z.key', value: { type: 'Literal', value: 1 } },
@@ -2559,7 +2519,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle sorted keys with dots', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a.key', value: { type: 'Literal', value: 1 } },
@@ -2570,7 +2530,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle very long key names sorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'aVeryLongKeyNameThatGoesOnAndOn', value: { type: 'Literal', value: 1 } },
@@ -2581,7 +2541,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle very long key names unsorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'bVeryLongKeyNameThatGoesOnAndOn', value: { type: 'Literal', value: 1 } },
@@ -2592,7 +2552,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should report when object has many keys with one inversion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -2608,7 +2568,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle keys with only vowels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'u', value: { type: 'Literal', value: 1 } },
@@ -2620,7 +2580,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle sorted vowel-only keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'a', value: { type: 'Literal', value: 1 } },
@@ -2634,7 +2594,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle pascalCase keys unsorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'Zebra', value: { type: 'Literal', value: 1 } },
@@ -2645,7 +2605,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle pascalCase keys sorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'Apple', value: { type: 'Literal', value: 1 } },
@@ -2657,7 +2617,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle UPPER_CASE keys unsorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'ZEBRA', value: { type: 'Literal', value: 1 } },
@@ -2668,7 +2628,7 @@ describe('sort-keys rule', () => {
     })
 
     test('should handle UPPER_CASE keys sorted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const obj = { b: 1, a: 2 };' })
       const visitor = sortKeysRule.create(context)
       const node = createObjectExpression([
         { key: 'APPLE', value: { type: 'Literal', value: 1 } },

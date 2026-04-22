@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferNumericLiteralsRule } from '../../../../src/rules/patterns/prefer-numeric-literals.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'parseInt("111110", 2);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createParseIntCall(strValue: string, radix: number, line = 1, column = 0): unknown {
   const endColumn = column + 25
@@ -193,28 +155,28 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return a function for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return visitor with exactly CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(Object.keys(visitor)).toContain('CallExpression')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor1 = preferNumericLiteralsRule.create(context)
       const visitor2 = preferNumericLiteralsRule.create(context)
 
@@ -222,7 +184,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should accept valid RuleContext', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       expect(() => preferNumericLiteralsRule.create(context)).not.toThrow()
     })
 
@@ -231,7 +193,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('visitor CallExpression should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
       expect(visitor.CallExpression.length).toBeGreaterThanOrEqual(1)
     })
@@ -239,7 +201,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('detecting binary literals (radix 2)', () => {
     test('should report parseInt with radix 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('111110', 2)
@@ -250,7 +212,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should mention radix 2 in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('101010', 2)
@@ -260,7 +222,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary with single bit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('0', 2))
@@ -268,7 +230,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary with single 1 bit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1', 2))
@@ -276,7 +238,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary with long binary string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1111111111111111', 2))
@@ -285,7 +247,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary with alternating bits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1010101010', 2))
@@ -293,7 +255,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary with leading zeros', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('00001111', 2))
@@ -301,7 +263,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary with all zeros', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('0000', 2))
@@ -309,7 +271,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report binary literal and mention 0b prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1101', 2))
@@ -319,7 +281,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('detecting octal literals (radix 8)', () => {
     test('should report parseInt with radix 8', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('123456', 8)
@@ -330,7 +292,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should mention radix 8 in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('765432', 8)
@@ -340,7 +302,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with single digit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('7', 8))
@@ -348,7 +310,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('0', 8))
@@ -356,7 +318,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with 777', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('777', 8))
@@ -365,7 +327,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with long number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('12345670', 8))
@@ -373,7 +335,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with leading zeros', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('0007', 8))
@@ -381,7 +343,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with 755 permission pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('755', 8))
@@ -390,7 +352,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report octal with 644 permission pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('644', 8))
@@ -400,7 +362,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('detecting hexadecimal literals (radix 16)', () => {
     test('should report parseInt with radix 16', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('ABCDEF', 16)
@@ -411,7 +373,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should mention radix 16 in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('deadbeef', 16)
@@ -421,7 +383,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with lowercase letters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('abcdef', 16))
@@ -429,7 +391,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with uppercase letters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('ABCDEF', 16))
@@ -437,7 +399,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with mixed case letters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('AbCdEf', 16))
@@ -445,7 +407,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with single digit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('F', 16))
@@ -453,7 +415,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex FF', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16))
@@ -462,7 +424,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex 00', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('00', 16))
@@ -470,7 +432,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with deadbeef', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('deadbeef', 16))
@@ -478,7 +440,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with long hex string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FFFFFFFF', 16))
@@ -486,7 +448,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with only digits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('123456789', 16))
@@ -494,7 +456,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report hex with 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('0', 16))
@@ -504,7 +466,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('negative tests - should NOT report', () => {
     test('should not report parseInt with radix 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('12345', 10)
@@ -514,7 +476,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt without radix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [{ type: 'Literal', value: '12345' }])
@@ -524,7 +486,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 36', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('xyz', 36)
@@ -534,7 +496,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('102', 3)
@@ -544,7 +506,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report non-parseInt calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseFloat', [
@@ -557,7 +519,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when first argument is not a string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -570,7 +532,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is not a literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -583,7 +545,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is not an integer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -596,7 +558,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 0))
@@ -604,7 +566,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1', 1))
@@ -612,7 +574,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 4', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('123', 4))
@@ -620,7 +582,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('234', 5))
@@ -628,7 +590,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 6', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('123', 6))
@@ -636,7 +598,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 7', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('123', 7))
@@ -644,7 +606,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 9', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('123', 9))
@@ -652,7 +614,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 11', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('A', 11))
@@ -660,7 +622,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 12', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('B', 12))
@@ -668,7 +630,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 15', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('E', 15))
@@ -676,7 +638,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 17', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('G', 17))
@@ -684,7 +646,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report parseInt with radix 32', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('VV', 32))
@@ -692,7 +654,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report Number.parseInt', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -714,7 +676,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when callee is not an Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -736,7 +698,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report with three arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -750,7 +712,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [])
@@ -760,7 +722,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when first argument is number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -773,7 +735,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when first argument is boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -786,7 +748,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -799,7 +761,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -812,7 +774,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is negative 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -825,7 +787,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is negative 16', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -838,7 +800,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when first argument is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -851,7 +813,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -864,7 +826,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report when radix is boolean true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -877,7 +839,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report other function calls like foo', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(
@@ -890,7 +852,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report console.log', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(
@@ -900,7 +862,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report Number call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createCallExpression('Number', [{ type: 'Literal', value: '101' }]))
@@ -910,21 +872,21 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -932,7 +894,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -949,7 +911,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('101010', 2, 10, 5)
@@ -960,7 +922,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('101010', 2)
@@ -970,7 +932,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle empty string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('', 2)
@@ -980,7 +942,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = { callee: { type: 'Identifier', name: 'parseInt' }, arguments: [] }
@@ -990,7 +952,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1007,7 +969,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1023,7 +985,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node with callee without name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1040,7 +1002,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node with callee wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1057,7 +1019,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1070,28 +1032,28 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle numeric node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression(42)).not.toThrow()
     })
 
     test('should handle array node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression({})
@@ -1099,7 +1061,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node with loc containing null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1117,7 +1079,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle node with partial loc - only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1135,7 +1097,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle first argument with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -1148,7 +1110,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle second argument with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -1161,7 +1123,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle first argument as object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -1174,7 +1136,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle second argument as call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -1187,7 +1149,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle very long string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const longStr = '1'.repeat(100)
@@ -1196,7 +1158,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle string with whitespace characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('  101  ', 2))
@@ -1204,7 +1166,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle string with special hex chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('CAFEBABE', 16))
@@ -1214,7 +1176,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('location tracking', () => {
     test('should report correct location for line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2, 1, 0))
@@ -1223,7 +1185,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report correct location for line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2, 5, 10))
@@ -1232,7 +1194,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report correct location for large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16, 999, 42))
@@ -1241,7 +1203,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('101', 2, 3, 7)
@@ -1251,7 +1213,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1269,7 +1231,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle multiple nodes at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2, 1, 0))
@@ -1283,7 +1245,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle location with column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1', 2, 1, 0))
@@ -1293,7 +1255,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('message format', () => {
     test('should contain "Use" in binary message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1301,7 +1263,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should contain "literal" in binary message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1309,7 +1271,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should contain "instead of" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1317,7 +1279,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should contain "parseInt" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1325,7 +1287,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should contain "0b" prefix for radix 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1333,7 +1295,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should contain "0o" prefix for radix 8', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('777', 8))
@@ -1341,7 +1303,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should contain "0x" prefix for radix 16', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16))
@@ -1349,7 +1311,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have correct message format for binary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1357,7 +1319,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have correct message format for octal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('755', 8))
@@ -1365,7 +1327,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have correct message format for hex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16))
@@ -1373,7 +1335,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1381,7 +1343,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have different messages for different radixes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1397,7 +1359,7 @@ describe('prefer-numeric-literals rule', () => {
   describe('auto-fix', () => {
     test('should provide fix for parseInt("101010", 2)', () => {
       const source = 'parseInt("101010", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1423,7 +1385,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix for parseInt("755", 8)', () => {
       const source = 'parseInt("755", 8)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1447,7 +1409,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix for parseInt("FF", 16)', () => {
       const source = 'parseInt("FF", 16)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1471,7 +1433,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix with correct range', () => {
       const source = 'parseInt("101", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1492,7 +1454,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix for binary with empty string', () => {
       const source = 'parseInt("", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1513,7 +1475,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix for lowercase hex', () => {
       const source = 'parseInt("cafebabe", 16)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1534,7 +1496,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix for octal zero', () => {
       const source = 'parseInt("0", 8)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1554,7 +1516,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not provide fix when node has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('101', 2)
@@ -1565,7 +1527,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix with correct text format for binary', () => {
       const source = 'parseInt("1111", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1586,7 +1548,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix with correct text format for octal', () => {
       const source = 'parseInt("777", 8)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1607,7 +1569,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should provide fix with correct text format for hex', () => {
       const source = 'parseInt("ABCD", 16)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1628,7 +1590,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('fix text should preserve original string value for binary', () => {
       const source = 'parseInt("11010", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1649,7 +1611,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('fix text should preserve original string value for octal', () => {
       const source = 'parseInt("1234", 8)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1670,7 +1632,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('fix text should preserve original string value for hex', () => {
       const source = 'parseInt("deadbeef", 16)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1692,7 +1654,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('multiple calls', () => {
     test('should report multiple parseInt calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101010', 2))
@@ -1703,7 +1665,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should only report valid radixes in multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101010', 2))
@@ -1714,7 +1676,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should track all binary detections in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1', 2))
@@ -1726,7 +1688,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should track mixed valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1739,7 +1701,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should track many calls without losing count', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1750,7 +1712,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle interleaved valid and null nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1763,7 +1725,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should maintain separate reports for each call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2, 1, 0))
@@ -1776,11 +1738,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/utils/convert.ts',
-        'parseInt("FF", 16)',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("FF", 16)', filePath: '/src/utils/convert.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16))
@@ -1788,11 +1746,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should work with nested directory file paths', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/project/src/deep/nested/file.ts',
-        'parseInt("FF", 16)',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("FF", 16)', filePath: '/project/src/deep/nested/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16))
@@ -1800,11 +1754,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = parseInt("101", 2)',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = parseInt("101", 2)', filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1812,7 +1762,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1867,7 +1817,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not be affected by logger being called', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       context.logger.debug('test')
@@ -1905,7 +1855,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('report descriptor', () => {
     test('should always include message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1915,7 +1865,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should always include loc in report for valid node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1924,7 +1874,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have start and end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1934,7 +1884,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have line and column in start loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1944,7 +1894,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should have line and column in end loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -1955,7 +1905,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should include fix when range is available', () => {
       const source = 'parseInt("101", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -1978,7 +1928,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should have fix range as tuple of two numbers', () => {
       const source = 'parseInt("101", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -2000,7 +1950,7 @@ describe('prefer-numeric-literals rule', () => {
 
     test('should have fix text as string', () => {
       const source = 'parseInt("101", 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = {
@@ -2020,7 +1970,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should call report exactly once per matching call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -2033,7 +1983,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('different parseInt patterns', () => {
     test('should detect parseInt with single char binary string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('1', 2))
@@ -2042,7 +1992,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should detect parseInt with single char octal string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('7', 8))
@@ -2051,7 +2001,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should detect parseInt with single char hex string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('A', 16))
@@ -2060,7 +2010,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should detect parseInt with single digit hex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('0', 16))
@@ -2068,7 +2018,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle string with leading zeros for binary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('00101010', 2))
@@ -2076,7 +2026,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle string with leading zeros for octal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('00777', 8))
@@ -2084,7 +2034,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle string with leading zeros for hex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('00FF', 16))
@@ -2094,7 +2044,7 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('radix values', () => {
     test('should handle radix 2 correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 2))
@@ -2102,7 +2052,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle radix 8 correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('777', 8))
@@ -2110,7 +2060,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should handle radix 16 correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('FF', 16))
@@ -2118,7 +2068,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report for radix 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 0))
@@ -2126,7 +2076,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report for radix -1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', -1))
@@ -2134,7 +2084,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report for radix 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       visitor.CallExpression(createParseIntCall('101', 100))
@@ -2142,7 +2092,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report for radix 2.0 (float equivalent of 2)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       // 2.0 is still an integer, so this should report
@@ -2157,7 +2107,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report for radix 2.1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -2170,7 +2120,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not report for radix 16.5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createCallExpression('parseInt', [
@@ -2185,8 +2135,8 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('idempotency', () => {
     test('should produce same result for same input', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
 
       const visitor1 = preferNumericLiteralsRule.create(ctx1)
       const visitor2 = preferNumericLiteralsRule.create(ctx2)
@@ -2200,7 +2150,7 @@ describe('prefer-numeric-literals rule', () => {
     })
 
     test('should not modify the input node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       const node = createParseIntCall('101', 2)
@@ -2216,14 +2166,14 @@ describe('prefer-numeric-literals rule', () => {
 
   describe('visitor return value', () => {
     test('CallExpression handler should not throw for valid input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression(createParseIntCall('101', 2))).not.toThrow()
     })
 
     test('CallExpression handler should not throw for invalid input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'parseInt("111110", 2);' })
       const visitor = preferNumericLiteralsRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()

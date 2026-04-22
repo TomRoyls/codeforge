@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noVarRule } from '../../../../src/rules/patterns/no-var.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVariableDeclaration(
   kind: 'var' | 'let' | 'const',
@@ -199,14 +163,14 @@ describe('no-var rule', () => {
 
   describe('create', () => {
     test('should return visitor object with VariableDeclaration method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclaration')
     })
 
     test('should return a non-null object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -214,21 +178,21 @@ describe('no-var rule', () => {
     })
 
     test('should return an object (truthy)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(visitor).toBeTruthy()
     })
 
     test('VariableDeclaration should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(typeof visitor.VariableDeclaration).toBe('function')
     })
 
     test('VariableDeclaration should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const result = visitor.VariableDeclaration(createVariableDeclaration('let'))
@@ -237,20 +201,20 @@ describe('no-var rule', () => {
     })
 
     test('should return visitor with only VariableDeclaration key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['VariableDeclaration'])
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
 
       expect(() => noVarRule.create(context)).not.toThrow()
     })
 
     test('create should return a new visitor each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noVarRule.create(context)
       const visitor2 = noVarRule.create(context)
 
@@ -258,14 +222,14 @@ describe('no-var rule', () => {
     })
 
     test('visitor should have exactly one property', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(1)
     })
 
     test('VariableDeclaration should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(visitor.VariableDeclaration.length).toBe(1)
@@ -282,7 +246,7 @@ describe('no-var rule', () => {
 
   describe('detecting var declarations', () => {
     test('should report var declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -291,7 +255,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report let declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('let'))
@@ -300,7 +264,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report const declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('const'))
@@ -309,7 +273,7 @@ describe('no-var rule', () => {
     })
 
     test('should report correct message for var declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -318,7 +282,7 @@ describe('no-var rule', () => {
     })
 
     test('should report multiple var declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -329,7 +293,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var among let and const declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('let'))
@@ -341,7 +305,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report uppercase VAR (kind is case-sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -356,7 +320,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report mixed case Var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -371,7 +335,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report empty string kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -386,7 +350,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report whitespace-padded var kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -401,7 +365,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report number kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -416,7 +380,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report object kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -431,7 +395,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report array kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -446,7 +410,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report boolean kind true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -461,7 +425,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report boolean kind false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -476,7 +440,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var with empty declarations array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -491,7 +455,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var with declarations containing items', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -506,7 +470,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var regardless of type property value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -521,7 +485,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var even without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -535,7 +499,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var with extra properties on node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -553,7 +517,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var at line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -563,7 +527,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var at line 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 10, 0))
@@ -573,7 +537,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var at line 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 100, 0))
@@ -583,7 +547,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -592,7 +556,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var at column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 5))
@@ -601,7 +565,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var at column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 20))
@@ -610,7 +574,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report undefined kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -624,7 +588,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report null kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -639,7 +603,7 @@ describe('no-var rule', () => {
     })
 
     test('should report exactly one for a single var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -648,7 +612,7 @@ describe('no-var rule', () => {
     })
 
     test('should report correct message for each var in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -661,7 +625,7 @@ describe('no-var rule', () => {
     })
 
     test('should report all vars in a long sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -672,7 +636,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report let repeated many times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -683,7 +647,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report const repeated many times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -694,7 +658,7 @@ describe('no-var rule', () => {
     })
 
     test('should report only var in mixed long sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const kinds: Array<'var' | 'let' | 'const'> = [
@@ -717,7 +681,7 @@ describe('no-var rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(null)).not.toThrow()
@@ -726,7 +690,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle undefined node in VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(undefined)).not.toThrow()
@@ -735,7 +699,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle non-object node in VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration('string')).not.toThrow()
@@ -745,7 +709,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node without kind property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -758,7 +722,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -773,7 +737,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -812,7 +776,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle boolean true node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(true)).not.toThrow()
@@ -820,7 +784,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle boolean false node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(false)).not.toThrow()
@@ -828,7 +792,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle number zero node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(0)).not.toThrow()
@@ -836,7 +800,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle number negative node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(-1)).not.toThrow()
@@ -844,7 +808,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle empty string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration('')).not.toThrow()
@@ -852,7 +816,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration([])).not.toThrow()
@@ -860,7 +824,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle array with var-like kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = ['var']
@@ -869,7 +833,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle empty object node without kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration({})
@@ -878,7 +842,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with kind undefined explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = { type: 'VariableDeclaration', kind: undefined, declarations: [] }
@@ -888,7 +852,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with kind null explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = { type: 'VariableDeclaration', kind: null, declarations: [] }
@@ -898,7 +862,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -913,7 +877,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -928,7 +892,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -943,7 +907,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with partial loc (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -958,7 +922,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with partial loc (only end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -973,7 +937,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc.start missing line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -989,7 +953,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc.start missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1005,7 +969,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc.end missing line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1021,7 +985,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc.end missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1037,7 +1001,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with string loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1052,7 +1016,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with number loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1067,7 +1031,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with start having string line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1083,7 +1047,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with start having string column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1099,7 +1063,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with negative line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1115,7 +1079,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with zero line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1131,7 +1095,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with zero column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -1140,7 +1104,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 99999, 0))
@@ -1149,7 +1113,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 99999))
@@ -1158,7 +1122,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with extra options in context', () => {
-      const { context, reports } = createMockContext({ extraOption: true, anotherOption: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ extraOption: true, anotherOption: 42 }] })
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1167,7 +1131,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with many extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1188,7 +1152,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle let node without loc gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = { type: 'VariableDeclaration', kind: 'let', declarations: [] }
@@ -1198,7 +1162,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle const node without loc gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = { type: 'VariableDeclaration', kind: 'const', declarations: [] }
@@ -1208,7 +1172,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle NaN node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(Number.NaN)).not.toThrow()
@@ -1216,7 +1180,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle function node (typeof function)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(() => {})).not.toThrow()
@@ -1224,7 +1188,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle Date node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(new Date())).not.toThrow()
@@ -1232,7 +1196,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle RegExp node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       expect(() => visitor.VariableDeclaration(/test/)).not.toThrow()
@@ -1240,7 +1204,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var from different source files', () => {
-      const { context, reports } = createMockContext({}, '/src/other.ts', 'var y = 2;')
+      const { context, reports } = createMockRuleContext({ source: 'var y = 2;', filePath: '/src/other.ts' })
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1249,7 +1213,7 @@ describe('no-var rule', () => {
     })
 
     test('should report var from deeply nested path', () => {
-      const { context, reports } = createMockContext({}, '/src/a/b/c/d/file.ts', 'var z = 3;')
+      const { context, reports } = createMockRuleContext({ source: 'var z = 3;', filePath: '/src/a/b/c/d/file.ts' })
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1260,7 +1224,7 @@ describe('no-var rule', () => {
 
   describe('message quality', () => {
     test('should mention let in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1269,7 +1233,7 @@ describe('no-var rule', () => {
     })
 
     test('should mention const in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1278,7 +1242,7 @@ describe('no-var rule', () => {
     })
 
     test('should mention var in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1287,7 +1251,7 @@ describe('no-var rule', () => {
     })
 
     test('should use single quotes around var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1296,7 +1260,7 @@ describe('no-var rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1307,7 +1271,7 @@ describe('no-var rule', () => {
     })
 
     test('should use single quotes around let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1316,7 +1280,7 @@ describe('no-var rule', () => {
     })
 
     test('should use single quotes around const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1325,7 +1289,7 @@ describe('no-var rule', () => {
     })
 
     test('message should be non-empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1334,7 +1298,7 @@ describe('no-var rule', () => {
     })
 
     test('message should be a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1343,7 +1307,7 @@ describe('no-var rule', () => {
     })
 
     test('message should contain "instead of"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1352,7 +1316,7 @@ describe('no-var rule', () => {
     })
 
     test('message should start with "Use"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1361,7 +1325,7 @@ describe('no-var rule', () => {
     })
 
     test('message should contain "or" between let and const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1370,7 +1334,7 @@ describe('no-var rule', () => {
     })
 
     test('message should not change across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -1384,7 +1348,7 @@ describe('no-var rule', () => {
     })
 
     test('message should match exact expected string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1393,7 +1357,7 @@ describe('no-var rule', () => {
     })
 
     test('message should not contain double quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1404,7 +1368,7 @@ describe('no-var rule', () => {
     })
 
     test('message should mention let before const', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1417,7 +1381,7 @@ describe('no-var rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for var declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 10, 5))
@@ -1427,7 +1391,7 @@ describe('no-var rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 5, 10))
@@ -1437,7 +1401,7 @@ describe('no-var rule', () => {
     })
 
     test('should report start.line for line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -1446,7 +1410,7 @@ describe('no-var rule', () => {
     })
 
     test('should report start.column for column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -1455,7 +1419,7 @@ describe('no-var rule', () => {
     })
 
     test('should report start.line for line 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 50, 3))
@@ -1464,7 +1428,7 @@ describe('no-var rule', () => {
     })
 
     test('should report start.column for column 42', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 42))
@@ -1473,7 +1437,7 @@ describe('no-var rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = { type: 'VariableDeclaration', kind: 'var', declarations: [] }
@@ -1485,7 +1449,7 @@ describe('no-var rule', () => {
     })
 
     test('should report default location when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1503,7 +1467,7 @@ describe('no-var rule', () => {
     })
 
     test('should report multiple vars at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 1, 0))
@@ -1516,7 +1480,7 @@ describe('no-var rule', () => {
     })
 
     test('should pass loc object to report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 3, 7))
@@ -1527,7 +1491,7 @@ describe('no-var rule', () => {
     })
 
     test('should have correct end position for var declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 3, 5))
@@ -1537,7 +1501,7 @@ describe('no-var rule', () => {
     })
 
     test('should report loc with start having line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 7, 2))
@@ -1546,7 +1510,7 @@ describe('no-var rule', () => {
     })
 
     test('should report loc with start having column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 7, 2))
@@ -1555,7 +1519,7 @@ describe('no-var rule', () => {
     })
 
     test('should report loc with end having line property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 7, 2))
@@ -1564,7 +1528,7 @@ describe('no-var rule', () => {
     })
 
     test('should report loc with end having column property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var', 7, 2))
@@ -1573,7 +1537,7 @@ describe('no-var rule', () => {
     })
 
     test('should preserve end column from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1588,7 +1552,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle multiline var declaration location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -1772,7 +1736,7 @@ describe('no-var rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/helper.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/utils/helper.ts' })
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1781,7 +1745,7 @@ describe('no-var rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'var x = 1; var y = 2;')
+      const { context, reports } = createMockRuleContext({ source: 'var x = 1; var y = 2;', filePath: '/src/file.ts' })
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1837,8 +1801,8 @@ describe('no-var rule', () => {
 
   describe('visitor isolation', () => {
     test('two visitors should report independently', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noVarRule.create(ctx1)
       const visitor2 = noVarRule.create(ctx2)
@@ -1851,8 +1815,8 @@ describe('no-var rule', () => {
     })
 
     test('two visitors should not share reports', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noVarRule.create(ctx1)
       const visitor2 = noVarRule.create(ctx2)
@@ -1865,7 +1829,7 @@ describe('no-var rule', () => {
     })
 
     test('visitor should not be affected by prior calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('let'))
@@ -1876,7 +1840,7 @@ describe('no-var rule', () => {
     })
 
     test('visitor should handle many sequential calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1889,7 +1853,7 @@ describe('no-var rule', () => {
     })
 
     test('visitor should handle alternating var and non-var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const kinds: Array<'var' | 'let'> = ['var', 'let', 'var', 'let', 'var']
@@ -1920,7 +1884,7 @@ describe('no-var rule', () => {
 
   describe('report descriptor shape', () => {
     test('report descriptor should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1929,7 +1893,7 @@ describe('no-var rule', () => {
     })
 
     test('report descriptor should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1938,7 +1902,7 @@ describe('no-var rule', () => {
     })
 
     test('report loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1947,7 +1911,7 @@ describe('no-var rule', () => {
     })
 
     test('report loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1956,7 +1920,7 @@ describe('no-var rule', () => {
     })
 
     test('report loc start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1966,7 +1930,7 @@ describe('no-var rule', () => {
     })
 
     test('report loc end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       visitor.VariableDeclaration(createVariableDeclaration('var'))
@@ -1978,7 +1942,7 @@ describe('no-var rule', () => {
 
   describe('robustness', () => {
     test('should handle node with prototype properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const base = { type: 'VariableDeclaration', declarations: [] }
@@ -1991,7 +1955,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with frozen object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = Object.freeze({
@@ -2006,7 +1970,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with sealed object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = Object.seal({
@@ -2021,7 +1985,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with numeric kind zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2036,7 +2000,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with float line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2051,7 +2015,7 @@ describe('no-var rule', () => {
     })
 
     test('should not report when kind is a Symbol', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2066,7 +2030,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with getter for kind that returns var', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2083,7 +2047,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node with loc having extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2103,7 +2067,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle very long kind string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2118,7 +2082,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node where declarations is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2133,7 +2097,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle node where declarations is a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = {
@@ -2148,7 +2112,7 @@ describe('no-var rule', () => {
     })
 
     test('should handle repeated calls with same node object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noVarRule.create(context)
 
       const node = createVariableDeclaration('var')

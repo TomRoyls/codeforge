@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noImpliedEvalRule } from '../../../../src/rules/patterns/no-implied-eval.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'setTimeout("code", 100);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createSetTimeoutWithString(line = 1, column = 0): unknown {
   return {
@@ -256,7 +220,7 @@ describe('no-implied-eval rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -265,7 +229,7 @@ describe('no-implied-eval rule', () => {
 
   describe('detecting implied eval - setTimeout', () => {
     test('should report setTimeout with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -275,7 +239,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithTemplateLiteral())
@@ -285,7 +249,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithFunction())
@@ -294,7 +258,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithArrowFunction())
@@ -303,7 +267,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with identifier (function reference)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithIdentifier())
@@ -312,7 +276,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithNumber())
@@ -323,7 +287,7 @@ describe('no-implied-eval rule', () => {
 
   describe('detecting implied eval - setInterval', () => {
     test('should report setInterval with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetIntervalWithString())
@@ -335,7 +299,7 @@ describe('no-implied-eval rule', () => {
 
   describe('ignoring other functions', () => {
     test('should not report other function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createOtherFunctionCall())
@@ -346,7 +310,7 @@ describe('no-implied-eval rule', () => {
 
   describe('message quality', () => {
     test('should mention setTimeout/setInterval in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -356,7 +320,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should mention first argument in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -367,21 +331,21 @@ describe('no-implied-eval rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -389,7 +353,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -411,7 +375,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -425,7 +389,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with non-Identifier callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -449,7 +413,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -466,7 +430,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -484,7 +448,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with non-object first argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -502,7 +466,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with non-string Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -525,7 +489,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString(10, 5))
@@ -535,7 +499,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with partial loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -660,22 +624,22 @@ describe('no-implied-eval rule', () => {
 
   describe('create - extended', () => {
     test('should return visitor that is an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should return CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should create independent visitors for different contexts', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
 
       const visitor1 = noImpliedEvalRule.create(ctx1)
       const visitor2 = noImpliedEvalRule.create(ctx2)
@@ -692,13 +656,13 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should accept context without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
 
       expect(() => noImpliedEvalRule.create(context)).not.toThrow()
     })
 
     test('should return same visitor structure on multiple create calls', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor1 = noImpliedEvalRule.create(context)
       const visitor2 = noImpliedEvalRule.create(context)
 
@@ -708,7 +672,7 @@ describe('no-implied-eval rule', () => {
 
   describe('detecting implied eval - setTimeout extended', () => {
     test('should report setTimeout with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -724,7 +688,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with whitespace-only string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -740,7 +704,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with complex code string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -756,7 +720,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with multiline code string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -772,7 +736,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with unicode string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -788,7 +752,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with template literal containing expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -813,7 +777,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with template literal with no quasis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -835,7 +799,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with boolean literal first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -851,7 +815,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with null literal first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -867,7 +831,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with regex literal first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -883,7 +847,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with object expression first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -899,7 +863,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with array expression first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -915,7 +879,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with call expression first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -937,7 +901,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setTimeout with member expression first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -961,7 +925,7 @@ describe('no-implied-eval rule', () => {
 
   describe('detecting implied eval - setInterval extended', () => {
     test('should report setInterval with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -983,7 +947,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setInterval with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -999,7 +963,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setInterval with complex code string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1015,7 +979,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setInterval with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1031,7 +995,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setInterval with arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1047,7 +1011,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setInterval with identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1063,7 +1027,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setInterval with number first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1079,7 +1043,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setInterval with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1095,7 +1059,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setInterval with template literal containing expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1122,7 +1086,7 @@ describe('no-implied-eval rule', () => {
 
   describe('detecting implied eval - execScript', () => {
     test('should report execScript with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1139,7 +1103,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1161,7 +1125,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1177,7 +1141,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report execScript with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1193,7 +1157,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report execScript with arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1209,7 +1173,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report execScript with identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1225,7 +1189,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report execScript with number first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1241,7 +1205,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report execScript with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1257,7 +1221,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with multiline string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1273,7 +1237,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report correct location for execScript', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1292,7 +1256,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with template literal containing expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1317,7 +1281,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should mention execScript in report message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1335,7 +1299,7 @@ describe('no-implied-eval rule', () => {
 
   describe('ignoring other functions - extended', () => {
     test('should not report requestAnimationFrame with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1351,7 +1315,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report Function constructor with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1367,7 +1331,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report fetch with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1383,7 +1347,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report console.log with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1399,7 +1363,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report custom function with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1415,7 +1379,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report queueMicrotask with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1431,7 +1395,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report process.nextTick with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1447,7 +1411,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report Promise constructor with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1463,7 +1427,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report clearTimeout', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1479,7 +1443,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report clearInterval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1495,7 +1459,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report eval - handled by separate rule', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1511,7 +1475,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report window.setTimeout via MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1531,7 +1495,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report globalThis.setTimeout via MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1551,7 +1515,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report obj.method with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1573,7 +1537,7 @@ describe('no-implied-eval rule', () => {
 
   describe('message quality - extended', () => {
     test('should produce exact expected message for setTimeout', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1584,7 +1548,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should produce exact expected message for setInterval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetIntervalWithString())
@@ -1595,7 +1559,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should contain eval word in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1604,7 +1568,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should contain string word in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1613,7 +1577,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should contain argument word in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1622,9 +1586,9 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should be consistent message across all target functions', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
-      const { context: ctx3, reports: reports3 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
+      const { context: ctx3, reports: reports3 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
 
       const visitor1 = noImpliedEvalRule.create(ctx1)
       const visitor2 = noImpliedEvalRule.create(ctx2)
@@ -1644,7 +1608,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should mention execScript in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1653,7 +1617,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not have undefined in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1662,7 +1626,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should mention do not use in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -1673,7 +1637,7 @@ describe('no-implied-eval rule', () => {
 
   describe('location reporting - extended', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString(1, 0))
@@ -1683,7 +1647,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report correct location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString(100, 50))
@@ -1693,7 +1657,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString(1, 0))
@@ -1703,7 +1667,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report location for setInterval', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetIntervalWithString(5, 10))
@@ -1713,7 +1677,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should default to line 1 column 0 when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1729,7 +1693,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle zero line and column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1746,7 +1710,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle large line and column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1763,7 +1727,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle multline location span', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1782,7 +1746,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should default column to 0 when start has no column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1800,35 +1764,35 @@ describe('no-implied-eval rule', () => {
 
   describe('edge cases - extended', () => {
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle boolean false node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(false)).not.toThrow()
     })
 
     test('should handle number zero node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(0)).not.toThrow()
     })
 
     test('should handle negative number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(-1)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
@@ -1836,7 +1800,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with only type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression({ type: 'CallExpression' })).not.toThrow()
@@ -1844,7 +1808,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1859,7 +1823,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with callee as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1875,7 +1839,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with callee as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1891,7 +1855,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with callee as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1907,7 +1871,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1922,7 +1886,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with undefined first argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1938,7 +1902,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with string first argument type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1954,7 +1918,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with number first argument type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1970,7 +1934,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with callee having null type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -1986,7 +1950,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with callee having no name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2002,7 +1966,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with Literal with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2018,7 +1982,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle node with loc as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2035,7 +1999,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle deeply nested arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2064,14 +2028,14 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(Symbol('test'))).not.toThrow()
     })
 
     test('should handle array as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
@@ -2079,14 +2043,14 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle NaN as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(NaN)).not.toThrow()
     })
 
     test('should handle Infinity as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       expect(() => visitor.CallExpression(Infinity)).not.toThrow()
@@ -2095,7 +2059,7 @@ describe('no-implied-eval rule', () => {
 
   describe('multiple reports', () => {
     test('should report multiple setTimeout calls separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString(1, 0))
@@ -2106,7 +2070,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report mixed setTimeout and setInterval calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2116,7 +2080,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout, setInterval, and execScript together', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2132,7 +2096,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should only report string calls not function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2143,7 +2107,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report correct locations for each call in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString(1, 0))
@@ -2156,7 +2120,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle many rapid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2167,7 +2131,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle interleaved valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithFunction())
@@ -2180,7 +2144,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle same visitor reused after non-reporting call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createOtherFunctionCall())
@@ -2193,7 +2157,7 @@ describe('no-implied-eval rule', () => {
 
   describe('visitor reusability', () => {
     test('should maintain report count across calls on same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2204,7 +2168,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not accumulate state from non-reporting calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2217,7 +2181,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should work correctly after null node handling', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(null)
@@ -2227,7 +2191,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should work correctly after undefined node handling', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(undefined)
@@ -2237,7 +2201,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should work correctly after edge case handling', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression('string')
@@ -2270,7 +2234,7 @@ describe('no-implied-eval rule', () => {
 
   describe('context handling', () => {
     test('should handle context with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/different/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);', filePath: '/different/path.ts' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2279,11 +2243,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle context with different source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'setInterval("code", 100);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'setInterval("code", 100);', filePath: '/src/file.ts' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2292,7 +2252,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle context with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2301,7 +2261,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle context with empty options object', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2310,7 +2270,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle context with extra options', () => {
-      const { context, reports } = createMockContext({ customOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ customOption: true }], source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2344,7 +2304,7 @@ describe('no-implied-eval rule', () => {
 
   describe('specific string patterns', () => {
     test('should report setTimeout with HTML string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2360,7 +2320,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with escaped characters string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2376,7 +2336,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with single character string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2392,7 +2352,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setInterval with very long string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const longStr = 'a'.repeat(10000)
@@ -2409,7 +2369,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with try-catch string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2425,7 +2385,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with IIFE string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2441,7 +2401,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with newlines and tabs string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2459,7 +2419,7 @@ describe('no-implied-eval rule', () => {
 
   describe('setTimeout case sensitivity', () => {
     test('should not report settimeout with lowercase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2475,7 +2435,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report SETTIMEOUT with uppercase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2491,7 +2451,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report SetTimeout with mixed case name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2509,7 +2469,7 @@ describe('no-implied-eval rule', () => {
 
   describe('Literal with string-like non-string values', () => {
     test('should not report setTimeout with boolean Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2525,7 +2485,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should not report setInterval with BigInt Literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2543,7 +2503,7 @@ describe('no-implied-eval rule', () => {
 
   describe('callee edge cases', () => {
     test('should handle callee with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2559,7 +2519,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle callee with undefined type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2575,7 +2535,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle callee that is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2593,7 +2553,7 @@ describe('no-implied-eval rule', () => {
 
   describe('arguments edge cases', () => {
     test('should handle arguments with extra properties on first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2616,7 +2576,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle first argument with only type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2632,7 +2592,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle single argument setTimeout with string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2650,7 +2610,7 @@ describe('no-implied-eval rule', () => {
 
   describe('loc edge cases', () => {
     test('should handle loc with only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2668,7 +2628,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle loc with empty start object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2686,7 +2646,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle loc with non-numeric line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2703,7 +2663,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle loc with non-numeric column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2720,7 +2680,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2739,8 +2699,8 @@ describe('no-implied-eval rule', () => {
 
   describe('concurrent visitor usage', () => {
     test('should handle two visitors for same context pattern', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
 
       const visitor1 = noImpliedEvalRule.create(ctx1)
       const visitor2 = noImpliedEvalRule.create(ctx2)
@@ -2756,7 +2716,7 @@ describe('no-implied-eval rule', () => {
 
   describe('report descriptor completeness', () => {
     test('should include loc in report for setTimeout string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2765,7 +2725,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should include loc in report for setInterval string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetIntervalWithString())
@@ -2774,7 +2734,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should include loc with start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2785,7 +2745,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should include loc with end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2796,7 +2756,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should produce a single report per violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       visitor.CallExpression(createSetTimeoutWithString())
@@ -2809,7 +2769,7 @@ describe('no-implied-eval rule', () => {
 
   describe('TemplateLiteral variations', () => {
     test('should report setInterval with complex template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2837,7 +2797,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with template literal having multiple quasis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2866,7 +2826,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setTimeout with template literal having single quasi', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2888,7 +2848,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report setInterval with empty template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2910,7 +2870,7 @@ describe('no-implied-eval rule', () => {
     })
 
     test('should report execScript with template literal having nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
       const visitor = noImpliedEvalRule.create(context)
 
       const node = {
@@ -2943,8 +2903,8 @@ describe('no-implied-eval rule', () => {
 
   describe('idempotency', () => {
     test('should produce same result when called twice with same node', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'setTimeout("code", 100);' })
 
       const visitor1 = noImpliedEvalRule.create(ctx1)
       const visitor2 = noImpliedEvalRule.create(ctx2)

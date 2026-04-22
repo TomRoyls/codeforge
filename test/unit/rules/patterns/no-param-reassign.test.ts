@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noParamReassignRule } from '../../../../src/rules/patterns/no-param-reassign.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function foo(x) { x = 1; }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string, line = 1, column = 0): unknown {
   return {
@@ -201,7 +165,7 @@ describe('no-param-reassign rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
@@ -211,45 +175,45 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should have FunctionDeclaration as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
       expect(typeof visitor.FunctionDeclaration).toBe('function')
     })
 
     test('should have FunctionExpression as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
       expect(typeof visitor.FunctionExpression).toBe('function')
     })
 
     test('should have ArrowFunctionExpression as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
       expect(typeof visitor.ArrowFunctionExpression).toBe('function')
     })
 
     test('should have AssignmentExpression as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
       expect(typeof visitor.AssignmentExpression).toBe('function')
     })
 
     test('should return exactly 4 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(4)
     })
 
     test('should create independent visitors per call', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor1 = noParamReassignRule.create(ctx1)
       const visitor2 = noParamReassignRule.create(ctx2)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should return non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
       expect(visitor).not.toBeNull()
       expect(visitor).not.toBeUndefined()
@@ -258,7 +222,7 @@ describe('no-param-reassign rule', () => {
 
   describe('parameter tracking in FunctionDeclaration', () => {
     test('should track parameters in function declaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([createIdentifier('x')])
@@ -268,7 +232,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should track multiple parameters', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([
@@ -284,7 +248,7 @@ describe('no-param-reassign rule', () => {
 
   describe('parameter tracking in FunctionExpression', () => {
     test('should track parameters in function expression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcExpr = createFunctionExpression([createIdentifier('x')])
@@ -294,7 +258,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should track multiple parameters in function expression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcExpr = createFunctionExpression([createIdentifier('a'), createIdentifier('b')])
@@ -306,7 +270,7 @@ describe('no-param-reassign rule', () => {
 
   describe('parameter tracking in ArrowFunctionExpression', () => {
     test('should track parameters in arrow function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const arrowFunc = createArrowFunctionExpression([createIdentifier('x')])
@@ -316,7 +280,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should track multiple parameters in arrow function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const arrowFunc = createArrowFunctionExpression([
@@ -331,7 +295,7 @@ describe('no-param-reassign rule', () => {
 
   describe('reporting direct parameter reassignment', () => {
     test('should report assignment to parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -345,7 +309,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report with correct message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('myParam')]))
@@ -357,7 +321,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report assignment to non-parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -369,7 +333,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report multiple parameter reassignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -386,7 +350,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report assignment to parameter with underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('my_param')]))
@@ -399,7 +363,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report assignment to parameter with dollar signs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('$param')]))
@@ -414,7 +378,7 @@ describe('no-param-reassign rule', () => {
 
   describe('reporting parameter property mutation', () => {
     test('should report parameter property assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -431,7 +395,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report multiple property mutations on same parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -452,7 +416,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report property mutation on non-parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -469,7 +433,7 @@ describe('no-param-reassign rule', () => {
 
   describe('compound assignments', () => {
     test('should not report += assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -484,7 +448,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report -= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -499,7 +463,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report *= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -514,7 +478,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report /= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -531,7 +495,7 @@ describe('no-param-reassign rule', () => {
 
   describe('detection across function types', () => {
     test('should detect reassignment in arrow function parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression([createIdentifier('p')]))
@@ -544,7 +508,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment in function expression parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression([createIdentifier('val')]))
@@ -557,7 +521,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect property mutation in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression([createIdentifier('config')]))
@@ -573,7 +537,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect property mutation in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression([createIdentifier('state')]))
@@ -589,7 +553,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect with single letter parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('a')]))
@@ -603,7 +567,7 @@ describe('no-param-reassign rule', () => {
 
     test('should detect with long parameter name', () => {
       const longName = 'veryLongParameterNameThatExceedsNormalLength'
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier(longName)]))
@@ -616,7 +580,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect when multiple function types register same param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -629,7 +593,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect each param in multi-param function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -648,7 +612,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect last param in multi-param function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -667,7 +631,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment of all params sequentially', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -687,7 +651,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect property mutation via MemberExpression with computed false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('arr')]))
@@ -702,7 +666,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect param with double dollar signs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('$$')]))
@@ -714,7 +678,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect param with trailing underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('rest_')]))
@@ -726,7 +690,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect param with leading underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('_unused')]))
@@ -738,7 +702,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment with object right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -753,7 +717,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment with function call right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -765,7 +729,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment with Identifier right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -777,7 +741,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect property mutation on second param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -795,7 +759,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect in function with five params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -816,7 +780,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment after all three function types visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('fd')]))
@@ -831,7 +795,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect all three param types independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('fd')]))
@@ -851,7 +815,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report for param named like JS keywords', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('class')]))
@@ -863,7 +827,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report for param with uppercase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('UPPER')]))
@@ -875,7 +839,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report for param with camelCase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('myVarName')]))
@@ -887,7 +851,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect MemberExpression with non-Identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -908,7 +872,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect MemberExpression with nested MemberExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('data')]))
@@ -928,7 +892,7 @@ describe('no-param-reassign rule', () => {
 
   describe('NOT reporting', () => {
     test('should not report assignment when no function visited', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.AssignmentExpression(
@@ -939,7 +903,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report assignment to non-param variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -951,7 +915,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report %= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -966,7 +930,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report <<= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -981,7 +945,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report >>= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -996,7 +960,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report >>>= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1011,7 +975,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report |= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1026,7 +990,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report &= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1041,7 +1005,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report ^= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1056,7 +1020,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report **= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1071,7 +1035,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report &&= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1086,7 +1050,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report ||= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1101,7 +1065,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report ??= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1116,7 +1080,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report property mutation on non-param object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1131,7 +1095,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when left is not Identifier or MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1146,7 +1110,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when left is ArrayPattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1161,7 +1125,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when left is empty MemberExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1181,7 +1145,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when MemberExpression object has no name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1201,7 +1165,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report for assignment to local variable same name as param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1213,7 +1177,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when node type is wrong for AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1228,7 +1192,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when node type is wrong for FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1244,7 +1208,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when FunctionExpression has wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionExpression({
@@ -1259,7 +1223,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when ArrowFunctionExpression has wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.ArrowFunctionExpression({
@@ -1274,7 +1238,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report for compound assignment with property mutation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -1291,63 +1255,63 @@ describe('no-param-reassign rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined node in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle null node in FunctionExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in FunctionExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionExpression(undefined)).not.toThrow()
     })
 
     test('should handle null node in ArrowFunctionExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in ArrowFunctionExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(undefined)).not.toThrow()
     })
 
     test('should handle null node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -1355,7 +1319,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle non-object node in AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.AssignmentExpression('string')).not.toThrow()
@@ -1363,7 +1327,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle node without loc in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const node = {
@@ -1377,7 +1341,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle node without loc in AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1394,7 +1358,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle empty params array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([])
@@ -1402,7 +1366,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle params without identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([{ type: 'Literal', value: 1 }])
@@ -1410,7 +1374,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle assignment without identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1427,7 +1391,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1445,7 +1409,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1492,7 +1456,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle assignment before parameter declaration order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.AssignmentExpression(
@@ -1504,7 +1468,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle boolean node in visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(true)).not.toThrow()
@@ -1514,7 +1478,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle param with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([{ type: 'Identifier', name: '' }])
@@ -1527,7 +1491,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle params array with null entries', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([null, createIdentifier('x'), undefined])
@@ -1535,7 +1499,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle params array with mixed types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = createFunctionDeclaration([
@@ -1553,7 +1517,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle AssignmentExpression with undefined operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1569,7 +1533,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle function with null id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = {
@@ -1588,7 +1552,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle function without body', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcDecl = {
@@ -1601,7 +1565,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle node that is a number primitive', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(0)).not.toThrow()
@@ -1609,7 +1573,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle same param name in two functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1622,7 +1586,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle AssignmentExpression with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1638,7 +1602,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle deeply nested function params still tracked', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('outer')]))
@@ -1657,7 +1621,7 @@ describe('no-param-reassign rule', () => {
 
   describe('message quality', () => {
     test('should include parameter in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1669,7 +1633,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should include parameter name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('testParam')]))
@@ -1681,7 +1645,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should use word reassignment in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1693,7 +1657,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should use word function in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1705,7 +1669,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should wrap parameter name in single quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1717,7 +1681,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should end message with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1729,7 +1693,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should include correct param name for arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression([createIdentifier('callback')]))
@@ -1741,7 +1705,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should include correct param name for function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression([createIdentifier('handler')]))
@@ -1753,7 +1717,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should differentiate param names in multi-report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -1772,7 +1736,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should have consistent message format for property mutation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('opts')]))
@@ -1789,7 +1753,7 @@ describe('no-param-reassign rule', () => {
 
   describe('loc edge cases', () => {
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1812,7 +1776,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1835,7 +1799,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1856,7 +1820,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1877,7 +1841,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1896,7 +1860,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1914,7 +1878,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report location at large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1932,7 +1896,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report location at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1950,7 +1914,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report both start and end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -1969,7 +1933,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report location from property mutation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -1987,7 +1951,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should default to line 1 when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2004,7 +1968,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should default column to 0 when start has no column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2024,7 +1988,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle NaN line value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2045,7 +2009,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle negative line value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2066,7 +2030,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle fractional line value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2089,7 +2053,7 @@ describe('no-param-reassign rule', () => {
 
   describe('multiple reports', () => {
     test('should report each assignment separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2107,7 +2071,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report mix of direct and property assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -2125,7 +2089,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report across different params with same report count', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2147,7 +2111,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report same param twice with different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2174,7 +2138,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report property mutations on different params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2197,7 +2161,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should only report = operator not compound in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2215,7 +2179,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report each param once when all reassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(
@@ -2236,7 +2200,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report interleaved param and non-param assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2254,7 +2218,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report 10 reassignments of same param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2268,7 +2232,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should accumulate reports across multiple function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('a')]))
@@ -2291,7 +2255,7 @@ describe('no-param-reassign rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }', filePath: '/custom/path.ts' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2303,7 +2267,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const foo = (x) => x = 1')
+      const { context, reports } = createMockRuleContext({ source: 'const foo = (x) => x = 1', filePath: '/src/file.ts' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2315,7 +2279,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2327,7 +2291,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should work with different workspace roots', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2375,7 +2339,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should work with options containing irrelevant keys', () => {
-      const { context, reports } = createMockContext({ someOtherOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOtherOption: true }], source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2420,7 +2384,7 @@ describe('no-param-reassign rule', () => {
 
     test('should not call logger during normal operation', () => {
       const debugFn = vi.fn()
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const ctx: RuleContext = {
         ...context,
         logger: {
@@ -2442,7 +2406,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should work with TypeScript file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }', filePath: '/src/component.tsx' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2454,7 +2418,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should work with JavaScript file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }', filePath: '/src/index.js' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2484,7 +2448,7 @@ describe('no-param-reassign rule', () => {
       ['||=', false],
       ['??=', null],
     ])('should not report %s assignment to parameter', (operator, value) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2522,7 +2486,7 @@ describe('no-param-reassign rule', () => {
       ['options'],
       ['ctx'],
     ])('should report reassignment of param named "%s"', (paramName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier(paramName)]))
@@ -2541,7 +2505,7 @@ describe('no-param-reassign rule', () => {
       ['FunctionExpression', createFunctionExpression],
       ['ArrowFunctionExpression', createArrowFunctionExpression],
     ] as const)('should detect reassignment via %s', (_name, createFn) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const funcNode = createFn([createIdentifier('x')])
@@ -2575,7 +2539,7 @@ describe('no-param-reassign rule', () => {
       ['sum', 'total'],
       ['index', 'i'],
     ])('should not report assignment to "%s" when param is "%s"', (varName, paramName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier(paramName)]))
@@ -2622,7 +2586,7 @@ describe('no-param-reassign rule', () => {
         (v: ReturnType<typeof noParamReassignRule.create>) => v.AssignmentExpression(undefined),
       ],
     ] as const)('should not throw on null/undefined for %s', (_name, action) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => action(visitor)).not.toThrow()
@@ -2642,7 +2606,7 @@ describe('no-param-reassign rule', () => {
       [1, 100],
       [50, 0],
     ] as const)('should report correct location at line %d column %d', (line, column) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2673,7 +2637,7 @@ describe('no-param-reassign rule', () => {
       ['UnaryExpression', { type: 'UnaryExpression', operator: '!' }],
       ['BinaryExpression', { type: 'BinaryExpression', operator: '+' }],
     ])('should report regardless of right side type: %s', (_name, right) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2696,7 +2660,7 @@ describe('no-param-reassign rule', () => {
       ['key'],
       ['_private'],
     ])('should report property mutation for property named "%s"', (propName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -2714,7 +2678,7 @@ describe('no-param-reassign rule', () => {
 
   describe('additional detection coverage', () => {
     test('should detect reassignment with null right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2726,7 +2690,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect reassignment with undefined right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2741,7 +2705,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when param name is substring of variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('data')]))
@@ -2753,7 +2717,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when variable name is substring of param name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('dataset')]))
@@ -2765,7 +2729,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report reassignment after visiting FunctionExpression then FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression([createIdentifier('feParam')]))
@@ -2781,7 +2745,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle visitor called with array node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration([1, 2, 3])).not.toThrow()
@@ -2789,7 +2753,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle visitor called with Date object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(new Date())).not.toThrow()
@@ -2797,7 +2761,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle AssignmentExpression with only operator field', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2810,7 +2774,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle MemberExpression with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2830,7 +2794,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle MemberExpression with undefined object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2850,7 +2814,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should detect after visiting ArrowFunction then FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression([createIdentifier('a')]))
@@ -2864,7 +2828,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report assignment to global-like variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('localVar')]))
@@ -2876,7 +2840,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle function with ten params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const params = Array.from({ length: 10 }, (_, i) => createIdentifier(`p${i}`))
@@ -2890,7 +2854,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle function with ten params reassigning last', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       const params = Array.from({ length: 10 }, (_, i) => createIdentifier(`p${i}`))
@@ -2904,7 +2868,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle member expression with numeric literal property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('arr')]))
@@ -2925,7 +2889,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle member expression on function expression param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression([createIdentifier('item')]))
@@ -2941,7 +2905,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle member expression on arrow function param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression([createIdentifier('event')]))
@@ -2957,7 +2921,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report compound assignment via MemberExpression on param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -2972,7 +2936,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle visiting same function type twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -2988,7 +2952,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report UpdateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -3006,7 +2970,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle AssignmentExpression with empty string operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -3021,7 +2985,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle deeply nested property mutations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('obj')]))
@@ -3035,7 +2999,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should report direct reassignment and property mutation in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('p')]))
@@ -3059,7 +3023,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle param named with single character after underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('_x')]))
@@ -3072,7 +3036,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle param named with trailing digits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('arg123')]))
@@ -3085,7 +3049,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when AssignmentExpression left is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('x')]))
@@ -3100,7 +3064,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should not report when MemberExpression object is CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('fn')]))
@@ -3118,7 +3082,7 @@ describe('no-param-reassign rule', () => {
     })
 
     test('should handle param named with double underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function foo(x) { x = 1; }' })
       const visitor = noParamReassignRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration([createIdentifier('__internal')]))

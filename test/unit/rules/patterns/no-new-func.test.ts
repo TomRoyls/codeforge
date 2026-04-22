@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noNewFuncRule } from '../../../../src/rules/patterns/no-new-func.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(calleeName: string, lineNumber = 1, column = 0): unknown {
   return {
@@ -247,28 +211,28 @@ describe('no-new-func rule', () => {
 
   describe('create', () => {
     test('should return visitor object with NewExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(visitor).toHaveProperty('NewExpression')
     })
 
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return visitor with exactly two methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(2)
     })
 
     test('should return visitor methods that are functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(typeof visitor.NewExpression).toBe('function')
@@ -276,7 +240,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should return a new visitor object each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noNewFuncRule.create(context)
       const visitor2 = noNewFuncRule.create(context)
 
@@ -286,7 +250,7 @@ describe('no-new-func rule', () => {
 
   describe('detecting new Function()', () => {
     test('should report new Function() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -295,7 +259,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report correct message for new Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -304,7 +268,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report multiple new Function() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -315,7 +279,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(
@@ -326,7 +290,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(
@@ -341,7 +305,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() at various line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -353,7 +317,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() at various column offsets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -365,7 +329,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() with empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -380,7 +344,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() even when deeply nested in code', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 42, 16))
@@ -392,7 +356,7 @@ describe('no-new-func rule', () => {
 
   describe('detecting Function() without new', () => {
     test('should report Function() call without new', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function'))
@@ -401,7 +365,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report correct message for Function() without new', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function'))
@@ -410,7 +374,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report multiple Function() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 1, 0))
@@ -421,7 +385,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(
@@ -432,7 +396,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(
@@ -446,7 +410,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() at various line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 5, 0))
@@ -457,7 +421,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() at various column offsets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 1, 0))
@@ -470,7 +434,7 @@ describe('no-new-func rule', () => {
 
   describe('not reporting regular function declarations', () => {
     test('should not report function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createFunctionDeclaration())
@@ -479,7 +443,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report arrow function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createArrowFunctionExpression())
@@ -488,7 +452,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report regular constructor calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array'))
@@ -499,7 +463,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Math'))
@@ -512,7 +476,7 @@ describe('no-new-func rule', () => {
 
   describe('case sensitivity', () => {
     test('should not report new function (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('function'))
@@ -521,7 +485,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report function() call (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('function'))
@@ -530,7 +494,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report new FUNCTION (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('FUNCTION'))
@@ -539,7 +503,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report FUNCTION() call (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('FUNCTION'))
@@ -548,7 +512,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report exactly Function with capital F', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -557,7 +521,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report fuNcTiOn mixed case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('fuNcTiOn'))
@@ -602,7 +566,7 @@ describe('no-new-func rule', () => {
     ]
 
     test.each(safeConstructors)('should not report new %s()', (name) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression(name))
@@ -641,7 +605,7 @@ describe('no-new-func rule', () => {
     ]
 
     test.each(safeCalls)('should not report %s() call', (name) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression(name))
@@ -652,7 +616,7 @@ describe('no-new-func rule', () => {
 
   describe('member expression callees', () => {
     test('should not report new window.Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createMemberExpressionNew('window', 'Function'))
@@ -661,7 +625,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report new globalThis.Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createMemberExpressionNew('globalThis', 'Function'))
@@ -670,7 +634,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report new obj.Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createMemberExpressionNew('obj', 'Function'))
@@ -679,7 +643,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report window.Function() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createMemberExpressionCall('window', 'Function'))
@@ -688,7 +652,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report globalThis.Function() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createMemberExpressionCall('globalThis', 'Function'))
@@ -697,7 +661,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report new some.path.Constructor()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -722,7 +686,7 @@ describe('no-new-func rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.NewExpression(null)).not.toThrow()
@@ -731,7 +695,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle undefined node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.NewExpression(undefined)).not.toThrow()
@@ -740,7 +704,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle null node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
@@ -749,7 +713,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle undefined node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
@@ -758,7 +722,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle non-object node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.NewExpression('string')).not.toThrow()
@@ -768,7 +732,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle non-object node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -778,7 +742,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node without callee property in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -791,7 +755,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node without callee property in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -804,7 +768,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -843,7 +807,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle boolean node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.NewExpression(true)).not.toThrow()
@@ -853,7 +817,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle boolean node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
@@ -863,7 +827,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle numeric node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.NewExpression(0)).not.toThrow()
@@ -876,7 +840,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle numeric node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       expect(() => visitor.CallExpression(0)).not.toThrow()
@@ -887,7 +851,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle empty object node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression({})
@@ -896,7 +860,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle empty object node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression({})
@@ -905,7 +869,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with null callee in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression({
@@ -919,7 +883,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with null callee in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression({
@@ -933,7 +897,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with wrong type but Function callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -947,7 +911,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with callee having non-Identifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -962,7 +926,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with callee having no name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -977,7 +941,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle CallExpression with callee having no name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -992,7 +956,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with callee name as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1007,7 +971,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with callee name as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1024,7 +988,7 @@ describe('no-new-func rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for new Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 10, 5))
@@ -1034,7 +998,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report correct location for Function() without new', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 15, 8))
@@ -1044,7 +1008,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report location with end position for new Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 5, 10))
@@ -1054,7 +1018,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report location with end position for Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 5, 10))
@@ -1064,7 +1028,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report end location correctly for new Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 3, 4))
@@ -1074,7 +1038,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report end location correctly for Function() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 7, 2))
@@ -1084,7 +1048,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node without loc gracefully for NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1100,7 +1064,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node without loc gracefully for CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1116,7 +1080,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with partial loc (missing end) for NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1133,7 +1097,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with partial loc (missing start) for NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1148,7 +1112,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with loc containing non-numeric values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1168,7 +1132,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report correct location for multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -1182,7 +1146,7 @@ describe('no-new-func rule', () => {
 
   describe('message quality', () => {
     test('should mention Function in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1191,7 +1155,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should mention constructor in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1200,7 +1164,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should mention unexpected in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1209,7 +1173,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should have consistent message format for new Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -1220,7 +1184,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should have consistent message format for Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('Function', 1, 0))
@@ -1231,7 +1195,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should have same message for new Function() and Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -1241,7 +1205,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should end message with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1250,7 +1214,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should have exactly the expected message text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1261,7 +1225,7 @@ describe('no-new-func rule', () => {
 
   describe('mixed scenarios', () => {
     test('should report both new Function() and Function() in same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -1271,7 +1235,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() among safe calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createCallExpression('parseInt'))
@@ -1283,7 +1247,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() among safe constructors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array'))
@@ -1295,7 +1259,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report all Function usages in a mixed sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array'))
@@ -1309,7 +1273,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should track reports independently for NewExpression and CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 0))
@@ -1325,7 +1289,7 @@ describe('no-new-func rule', () => {
 
   describe('report accumulation', () => {
     test('should accumulate 5 reports correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1336,7 +1300,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should accumulate 10 reports correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1347,7 +1311,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should accumulate reports with correct line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1363,7 +1327,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should accumulate mixed reports correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -1375,7 +1339,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not accumulate reports for safe constructors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1388,7 +1352,7 @@ describe('no-new-func rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/eval.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/utils/eval.ts' })
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1397,7 +1361,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Function("return 1")')
+      const { context, reports } = createMockRuleContext({ source: 'new Function("return 1")', filePath: '/src/file.ts' })
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1406,7 +1370,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js', 'const f = new Function()')
+      const { context, reports } = createMockRuleContext({ source: 'const f = new Function()', filePath: '/src/file.js' })
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1415,7 +1379,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should work with deep nested file path', () => {
-      const { context, reports } = createMockContext({}, '/src/a/b/c/d/e/file.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/a/b/c/d/e/file.ts' })
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1424,7 +1388,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should work with options containing allowlist', () => {
-      const { context, reports } = createMockContext({ allow: ['Function'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['Function'] }] })
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1433,7 +1397,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should work with extra options', () => {
-      const { context, reports } = createMockContext({ extra: true, count: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, count: 5 }] })
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function'))
@@ -1444,7 +1408,7 @@ describe('no-new-func rule', () => {
 
   describe('function expression types that should not report', () => {
     test('should not report FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression({
@@ -1459,7 +1423,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report FunctionDeclaration via CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createFunctionDeclaration())
@@ -1468,7 +1432,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report ArrowFunctionExpression via CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(createArrowFunctionExpression())
@@ -1479,7 +1443,7 @@ describe('no-new-func rule', () => {
 
   describe('callee type variations', () => {
     test('should not report when callee is a CallExpression (IIFE-style)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1498,7 +1462,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report when callee is a ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1518,7 +1482,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should not report CallExpression with CallExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1539,7 +1503,7 @@ describe('no-new-func rule', () => {
 
   describe('arguments variations', () => {
     test('should report new Function() with template literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(
@@ -1552,7 +1516,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() with identifier argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.CallExpression(
@@ -1563,7 +1527,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() with BinaryExpression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(
@@ -1581,7 +1545,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report new Function() with many arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const args = Array.from({ length: 10 }, (_, i) => ({
@@ -1594,7 +1558,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should report Function() with many arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const args = Array.from({ length: 5 }, (_, i) => ({
@@ -1609,8 +1573,8 @@ describe('no-new-func rule', () => {
 
   describe('visitor independence', () => {
     test('should isolate reports between different visitors', () => {
-      const ctx1 = createMockContext()
-      const ctx2 = createMockContext()
+      const ctx1 = createMockRuleContext()
+      const ctx2 = createMockRuleContext()
       const visitor1 = noNewFuncRule.create(ctx1.context)
       const visitor2 = noNewFuncRule.create(ctx2.context)
 
@@ -1623,8 +1587,8 @@ describe('no-new-func rule', () => {
     })
 
     test('should not share state between visitors', () => {
-      const ctx1 = createMockContext()
-      const ctx2 = createMockContext()
+      const ctx1 = createMockRuleContext()
+      const ctx2 = createMockRuleContext()
       const visitor1 = noNewFuncRule.create(ctx1.context)
       const visitor2 = noNewFuncRule.create(ctx2.context)
 
@@ -1636,11 +1600,11 @@ describe('no-new-func rule', () => {
     })
 
     test('should allow creating visitor after another has been used', () => {
-      const ctx1 = createMockContext()
+      const ctx1 = createMockRuleContext()
       const visitor1 = noNewFuncRule.create(ctx1.context)
       visitor1.NewExpression(createNewExpression('Function'))
 
-      const ctx2 = createMockContext()
+      const ctx2 = createMockRuleContext()
       const visitor2 = noNewFuncRule.create(ctx2.context)
       visitor2.CallExpression(createCallExpression('Function'))
 
@@ -1651,7 +1615,7 @@ describe('no-new-func rule', () => {
 
   describe('special node shapes', () => {
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1670,7 +1634,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node with array-like arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1688,7 +1652,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle NewExpression with type as non-string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression({
@@ -1701,7 +1665,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node where type is number instead of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression({ type: 42 })
@@ -1710,7 +1674,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle node where callee type is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1746,7 +1710,7 @@ describe('no-new-func rule', () => {
 
   describe('boundary locations', () => {
     test('should handle line 0 gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 0, 0))
@@ -1755,7 +1719,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1000000, 0))
@@ -1765,7 +1729,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       visitor.NewExpression(createNewExpression('Function', 1, 999999))
@@ -1775,7 +1739,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle negative column gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = {
@@ -1792,7 +1756,7 @@ describe('no-new-func rule', () => {
 
   describe('repeated calls', () => {
     test('should handle same node visited twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const node = createNewExpression('Function')
@@ -1803,7 +1767,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle rapid alternating NewExpression/CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1818,7 +1782,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle 50 consecutive new Function() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1829,7 +1793,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should handle 50 consecutive Function() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1842,7 +1806,7 @@ describe('no-new-func rule', () => {
 
   describe('concurrent safe calls intermixed', () => {
     test('should only report Function among 20 mixed NewExpressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const names = [
@@ -1876,7 +1840,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should only report Function among 20 mixed CallExpressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       const names = [
@@ -1912,7 +1876,7 @@ describe('no-new-func rule', () => {
 
   describe('location integrity across many reports', () => {
     test('should preserve correct location for each of many reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1926,7 +1890,7 @@ describe('no-new-func rule', () => {
     })
 
     test('should preserve correct messages for all reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noNewFuncRule.create(context)
 
       for (let i = 0; i < 15; i++) {

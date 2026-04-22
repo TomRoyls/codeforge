@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noVarRequiresRule } from '../../../../src/rules/patterns/no-var-requires.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'var x = require("lodash");',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVarRequireDeclaration(moduleName: string, line = 1, column = 0): unknown {
   return {
@@ -209,7 +173,7 @@ describe('no-var-requires rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclaration')
@@ -218,7 +182,7 @@ describe('no-var-requires rule', () => {
 
   describe('detecting var requires', () => {
     test('should report var with require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -228,7 +192,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report let with require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createLetRequireDeclaration('lodash'))
@@ -237,7 +201,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report const with require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createConstRequireDeclaration('lodash'))
@@ -246,7 +210,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report var without require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarNonRequireDeclaration())
@@ -255,7 +219,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report non-variable declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createNonVarDeclaration())
@@ -266,7 +230,7 @@ describe('no-var-requires rule', () => {
 
   describe('options - allow', () => {
     test('should allow require for allowed modules', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -275,7 +239,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should still report require for non-allowed modules', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('underscore'))
@@ -284,7 +248,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should allow multiple modules', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash', 'underscore'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash', 'underscore'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -296,21 +260,21 @@ describe('no-var-requires rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       expect(() => visitor.VariableDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       expect(() => visitor.VariableDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       expect(() => visitor.VariableDeclaration('string')).not.toThrow()
@@ -318,7 +282,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       const node = {
@@ -353,7 +317,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 10, 5))
@@ -363,7 +327,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -402,7 +366,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node without declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       const node = {
@@ -416,7 +380,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with empty declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       const node = {
@@ -431,7 +395,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       const node = {
@@ -462,7 +426,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with non-string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       const node = {
@@ -498,7 +462,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle non-require function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       const node = {
@@ -536,7 +500,7 @@ describe('no-var-requires rule', () => {
 
   describe('message quality', () => {
     test('should mention import in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -545,7 +509,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should mention ES6 in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -554,7 +518,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should mention tree shaking in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
 
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -653,32 +617,32 @@ describe('no-var-requires rule', () => {
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should return visitor with VariableDeclaration as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(typeof visitor.VariableDeclaration).toBe('function')
     })
 
     test('should create independent visitors from separate create calls', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'var x = require("lodash");' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor1 = noVarRequiresRule.create(ctx1)
       const visitor2 = noVarRequiresRule.create(ctx2)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should accept context with valid options', () => {
-      const { context } = createMockContext({ allow: ['test-module'] })
+      const { context } = createMockRuleContext({ options: [{ allow: ['test-module'] }], source: 'var x = require("lodash");' })
       expect(() => noVarRequiresRule.create(context)).not.toThrow()
     })
 
     test('should accept context with empty allow array', () => {
-      const { context } = createMockContext({ allow: [] })
+      const { context } = createMockRuleContext({ options: [{ allow: [] }], source: 'var x = require("lodash");' })
       expect(() => noVarRequiresRule.create(context)).not.toThrow()
     })
 
@@ -739,140 +703,140 @@ describe('no-var-requires rule', () => {
 
   describe('require detection - various modules', () => {
     test('should report require of lodash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of express', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('express'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of react', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('react'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('underscore'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of relative path ./utils', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('./utils'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of relative path ../parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('../parent'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of deeply nested path', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('./a/b/c/d/e'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of scoped package @scope/pkg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('@scope/pkg'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of scoped package @org/deep/nested', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('@org/deep/nested'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of empty string module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration(''))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of node built-in fs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('fs'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of node built-in path', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('path'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of node built-in http', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('http'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of node built-in child_process', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('child_process'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of node: protocol module', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('node:fs'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of node:path protocol', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('node:path'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of package with version-like name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('axios'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of package with dashes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('my-cool-package'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of package with underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('my_cool_package'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require of long module path', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const longPath = './very/deeply/nested/module/path/that/is/quite/long'
       visitor.VariableDeclaration(createVarRequireDeclaration(longPath))
@@ -882,7 +846,7 @@ describe('no-var-requires rule', () => {
 
   describe('multiple declarators', () => {
     test('should report when first declarator has require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -910,7 +874,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report when second declarator has require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -938,7 +902,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report only once when both declarators have require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -970,7 +934,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report when no declarator has require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -994,7 +958,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should skip declarator with null init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1022,7 +986,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should skip declarator with undefined init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1049,7 +1013,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle three declarators with middle one having require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1082,7 +1046,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle single declarator without init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1100,7 +1064,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarator with object expression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1119,7 +1083,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarator with arrow function init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1144,7 +1108,7 @@ describe('no-var-requires rule', () => {
 
   describe('location precision', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -1152,35 +1116,35 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report location at line 5 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 5, 0))
       expect(reports[0].loc?.start.line).toBe(5)
     })
 
     test('should report location at line 1 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 1, 10))
       expect(reports[0].loc?.start.column).toBe(10)
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 100, 0))
       expect(reports[0].loc?.start.line).toBe(100)
     })
 
     test('should report location at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 1, 50))
       expect(reports[0].loc?.start.column).toBe(50)
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 2, 4))
       expect(reports[0].loc?.end.line).toBe(2)
@@ -1188,7 +1152,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 0, 0))
       expect(reports[0].loc?.start.line).toBe(0)
@@ -1196,7 +1160,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle multiple sequential var require nodes with different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('a', 1, 0))
       visitor.VariableDeclaration(createVarRequireDeclaration('b', 2, 5))
@@ -1210,70 +1174,70 @@ describe('no-var-requires rule', () => {
 
   describe('options - allow extended', () => {
     test('should allow single exact module match', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(0)
     })
 
     test('should not allow partial module name match', () => {
-      const { context, reports } = createMockContext({ allow: ['lod'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lod'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
     })
 
     test('should not allow superstring match', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash-fp'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash-fp'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
     })
 
     test('should be case sensitive in module matching', () => {
-      const { context, reports } = createMockContext({ allow: ['Lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['Lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
     })
 
     test('should allow scoped package', () => {
-      const { context, reports } = createMockContext({ allow: ['@scope/pkg'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['@scope/pkg'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('@scope/pkg'))
       expect(reports.length).toBe(0)
     })
 
     test('should not allow different scoped package', () => {
-      const { context, reports } = createMockContext({ allow: ['@scope/pkg'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['@scope/pkg'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('@other/pkg'))
       expect(reports.length).toBe(1)
     })
 
     test('should allow relative path', () => {
-      const { context, reports } = createMockContext({ allow: ['./utils'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['./utils'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('./utils'))
       expect(reports.length).toBe(0)
     })
 
     test('should report empty string module even when in allow list (falsy check)', () => {
-      const { context, reports } = createMockContext({ allow: [''] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: [''] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration(''))
       expect(reports.length).toBe(1)
     })
 
     test('should allow node built-in fs', () => {
-      const { context, reports } = createMockContext({ allow: ['fs'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['fs'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('fs'))
       expect(reports.length).toBe(0)
     })
 
     test('should allow multiple specific modules', () => {
-      const { context, reports } = createMockContext({ allow: ['fs', 'path', 'http'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['fs', 'path', 'http'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('fs'))
       visitor.VariableDeclaration(createVarRequireDeclaration('path'))
@@ -1282,7 +1246,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report modules not in allow list alongside allowed ones', () => {
-      const { context, reports } = createMockContext({ allow: ['fs'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['fs'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('fs'))
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -1302,7 +1266,7 @@ describe('no-var-requires rule', () => {
         'stream',
         'buffer',
       ]
-      const { context, reports } = createMockContext({ allow: allowList })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: allowList }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       for (const mod of allowList) {
         visitor.VariableDeclaration(createVarRequireDeclaration(mod))
@@ -1311,14 +1275,14 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle allow as empty array', () => {
-      const { context, reports } = createMockContext({ allow: [] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: [] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
     })
 
     test('should report when require has no module name even with allow list', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1341,7 +1305,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report require without arguments even with allow list', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1364,21 +1328,21 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle allow with duplicate entries', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash', 'lodash', 'lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash', 'lodash', 'lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(0)
     })
 
     test('should allow node: protocol prefixed module', () => {
-      const { context, reports } = createMockContext({ allow: ['node:fs'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['node:fs'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('node:fs'))
       expect(reports.length).toBe(0)
     })
 
     test('should not allow node:fs when only fs is in allow list', () => {
-      const { context, reports } = createMockContext({ allow: ['fs'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['fs'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('node:fs'))
       expect(reports.length).toBe(1)
@@ -1387,7 +1351,7 @@ describe('no-var-requires rule', () => {
 
   describe('malformed and degenerate nodes', () => {
     test('should handle node with missing type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = { kind: 'var', declarations: [] }
       expect(() => visitor.VariableDeclaration(node)).not.toThrow()
@@ -1395,7 +1359,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with wrong type ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'ExpressionStatement',
@@ -1406,7 +1370,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with kind let (not var)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1429,7 +1393,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with kind const (not var)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1452,39 +1416,39 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle boolean true node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(() => visitor.VariableDeclaration(true)).not.toThrow()
     })
 
     test('should handle boolean false node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(() => visitor.VariableDeclaration(false)).not.toThrow()
     })
 
     test('should handle numeric zero node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(() => visitor.VariableDeclaration(0)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(() => visitor.VariableDeclaration({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       expect(() => visitor.VariableDeclaration([])).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle callee as MemberExpression (obj.require)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1511,7 +1475,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with extra arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1537,7 +1501,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with extra unexpected properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1562,7 +1526,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarator with boolean init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1581,7 +1545,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarator with null init value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1600,7 +1564,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarator with array expression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1619,7 +1583,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with numeric literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1642,7 +1606,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with boolean literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1665,7 +1629,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with null literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1688,7 +1652,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle callee with null type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1711,7 +1675,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle callee with undefined name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1734,7 +1698,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with loc missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1757,7 +1721,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with loc missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1780,7 +1744,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle init as a plain number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1799,7 +1763,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle init as a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1820,28 +1784,28 @@ describe('no-var-requires rule', () => {
 
   describe('message content - extended', () => {
     test('should contain word "var" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0].message).toContain('var')
     })
 
     test('should contain "Unexpected" at start of message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0].message).toMatch(/^Unexpected/)
     })
 
     test('should contain "static analysis" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0].message.toLowerCase()).toContain('static analysis')
     })
 
     test('should produce consistent message for different modules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       const msg1 = reports[0].message
@@ -1852,14 +1816,14 @@ describe('no-var-requires rule', () => {
     })
 
     test('should produce non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0].message.length).toBeGreaterThan(0)
     })
 
     test('should produce message as string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(typeof reports[0].message).toBe('string')
@@ -1868,7 +1832,7 @@ describe('no-var-requires rule', () => {
 
   describe('state isolation', () => {
     test('should report independently for each VariableDeclaration call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('a'))
       visitor.VariableDeclaration(createVarRequireDeclaration('b'))
@@ -1877,7 +1841,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not carry state between non-matching and matching calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarNonRequireDeclaration())
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -1886,8 +1850,8 @@ describe('no-var-requires rule', () => {
     })
 
     test('should isolate reports between different context instances', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'var x = require("lodash");' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor1 = noVarRequiresRule.create(ctx1)
       const visitor2 = noVarRequiresRule.create(ctx2)
       visitor1.VariableDeclaration(createVarRequireDeclaration('lodash'))
@@ -1897,7 +1861,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle alternating var and let requires', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('a'))
       visitor.VariableDeclaration(createLetRequireDeclaration('b'))
@@ -1907,7 +1871,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should accumulate reports across multiple var requires', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       for (let i = 0; i < 10; i++) {
         visitor.VariableDeclaration(createVarRequireDeclaration(`mod${i}`))
@@ -1918,7 +1882,7 @@ describe('no-var-requires rule', () => {
 
   describe('destructuring patterns', () => {
     test('should report var with object destructuring require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1950,7 +1914,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report var with array destructuring require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -1976,7 +1940,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report var with multi-property object destructuring require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2013,7 +1977,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report let with destructuring require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2045,7 +2009,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report const with destructuring require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2079,14 +2043,14 @@ describe('no-var-requires rule', () => {
 
   describe('report descriptor', () => {
     test('should include message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0]).toHaveProperty('message')
     })
 
     test('should include loc in report when node has location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash', 5, 10))
       expect(reports[0]).toHaveProperty('loc')
@@ -2094,7 +2058,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should include start in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0].loc?.start).toBeDefined()
@@ -2103,7 +2067,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should include end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports[0].loc?.end).toBeDefined()
@@ -2112,7 +2076,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report exactly once per matching declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
@@ -2121,7 +2085,7 @@ describe('no-var-requires rule', () => {
 
   describe('require with nested call expressions', () => {
     test('should not report require inside a non-require call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2150,7 +2114,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report require as member expression callee result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2181,7 +2145,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report when init is conditional expression with require', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2209,7 +2173,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not report when init is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2232,7 +2196,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report require with TemplateLiteral argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2280,7 +2244,7 @@ describe('no-var-requires rule', () => {
 
   describe('node structure variants', () => {
     test('should handle node with string kind "var"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2303,7 +2267,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not match kind "Var" (case sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2326,7 +2290,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should not match kind "VAR" (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2349,7 +2313,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarations as non-array value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2362,7 +2326,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarations as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2375,7 +2339,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarations with non-object entries', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2387,7 +2351,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle callee with wrong name like "include"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2410,7 +2374,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle callee with name "requirE" (case sensitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2433,7 +2397,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle callee as function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2461,7 +2425,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle init as undefined (missing property)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2479,7 +2443,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle init as explicit undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2498,7 +2462,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle Identifier node name "require" but different context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2519,14 +2483,14 @@ describe('no-var-requires rule', () => {
 
   describe('config edge cases', () => {
     test('should handle options with extra unknown properties', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'], extraProp: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'], extraProp: true }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(0)
     })
 
     test('should handle options with only unknown properties', () => {
-      const { context, reports } = createMockContext({ unknownOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownOption: true }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
@@ -2632,7 +2596,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should use defaults when options allow is not provided', () => {
-      const { context, reports } = createMockContext({ someOtherOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOtherOption: true }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('lodash'))
       expect(reports.length).toBe(1)
@@ -2641,7 +2605,7 @@ describe('no-var-requires rule', () => {
 
   describe('allow list with multiple declarators', () => {
     test('should allow first declarator and report second when only first is in allow list', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2673,7 +2637,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should allow both when both are in allow list', () => {
-      const { context, reports } = createMockContext({ allow: ['lodash', 'underscore'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['lodash', 'underscore'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2705,7 +2669,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report first when first is not allowed but second is', () => {
-      const { context, reports } = createMockContext({ allow: ['underscore'] })
+      const { context, reports } = createMockRuleContext({ options: [{ allow: ['underscore'] }], source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2739,7 +2703,7 @@ describe('no-var-requires rule', () => {
 
   describe('additional edge cases', () => {
     test('should handle node with only type and kind properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = { type: 'VariableDeclaration', kind: 'var' }
       expect(() => visitor.VariableDeclaration(node)).not.toThrow()
@@ -2747,7 +2711,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with declarations containing null entry', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2759,7 +2723,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle node with declarations containing undefined entry', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2771,21 +2735,21 @@ describe('no-var-requires rule', () => {
     })
 
     test('should report require with numeric string module name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('123'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require with unicode module name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       visitor.VariableDeclaration(createVarRequireDeclaration('日本語パッケージ'))
       expect(reports.length).toBe(1)
     })
 
     test('should report require with very long module name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const longName = 'a'.repeat(500)
       visitor.VariableDeclaration(createVarRequireDeclaration(longName))
@@ -2793,7 +2757,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with null arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2816,7 +2780,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle require with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2838,7 +2802,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle declarator with object id (destructuring)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2861,7 +2825,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle loc with string line and column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2887,7 +2851,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle callee as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',
@@ -2910,7 +2874,7 @@ describe('no-var-requires rule', () => {
     })
 
     test('should handle firstArg with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'var x = require("lodash");' })
       const visitor = noVarRequiresRule.create(context)
       const node = {
         type: 'VariableDeclaration',

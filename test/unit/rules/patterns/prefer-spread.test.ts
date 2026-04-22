@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferSpreadRule } from '../../../../src/rules/patterns/prefer-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'fn.apply(null, args);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -175,31 +137,31 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return visitor with CallExpression as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return a new visitor on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor1 = preferSpreadRule.create(context)
       const visitor2 = preferSpreadRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should accept valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       expect(() => preferSpreadRule.create(context)).not.toThrow()
     })
 
     test('should return object with exactly CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
       expect(Object.keys(visitor)).toContain('CallExpression')
     })
@@ -214,7 +176,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('visitor CallExpression should not throw for valid node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
       const node = createCallExpression(createIdentifier('fn'), [createIdentifier('arg')])
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -226,7 +188,7 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('detecting .apply() calls', () => {
     test('should report .apply(null, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -238,7 +200,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report .apply(this, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createThisExpression(), 'apply')
@@ -250,7 +212,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report obj.method.apply()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(
@@ -265,7 +227,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node with partial loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -283,7 +245,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle member expression with computed property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -300,7 +262,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report Math.max.apply(null, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(
@@ -315,7 +277,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report foo.bar.baz.apply(null, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const inner = createMemberExpression(createIdentifier('foo'), 'bar')
@@ -328,7 +290,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report getFn().apply(null, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getFn'), [])
@@ -341,7 +303,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report fn.apply(this, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -353,7 +315,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report fn.apply(undefined, args)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -369,7 +331,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should detect apply on chained calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const chain = createCallExpression(
@@ -385,7 +347,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should detect apply with array literal as args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -403,7 +365,7 @@ describe('prefer-spread rule', () => {
 
   describe('detecting .concat() calls', () => {
     test('should report arr.concat()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -415,7 +377,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report arr.concat(other)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -429,7 +391,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report arr.concat(other, more)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -444,7 +406,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should include array name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('myArray'), 'concat')
@@ -456,7 +418,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report [].concat(other)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -473,7 +435,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report arr.concat() with no args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('items'), 'concat')
@@ -486,7 +448,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report concat on chained call result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getArray'), [])
@@ -500,7 +462,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report concat with three arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -516,7 +478,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report concat with literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -533,7 +495,7 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('not reporting', () => {
     test('should not report regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const node = createCallExpression(createIdentifier('fn'), [createIdentifier('arg')])
@@ -544,7 +506,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'push')
@@ -556,7 +518,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -568,7 +530,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with only one argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -580,7 +542,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with object as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -592,7 +554,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with undefined thisArg in arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -604,7 +566,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with non-null literal as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -616,7 +578,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with string literal as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -631,7 +593,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with boolean literal as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -643,7 +605,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report map method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'map')
@@ -655,7 +617,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report filter method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'filter')
@@ -667,7 +629,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report reduce method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'reduce')
@@ -679,7 +641,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report forEach method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'forEach')
@@ -691,7 +653,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report join method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'join')
@@ -703,7 +665,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report slice method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'slice')
@@ -715,7 +677,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with object expression as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -728,7 +690,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with arrow function as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -741,7 +703,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report call method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'call')
@@ -753,7 +715,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report bind method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'bind')
@@ -765,7 +727,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report split method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('str'), 'split')
@@ -777,7 +739,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report toString method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'toString')
@@ -789,7 +751,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report indexOf method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'indexOf')
@@ -801,7 +763,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report find method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'find')
@@ -813,7 +775,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report includes method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'includes')
@@ -825,7 +787,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with number literal 0 as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -837,7 +799,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with array expression as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -850,7 +812,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report .apply() with function expression as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -863,7 +825,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report flat method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'flat')
@@ -875,7 +837,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report pop method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'pop')
@@ -887,7 +849,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report shift method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'shift')
@@ -904,21 +866,21 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -926,7 +888,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -941,7 +903,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -951,7 +913,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle call with undefined arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -971,7 +933,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle concat with non-Identifier callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -988,7 +950,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle MemberExpression with non-Identifier property type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -1005,7 +967,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle MemberExpression with undefined property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -1021,7 +983,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle CallExpression with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const node = {
@@ -1040,7 +1002,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle apply on non-Identifier callee object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getFn'), [])
@@ -1054,7 +1016,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle concat on non-Identifier callee object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getArray'), [])
@@ -1068,7 +1030,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle apply with null callee object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -1085,7 +1047,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const node = {
@@ -1103,7 +1065,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node with null arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1123,14 +1085,14 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node with boolean node input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle node with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       visitor.CallExpression({})
@@ -1139,7 +1101,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       visitor.CallExpression({ type: 'ExpressionStatement' })
@@ -1148,7 +1110,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node with numeric callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const node = {
@@ -1163,7 +1125,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle node with string callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const node = {
@@ -1178,7 +1140,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle apply with boolean node as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1193,7 +1155,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle concat with empty array literal as callee object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = {
@@ -1209,7 +1171,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle deeply nested apply', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(
@@ -1224,7 +1186,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle apply with false literal as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1236,7 +1198,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle apply with empty string literal as thisArg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1253,7 +1215,7 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('location', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1266,7 +1228,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1286,7 +1248,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1306,7 +1268,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1326,7 +1288,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1346,7 +1308,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1363,7 +1325,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1380,7 +1342,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report apply location at specified line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1398,7 +1360,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1410,7 +1372,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1422,7 +1384,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1434,7 +1396,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with null start.line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1454,7 +1416,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with null start.column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1474,7 +1436,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with NaN line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1493,7 +1455,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle loc with Infinity column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1517,7 +1479,7 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('message quality', () => {
     test('should mention spread in apply message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1529,7 +1491,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should mention spread in concat message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1539,7 +1501,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should mention apply in apply message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1551,7 +1513,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should mention concat in concat message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1561,7 +1523,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should include function name in apply message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('myFunc'), 'apply')
@@ -1573,7 +1535,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should include array name in concat message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('items'), 'concat')
@@ -1583,7 +1545,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should mention "prefer" in apply message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1595,7 +1557,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should mention "prefer" in concat message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1605,7 +1567,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should use generic "function" for non-Identifier callee in apply', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getFn'), [])
@@ -1618,7 +1580,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should use generic "array" for non-Identifier callee in concat', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getArray'), [])
@@ -1634,7 +1596,7 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('multiple reports', () => {
     test('should report separately for two concat calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee1 = createMemberExpression(createIdentifier('a'), 'concat')
@@ -1647,7 +1609,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report separately for apply then concat', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const applyCallee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1662,7 +1624,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report separately for concat then apply', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const concatCallee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1677,7 +1639,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report same apply pattern multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1691,7 +1653,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report same concat pattern multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -1703,7 +1665,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not report for non-matching calls interspersed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const concatCallee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1719,7 +1681,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should maintain separate report messages for each call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee1 = createMemberExpression(createIdentifier('first'), 'concat')
@@ -1733,7 +1695,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should accumulate reports across different line locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee1 = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1748,8 +1710,8 @@ describe('prefer-spread rule', () => {
     })
 
     test('should report each distinct visitor independently', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'fn.apply(null, args);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'fn.apply(null, args);' })
 
       const v1 = preferSpreadRule.create(ctx1)
       const v2 = preferSpreadRule.create(ctx2)
@@ -1764,7 +1726,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle mix of apply, concat, and non-matching calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       // concat
@@ -1800,7 +1762,7 @@ describe('prefer-spread rule', () => {
   // =====================================================
   describe('context handling', () => {
     test('should handle context with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);', filePath: '/project/utils.ts' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1810,11 +1772,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle context with different source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const result = arr.concat(other);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const result = arr.concat(other);', filePath: '/src/file.ts' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1824,7 +1782,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle context with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -1836,7 +1794,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle context with extra options', () => {
-      const { context, reports } = createMockContext({ checkApply: true, checkConcat: true })
+      const { context, reports } = createMockRuleContext({ options: [{ checkApply: true, checkConcat: true }], source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'concat')
@@ -1846,7 +1804,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle context with workspace root', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       expect(context.workspaceRoot).toBe('/src')
@@ -1858,17 +1816,17 @@ describe('prefer-spread rule', () => {
     })
 
     test('should use getSource from context', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'fn.apply(null, args)')
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args)', filePath: '/src/file.ts' })
       expect(context.getSource()).toBe('fn.apply(null, args)')
     })
 
     test('should use getFilePath from context', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);', filePath: '/custom/path.ts' })
       expect(context.getFilePath()).toBe('/custom/path.ts')
     })
 
     test('should handle context with null AST', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       expect(context.getAST()).toBeNull()
 
       const visitor = preferSpreadRule.create(context)
@@ -1879,7 +1837,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle context with empty tokens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       expect(context.getTokens()).toEqual([])
 
       const visitor = preferSpreadRule.create(context)
@@ -1890,7 +1848,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should handle context with empty comments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       expect(context.getComments()).toEqual([])
 
       const visitor = preferSpreadRule.create(context)
@@ -2033,7 +1991,7 @@ describe('prefer-spread rule', () => {
     })
 
     test('should not provide fix when range is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -2276,7 +2234,7 @@ describe('prefer-spread rule', () => {
       { method: 'bind', expected: 0 },
       { method: 'split', expected: 0 },
     ])('should report $expected reports for .$method() calls', ({ method, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('obj'), method)
@@ -2301,7 +2259,7 @@ describe('prefer-spread rule', () => {
     ])(
       'should report $expected for .apply() with $thisArgType thisArg value=$thisArgValue',
       ({ thisArgType, thisArgValue, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
         const visitor = preferSpreadRule.create(context)
 
         const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -2329,7 +2287,7 @@ describe('prefer-spread rule', () => {
     ])(
       'should report $expected for .apply() with $type $name thisArg',
       ({ type, name, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
         const visitor = preferSpreadRule.create(context)
 
         const callee = createMemberExpression(createIdentifier('fn'), 'apply')
@@ -2356,7 +2314,7 @@ describe('prefer-spread rule', () => {
       { name: 'numbers', expected: 1 },
       { name: 'strings', expected: 1 },
     ])('should report concat for identifier named "$name"', ({ name, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier(name), 'concat')
@@ -2384,7 +2342,7 @@ describe('prefer-spread rule', () => {
       { name: 'run', expected: 1 },
       { name: 'applyFn', expected: 1 },
     ])('should report apply for identifier named "$name"', ({ name, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const callee = createMemberExpression(createIdentifier(name), 'apply')
@@ -2408,7 +2366,7 @@ describe('prefer-spread rule', () => {
       { input: false, description: 'false' },
       { input: NaN, description: 'NaN' },
     ])('should not throw for $description input', ({ input }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       expect(() => visitor.CallExpression(input)).not.toThrow()
@@ -2424,7 +2382,7 @@ describe('prefer-spread rule', () => {
       { argCount: 5, expected: 1 },
       { argCount: 10, expected: 1 },
     ])('should report concat with $argCount arguments', ({ argCount, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'fn.apply(null, args);' })
       const visitor = preferSpreadRule.create(context)
 
       const args = Array.from({ length: argCount }, (_, i) => createIdentifier(`arg${i}`))

@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferDateNowRule } from '../../../../src/rules/patterns/prefer-date-now.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'new Date().getTime()',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(callee: unknown, args: unknown[] = []): unknown {
   return {
@@ -187,7 +149,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -195,7 +157,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor1 = preferDateNowRule.create(context)
       const visitor2 = preferDateNowRule.create(context)
 
@@ -203,7 +165,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should return visitor with only CallExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -212,22 +174,22 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       expect(() => preferDateNowRule.create(context)).not.toThrow()
     })
 
     test('should accept context with populated options', () => {
-      const { context } = createMockContext({ someOption: true })
+      const { context } = createMockRuleContext({ options: [{ someOption: true }], source: 'new Date().getTime()' })
       expect(() => preferDateNowRule.create(context)).not.toThrow()
     })
 
     test('should not throw when creating visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       expect(() => preferDateNowRule.create(context)).not.toThrow()
     })
 
     test('should return callable CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
@@ -242,7 +204,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('detecting new Date().getTime()', () => {
     test('should report new Date().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -256,7 +218,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report with correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -271,7 +233,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0)
 
@@ -282,7 +244,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report at line 42 column 15', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(42, 15)
 
@@ -293,7 +255,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report at line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(100, 0)
 
@@ -303,7 +265,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report at line 1 column 99', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 99)
 
@@ -313,7 +275,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report exactly once per call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -323,7 +285,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report twice when called twice with different nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0))
@@ -333,7 +295,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report three times when called three times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0))
@@ -344,7 +306,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report with correct message each time', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode())
@@ -355,7 +317,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should detect with empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -372,7 +334,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should detect when NewExpression arguments is empty array explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [])
@@ -385,7 +347,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should detect Date with uppercase D', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -398,7 +360,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report with consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode())
@@ -407,7 +369,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(9999, 0)
 
@@ -417,7 +379,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle high column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 500)
 
@@ -427,7 +389,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(0, 0)
 
@@ -438,7 +400,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in long source code', () => {
       const source = 'const x = 1; const y = 2; new Date().getTime();'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 24)
 
@@ -449,7 +411,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect when source is just the pattern', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, source.length])
 
@@ -461,7 +423,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect when source has whitespace', () => {
       const source = '  new Date().getTime()  '
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 2, [2, 22])
 
@@ -477,7 +439,7 @@ describe('prefer-date-now rule', () => {
   describe('fix generation', () => {
     test('should generate fix with correct replacement', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -493,7 +455,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not generate fix when range is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -508,7 +470,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with range [0, 22]', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -518,7 +480,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should generate fix text as Date.now()', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -529,7 +491,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with range [5, 27] for indented code', () => {
       const source = '     new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 5, [5, 27])
 
@@ -541,7 +503,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with range [0, 22] for start of file', () => {
       const source = 'new Date().getTime();'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -553,7 +515,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with range [10, 32] for mid-line', () => {
       const source = 'const x = new Date().getTime();'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 10, [10, 32])
 
@@ -564,7 +526,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix for range starting at large offset', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [1000, 1022])
 
@@ -574,7 +536,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not generate fix when node has no range property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -585,7 +547,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix for each reported occurrence', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0, [0, 22]))
@@ -596,7 +558,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should have fix range as tuple of two numbers', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -612,7 +574,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should have fix range start less than end', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [5, 27])
 
@@ -625,7 +587,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should generate fix text as readonly string', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -635,7 +597,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle range at position [0, 0]', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 0])
 
@@ -646,7 +608,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should generate fix for single occurrence among mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       // non-matching call
@@ -663,7 +625,7 @@ describe('prefer-date-now rule', () => {
 
     test('should preserve range reference type', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const range: readonly [number, number] = [0, 22]
       const node = createDateGetTimeNode(1, 0, range as [number, number])
@@ -675,7 +637,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix even with different file paths', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/utils/time.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/utils/time.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -686,7 +648,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with range [100, 122]', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [100, 122])
 
@@ -698,7 +660,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with same text for all occurrences', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -712,7 +674,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with correct structure', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -725,7 +687,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle range with same start and end', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [10, 10])
 
@@ -736,7 +698,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle very large range values', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [999999, 1000021])
 
@@ -747,7 +709,7 @@ describe('prefer-date-now rule', () => {
 
     test('should generate fix with range from node', () => {
       const source = 'new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, source.length])
 
@@ -763,7 +725,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('valid alternative patterns', () => {
     test('should not report Date.now()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('Date'), 'now')
@@ -775,7 +737,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(value).getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [createIdentifier('timestamp')])
@@ -788,7 +750,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(123).getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [
@@ -803,7 +765,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date("string").getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [
@@ -818,7 +780,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().valueOf()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -831,7 +793,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -844,7 +806,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report Date.prototype.getTime.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr1 = createMemberExpression(createIdentifier('Date'), 'prototype')
@@ -860,7 +822,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createCallExpression(createIdentifier('someFunction'), [
@@ -873,7 +835,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date() without getTime call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createNewExpression(createIdentifier('Date'))
@@ -882,7 +844,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report member access on non-NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('someObject'), 'getTime')
@@ -894,7 +856,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report getTime on non-Date NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('OtherClass'))
@@ -907,7 +869,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toISOString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -920,7 +882,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toLocaleDateString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -933,7 +895,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toLocaleTimeString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -946,7 +908,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toDateString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -959,7 +921,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toTimeString()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -972,7 +934,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().toISOString() with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -986,7 +948,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new MyDate().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('MyDate'))
@@ -999,7 +961,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new date().getTime() with lowercase d', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('date'))
@@ -1012,7 +974,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new DATE().getTime() with uppercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('DATE'))
@@ -1025,7 +987,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report foo.getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('foo'), 'getTime')
@@ -1037,7 +999,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report variable.getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('myVar'), 'getTime')
@@ -1049,7 +1011,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report obj.method()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('obj'), 'method')
@@ -1061,7 +1023,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(timestamp).getTime() with identifier arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [createIdentifier('ts')])
@@ -1074,7 +1036,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(2024, 0, 1).getTime() with multiple args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [
@@ -1091,7 +1053,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(dateString).getTime() with string arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [
@@ -1106,7 +1068,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report standalone function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createCallExpression(createIdentifier('getTime'), [])
@@ -1117,7 +1079,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getFullYear()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1130,7 +1092,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getMonth()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1143,7 +1105,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getDate()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1156,7 +1118,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getHours()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1169,7 +1131,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getMinutes()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1182,7 +1144,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getSeconds()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1195,7 +1157,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().getMilliseconds()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1208,7 +1170,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date().setTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1221,7 +1183,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report console.log()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('console'), 'log')
@@ -1233,7 +1195,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report Math.random()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('Math'), 'random')
@@ -1245,7 +1207,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(null).getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [
@@ -1260,7 +1222,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Date(undefined).getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [createIdentifier('undefined')])
@@ -1273,7 +1235,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Error().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Error'))
@@ -1286,7 +1248,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Array().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Array'))
@@ -1299,7 +1261,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Object().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Object'))
@@ -1312,7 +1274,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Map().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Map'))
@@ -1325,7 +1287,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Set().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Set'))
@@ -1338,7 +1300,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report new Promise().getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Promise'))
@@ -1351,7 +1313,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report Date.parse()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('Date'), 'parse')
@@ -1363,7 +1325,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not report Date.UTC()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('Date'), 'UTC')
@@ -1380,7 +1342,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
@@ -1388,7 +1350,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
@@ -1396,7 +1358,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -1405,7 +1367,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1421,7 +1383,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle CallExpression without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = {
@@ -1434,7 +1396,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle MemberExpression without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1449,7 +1411,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle MemberExpression without object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = {
@@ -1466,7 +1428,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -1480,7 +1442,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle non-Identifier callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression({ type: 'Literal', value: 'Date' })
@@ -1492,7 +1454,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property that is not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1511,7 +1473,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property name that is not getTime', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1524,7 +1486,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
@@ -1533,7 +1495,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(0)).not.toThrow()
@@ -1543,7 +1505,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle empty string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression('')).not.toThrow()
@@ -1551,7 +1513,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
@@ -1559,7 +1521,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with only type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression({ type: 'CallExpression' })).not.toThrow()
@@ -1567,7 +1529,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1583,7 +1545,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with type as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression({ type: 42 })).not.toThrow()
@@ -1591,7 +1553,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with type as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression({ type: null })).not.toThrow()
@@ -1599,7 +1561,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with type as undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression({ type: undefined })).not.toThrow()
@@ -1607,7 +1569,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createDateGetTimeNode()
@@ -1619,7 +1581,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle callee as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = {
@@ -1633,7 +1595,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle callee as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = {
@@ -1647,7 +1609,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle callee as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = {
@@ -1661,7 +1623,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression callee as MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const innerMember = createMemberExpression(createIdentifier('window'), 'Date')
@@ -1675,7 +1637,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property with null name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1694,7 +1656,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1707,7 +1669,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -1723,7 +1685,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression with null arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -1740,7 +1702,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
@@ -1748,7 +1710,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle deeply nested member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1762,7 +1724,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NaN as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(NaN)).not.toThrow()
@@ -1770,7 +1732,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle Infinity as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(Infinity)).not.toThrow()
@@ -1778,7 +1740,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(Symbol('test'))).not.toThrow()
@@ -1786,7 +1748,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle function as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       expect(() => visitor.CallExpression(() => {})).not.toThrow()
@@ -1794,7 +1756,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle Date.now being reported (it should NOT be)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = createMemberExpression(createIdentifier('Date'), 'now')
@@ -1806,7 +1768,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle computed member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1828,7 +1790,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle node with circular reference safely', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node: Record<string, unknown> = { type: 'CallExpression' }
@@ -1838,7 +1800,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle object with getter that throws', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = {
@@ -1851,7 +1813,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle callee object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = {
@@ -1869,7 +1831,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression with arguments as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -1885,7 +1847,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle loc with missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createDateGetTimeNode()
@@ -1896,7 +1858,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle loc with missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createDateGetTimeNode()
@@ -1907,7 +1869,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle range as tuple of strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createDateGetTimeNode()
@@ -1921,7 +1883,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1934,7 +1896,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle callee as MemberExpression without object type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const memberExpr = {
@@ -1953,7 +1915,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property with undefined name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -1972,7 +1934,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -1988,7 +1950,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle range as empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createDateGetTimeNode()
@@ -2000,7 +1962,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle range as single element array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const node = createDateGetTimeNode()
@@ -2012,7 +1974,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression with callee as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -2028,7 +1990,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle NewExpression with callee as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = {
@@ -2044,7 +2006,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle arguments containing getTime as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2057,7 +2019,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle Date constructor with spread arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'), [
@@ -2072,7 +2034,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle property type mismatch (number instead of string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2092,7 +2054,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle same visitor reused for multiple nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       // Pattern: matching
@@ -2114,7 +2076,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('real-world usage patterns', () => {
     test('should detect in assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2128,7 +2090,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should detect in function call argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2142,7 +2104,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should detect in return statement context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2157,7 +2119,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in variable declaration context', () => {
       const source = 'const timestamp = new Date().getTime();'
-      const { context, reports } = createMockContext({}, '/src/timer.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/timer.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 18, [18, 40])
 
@@ -2169,7 +2131,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in comparison context', () => {
       const source = 'if (new Date().getTime() > deadline) {}'
-      const { context, reports } = createMockContext({}, '/src/check.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/check.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 4, [4, 26])
 
@@ -2180,7 +2142,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in subtraction context', () => {
       const source = 'const elapsed = new Date().getTime() - start;'
-      const { context, reports } = createMockContext({}, '/src/elapsed.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/elapsed.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 17, [17, 39])
 
@@ -2191,7 +2153,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in binary expression context', () => {
       const source = 'new Date().getTime() + 1000'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -2203,7 +2165,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in ternary expression context', () => {
       const source = 'flag ? new Date().getTime() : 0'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 7, [7, 29])
 
@@ -2214,7 +2176,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in array context', () => {
       const source = '[new Date().getTime(), Date.now()]'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 1, [1, 23])
 
@@ -2225,7 +2187,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in object property context', () => {
       const source = '{ ts: new Date().getTime() }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 6, [6, 28])
 
@@ -2236,7 +2198,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in function parameter context', () => {
       const source = 'setTimeout(fn, new Date().getTime())'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 14, [14, 36])
 
@@ -2247,7 +2209,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in template expression context', () => {
       const source = '`${new Date().getTime()}`'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 3, [3, 25])
 
@@ -2258,7 +2220,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in logical expression context', () => {
       const source = 'new Date().getTime() || fallback'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -2269,7 +2231,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in await expression context', () => {
       const source = 'await new Date().getTime()'
-      const { context, reports } = createMockContext({}, '/src/async.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/async.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 6, [6, 28])
 
@@ -2280,7 +2242,7 @@ describe('prefer-date-now rule', () => {
 
     test('should detect in type assertion context', () => {
       const source = 'new Date().getTime() as number'
-      const { context, reports } = createMockContext({}, '/src/types.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/types.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 0, [0, 22])
 
@@ -2295,7 +2257,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('multiple occurrences', () => {
     test('should report each occurrence independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2306,7 +2268,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should track correct location for each occurrence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0))
@@ -2322,7 +2284,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should generate fix for each occurrence when range present', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0, [0, 22]))
@@ -2335,7 +2297,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle alternating matching and non-matching calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0))
@@ -2348,7 +2310,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle many occurrences without performance issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2359,7 +2321,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should maintain correct report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0))
@@ -2372,7 +2334,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle same visitor for non-matching then matching', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       // Non-matching
@@ -2390,7 +2352,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('context variations', () => {
     test('should work with different file extensions .js', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js', 'new Date().getTime()')
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/file.js' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -2400,11 +2362,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should work with different file extensions .tsx', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/component.tsx',
-        'new Date().getTime()',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/component.tsx' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -2414,11 +2372,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should work with different file extensions .jsx', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/component.jsx',
-        'new Date().getTime()',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/component.jsx' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -2428,11 +2382,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should work with deeply nested file paths', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/a/b/c/d/e/file.ts',
-        'new Date().getTime()',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()', filePath: '/src/a/b/c/d/e/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -2442,7 +2392,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should work with options containing extra data', () => {
-      const { context, reports } = createMockContext({ extra: 'data', count: 5 })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: 'data', count: 5 }], source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode()
 
@@ -2501,7 +2451,7 @@ describe('prefer-date-now rule', () => {
 
     test('should work with different source code', () => {
       const source = 'function test() { return new Date().getTime(); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferDateNowRule.create(context)
       const node = createDateGetTimeNode(1, 22, [22, 44])
 
@@ -2517,7 +2467,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('case sensitivity and identifier variations', () => {
     test('should not match lowercase date', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('date'))
@@ -2530,7 +2480,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not match DATE uppercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('DATE'))
@@ -2543,7 +2493,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not match dAte mixed case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('dAte'))
@@ -2556,7 +2506,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not match gettime lowercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2569,7 +2519,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should not match GETTIME uppercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2582,7 +2532,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should match exact Date with exact getTime', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       const newExpr = createNewExpression(createIdentifier('Date'))
@@ -2614,7 +2564,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('create function should accept context and return visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Date().getTime()' })
       const result = preferDateNowRule.create(context)
 
       expect(result).toBeDefined()
@@ -2636,7 +2586,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('report message format', () => {
     test('should have correct message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode())
 
@@ -2644,7 +2594,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode())
 
@@ -2652,7 +2602,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('message should mention Date.now()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode())
 
@@ -2660,7 +2610,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('message should mention getTime()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode())
 
@@ -2668,7 +2618,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('message should be consistent across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
 
       visitor.CallExpression(createDateGetTimeNode(1, 0))
@@ -2685,7 +2635,7 @@ describe('prefer-date-now rule', () => {
   // =====================================================
   describe('location extraction', () => {
     test('should extract location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode(3, 5))
 
@@ -2693,7 +2643,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report correct start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode(42, 0))
 
@@ -2701,7 +2651,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report correct start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode(1, 17))
 
@@ -2709,7 +2659,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode(1, 0))
 
@@ -2718,7 +2668,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should report end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode(1, 0))
 
@@ -2726,7 +2676,7 @@ describe('prefer-date-now rule', () => {
     })
 
     test('should handle location at start of file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Date().getTime()' })
       const visitor = preferDateNowRule.create(context)
       visitor.CallExpression(createDateGetTimeNode(1, 0))
 

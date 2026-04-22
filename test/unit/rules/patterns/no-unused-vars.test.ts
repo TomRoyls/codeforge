@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnusedVarsRule } from '../../../../src/rules/patterns/no-unused-vars.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createProgram(): unknown {
   return {
@@ -207,77 +171,77 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with Program method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('Program')
     })
 
     test('should return visitor object with Program:exit method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('Program:exit')
     })
 
     test('should return visitor object with FunctionDeclaration method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
     })
 
     test('should return visitor object with FunctionDeclaration:exit method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration:exit')
     })
 
     test('should return visitor object with FunctionExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionExpression')
     })
 
     test('should return visitor object with FunctionExpression:exit method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionExpression:exit')
     })
 
     test('should return visitor object with ArrowFunctionExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('ArrowFunctionExpression')
     })
 
     test('should return visitor object with ArrowFunctionExpression:exit method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('ArrowFunctionExpression:exit')
     })
 
     test('should return visitor object with VariableDeclarator method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclarator')
     })
 
     test('should return visitor object with Identifier method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('Identifier')
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -285,7 +249,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should have all visitor methods as functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       const methods = [
@@ -311,7 +275,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('detecting unused variables', () => {
     test('should report when variable is declared but never used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -322,7 +286,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report with correct message for unused variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -333,7 +297,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report only unused variables when some are used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -349,7 +313,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report multiple unused variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -362,7 +326,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused function parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -377,7 +341,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused arrow function parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -391,7 +355,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused function expression parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -405,7 +369,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused function declaration name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -418,7 +382,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report variable used only in inner function as used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -433,7 +397,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report correct variable when multiple are declared', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -449,7 +413,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused parameter in nested function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -466,7 +430,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report all unused params in function with multiple params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -483,7 +447,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused variable in arrow function scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -497,7 +461,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report variable declared in inner scope even if outer references it', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -514,7 +478,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle multiple scopes with variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -530,7 +494,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report variable used before function scope exits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -546,7 +510,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report variable shadowing outer scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -562,7 +526,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should track variable usage across different scopes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -576,7 +540,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused parameter in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -589,7 +553,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused parameter in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -602,7 +566,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused variable declared with let keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -620,7 +584,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused variable declared with var keyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -638,7 +602,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused variable without explicit kind defaulting to let', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -655,7 +619,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused function with params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -669,7 +633,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report nested unused variables across two function levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -685,7 +649,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should detect unused variable in deeply nested arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -701,7 +665,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report each unused param separately in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -718,7 +682,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report variable declared in function expression scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -732,7 +696,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should allow variable use in parent scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -752,7 +716,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('not reporting used or ignored variables', () => {
     test('should not report when variable is declared and used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -764,7 +728,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report when multiple variables are all used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -780,7 +744,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore-prefixed variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -791,7 +755,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report multiple underscore-prefixed variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -804,7 +768,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -817,7 +781,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used function parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -832,7 +796,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore-prefixed function parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -845,7 +809,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used arrow function parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -859,7 +823,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore-prefixed arrow function parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -871,7 +835,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used function expression parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -885,7 +849,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report variable used multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -899,7 +863,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore-prefixed params in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -911,7 +875,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore-prefixed params in arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -923,7 +887,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report when variable used in deeper nested scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -940,7 +904,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report empty program', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -950,7 +914,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report when no declarations exist', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -962,7 +926,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report variable with double underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -973,7 +937,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore param mixed with used param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -987,7 +951,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report variable used after function scope exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1002,7 +966,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report same variable name in sibling scopes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1022,7 +986,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used param in function expression with name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1042,7 +1006,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used variable in function expression scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1056,7 +1020,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report underscore-prefixed function declaration name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1068,7 +1032,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report used arrow function param in expression body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1081,7 +1045,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report when identifier matches variable from outer scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1096,7 +1060,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report variable with underscore followed by number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1108,7 +1072,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report when all params are underscore-prefixed in function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1121,7 +1085,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report variable used in same scope as declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1133,7 +1097,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not report function used before declaration in visitor order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1152,7 +1116,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1163,7 +1127,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle undefined node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1174,7 +1138,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle non-object node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1186,7 +1150,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1206,7 +1170,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle null node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1218,7 +1182,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle undefined node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1230,7 +1194,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle non-object node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1243,7 +1207,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle null node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1255,7 +1219,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle undefined node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1267,7 +1231,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle non-object node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1280,7 +1244,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle null node in ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1292,7 +1256,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle undefined node in ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1304,7 +1268,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle non-object node in ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1317,7 +1281,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1328,7 +1292,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle variable without parent kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1344,7 +1308,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function declaration without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1362,7 +1326,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function declaration without params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1381,7 +1345,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle non-array params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1400,7 +1364,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle null identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1411,7 +1375,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle undefined identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1422,7 +1386,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle non-object identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1434,7 +1398,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle identifier without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1448,7 +1412,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle identifier with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1463,7 +1427,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function declaration with undefined id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1481,7 +1445,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle param with non-Identifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1506,7 +1470,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location for variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1518,7 +1482,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report end column for variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1530,7 +1494,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for multi-character variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1543,7 +1507,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1555,7 +1519,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report correct location for second variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1569,7 +1533,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for function parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1583,7 +1547,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for function declaration name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1596,7 +1560,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should provide default location for node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1613,7 +1577,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for arrow function param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1627,7 +1591,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for function expression param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1640,7 +1604,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for variable at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1652,7 +1616,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report location for variable at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1663,7 +1627,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report different locations for different unused vars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1676,7 +1640,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should have both start and end in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1692,7 +1656,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report loc as object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1713,7 +1677,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1724,7 +1688,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should mention declared in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1735,7 +1699,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should mention never used in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1746,7 +1710,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should use single quotes around variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1757,7 +1721,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1772,7 +1736,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should include param name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1785,7 +1749,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should include function name in message when unused', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1797,7 +1761,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should end message with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1808,7 +1772,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should use consistent format across variable kinds', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1827,7 +1791,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should have same message format for params and variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1849,7 +1813,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('multiple reports', () => {
     test('should report all unused variables at program exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1862,7 +1826,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused params at function exit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1875,7 +1839,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report from multiple function scopes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1893,7 +1857,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report from nested scopes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1908,7 +1872,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report mix of variables and params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1924,7 +1888,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report large number of unused variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1937,7 +1901,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report unused vars from arrow function and outer scope', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1950,7 +1914,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not double report across scope exits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1965,7 +1929,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle report order matching declaration order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1980,7 +1944,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should report all params when none are used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -1997,7 +1961,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/custom/path.ts' })
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2008,7 +1972,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2019,11 +1983,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should work with multi-line source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = 1;\nconst y = 2;\n',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = 1;\nconst y = 2;\n', filePath: '/src/file.ts' })
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2034,8 +1994,8 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should create independent visitors for each context', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noUnusedVarsRule.create(ctx1)
       const visitor2 = noUnusedVarsRule.create(ctx2)
@@ -2122,7 +2082,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle multiple Program/Program:exit cycles', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2138,7 +2098,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle deeply nested function scopes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2156,7 +2116,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle scope stack correctly with early exits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2173,8 +2133,8 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should not share state between different create calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const v1 = noUnusedVarsRule.create(ctx1)
       const v2 = noUnusedVarsRule.create(ctx2)
@@ -2198,7 +2158,7 @@ describe('no-unused-vars rule', () => {
   // ============================================================
   describe('additional edge cases', () => {
     test('should handle VariableDeclarator with id as non-Identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2214,7 +2174,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle VariableDeclarator with null id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2230,7 +2190,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle VariableDeclarator with string id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2246,7 +2206,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle boolean node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2258,7 +2218,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle boolean node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2270,7 +2230,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle boolean node in FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2282,7 +2242,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle boolean node in ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2294,7 +2254,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle boolean node in Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2306,7 +2266,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function declaration with empty params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2319,7 +2279,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle arrow function with empty params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2331,7 +2291,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function expression with empty params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2343,7 +2303,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle identifier with empty name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2356,7 +2316,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle single character variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2372,7 +2332,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle variable name with numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2386,7 +2346,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle node with loc containing zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2398,7 +2358,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle identifier that matches no declared variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2411,7 +2371,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle many identifiers referencing same variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2425,7 +2385,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function declaration inside function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2440,7 +2400,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle arrow inside arrow', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2455,7 +2415,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle node with partial loc (start only)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2478,7 +2438,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle node with numeric loc values as strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2501,7 +2461,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle param that is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2519,7 +2479,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle param that is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2537,7 +2497,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle param that is a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2555,7 +2515,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle param that is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2573,7 +2533,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function expression with null params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2590,7 +2550,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle arrow function with null params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2606,7 +2566,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function expression with string params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2623,7 +2583,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle arrow function with string params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2639,7 +2599,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle function expression with undefined params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2656,7 +2616,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test('should handle arrow function with undefined params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2688,7 +2648,7 @@ describe('no-unused-vars rule', () => {
     { name: '$dollar' },
   ])('variable name "$name"', ({ name }) => {
     test(`should report "${name}" as unused when not referenced`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2704,7 +2664,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test(`should not report "${name}" when referenced`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2716,7 +2676,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test(`should report correct message for "${name}"`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2729,7 +2689,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test(`should report "${name}" as unused param`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2750,7 +2710,7 @@ describe('no-unused-vars rule', () => {
     'variable kind "$kind"',
     ({ kind }) => {
       test(`should report unused ${kind} variable`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noUnusedVarsRule.create(context)
 
         visitor.Program(createProgram())
@@ -2767,7 +2727,7 @@ describe('no-unused-vars rule', () => {
       })
 
       test(`should not report used ${kind} variable`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = noUnusedVarsRule.create(context)
 
         visitor.Program(createProgram())
@@ -2798,7 +2758,7 @@ describe('no-unused-vars rule', () => {
     },
   ])('function type "$funcType"', ({ funcType, create }) => {
     test(`should report unused params in ${funcType}`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2817,7 +2777,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test(`should not report used params in ${funcType}`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2836,7 +2796,7 @@ describe('no-unused-vars rule', () => {
     })
 
     test(`should not report underscore params in ${funcType}`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())
@@ -2862,7 +2822,7 @@ describe('no-unused-vars rule', () => {
     { line: 42, column: 7 },
   ])('location at line=$line column=$column', ({ line, column }) => {
     test(`should report correct start line ${line} column ${column}`, () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUnusedVarsRule.create(context)
 
       visitor.Program(createProgram())

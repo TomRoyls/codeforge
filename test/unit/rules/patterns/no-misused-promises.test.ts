@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noMisusedPromisesRule } from '../../../../src/rules/patterns/no-misused-promises.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'array.forEach(async (x) => {});',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createAsyncForEachCall(line = 1, column = 0): unknown {
   return {
@@ -371,7 +335,7 @@ describe('no-misused-promises rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -379,28 +343,28 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should return visitor with exactly two methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(2)
     })
 
     test('should return visitor with callable CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return visitor with callable AwaitExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(typeof visitor.AwaitExpression).toBe('function')
     })
 
     test('should return a new visitor on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor1 = noMisusedPromisesRule.create(context)
       const visitor2 = noMisusedPromisesRule.create(context)
 
@@ -408,19 +372,19 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       expect(() => noMisusedPromisesRule.create(context)).not.toThrow()
     })
 
     test('should accept context with populated options', () => {
-      const { context } = createMockContext({ checksConditionals: true, checksVoidReturn: true })
+      const { context } = createMockRuleContext({ options: [{ checksConditionals: true, checksVoidReturn: true }], source: 'array.forEach(async (x) => {});' })
       expect(() => noMisusedPromisesRule.create(context)).not.toThrow()
     })
   })
 
   describe('detecting async callbacks in non-Promise-aware methods', () => {
     test('should report async forEach callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -431,7 +395,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async map callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMapCall())
@@ -441,7 +405,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync forEach callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncForEachCall())
@@ -450,7 +414,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report non-call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createNonCallExpression())
@@ -459,7 +423,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async filter callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('filter'))
@@ -469,7 +433,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async reduce callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('reduce'))
@@ -479,7 +443,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async reduceRight callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('reduceRight'))
@@ -489,7 +453,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async find callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('find'))
@@ -499,7 +463,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async findIndex callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('findIndex'))
@@ -509,7 +473,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async findLast callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('findLast'))
@@ -519,7 +483,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async findLastIndex callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('findLastIndex'))
@@ -529,7 +493,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async every callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('every'))
@@ -539,7 +503,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async some callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('some'))
@@ -549,7 +513,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async sort callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('sort'))
@@ -559,7 +523,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async flatMap callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('flatMap'))
@@ -569,7 +533,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync map callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('map'))
@@ -578,7 +542,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync filter callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('filter'))
@@ -587,7 +551,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync reduce callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('reduce'))
@@ -596,7 +560,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync reduceRight callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('reduceRight'))
@@ -605,7 +569,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync find callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('find'))
@@ -614,7 +578,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync findIndex callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('findIndex'))
@@ -623,7 +587,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync findLast callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('findLast'))
@@ -632,7 +596,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync findLastIndex callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('findLastIndex'))
@@ -641,7 +605,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync every callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('every'))
@@ -650,7 +614,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync some callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('some'))
@@ -659,7 +623,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync sort callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('sort'))
@@ -668,7 +632,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report sync flatMap callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createSyncMethodCall('flatMap'))
@@ -677,7 +641,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async FunctionExpression in forEach', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('forEach', 1, 0, 'FunctionExpression'))
@@ -687,7 +651,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async FunctionExpression in map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('map', 1, 0, 'FunctionExpression'))
@@ -697,7 +661,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async FunctionExpression in filter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('filter', 1, 0, 'FunctionExpression'))
@@ -707,7 +671,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async FunctionExpression in reduce', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('reduce', 1, 0, 'FunctionExpression'))
@@ -717,7 +681,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async FunctionExpression in every', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('every', 1, 0, 'FunctionExpression'))
@@ -727,7 +691,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report async FunctionExpression in some', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('some', 1, 0, 'FunctionExpression'))
@@ -737,7 +701,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report async callback in non-tracked method "then"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('then'))
@@ -746,7 +710,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report async callback in non-tracked method "catch"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('catch'))
@@ -755,7 +719,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report async callback in non-tracked method "finally"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('finally'))
@@ -764,7 +728,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report async callback in non-tracked method "subscribe"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('subscribe'))
@@ -773,7 +737,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report async callback in non-tracked method "addEventListener"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('addEventListener'))
@@ -782,7 +746,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report async callback in non-tracked method "on"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('on'))
@@ -791,7 +755,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report non-async FunctionExpression in forEach', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -819,7 +783,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report when first argument is Identifier not function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -839,7 +803,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report for computed member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -868,7 +832,7 @@ describe('no-misused-promises rule', () => {
 
   describe('detecting await in non-async functions', () => {
     test('should report await in non-async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -879,7 +843,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report await in async function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, true))
@@ -888,7 +852,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report await in non-async FunctionExpression parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -914,7 +878,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report await in async FunctionExpression parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -939,7 +903,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report await in non-async FunctionDeclaration parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -964,7 +928,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report await in async FunctionDeclaration parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -989,7 +953,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report await with no parent at all', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1007,7 +971,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report await with null parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1026,7 +990,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report await with undefined parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1045,7 +1009,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should find async ancestor through multiple levels', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const asyncParent = {
@@ -1075,7 +1039,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report await when async ancestor is deep but not present', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const nonAsyncParent = {
@@ -1106,7 +1070,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should find async FunctionDeclaration through intermediate nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const asyncDecl = {
@@ -1139,77 +1103,77 @@ describe('no-misused-promises rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle null node gracefully for AwaitExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle undefined node gracefully for AwaitExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node gracefully for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
     })
 
     test('should handle number node gracefully for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression(123)).not.toThrow()
     })
 
     test('should handle string node gracefully for AwaitExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression('string')).not.toThrow()
     })
 
     test('should handle number node gracefully for AwaitExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression(123)).not.toThrow()
     })
 
     test('should handle boolean node gracefully for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle boolean node gracefully for AwaitExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression(false)).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1235,7 +1199,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle await node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1258,7 +1222,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report correct location for forEach callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(10, 5))
@@ -1268,7 +1232,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report correct end location for forEach callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(10, 5))
@@ -1278,7 +1242,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report correct location for await in sync function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(7, 4, false))
@@ -1290,7 +1254,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1329,7 +1293,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle call without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1349,7 +1313,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle call with non-member callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1371,7 +1335,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle call with null arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1391,7 +1355,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle call with undefined arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1411,7 +1375,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle callee with null property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1438,7 +1402,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle node with empty object as callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1453,7 +1417,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle CallExpression with property being non-Identifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1480,7 +1444,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
@@ -1488,7 +1452,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle empty object node for AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression({})).not.toThrow()
@@ -1496,7 +1460,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle node with loc but missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1518,7 +1482,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle node with loc but missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1540,7 +1504,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle AwaitExpression with non-AwaitExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1555,7 +1519,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report when callback async is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1582,7 +1546,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report when callback async is false string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1609,7 +1573,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle deeply nested node with depth exceeding 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       let current: Record<string, unknown> = {
@@ -1637,7 +1601,7 @@ describe('no-misused-promises rule', () => {
 
   describe('message quality', () => {
     test('should mention for-of in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1646,7 +1610,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention async in await message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1655,7 +1619,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention method name in forEach report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1664,7 +1628,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention method name in map report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMapCall())
@@ -1673,7 +1637,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention method name in filter report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('filter'))
@@ -1682,7 +1646,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention method name in reduce report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('reduce'))
@@ -1691,7 +1655,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention method name in every report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMethodCall('every'))
@@ -1700,7 +1664,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention callback in forEach message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1709,7 +1673,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention unhandled in forEach message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1718,7 +1682,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention rejection in forEach message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1727,7 +1691,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention sequential in forEach message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1736,7 +1700,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention await keyword in await message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1745,7 +1709,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention non-async in await message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1754,7 +1718,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention keyword in await message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1763,7 +1727,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention function in await message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1772,7 +1736,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should have non-empty message for forEach', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1781,7 +1745,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should have non-empty message for await', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1790,7 +1754,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention Promise returned in forEach message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1800,7 +1764,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should mention ignored in forEach message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1811,7 +1775,7 @@ describe('no-misused-promises rule', () => {
 
   describe('location reporting', () => {
     test('should report location of callback not call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(1, 0))
@@ -1820,7 +1784,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report location of await expression itself', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(5, 10, false))
@@ -1830,7 +1794,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report default location when callback has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -1857,7 +1821,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle location with zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(0, 0))
@@ -1867,7 +1831,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle location with large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(9999, 0))
@@ -1876,7 +1840,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle location with large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(1, 500))
@@ -1887,7 +1851,7 @@ describe('no-misused-promises rule', () => {
 
   describe('multiple reports', () => {
     test('should report multiple forEach violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(1, 0))
@@ -1897,7 +1861,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report multiple await violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -1907,7 +1871,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report both forEach and await violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1917,7 +1881,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should accumulate reports across mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1929,7 +1893,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle ten forEach violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1940,7 +1904,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle ten await violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1951,7 +1915,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should track correct locations for multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall(1, 0))
@@ -1977,7 +1941,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should have create that returns a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -1987,7 +1951,7 @@ describe('no-misused-promises rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});', filePath: '/project/src/utils.ts' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -1996,7 +1960,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'items.map(async x => x)')
+      const { context, reports } = createMockRuleContext({ source: 'items.map(async x => x)', filePath: '/src/file.ts' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncMapCall())
@@ -2005,7 +1969,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should work with checksConditionals true', () => {
-      const { context, reports } = createMockContext({ checksConditionals: true })
+      const { context, reports } = createMockRuleContext({ options: [{ checksConditionals: true }], source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -2014,7 +1978,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should work with checksVoidReturn true', () => {
-      const { context, reports } = createMockContext({ checksVoidReturn: true })
+      const { context, reports } = createMockRuleContext({ options: [{ checksVoidReturn: true }], source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -2023,10 +1987,10 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should work with both options false', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         checksConditionals: false,
         checksVoidReturn: false,
-      })
+      }], source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -2035,7 +1999,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should work with extra unknown options', () => {
-      const { context, reports } = createMockContext({ unknownOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownOption: true }], source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -2046,7 +2010,7 @@ describe('no-misused-promises rule', () => {
 
   describe('rule structure', () => {
     test('should have exactly two visitor keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -2054,7 +2018,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not have additional visitor keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(visitor).not.toHaveProperty('VariableDeclaration')
@@ -2063,7 +2027,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('visitor CallExpression should return void', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const result = visitor.CallExpression(createAsyncForEachCall())
@@ -2071,7 +2035,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('visitor AwaitExpression should return void', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const result = visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -2098,7 +2062,7 @@ describe('no-misused-promises rule', () => {
 
     for (const method of methods) {
       test(`should report async FunctionExpression in ${method}`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
         const visitor = noMisusedPromisesRule.create(context)
 
         visitor.CallExpression(createAsyncMethodCall(method, 1, 0, 'FunctionExpression'))
@@ -2111,7 +2075,7 @@ describe('no-misused-promises rule', () => {
 
   describe('visitor independence', () => {
     test('should not mix CallExpression and AwaitExpression reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.CallExpression(createAsyncForEachCall())
@@ -2124,7 +2088,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should maintain separate report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       visitor.AwaitExpression(createAwaitExpression(1, 0, false))
@@ -2138,7 +2102,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('multiple visitors from same context work independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor1 = noMisusedPromisesRule.create(context)
       const visitor2 = noMisusedPromisesRule.create(context)
 
@@ -2151,7 +2115,7 @@ describe('no-misused-promises rule', () => {
 
   describe('callback position in arguments', () => {
     test('should report when async callback is first argument of forEach', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2180,7 +2144,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report when first argument is sync and second is async', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2213,7 +2177,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report when only argument is async callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2243,7 +2207,7 @@ describe('no-misused-promises rule', () => {
 
   describe('node with only type field', () => {
     test('should not crash on CallExpression node with only type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression({ type: 'CallExpression' })).not.toThrow()
@@ -2251,14 +2215,14 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not crash on AwaitExpression node with only type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.AwaitExpression({ type: 'AwaitExpression' })).not.toThrow()
     })
 
     test('should not crash on node with type set to null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       expect(() => visitor.CallExpression({ type: null })).not.toThrow()
@@ -2268,7 +2232,7 @@ describe('no-misused-promises rule', () => {
 
   describe('callee edge cases', () => {
     test('should not report when callee is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2283,7 +2247,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should not report when callee is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2298,7 +2262,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle Super callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2320,7 +2284,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle Import callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2337,7 +2301,7 @@ describe('no-misused-promises rule', () => {
 
   describe('await parent traversal edge cases', () => {
     test('should not report when parent chain leads to async FunctionDeclaration at depth 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2358,7 +2322,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report when parent is non-async FunctionDeclaration at depth 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2380,7 +2344,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should find async parent at exactly depth 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       let current: Record<string, unknown> = {
@@ -2406,7 +2370,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should stop searching when parent chain ends with null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2425,7 +2389,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should stop searching when parent chain ends with undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2443,7 +2407,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle parent that is not a function type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2462,7 +2426,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should find async through CallExpression parent chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const asyncFunc = {
@@ -2489,7 +2453,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report when parent chain has non-async function then ends', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const nonAsyncFunc = {
@@ -2512,7 +2476,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle await node with parent that is an object without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2527,7 +2491,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle await with parent async being truthy non-boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2548,7 +2512,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should handle await with parent async being empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const node = {
@@ -2569,7 +2533,7 @@ describe('no-misused-promises rule', () => {
     })
 
     test('should report for deeply nested non-async with Program at root', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'array.forEach(async (x) => {});' })
       const visitor = noMisusedPromisesRule.create(context)
 
       const program = { type: 'Program', body: [] }

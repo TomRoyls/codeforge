@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferPrototypeMethodsRule } from '../../../../src/rules/patterns/prefer-prototype-methods.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'Array.prototype.slice.call(arguments);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -242,7 +204,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -250,7 +212,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -258,8 +220,8 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should create independent visitors for different contexts', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor1 = preferPrototypeMethodsRule.create(ctx1)
       const visitor2 = preferPrototypeMethodsRule.create(ctx2)
 
@@ -267,31 +229,31 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have only CallExpression in visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['CallExpression'])
     })
 
     test('should return a function for CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       expect(() => preferPrototypeMethodsRule.create(context)).not.toThrow()
     })
 
     test('should accept context with custom file path', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);', filePath: '/custom/path.ts' })
       expect(() => preferPrototypeMethodsRule.create(context)).not.toThrow()
     })
 
     test('should accept context with custom source', () => {
-      const { context } = createMockContext({}, '/src/test.ts', 'const x = 1;')
+      const { context } = createMockRuleContext({ source: 'const x = 1;', filePath: '/src/test.ts' })
       expect(() => preferPrototypeMethodsRule.create(context)).not.toThrow()
     })
   })
@@ -301,7 +263,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('detecting Array.prototype.slice.call()', () => {
     test('should report Array.prototype.slice.call(arr)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -314,11 +276,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Array.prototype.slice.call(arguments)', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'Array.prototype.slice.call(arguments);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);', filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arguments')])
@@ -330,7 +288,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Array.prototype.slice.call(arr, 1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -345,7 +303,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Array.prototype.slice.call(arr, 0, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -361,7 +319,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should provide fix for Array.prototype.slice.call(arr)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -373,7 +331,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should provide fix for Array.prototype.slice.call(arr, start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -388,7 +346,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should provide fix for Array.prototype.slice.call(arr, start, end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -404,7 +362,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not provide fix when no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([])
@@ -416,7 +374,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with single argument NodeList', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('nodeList')])
@@ -427,7 +385,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with empty first argument still detected', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       // Even with a non-identifier arg, the pattern is still detected
@@ -439,7 +397,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with three numeric arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -455,7 +413,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with many arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -471,7 +429,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report regardless of file path', () => {
-      const { context, reports } = createMockContext({}, '/deeply/nested/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);', filePath: '/deeply/nested/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -481,7 +439,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report regardless of source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'some other code')
+      const { context, reports } = createMockRuleContext({ source: 'some other code', filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -491,7 +449,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should always produce exactly one report per call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -502,7 +460,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix with spread for single arg', () => {
       const source = 'Array.prototype.slice.call(arr)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr', 27, 30)], 1, 0, [0, 30])
@@ -513,7 +471,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should produce fix with slice for two args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -529,7 +487,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should produce fix with slice for three args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -545,7 +503,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report when .apply() is used instead of .call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'slice', 'apply', [createIdentifier('arr')])
@@ -556,7 +514,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report when .bind() is used instead of .call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'slice', 'bind', [createIdentifier('arr')])
@@ -568,7 +526,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should detect at various line numbers', () => {
       for (const line of [1, 5, 10, 50, 100]) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createArrayPrototypeSliceCall([createIdentifier('arr')], line, 0)
@@ -581,7 +539,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should detect at various column offsets', () => {
       for (const col of [0, 4, 8, 16, 20]) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 1, col)
@@ -593,7 +551,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report when arguments object-like is passed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([{ type: 'Identifier', name: 'args' }])
@@ -604,7 +562,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with member expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const argNode = createMemberExpression(createIdentifier('foo'), 'bar')
@@ -616,7 +574,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle detection after multiple create calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor1 = preferPrototypeMethodsRule.create(context)
       const visitor2 = preferPrototypeMethodsRule.create(context)
 
@@ -628,7 +586,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have fix with correct range from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr', 0, 3)], 1, 0, [0, 35])
@@ -639,7 +597,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with call expression as first arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const innerCall = createCallExpression(createIdentifier('getArgs'), [])
@@ -652,7 +610,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix text with correct spread format for single arg', () => {
       const source = 'Array.prototype.slice.call(myArr)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('myArr', 27, 32)], 1, 0, [0, 32])
@@ -663,7 +621,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix text with .slice(start) for two args', () => {
       const source = 'Array.prototype.slice.call(arr, 1)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -679,7 +637,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix text with .slice(start, end) for three args', () => {
       const source = 'Array.prototype.slice.call(arr, 1, 5)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -703,11 +661,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('detecting Object.prototype.hasOwnProperty.call()', () => {
     test('should report Object.prototype.hasOwnProperty.call(obj, prop)', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'Object.prototype.hasOwnProperty.call(obj, prop);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.hasOwnProperty.call(obj, prop);', filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -723,11 +677,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Object.prototype.hasOwnProperty.call(config, key)', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'Object.prototype.hasOwnProperty.call(config, key);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.hasOwnProperty.call(config, key);', filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -742,7 +692,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should provide fix for Object.prototype.hasOwnProperty.call(obj, prop)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -757,7 +707,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should provide fix for Object.prototype.hasOwnProperty.call(config, "key")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -772,7 +722,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not provide fix when arguments missing (only obj)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([createIdentifier('obj')])
@@ -784,7 +734,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not provide fix when no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([])
@@ -798,7 +748,7 @@ describe('prefer-prototype-methods rule', () => {
     test('should report with various object identifiers', () => {
       const names = ['obj', 'config', 'opts', 'data', 'item']
       for (const name of names) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createObjectPrototypeHasOwnPropertyCall([
@@ -814,7 +764,7 @@ describe('prefer-prototype-methods rule', () => {
     test('should report with various property identifiers', () => {
       const names = ['prop', 'key', 'name', 'id', 'type']
       for (const name of names) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createObjectPrototypeHasOwnPropertyCall([
@@ -828,7 +778,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with literal property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -842,7 +792,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with numeric literal property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -856,7 +806,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with more than two arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -872,7 +822,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix with Object.hasOwn format', () => {
       const source = 'Object.prototype.hasOwnProperty.call(obj, key)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -890,7 +840,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix with literal property', () => {
       const source = 'Object.prototype.hasOwnProperty.call(obj, "name")'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -907,7 +857,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report exactly once per invocation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -921,7 +871,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have location info in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -938,7 +888,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report when .apply() is used instead of .call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'hasOwnProperty', 'apply', [
@@ -952,7 +902,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report when .bind() is used instead of .call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'hasOwnProperty', 'bind', [
@@ -966,7 +916,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with call expression as property argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const propArg = createCallExpression(createIdentifier('getKey'), [])
@@ -978,7 +928,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with member expression as object argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const objArg = createMemberExpression(createIdentifier('window'), 'config')
@@ -990,7 +940,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should produce fix with correct range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -1007,7 +957,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix text preserving original arg texts', () => {
       const source = 'Object.prototype.hasOwnProperty.call(myObj, myProp)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -1023,7 +973,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not fix when only obj arg has range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -1037,7 +987,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not fix when only prop arg has range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -1051,7 +1001,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should still report when arguments are three or more', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -1066,7 +1016,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with this as object argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const thisExpr = { type: 'ThisExpression', range: [0, 4] }
@@ -1081,7 +1031,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report regardless of workspace root', () => {
-      const ctx = createMockContext()
+      const ctx = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const reports: ReportDescriptor[] = []
       const context = {
         ...ctx.context,
@@ -1107,7 +1057,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('not reporting valid code', () => {
     test('should not report Array.from()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Array'), 'from')
@@ -1119,7 +1069,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.hasOwn()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Object'), 'hasOwn')
@@ -1131,7 +1081,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report arr.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('arr'), 'slice')
@@ -1143,7 +1093,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report spread operator [...arr]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createCallExpression(createIdentifier('spread'), [createIdentifier('arr')])
@@ -1154,7 +1104,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.splice.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'splice', 'call', [
@@ -1169,7 +1119,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.prototype.keys.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'keys', 'call', [createIdentifier('obj')])
@@ -1180,7 +1130,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Function.prototype.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const functionPrototype = createMemberExpression(createIdentifier('Function'), 'prototype')
@@ -1193,7 +1143,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report regular function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createCallExpression(createIdentifier('myFunction'), [
@@ -1207,7 +1157,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report String.prototype.slice.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('String', 'slice', 'call', [createIdentifier('str')])
@@ -1218,7 +1168,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.prototype.toString.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'toString', 'call', [
@@ -1231,7 +1181,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report obj.hasOwnProperty()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('obj'), 'hasOwnProperty')
@@ -1243,7 +1193,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.map.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'map', 'call', [
@@ -1257,7 +1207,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.filter.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'filter', 'call', [
@@ -1271,7 +1221,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.forEach.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'forEach', 'call', [
@@ -1285,7 +1235,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.reduce.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'reduce', 'call', [
@@ -1299,7 +1249,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.concat.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'concat', 'call', [createIdentifier('arr')])
@@ -1310,7 +1260,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.prototype.valueOf.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'valueOf', 'call', [createIdentifier('obj')])
@@ -1321,7 +1271,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.prototype.isPrototypeOf.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'isPrototypeOf', 'call', [
@@ -1334,7 +1284,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.prototype.propertyIsEnumerable.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Object', 'propertyIsEnumerable', 'call', [
@@ -1348,7 +1298,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Math.max()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'max')
@@ -1360,7 +1310,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report console.log()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('console'), 'log')
@@ -1372,7 +1322,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Date.prototype.getTime.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Date', 'getTime', 'call', [createIdentifier('d')])
@@ -1383,7 +1333,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report RegExp.prototype.test.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('RegExp', 'test', 'call', [
@@ -1397,7 +1347,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.isArray()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Array'), 'isArray')
@@ -1409,7 +1359,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.keys()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Object'), 'keys')
@@ -1421,7 +1371,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Object.entries()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Object'), 'entries')
@@ -1433,7 +1383,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Map.prototype.get.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Map', 'get', 'call', [
@@ -1447,7 +1397,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Set.prototype.has.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Set', 'has', 'call', [
@@ -1461,7 +1411,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Array.prototype.push.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', 'push', 'call', [
@@ -1475,7 +1425,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not report Number.prototype.toString.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Number', 'toString', 'call', [
@@ -1493,21 +1443,21 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -1515,7 +1465,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(
@@ -1535,7 +1485,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = {
@@ -1558,7 +1508,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 10, 5)
@@ -1570,7 +1520,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -1579,7 +1529,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle missing range in arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([
@@ -1593,7 +1543,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
@@ -1601,7 +1551,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
@@ -1609,7 +1559,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = { type: 'ExpressionStatement' }
@@ -1619,14 +1569,14 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       expect(() => visitor.CallExpression([1, 2, 3])).not.toThrow()
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = {
@@ -1642,7 +1592,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = {
@@ -1657,7 +1607,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node with callee as non-MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createCallExpression(createIdentifier('func'), [])
@@ -1668,7 +1618,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where call property is Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = {
@@ -1687,7 +1637,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where method property is not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = {
@@ -1703,7 +1653,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where prototype property is not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = {
@@ -1723,7 +1673,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where object identifier is not Identifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = {
@@ -1743,7 +1693,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where prototype is named differently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const arrayProto = createMemberExpression(createIdentifier('Array'), 'proto')
@@ -1756,7 +1706,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where object name is wrong', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const myArrayPrototype = createMemberExpression(createIdentifier('MyArray'), 'prototype')
@@ -1769,7 +1719,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where method callee is not MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('slice'), 'call')
@@ -1781,7 +1731,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle node where method name is wrong', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const arrayPrototype = createMemberExpression(createIdentifier('Array'), 'prototype')
@@ -1794,7 +1744,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle call on method callee that is not MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = {
@@ -1810,7 +1760,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle arguments as undefined in node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(
@@ -1838,7 +1788,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 1, 0)
@@ -1849,7 +1799,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 5, 10)
@@ -1860,7 +1810,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 100, 50)
@@ -1871,7 +1821,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 3, 5)
@@ -1882,7 +1832,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Object.hasOwnProperty location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -1897,7 +1847,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Object.hasOwnProperty location at line 20 column 15', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -1912,7 +1862,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Object.hasOwnProperty end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -1927,7 +1877,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should default to line 1 column 0 when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(
@@ -1951,7 +1901,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 9999, 0)
@@ -1961,7 +1911,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 1, 9999)
@@ -1971,7 +1921,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 0, 0)
@@ -1982,7 +1932,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should preserve start and end separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')], 3, 5)
@@ -1993,7 +1943,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have loc defined in report for Array.slice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2004,7 +1954,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have loc defined in report for Object.hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(
@@ -2020,7 +1970,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have end loc defined in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2036,7 +1986,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('message quality', () => {
     test('should mention spread syntax in Array.slice message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2046,7 +1996,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should mention Object.hasOwn in hasOwnProperty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(
@@ -2061,7 +2011,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have non-empty message for Array.slice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2070,7 +2020,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have non-empty message for Object.hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(
@@ -2081,7 +2031,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should mention Array.prototype.slice.call in Array.slice message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2090,7 +2040,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should mention Object.prototype.hasOwnProperty.call in hasOwn message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(
@@ -2104,7 +2054,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have message type string for Array.slice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2113,7 +2063,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should have message type string for Object.hasOwnProperty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(
@@ -2127,7 +2077,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should mention array-like conversion in Array.slice message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2136,7 +2086,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should mention cleaner code in Object.hasOwnProperty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(
@@ -2155,7 +2105,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('multiple reports', () => {
     test('should report both Array.slice and Object.hasOwnProperty in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const arrayNode = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -2171,7 +2121,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report multiple Array.slice calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2182,7 +2132,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report multiple Object.hasOwnProperty calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2198,7 +2148,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should interleave Array.slice and Object.hasOwnProperty reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2224,7 +2174,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report mixed valid and invalid calls correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       // Valid call - should not report
@@ -2245,7 +2195,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle many calls without performance issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2256,7 +2206,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle alternating null and valid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       visitor.CallExpression(null)
@@ -2268,7 +2218,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should maintain independent report for each visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor1 = preferPrototypeMethodsRule.create(context)
       const visitor2 = preferPrototypeMethodsRule.create(context)
 
@@ -2285,7 +2235,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report with same node passed twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -2296,7 +2246,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report correctly with mix of edge cases and valid patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       // Edge case - empty object
@@ -2321,7 +2271,7 @@ describe('prefer-prototype-methods rule', () => {
   // =========================================================
   describe('context handling', () => {
     test('should work with context that has empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -2333,7 +2283,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should work with context that has very long source', () => {
       const longSource = 'x'.repeat(10000) + 'Array.prototype.slice.call(arr)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -2345,7 +2295,7 @@ describe('prefer-prototype-methods rule', () => {
     test('should work with different file paths', () => {
       const paths = ['/src/index.ts', '/src/utils/helpers.ts', '/test/file.test.ts', '/lib/main.js']
       for (const path of paths) {
-        const { context, reports } = createMockContext({}, path)
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);', filePath: path })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         visitor.CallExpression(createArrayPrototypeSliceCall([createIdentifier('arr')]))
@@ -2409,7 +2359,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should handle context with source containing the pattern text', () => {
       const source = 'const result = Array.prototype.slice.call(args, 1);'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -2425,7 +2375,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should handle context getSource returning unicode', () => {
       const source = 'Array.prototype.slice.call(配列)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr')])
@@ -2462,7 +2412,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle context with null getAST', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       expect(context.getAST()).toBeNull()
       const visitor = preferPrototypeMethodsRule.create(context)
 
@@ -2471,7 +2421,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle context with empty getTokens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       expect(context.getTokens()).toEqual([])
       const visitor = preferPrototypeMethodsRule.create(context)
 
@@ -2505,7 +2455,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(nonMatchingObjectNames)(
       'should not report $name.prototype.$method.call()',
       ({ name, method }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createPrototypeMethodCall(name, method, 'call', [createIdentifier('x')])
@@ -2527,7 +2477,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(nonMatchingCallMethods)(
       'should not report $objectName.prototype.$method.$callMethod()',
       ({ objectName, method, callMethod }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createPrototypeMethodCall(objectName, method, callMethod, [
@@ -2550,7 +2500,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(arraySliceArgVariants)(
       'should report Array.prototype.slice.call with $argCount arguments (fix: $hasFix)',
       ({ argCount, hasFix }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const args = Array.from({ length: argCount }, (_, i) =>
@@ -2578,7 +2528,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(hasOwnPropertyArgVariants)(
       'should report Object.prototype.hasOwnProperty.call with $argCount arguments (fix: $hasFix)',
       ({ argCount, hasFix }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const args = Array.from({ length: argCount }, (_, i) =>
@@ -2612,7 +2562,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(differentArgTypes)(
       'should report Array.prototype.slice.call with $typeName argument',
       ({ createArg }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createArrayPrototypeSliceCall([createArg()])
@@ -2636,7 +2586,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(nodeTypesThatDontMatch)(
       'should not report for $nodeType node type',
       ({ nodeType }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         visitor.CallExpression({ type: nodeType })
@@ -2672,7 +2622,7 @@ describe('prefer-prototype-methods rule', () => {
     ]
 
     test.each(arrayMethodsNotMatching)('should not report Array.prototype.%s.call()', (method) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createPrototypeMethodCall('Array', method, 'call', [createIdentifier('arr')])
@@ -2696,7 +2646,7 @@ describe('prefer-prototype-methods rule', () => {
     test.each(objectMethodsNotMatching)(
       'should not report Object.prototype.%s.call()',
       (method) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
         const visitor = preferPrototypeMethodsRule.create(context)
 
         const node = createPrototypeMethodCall('Object', method, 'call', [createIdentifier('obj')])
@@ -2713,7 +2663,7 @@ describe('prefer-prototype-methods rule', () => {
   describe('additional fix verification', () => {
     test('should produce [...data] fix for single identifier arg', () => {
       const source = 'Array.prototype.slice.call(data)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('data', 27, 31)], 1, 0, [0, 31])
@@ -2724,7 +2674,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce [...items.slice(2)] fix for two args', () => {
       const source = 'Array.prototype.slice.call(items, 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -2740,7 +2690,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce [...list.slice(0, 10)] fix for three args', () => {
       const source = 'Array.prototype.slice.call(list, 0, 10)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -2760,7 +2710,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce Object.hasOwn(target, prop) fix', () => {
       const source = 'Object.prototype.hasOwnProperty.call(target, prop)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -2776,7 +2726,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce Object.hasOwn(settings, enabled) fix', () => {
       const source = 'Object.prototype.hasOwnProperty.call(settings, enabled)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -2791,7 +2741,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should produce fix with correct range from Array.slice node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('arr', 0, 3)], 1, 0, [10, 50])
@@ -2801,7 +2751,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should produce fix with correct range from Object.hasOwnProperty node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -2816,7 +2766,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not produce fix for Array.slice when arg has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([{ type: 'Identifier', name: 'x' }])
@@ -2826,7 +2776,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not produce fix for Object.hasOwnProperty when first arg has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -2839,7 +2789,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should not produce fix for Object.hasOwnProperty when second arg has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([
@@ -2852,7 +2802,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Array.slice with empty arguments array but no fix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([])
@@ -2863,7 +2813,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should report Object.hasOwnProperty with empty arguments but no fix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall([])
@@ -2875,7 +2825,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix when Array.slice node has range and args have range', () => {
       const source = 'Array.prototype.slice.call(items)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('items', 27, 32)], 1, 0, [0, 32])
@@ -2887,7 +2837,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix when Object.hasOwnProperty node has range and args have range', () => {
       const source = 'Object.prototype.hasOwnProperty.call(data, id)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -2904,7 +2854,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix with literal string property', () => {
       const source = 'Object.prototype.hasOwnProperty.call(cfg, "debug")'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -2921,7 +2871,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce fix with numeric literal property', () => {
       const source = 'Object.prototype.hasOwnProperty.call(arr, 0)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createObjectPrototypeHasOwnPropertyCall(
@@ -2937,7 +2887,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle Array.slice call where node range is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(
@@ -2961,7 +2911,7 @@ describe('prefer-prototype-methods rule', () => {
     })
 
     test('should handle Object.hasOwnProperty call where node range is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Array.prototype.slice.call(arguments);' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const callee = createMemberExpression(
@@ -2986,7 +2936,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce correct fix when source has complex content', () => {
       const source = 'var x = Array.prototype.slice.call(args, 1); // comment'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall(
@@ -3002,7 +2952,7 @@ describe('prefer-prototype-methods rule', () => {
 
     test('should produce correct fix when source has tabs', () => {
       const source = '\tArray.prototype.slice.call(list)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferPrototypeMethodsRule.create(context)
 
       const node = createArrayPrototypeSliceCall([createIdentifier('list', 28, 32)], 1, 0, [0, 32])

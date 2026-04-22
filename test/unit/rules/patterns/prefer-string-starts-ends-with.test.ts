@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferStringStartsEndsWithRule } from '../../../../src/rules/patterns/prefer-string-starts-ends-with.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '/^abc/.test(str);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -216,7 +180,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -224,28 +188,28 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should return CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return BinaryExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return exactly two visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(Object.keys(visitor).length).toBe(2)
     })
 
     test('should not return undefined visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -253,7 +217,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should create a new visitor instance each time', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor1 = preferStringStartsEndsWithRule.create(context)
       const visitor2 = preferStringStartsEndsWithRule.create(context)
 
@@ -261,13 +225,13 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should accept context without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
 
       expect(() => preferStringStartsEndsWithRule.create(context)).not.toThrow()
     })
 
     test('should create visitor that handles being called with no arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.CallExpression()).not.toThrow()
@@ -276,7 +240,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('regex .test() pattern detection', () => {
     test('should report regex test with startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -291,7 +255,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test with endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc$/)
@@ -306,7 +270,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report simple alphanumeric startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^Hello/)
@@ -320,7 +284,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report simple alphanumeric endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/World$/)
@@ -334,7 +298,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with underscore in startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^my_prefix/)
@@ -348,7 +312,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with numbers in startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^test123/)
@@ -362,7 +326,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with underscore in endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/suffix_name$/)
@@ -376,7 +340,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with numbers in endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/v2$/)
@@ -390,7 +354,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with mixed alphanumeric endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc123xyz$/)
@@ -404,7 +368,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with single char startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^a/)
@@ -418,7 +382,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with single char endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/z$/)
@@ -432,7 +396,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with space in startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^hello world/)
@@ -446,7 +410,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with space in endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/hello world$/)
@@ -460,7 +424,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report long alphanumeric startsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^VeryLongPrefix12345/)
@@ -474,7 +438,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report long alphanumeric endsWith pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/VeryLongSuffix12345$/)
@@ -490,7 +454,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('regex .match() pattern detection', () => {
     test('should report string match with startsWith regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -506,7 +470,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report string match with endsWith regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -522,7 +486,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match with single char startsWith regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('s')
@@ -537,7 +501,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match with underscored startsWith regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -552,7 +516,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match with numeric endsWith regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -569,7 +533,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('indexOf() === 0 pattern detection', () => {
     test('should report indexOf === 0 pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -584,7 +548,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report indexOf == 0 pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -598,7 +562,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report 0 === indexOf pattern (reversed)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -612,7 +576,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report 0 == indexOf pattern (reversed loose)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -626,7 +590,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report indexOf on different variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('myStringVar')
@@ -642,7 +606,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('lastIndexOf() pattern detection', () => {
     test('should report lastIndexOf compared to length expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -658,7 +622,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report lastIndexOf with == operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('s')
@@ -673,7 +637,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report reversed lastIndexOf === length pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('text')
@@ -688,7 +652,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report lastIndexOf on long variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('myLongVariableName')
@@ -705,7 +669,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('NOT reporting', () => {
     test('should not report regex test with pattern containing dot special char', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc\./)
@@ -719,7 +683,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test with case-insensitive flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/i)
@@ -733,7 +697,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test with multiline flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc$/m)
@@ -747,7 +711,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test with both ^ and $', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc$/)
@@ -761,7 +725,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test without ^ or $', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc/)
@@ -775,7 +739,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report non-regex literal test call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const stringLit = createLiteral('abc')
@@ -789,7 +753,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report test call with wrong number of arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -803,7 +767,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report test call with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -816,7 +780,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report string match with complex regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -831,7 +795,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report string match with flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -846,7 +810,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf !== 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -860,7 +824,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf > 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -874,7 +838,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf === non-zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -888,7 +852,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -902,7 +866,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -919,7 +883,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report lastIndexOf with non-length comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -933,7 +897,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report lastIndexOf without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -948,7 +912,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report other method calls on regex like exec', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -962,7 +926,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report other method calls on string like trim', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -975,7 +939,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with star quantifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc*/)
@@ -989,7 +953,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with plus quantifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc+/)
@@ -1003,7 +967,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with question mark', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc?/)
@@ -1017,7 +981,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with parentheses', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^(abc)/)
@@ -1031,7 +995,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with pipe alternation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc|def/)
@@ -1045,7 +1009,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with brackets', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^[abc]/)
@@ -1059,7 +1023,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex with global flag (g flag is allowed)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/g)
@@ -1073,7 +1037,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with both i and m flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/im)
@@ -1087,7 +1051,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report match call with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1102,7 +1066,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report match with non-regex argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1116,7 +1080,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf with != operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1130,7 +1094,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report lastIndexOf with !== operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1145,7 +1109,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report match with multiline flag regex', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1162,70 +1126,70 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node in CallExpression (string)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
     })
 
     test('should handle non-object node in CallExpression (number)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.CallExpression(123)).not.toThrow()
     })
 
     test('should handle non-object node in CallExpression (boolean)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle null node in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node in BinaryExpression (string)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
     })
 
     test('should handle non-object node in BinaryExpression (number)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       expect(() => visitor.BinaryExpression(123)).not.toThrow()
     })
 
     test('should handle node without loc in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1245,7 +1209,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle node without loc in BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1263,7 +1227,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1312,7 +1276,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle CallExpression with empty callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const node = { type: 'CallExpression', callee: null, arguments: [] }
@@ -1323,7 +1287,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle BinaryExpression with missing left/right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const node = { type: 'BinaryExpression', left: null, right: null, operator: '===' }
@@ -1334,7 +1298,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle node with wrong type string in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const node = { type: 'OtherExpression', callee: null, arguments: [] }
@@ -1345,7 +1309,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle regex literal with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = { type: 'Literal', value: null, regex: { pattern: '^abc', flags: '' } }
@@ -1359,7 +1323,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle callee property being non-identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1375,7 +1339,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle empty startsWith regex pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^/)
@@ -1389,7 +1353,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle empty endsWith regex pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/$/)
@@ -1403,7 +1367,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle match on member expression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const innerObj = createIdentifier('obj')
@@ -1421,7 +1385,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for regex test startsWith', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/, 10, 5)
@@ -1436,7 +1400,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report correct location for regex test endsWith', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/xyz$/, 15, 8)
@@ -1451,7 +1415,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report correct location for indexOf pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str', 20, 3)
@@ -1471,7 +1435,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report correct location for match startsWith', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str', 5, 10)
@@ -1487,7 +1451,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report correct location for match endsWith', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str', 8, 2)
@@ -1503,7 +1467,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/, 3, 0)
@@ -1518,7 +1482,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report location for lastIndexOf pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str', 12, 4)
@@ -1539,7 +1503,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/, 1, 0)
@@ -1554,7 +1518,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/, 500, 20)
@@ -1569,7 +1533,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report location for reversed indexOf pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str', 7, 0)
@@ -1583,7 +1547,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should have both start and end in location for regex test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/, 2, 4)
@@ -1602,7 +1566,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1623,7 +1587,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report correct location for indexOf on line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('s', 1, 0)
@@ -1638,7 +1602,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should preserve exact column offset for regex match', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str', 4, 7)
@@ -1653,7 +1617,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report location with column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/end$/, 3, 0)
@@ -1669,7 +1633,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('message quality', () => {
     test('should mention startsWith in message for startsWith regex test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1683,7 +1647,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention endsWith in message for endsWith regex test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc$/)
@@ -1697,7 +1661,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should have a non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1712,7 +1676,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention start in startsWith regex test message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^prefix/)
@@ -1726,7 +1690,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention end in endsWith regex test message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/suffix$/)
@@ -1740,7 +1704,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention start in indexOf message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1754,7 +1718,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention startsWith in indexOf message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1768,7 +1732,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention endsWith in lastIndexOf message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1783,7 +1747,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention endsWith in match endsWith message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1798,7 +1762,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should mention regex in regex test message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1814,7 +1778,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('multiple reports', () => {
     test('should report separately for each regex test call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex1 = createRegexLiteral(/^abc/)
@@ -1832,7 +1796,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report separately for each match call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1850,7 +1814,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report separately for multiple indexOf calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -1869,7 +1833,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report both CallExpression and BinaryExpression patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -1888,7 +1852,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report three different patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex1 = createRegexLiteral(/^abc/)
@@ -1908,7 +1872,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report mix of valid and invalid patterns correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex1 = createRegexLiteral(/^abc/)
@@ -1927,7 +1891,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should accumulate reports across match and test calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('s')
@@ -1943,7 +1907,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report five startsWith patterns separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1956,7 +1920,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report five endsWith patterns separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1969,7 +1933,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle interleaved valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       visitor.CallExpression(
@@ -2012,7 +1976,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);', filePath: '/project/src/utils.ts' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -2025,7 +1989,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'str.indexOf("x") === 0')
+      const { context, reports } = createMockRuleContext({ source: 'str.indexOf("x") === 0', filePath: '/src/file.ts' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2039,7 +2003,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should work with custom options', () => {
-      const { context, reports } = createMockContext({ someOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: true }], source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^test/)
@@ -2052,7 +2016,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle context being used for multiple creates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
 
       const visitor1 = preferStringStartsEndsWithRule.create(context)
       const visitor2 = preferStringStartsEndsWithRule.create(context)
@@ -2068,7 +2032,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should use the same reports array for all visitor calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex1 = createRegexLiteral(/^abc/)
@@ -2083,7 +2047,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -2097,7 +2061,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
     test('should handle very long file path', () => {
       const longPath = '/very/long/path/that/goes/on/and/on/src/components/utils/helper.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);', filePath: longPath })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -2110,7 +2074,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle binary expression with non-matching operator in context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2124,7 +2088,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle context with workspace root', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/)
@@ -2137,7 +2101,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should handle binary expression with indexOf and non-zero literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('s')
@@ -2166,7 +2130,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { pattern: /^x/, label: 'single x' },
       { pattern: /^Data2024/, label: 'Data2024' },
     ])('should report startsWith regex /$label/ via test()', ({ pattern }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(pattern)
@@ -2195,7 +2159,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { pattern: /x$/, label: 'single x' },
       { pattern: /tail$/, label: 'tail' },
     ])('should report endsWith regex /$label/ via test()', ({ pattern }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(pattern)
@@ -2224,7 +2188,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { pattern: /^(abc)/, label: 'capturing group' },
       { pattern: /^abc$/, label: 'both anchors exact' },
     ])('should NOT report regex /$label/', ({ pattern }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(pattern)
@@ -2248,7 +2212,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { operator: '>=', shouldReport: false },
       { operator: '<=', shouldReport: false },
     ])('indexOf $operator 0 should $shouldReport report', ({ operator, shouldReport }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2271,7 +2235,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { pattern: /^hello world/, label: 'hello world with space' },
       { pattern: /^Data2024/, label: 'Data2024' },
     ])('should report match startsWith regex /$label/', ({ pattern }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2294,7 +2258,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { pattern: /hello world$/, label: 'hello world with space' },
       { pattern: /2024$/, label: 'year 2024' },
     ])('should report match endsWith regex /$label/', ({ pattern }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2316,7 +2280,7 @@ describe('prefer-string-starts-ends-with rule', () => {
       { pattern: /abc/, label: 'no anchors' },
       { pattern: /^abc|def/, label: 'alternation' },
     ])('should NOT report match regex /$label/', ({ pattern }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2338,7 +2302,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     ])(
       'lastIndexOf $operator str.length should $shouldReport report',
       ({ operator, shouldReport }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
         const visitor = preferStringStartsEndsWithRule.create(context)
 
         const strIdent = createIdentifier('str')
@@ -2356,7 +2320,7 @@ describe('prefer-string-starts-ends-with rule', () => {
 
   describe('additional detection tests', () => {
     test('should report regex test /^http/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^http/)
@@ -2370,7 +2334,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /.json$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/json$/)
@@ -2384,7 +2348,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^https/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^https/)
@@ -2397,7 +2361,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /Error$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/Error$/)
@@ -2410,7 +2374,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /^get/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('method')
@@ -2423,7 +2387,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /Controller$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('className')
@@ -2436,7 +2400,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report indexOf === 0 with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('path')
@@ -2450,7 +2414,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report 0 == indexOf with string argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('path')
@@ -2464,7 +2428,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report lastIndexOf === str.length with suffix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('filename')
@@ -2479,7 +2443,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^v\d/ as NOT reportable (has backslash)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^v\d/)
@@ -2492,7 +2456,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with escaped chars at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc\d$/)
@@ -2505,7 +2469,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex /^www/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^www/)
@@ -2518,7 +2482,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex /js$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/js$/)
@@ -2531,7 +2495,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex /^$/ (both anchors empty)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^$/)
@@ -2544,7 +2508,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^getUser/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^getUser/)
@@ -2557,7 +2521,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /Service$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/Service$/)
@@ -2570,7 +2534,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /^import/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('line')
@@ -2583,7 +2547,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /export$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('line')
@@ -2596,7 +2560,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^on/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^on/)
@@ -2609,7 +2573,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /Click$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/Click$/)
@@ -2622,7 +2586,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with word boundary at start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^\babc/)
@@ -2635,7 +2599,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex with word boundary at end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abc\b$/)
@@ -2648,7 +2612,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^is/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^is/)
@@ -2661,7 +2625,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /abled$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/abled$/)
@@ -2674,7 +2638,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report indexOf === 0 with different identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('fileName')
@@ -2688,7 +2652,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test /^abc/s flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/s)
@@ -2701,7 +2665,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test with s flag (dotAll is allowed)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^test/s)
@@ -2714,7 +2678,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test /^abc/gi flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/gi)
@@ -2727,7 +2691,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test /^abc/gm flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/gm)
@@ -2740,7 +2704,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^has/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^has/)
@@ -2753,7 +2717,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /Handler$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/Handler$/)
@@ -2766,7 +2730,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report regex test /^abc/im flag combination', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^abc/im)
@@ -2779,7 +2743,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /^src/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^src/)
@@ -2792,7 +2756,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex test /test$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/test$/)
@@ -2805,7 +2769,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report slice method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2818,7 +2782,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report substring method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2831,7 +2795,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report includes method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2844,7 +2808,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report replace method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2857,7 +2821,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report search method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2870,7 +2834,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report split method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2883,7 +2847,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should not report indexOf compared to string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2897,7 +2861,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report indexOf === 0 with empty string arg', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('str')
@@ -2911,7 +2875,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match on obj prop member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const obj = createIdentifier('config')
@@ -2925,7 +2889,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report test on regex variable name pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^is_valid/)
@@ -2938,7 +2902,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report test on regex with all uppercase endsWith', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/ABCD$/)
@@ -2951,7 +2915,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /^set/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('method')
@@ -2964,7 +2928,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /Module$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('name')
@@ -2977,7 +2941,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report lastIndexOf == str.length with == operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('s')
@@ -2992,7 +2956,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex /^BEGIN/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/^BEGIN/)
@@ -3005,7 +2969,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report regex /END$/ pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const regex = createRegexLiteral(/END$/)
@@ -3018,7 +2982,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match /^class / pattern with space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('code')
@@ -3031,7 +2995,7 @@ describe('prefer-string-starts-ends-with rule', () => {
     })
 
     test('should report match / default$/ pattern with space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '/^abc/.test(str);' })
       const visitor = preferStringStartsEndsWithRule.create(context)
 
       const strIdent = createIdentifier('code')

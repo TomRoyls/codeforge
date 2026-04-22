@@ -1,45 +1,7 @@
-import { describe, expect, test, vi } from 'vitest'
 
-import type { RuleContext } from '../../../../src/plugins/types.js'
 
 import { noRedeclareRule } from '../../../../src/rules/patterns/no-redeclare.js'
-
-interface ReportDescriptor {
-  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
-  message: string
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    config: { options: [options] },
-    getAST: () => null,
-    getComments: () => [],
-    getFilePath: () => filePath,
-    getSource: () => source,
-    getTokens: () => [],
-    logger: {
-      debug: vi.fn(),
-      error: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-    },
-    report(descriptor: ReportDescriptor) {
-      reports.push({
-        loc: descriptor.loc,
-        message: descriptor.message,
-      })
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string, line = 1, column = 0): unknown {
   return {
@@ -165,21 +127,21 @@ describe('no-redeclare rule', () => {
 
   describe('create', () => {
     test('should return visitor object with VariableDeclarator method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclarator')
     })
 
     test('should return visitor object with FunctionDeclaration method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -187,21 +149,21 @@ describe('no-redeclare rule', () => {
     })
 
     test('should return visitor with only expected methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(Object.keys(visitor).sort()).toEqual(['FunctionDeclaration', 'VariableDeclarator'])
     })
 
     test('should return callable VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(typeof visitor.VariableDeclarator).toBe('function')
     })
 
     test('should return callable FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(typeof visitor.FunctionDeclaration).toBe('function')
@@ -210,7 +172,7 @@ describe('no-redeclare rule', () => {
 
   describe('detecting variable redeclarations', () => {
     test('should not report single variable declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -219,7 +181,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not report multiple unique variable declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -230,7 +192,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when variable is declared twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -240,7 +202,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when variable is declared three times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -251,7 +213,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report with correct message for redeclared variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('myVar'))
@@ -261,7 +223,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when variable redeclared among unique variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -273,7 +235,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report multiple redeclared variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -285,7 +247,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report redeclaration with const keyword parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -310,7 +272,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report redeclaration with let keyword parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -335,7 +297,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report redeclaration with var keyword parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -360,7 +322,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should be case-sensitive for variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('myVar'))
@@ -371,7 +333,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not report when first and third variables share a name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -382,7 +344,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report each subsequent redeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('dup'))
@@ -394,7 +356,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should track variable names separately from function names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('item'))
@@ -407,7 +369,7 @@ describe('no-redeclare rule', () => {
 
   describe('detecting function redeclarations', () => {
     test('should not report single function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('myFunc', []))
@@ -416,7 +378,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not report multiple unique function declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('func1', []))
@@ -427,7 +389,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when function is declared twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('myFunc', []))
@@ -437,7 +399,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report with correct message for redeclared function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('helper', []))
@@ -447,7 +409,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when function is declared three times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fn', []))
@@ -458,7 +420,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should be case-sensitive for function names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('handler', []))
@@ -469,7 +431,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report each subsequent function redeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('cb', []))
@@ -481,7 +443,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when function name redeclared among unique functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('alpha', []))
@@ -494,7 +456,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not report functions with different params as redeclarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('compute', ['a']))
@@ -506,7 +468,7 @@ describe('no-redeclare rule', () => {
 
   describe('mixed variable and function declarations', () => {
     test('should report when variable and function have same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -517,7 +479,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when function and variable have same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('y', []))
@@ -528,7 +490,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not report when variable and function have different names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('var1'))
@@ -538,7 +500,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report triple redeclaration: variable then function then variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('shared'))
@@ -549,7 +511,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report triple redeclaration: function then variable then function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('shared', []))
@@ -560,7 +522,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should track multiple mixed declarations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -572,7 +534,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report interleaved mixed redeclarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('name'))
@@ -586,7 +548,7 @@ describe('no-redeclare rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
@@ -595,7 +557,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle undefined node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.VariableDeclarator()).not.toThrow()
@@ -604,7 +566,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle non-object node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
@@ -614,7 +576,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle null node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -623,7 +585,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle undefined node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.FunctionDeclaration()).not.toThrow()
@@ -632,7 +594,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle non-object node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -642,7 +604,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle VariableDeclarator without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -655,7 +617,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle VariableDeclarator with non-Identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -669,7 +631,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle FunctionDeclaration without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -684,7 +646,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle FunctionDeclaration with non-Identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -699,7 +661,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle variable without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -713,7 +675,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle function without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -728,7 +690,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle VariableDeclarator with ArrayPattern id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -742,7 +704,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle VariableDeclarator with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(''))
@@ -752,7 +714,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle node with wrong type string in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -766,7 +728,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle node with wrong type string in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -781,7 +743,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle boolean node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.VariableDeclarator(true)).not.toThrow()
@@ -791,7 +753,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle boolean node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(true)).not.toThrow()
@@ -801,7 +763,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle numeric node in VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.VariableDeclarator(0)).not.toThrow()
@@ -812,7 +774,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle numeric node in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(0)).not.toThrow()
@@ -823,7 +785,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle VariableDeclarator with undefined id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -837,7 +799,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle FunctionDeclaration with undefined id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -852,7 +814,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -873,7 +835,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -896,7 +858,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle node with partial loc (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -912,7 +874,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle node with non-standard loc shape', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -935,7 +897,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle VariableDeclarator with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -956,7 +918,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle empty body in FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -972,7 +934,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle FunctionDeclaration without body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -989,7 +951,7 @@ describe('no-redeclare rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for redeclared variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1000,7 +962,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report correct location for redeclared function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('myFunc', []))
@@ -1011,7 +973,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report location with correct end for variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('locVar'))
@@ -1022,7 +984,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report location with correct end for function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('locFn', []))
@@ -1033,7 +995,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should use default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node1 = {
@@ -1056,7 +1018,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report correct column in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('col', 1, 20))
@@ -1066,7 +1028,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle multiple reports at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('multi', 1, 0))
@@ -1079,7 +1041,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report location from second node not first', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('target', 100, 50))
@@ -1090,7 +1052,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should provide loc object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('locTest'))
@@ -1109,7 +1071,7 @@ describe('no-redeclare rule', () => {
 
   describe('message content', () => {
     test('should mention variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('testVar'))
@@ -1119,7 +1081,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should mention already defined in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1129,7 +1091,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should use single quotes around variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1139,7 +1101,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('var1'))
@@ -1153,7 +1115,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should use period at end of message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('punct'))
@@ -1163,7 +1125,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should use exact format NAME is already defined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('exact'))
@@ -1173,7 +1135,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should have consistent format for function messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('exactFn', []))
@@ -1183,7 +1145,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should have consistent format for mixed messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('mixed'))
@@ -1193,7 +1155,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should include identifier name in each report for multiple redeclarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('multi'))
@@ -1205,7 +1167,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should have same message format for variable and function redeclarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('name1'))
@@ -1224,7 +1186,7 @@ describe('no-redeclare rule', () => {
 
   describe('multiple reports', () => {
     test('should report 5 redeclarations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       for (let i = 0; i < 6; i++) {
@@ -1235,7 +1197,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report 10 redeclarations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       for (let i = 0; i < 11; i++) {
@@ -1246,7 +1208,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report 50 redeclarations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       for (let i = 0; i < 51; i++) {
@@ -1257,7 +1219,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report 100 redeclarations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       for (let i = 0; i < 101; i++) {
@@ -1268,7 +1230,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report each redeclaration of different names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -1282,7 +1244,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report mixed redeclarations at scale', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1297,7 +1259,7 @@ describe('no-redeclare rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/custom/path/file.ts' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1307,11 +1269,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'function foo() { const x = 1; const x = 2; }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'function foo() { const x = 1; const x = 2; }', filePath: '/src/file.ts' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1321,7 +1279,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1331,7 +1289,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with options in context', () => {
-      const { context, reports } = createMockContext({ someOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: true }] })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1341,7 +1299,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with Windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\Users\\dev\\project\\file.ts')
+      const { context, reports } = createMockRuleContext({ filePath: 'C:\\Users\\dev\\project\\file.ts' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1351,7 +1309,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with relative file path', () => {
-      const { context, reports } = createMockContext({}, './src/relative.ts')
+      const { context, reports } = createMockRuleContext({ filePath: './src/relative.ts' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1361,7 +1319,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with deep nested file path', () => {
-      const { context, reports } = createMockContext({}, '/a/b/c/d/e/f/g/deep.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/a/b/c/d/e/f/g/deep.ts' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('deep'))
@@ -1371,7 +1329,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/script.js')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/script.js' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('js'))
@@ -1381,7 +1339,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ filePath: '/src/component.tsx' })
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('tsx'))
@@ -1416,8 +1374,8 @@ describe('no-redeclare rule', () => {
 
   describe('visitor independence', () => {
     test('should not share state between two visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noRedeclareRule.create(ctx1)
       const visitor2 = noRedeclareRule.create(ctx2)
@@ -1432,8 +1390,8 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not share state between visitors with function declarations', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noRedeclareRule.create(ctx1)
       const visitor2 = noRedeclareRule.create(ctx2)
@@ -1448,9 +1406,9 @@ describe('no-redeclare rule', () => {
     })
 
     test('should not share state across mixed visitor types', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
-      const { context: ctx3, reports: reports3 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
+      const { context: ctx3, reports: reports3 } = createMockRuleContext()
 
       const visitor1 = noRedeclareRule.create(ctx1)
       const visitor2 = noRedeclareRule.create(ctx2)
@@ -1470,8 +1428,8 @@ describe('no-redeclare rule', () => {
     })
 
     test('should track declarations independently per visitor', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = noRedeclareRule.create(ctx1)
       const visitor2 = noRedeclareRule.create(ctx2)
@@ -1487,7 +1445,7 @@ describe('no-redeclare rule', () => {
 
     test('should isolate many visitors from each other', () => {
       const visitors = Array.from({ length: 10 }, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         return { context, reports, visitor: noRedeclareRule.create(context) }
       })
 
@@ -1523,7 +1481,7 @@ describe('no-redeclare rule', () => {
       { name: 'foo_bar_baz' },
       { name: 'résumé' },
     ])('should not report single declaration of $name', ({ name }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(name))
@@ -1543,7 +1501,7 @@ describe('no-redeclare rule', () => {
       ['input', 'output'],
       ['begin', 'end'],
     ])('should not report unique variables %s and %s', (name1, name2) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(name1))
@@ -1564,7 +1522,7 @@ describe('no-redeclare rule', () => {
       { name: 'init' },
       { name: 'destroy' },
     ])('should not report single function declaration of $name', ({ name }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(name, []))
@@ -1584,7 +1542,7 @@ describe('no-redeclare rule', () => {
       ['open', 'close'],
       ['start', 'stop'],
     ])('should not report unique functions %s and %s', (name1, name2) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(name1, []))
@@ -1605,7 +1563,7 @@ describe('no-redeclare rule', () => {
       { varName: 'error', fnName: 'handleError' },
       { varName: 'state', fnName: 'update' },
     ])('should not report variable "$varName" and function "$fnName"', ({ varName, fnName }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(varName))
@@ -1628,7 +1586,7 @@ describe('no-redeclare rule', () => {
       { type: 'ClassDeclaration' },
       { type: 'ImportDeclaration' },
     ])('should not crash on $type in VariableDeclarator handler', ({ type }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -1653,7 +1611,7 @@ describe('no-redeclare rule', () => {
       { type: 'ImportDeclaration' },
       { type: 'ExportNamedDeclaration' },
     ])('should not crash on $type in FunctionDeclaration handler', ({ type }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const node = {
@@ -1670,7 +1628,7 @@ describe('no-redeclare rule', () => {
 
   describe('identifier name variations', () => {
     test('should handle single letter names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -1681,7 +1639,7 @@ describe('no-redeclare rule', () => {
 
     test('should handle very long names', () => {
       const longName = 'a'.repeat(200)
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(longName))
@@ -1691,7 +1649,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle names with underscores', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('__private__'))
@@ -1701,7 +1659,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle names with dollar signs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('$jquery'))
@@ -1711,7 +1669,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle unicode names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('π'))
@@ -1722,7 +1680,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should handle names that look like keywords', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('classy'))
@@ -1734,7 +1692,7 @@ describe('no-redeclare rule', () => {
 
   describe('declaration order', () => {
     test('should report when variable comes before function with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('order'))
@@ -1744,7 +1702,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should report when function comes before variable with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('order', []))
@@ -1754,7 +1712,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should track declarations in order of invocation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -1774,7 +1732,7 @@ describe('no-redeclare rule', () => {
 
   describe('return value of visitor methods', () => {
     test('should return undefined from VariableDeclarator for valid node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const result = visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1783,7 +1741,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should return undefined from FunctionDeclaration for valid node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const result = visitor.FunctionDeclaration(createFunctionDeclaration('fn', []))
@@ -1792,7 +1750,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should return undefined from VariableDeclarator for null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const result = visitor.VariableDeclarator(null)
@@ -1801,7 +1759,7 @@ describe('no-redeclare rule', () => {
     })
 
     test('should return undefined from FunctionDeclaration for null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noRedeclareRule.create(context)
 
       const result = visitor.FunctionDeclaration(null)

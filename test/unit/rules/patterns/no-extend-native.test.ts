@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noExtendNativeRule } from '../../../../src/rules/patterns/no-extend-native.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'Object.prototype.foo = function() {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { rules: { 'no-extend-native': ['error', options] } },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 // Factory functions for creating AST nodes
 function createAssignmentExpression(
@@ -196,7 +160,7 @@ describe('no-extend-native rule', () => {
 
   describe('create', () => {
     test('should return visitor object with AssignmentExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(visitor).toHaveProperty('AssignmentExpression')
@@ -204,7 +168,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should return a new visitor for each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor1 = noExtendNativeRule.create(context)
       const visitor2 = noExtendNativeRule.create(context)
 
@@ -212,7 +176,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should return visitor with only AssignmentExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const keys = Object.keys(visitor)
@@ -220,7 +184,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should return non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -251,14 +215,14 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle being called with different file paths', () => {
-      const { context } = createMockContext({}, '/different/path.ts')
+      const { context } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}', filePath: '/different/path.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(typeof visitor.AssignmentExpression).toBe('function')
     })
 
     test('should handle being called with different source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'Array.prototype.foo = 1')
+      const { context } = createMockRuleContext({ source: 'Array.prototype.foo = 1', filePath: '/src/file.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(typeof visitor.AssignmentExpression).toBe('function')
@@ -267,7 +231,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Object prototype extension', () => {
     test('should report Object.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -277,7 +241,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report correct message for Object prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -288,7 +252,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should include utility suggestion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -300,7 +264,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Array prototype extension', () => {
     test('should report Array.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Array')
@@ -310,7 +274,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report correct message for Array prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Array')
@@ -322,7 +286,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting String prototype extension', () => {
     test('should report String.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('String')
@@ -334,7 +298,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Number prototype extension', () => {
     test('should report Number.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Number')
@@ -346,7 +310,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Boolean prototype extension', () => {
     test('should report Boolean.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Boolean')
@@ -358,7 +322,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Function prototype extension', () => {
     test('should report Function.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Function')
@@ -370,7 +334,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Symbol prototype extension', () => {
     test('should report Symbol.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Symbol')
@@ -382,7 +346,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting RegExp prototype extension', () => {
     test('should report RegExp.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('RegExp')
@@ -394,7 +358,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Date prototype extension', () => {
     test('should report Date.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Date')
@@ -406,7 +370,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Math prototype extension', () => {
     test('should report Math.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Math')
@@ -418,7 +382,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting JSON prototype extension', () => {
     test('should report JSON.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('JSON')
@@ -430,7 +394,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Promise prototype extension', () => {
     test('should report Promise.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Promise')
@@ -442,7 +406,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Map prototype extension', () => {
     test('should report Map.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Map')
@@ -454,7 +418,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Set prototype extension', () => {
     test('should report Set.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Set')
@@ -466,7 +430,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting WeakMap prototype extension', () => {
     test('should report WeakMap.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('WeakMap')
@@ -478,7 +442,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting WeakSet prototype extension', () => {
     test('should report WeakSet.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('WeakSet')
@@ -490,7 +454,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Proxy prototype extension', () => {
     test('should report Proxy.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Proxy')
@@ -502,7 +466,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Reflect prototype extension', () => {
     test('should report Reflect.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Reflect')
@@ -514,7 +478,7 @@ describe('no-extend-native rule', () => {
 
   describe('detecting Error prototype extensions', () => {
     test('should report Error.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Error')
@@ -524,7 +488,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report TypeError.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('TypeError')
@@ -534,7 +498,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report ReferenceError.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('ReferenceError')
@@ -544,7 +508,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report SyntaxError.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('SyntaxError')
@@ -554,7 +518,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report RangeError.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('RangeError')
@@ -564,7 +528,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report URIError.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('URIError')
@@ -574,7 +538,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report EvalError.prototype.customMethod assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('EvalError')
@@ -586,7 +550,7 @@ describe('no-extend-native rule', () => {
 
   describe('non-reporting cases', () => {
     test('should not report assignment to custom object prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('MyCustomClass')
@@ -596,7 +560,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to non-prototype property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // Object.customMethod = function() {} (static method, not prototype)
@@ -611,7 +575,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to prototype itself', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // Object.prototype = {} (reassigning prototype itself)
@@ -626,7 +590,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report regular variable assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // const foo = 'bar' (not a MemberExpression)
@@ -639,7 +603,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report nested property assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // obj.nested.prop = 1
@@ -653,7 +617,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to HTMLElement prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('HTMLElement')
@@ -663,7 +627,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Document prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Document')
@@ -673,7 +637,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Window prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Window')
@@ -683,7 +647,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to NodeList prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('NodeList')
@@ -693,7 +657,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Element prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Element')
@@ -703,7 +667,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Event prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Event')
@@ -713,7 +677,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to lowerCase native name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // 'object' (lowercase) is not the native Object
@@ -724,7 +688,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to array (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('array')
@@ -734,7 +698,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Observable prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Observable')
@@ -744,7 +708,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Iterator prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Iterator')
@@ -754,7 +718,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to MyError prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('MyError')
@@ -764,7 +728,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to AppError prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('AppError')
@@ -774,7 +738,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to User prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('User')
@@ -784,7 +748,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Config prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Config')
@@ -794,7 +758,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Record prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Record')
@@ -804,7 +768,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Result prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Result')
@@ -814,7 +778,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Handler prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Handler')
@@ -824,7 +788,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Service prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Service')
@@ -834,7 +798,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Controller prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Controller')
@@ -844,7 +808,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to EventEmitter prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('EventEmitter')
@@ -854,7 +818,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Stream prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Stream')
@@ -864,7 +828,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Buffer prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Buffer')
@@ -874,7 +838,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Request prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Request')
@@ -884,7 +848,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Response prototype', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Response')
@@ -894,7 +858,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report assignment to Promise prototype with mismatched case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('PROMISE')
@@ -906,7 +870,7 @@ describe('no-extend-native rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
@@ -914,7 +878,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
@@ -922,7 +886,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(() => visitor.AssignmentExpression('string')).not.toThrow()
@@ -931,7 +895,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = { left: {}, right: {} }
@@ -941,7 +905,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node without left property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = { type: 'AssignmentExpression', right: {} }
@@ -951,7 +915,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = { type: 'AssignmentExpression', left: null, right: {} }
@@ -961,7 +925,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle MemberExpression without object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const left = { type: 'MemberExpression', property: createIdentifier('prop') }
@@ -973,7 +937,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle MemberExpression without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const left = { type: 'MemberExpression', object: createIdentifier('obj') }
@@ -985,7 +949,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle prototype access with non-Identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // someExpr.prototype.customMethod = fn
@@ -1003,7 +967,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -1044,7 +1008,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle different property names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Array', 'myCustomMap')
@@ -1055,7 +1019,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with left as non-MemberExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1069,7 +1033,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with left as CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1083,7 +1047,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with left as ArrayPattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1097,7 +1061,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with left as ObjectPattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1111,7 +1075,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle deeply nested MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // a.b.c.d = 1
@@ -1126,7 +1090,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(() => visitor.AssignmentExpression(true)).not.toThrow()
@@ -1134,7 +1098,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle numeric node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       expect(() => visitor.AssignmentExpression(42)).not.toThrow()
@@ -1142,7 +1106,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with empty object left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1156,7 +1120,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with array left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1170,7 +1134,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with number left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1184,7 +1148,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with string left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -1198,7 +1162,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle object with prototype property but no MemberExpression chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // Object['prototype'] (Identifier native + Identifier 'prototype') - should not report
@@ -1215,7 +1179,7 @@ describe('no-extend-native rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object', 'customMethod', 10, 5)
@@ -1226,7 +1190,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Array', 'customMethod', 5, 10)
@@ -1237,7 +1201,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report correct location for different native objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node1 = createPrototypeExtension('String', 'customMethod', 1, 0)
@@ -1255,7 +1219,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location at line 1 column 0 for default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -1266,7 +1230,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report correct column for different columns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object', 'customMethod', 3, 15)
@@ -1276,7 +1240,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report correct end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Array', 'customMethod', 7, 3)
@@ -1287,7 +1251,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object', 'customMethod', 999, 0)
@@ -1297,7 +1261,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for high column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object', 'customMethod', 1, 80)
@@ -1307,7 +1271,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report unique locations for multiple extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object', 'a', 1, 0))
@@ -1320,7 +1284,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location with zero column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Number', 'test', 5, 0)
@@ -1330,7 +1294,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for Error types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('TypeError', 'test', 42, 7)
@@ -1341,7 +1305,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for Date', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Date', 'format', 100, 50)
@@ -1352,7 +1316,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for Promise', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Promise', 'finally2', 25, 12)
@@ -1363,7 +1327,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for Map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Map', 'mapValues', 8, 4)
@@ -1374,7 +1338,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report location for RegExp', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('RegExp', 'escape', 15, 20)
@@ -1387,7 +1351,7 @@ describe('no-extend-native rule', () => {
 
   describe('message quality', () => {
     test('should mention native object name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Array')
@@ -1397,7 +1361,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should mention extending in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -1407,7 +1371,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should mention not allowed in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -1417,7 +1381,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should suggest alternative in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = createPrototypeExtension('Object')
@@ -1429,7 +1393,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should have unique messages for different native objects', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1444,7 +1408,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should mention native object name for Function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Function'))
@@ -1453,7 +1417,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should mention native object name for Symbol', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Symbol'))
@@ -1462,7 +1426,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should mention native object name for RegExp', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('RegExp'))
@@ -1471,7 +1435,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should include wrapping suggestion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Date'))
@@ -1480,7 +1444,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should produce non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Map'))
@@ -1491,7 +1455,7 @@ describe('no-extend-native rule', () => {
 
   describe('multiple extensions in same context', () => {
     test('should report each extension independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1502,7 +1466,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should only report prototype extensions, not other assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // Valid assignment
@@ -1523,7 +1487,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report all native extensions in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1536,7 +1500,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report extensions interspersed with non-extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1549,7 +1513,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report same native object extended multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object', 'method1'))
@@ -1560,7 +1524,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle 10 consecutive extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const natives = [
@@ -1583,7 +1547,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle mixed extensions and null nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1594,7 +1558,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should report all Error type extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Error'))
@@ -1609,7 +1573,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should correctly count reports with many safe assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       // 10 safe assignments
@@ -1625,7 +1589,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle all collection type extensions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Map'))
@@ -1639,7 +1603,7 @@ describe('no-extend-native rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}', filePath: '/project/src/utils.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1648,7 +1612,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should work with test file path', () => {
-      const { context, reports } = createMockContext({}, '/project/test/foo.test.ts')
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}', filePath: '/project/test/foo.test.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Array'))
@@ -1657,7 +1621,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should work with config file path', () => {
-      const { context, reports } = createMockContext({}, '/project/.codeforgerc.json')
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}', filePath: '/project/.codeforgerc.json' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('String'))
@@ -1666,7 +1630,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1676,7 +1640,7 @@ describe('no-extend-native rule', () => {
 
     test('should work with long source code', () => {
       const source = 'a'.repeat(10000)
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object'))
@@ -1757,7 +1721,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should work with Windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\project\\src\\file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}', filePath: 'C:\\project\\src\\file.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Promise'))
@@ -1766,7 +1730,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should work with relative file path', () => {
-      const { context, reports } = createMockContext({}, './src/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}', filePath: './src/file.ts' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Set'))
@@ -1805,7 +1769,7 @@ describe('no-extend-native rule', () => {
     ]
 
     test.each(nativeObjects)('should report %s.prototype extension', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName))
@@ -1814,7 +1778,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should include %s in report message', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName))
@@ -1823,7 +1787,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should report location for %s prototype extension', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName, 'test', 5, 10))
@@ -1833,7 +1797,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should have extending in message for %s', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName))
@@ -1842,7 +1806,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should have not allowed in message for %s', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName))
@@ -1851,7 +1815,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should have utility or wrapper in message for %s', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName))
@@ -1861,7 +1825,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should have loc with start and end for %s', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName))
@@ -1872,7 +1836,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(nativeObjects)('should report with different property names for %s', (nativeName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(nativeName, 'myProp'))
@@ -1907,7 +1871,7 @@ describe('no-extend-native rule', () => {
     ]
 
     test.each(nonNativeObjects)('should not report %s.prototype extension', (name) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension(name))
@@ -1936,7 +1900,7 @@ describe('no-extend-native rule', () => {
     ]
 
     test.each(propertyNames)('should report Object.prototype.%s assignment', (propName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Object', propName))
@@ -1945,7 +1909,7 @@ describe('no-extend-native rule', () => {
     })
 
     test.each(propertyNames)('should report Array.prototype.%s assignment', (propName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       visitor.AssignmentExpression(createPrototypeExtension('Array', propName))
@@ -1968,7 +1932,7 @@ describe('no-extend-native rule', () => {
 
   describe('additional detection tests', () => {
     test('should detect Object.prototype extension with function value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const fnRight = {
@@ -1990,7 +1954,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Array.prototype extension with arrow function value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const arrowRight = {
@@ -2011,7 +1975,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect String.prototype extension with object value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const objRight = { type: 'ObjectExpression', properties: [] }
@@ -2028,7 +1992,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Number.prototype extension with numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Number')
@@ -2044,7 +2008,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Boolean.prototype extension with boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Boolean')
@@ -2060,7 +2024,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Function.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Function')
@@ -2077,7 +2041,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Symbol.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Symbol')
@@ -2094,7 +2058,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect RegExp.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('RegExp')
@@ -2110,7 +2074,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Date.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Date')
@@ -2126,7 +2090,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Math.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Math')
@@ -2142,7 +2106,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect JSON.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('JSON')
@@ -2158,7 +2122,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Promise.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Promise')
@@ -2174,7 +2138,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Map.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Map')
@@ -2190,7 +2154,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Set.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Set')
@@ -2206,7 +2170,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect WeakMap.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('WeakMap')
@@ -2222,7 +2186,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect WeakSet.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('WeakSet')
@@ -2238,7 +2202,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Proxy.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Proxy')
@@ -2254,7 +2218,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Reflect.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Reflect')
@@ -2270,7 +2234,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect Error.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Error')
@@ -2286,7 +2250,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect TypeError.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('TypeError')
@@ -2302,7 +2266,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect ReferenceError.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('ReferenceError')
@@ -2318,7 +2282,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect SyntaxError.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('SyntaxError')
@@ -2334,7 +2298,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect RangeError.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('RangeError')
@@ -2350,7 +2314,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect URIError.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('URIError')
@@ -2366,7 +2330,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should detect EvalError.prototype extension', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('EvalError')
@@ -2382,7 +2346,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report when prototype is assigned to a native identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Array')
@@ -2396,7 +2360,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for undefined identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('undefined')
@@ -2412,7 +2376,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for null identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('null')
@@ -2428,7 +2392,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for window identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('window')
@@ -2444,7 +2408,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for global identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('global')
@@ -2460,7 +2424,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for console identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('console')
@@ -2476,7 +2440,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for process identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('process')
@@ -2492,7 +2456,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for module identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('module')
@@ -2508,7 +2472,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for exports identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('exports')
@@ -2524,7 +2488,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for require identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('require')
@@ -2540,7 +2504,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for document identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('document')
@@ -2556,7 +2520,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for XMLHttpRequest identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('XMLHttpRequest')
@@ -2572,7 +2536,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for fetch identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('fetch')
@@ -2588,7 +2552,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for setTimeout identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('setTimeout')
@@ -2604,7 +2568,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for setInterval identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('setInterval')
@@ -2620,7 +2584,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for parseInt identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('parseInt')
@@ -2636,7 +2600,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should not report for parseFloat identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('parseFloat')
@@ -2652,7 +2616,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle node with optional MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const nativeObj = createIdentifier('Object')
@@ -2674,7 +2638,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle CallExpression node type without crashing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = { type: 'CallExpression', callee: createIdentifier('fn'), arguments: [] }
@@ -2684,7 +2648,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle BinaryExpression node type without crashing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {
@@ -2699,7 +2663,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle UpdateExpression node type without crashing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = { type: 'UpdateExpression', argument: createIdentifier('x'), operator: '++' }
@@ -2709,7 +2673,7 @@ describe('no-extend-native rule', () => {
     })
 
     test('should handle ConditionalExpression node type without crashing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Object.prototype.foo = function() {}' })
       const visitor = noExtendNativeRule.create(context)
 
       const node = {

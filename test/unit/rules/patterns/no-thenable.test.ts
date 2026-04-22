@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noThenableRule } from '../../../../src/rules/patterns/no-thenable.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'promise.then(() => {});',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(propertyName: string, lineNumber = 1, column = 0): unknown {
   return {
@@ -196,49 +160,49 @@ describe('no-thenable rule', () => {
 
   describe('create', () => {
     test('should return visitor object with CallExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should have CallExpression as function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return visitor with only CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(Object.keys(visitor)).toContain('CallExpression')
     })
 
     test('should accept one argument in CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(visitor.CallExpression.length).toBe(1)
     })
 
     test('should return undefined from CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const result = visitor.CallExpression(createCallExpression('then'))
@@ -247,7 +211,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should return new visitor for each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor1 = noThenableRule.create(context)
       const visitor2 = noThenableRule.create(context)
 
@@ -255,8 +219,8 @@ describe('no-thenable rule', () => {
     })
 
     test('should create visitor with different context instances', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext({}, '/other/file.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'promise.then(() => {});' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'promise.then(() => {});', filePath: '/other/file.ts' })
       const visitor1 = noThenableRule.create(ctx1)
       const visitor2 = noThenableRule.create(ctx2)
 
@@ -267,7 +231,7 @@ describe('no-thenable rule', () => {
 
   describe('detecting .then() calls', () => {
     test('should report .then() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -276,7 +240,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('catch'))
@@ -287,7 +251,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report non-member expression calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createNonMemberExpressionCall())
@@ -296,7 +260,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report correct message for .then() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -305,7 +269,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report multiple .then() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -316,7 +280,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() among other method calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('catch'))
@@ -328,7 +292,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() on promise-like object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -346,7 +310,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() on fetch result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -364,7 +328,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report chained .then() calls independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -375,7 +339,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() with arguments node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -395,7 +359,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() without arguments node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -412,7 +376,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() with arrow function callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -430,7 +394,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() with regular function callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -448,7 +412,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() on variable member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -467,7 +431,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() on return value chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -494,7 +458,7 @@ describe('no-thenable rule', () => {
 
   describe('negative cases - other method names', () => {
     test('should not report .catch() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('catch'))
@@ -503,7 +467,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .finally() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('finally'))
@@ -512,7 +476,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .map() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('map'))
@@ -521,7 +485,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .filter() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('filter'))
@@ -530,7 +494,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .reduce() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('reduce'))
@@ -539,7 +503,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .forEach() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('forEach'))
@@ -548,7 +512,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .find() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('find'))
@@ -557,7 +521,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .some() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('some'))
@@ -566,7 +530,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .every() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('every'))
@@ -575,7 +539,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .includes() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('includes'))
@@ -584,7 +548,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .indexOf() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('indexOf'))
@@ -593,7 +557,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .join() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('join'))
@@ -602,7 +566,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .slice() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('slice'))
@@ -611,7 +575,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .splice() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('splice'))
@@ -620,7 +584,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .concat() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('concat'))
@@ -629,7 +593,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .push() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('push'))
@@ -638,7 +602,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .pop() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('pop'))
@@ -647,7 +611,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .shift() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('shift'))
@@ -656,7 +620,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .toString() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('toString'))
@@ -665,7 +629,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .valueOf() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('valueOf'))
@@ -674,7 +638,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .then with capital T (Then)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('Then'))
@@ -683,7 +647,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .THEN in all caps', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('THEN'))
@@ -692,7 +656,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report .tHen mixed case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('tHen'))
@@ -701,7 +665,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report "then " with trailing space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then '))
@@ -710,7 +674,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report " then" with leading space', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression(' then'))
@@ -721,7 +685,7 @@ describe('no-thenable rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
@@ -730,7 +694,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle undefined node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
@@ -739,7 +703,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle non-object node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -749,7 +713,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -764,7 +728,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node without callee property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -776,7 +740,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -789,7 +753,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -806,7 +770,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -821,7 +785,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -860,7 +824,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle property without name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -878,7 +842,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle property with non-identifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -897,7 +861,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -917,7 +881,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node type with different casing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -933,7 +897,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node type with all caps', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -949,7 +913,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee type not MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -965,7 +929,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle null callee property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -981,7 +945,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -994,7 +958,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
@@ -1002,7 +966,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
@@ -1012,7 +976,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression(42)).not.toThrow()
@@ -1023,7 +987,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
@@ -1031,7 +995,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle loc with missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1048,7 +1012,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle loc with missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1065,7 +1029,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle loc with string line/column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1082,7 +1046,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle loc with null values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1099,7 +1063,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node with computed member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1116,7 +1080,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee property with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1132,7 +1096,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee property with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1148,7 +1112,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle property name "thenable" (contains then but not exact)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('thenable'))
@@ -1157,7 +1121,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle property name "getThen" (contains then but not exact)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('getThen'))
@@ -1168,7 +1132,7 @@ describe('no-thenable rule', () => {
 
   describe('message quality', () => {
     test('should mention async in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1177,7 +1141,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should mention await in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1186,7 +1150,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should mention then in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1195,7 +1159,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should use .then() in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1204,7 +1168,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1215,7 +1179,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should return message as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1224,7 +1188,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1233,7 +1197,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have message starting with Prefer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1242,7 +1206,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1251,7 +1215,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not vary message with different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1261,8 +1225,8 @@ describe('no-thenable rule', () => {
     })
 
     test('should not vary message with different contexts', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext({}, '/other/file.ts', 'x.then()')
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'promise.then(() => {});' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'x.then()', filePath: '/other/file.ts' })
 
       const v1 = noThenableRule.create(ctx1)
       const v2 = noThenableRule.create(ctx2)
@@ -1274,7 +1238,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have message with reasonable length', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1286,7 +1250,7 @@ describe('no-thenable rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for .then() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 10, 5))
@@ -1296,7 +1260,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 5, 10))
@@ -1306,7 +1270,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1316,7 +1280,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 9999, 0))
@@ -1325,7 +1289,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 500))
@@ -1334,7 +1298,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should preserve exact start position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 42, 17))
@@ -1344,7 +1308,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should preserve exact end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 5, 10))
@@ -1354,7 +1318,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report independent locations for multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1367,7 +1331,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should use default location when loc missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1384,7 +1348,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should use default location when loc is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1402,7 +1366,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location start line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 7, 3))
@@ -1411,7 +1375,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location start column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 7, 3))
@@ -1420,7 +1384,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location end line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 7, 3))
@@ -1429,7 +1393,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report location end column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 7, 3))
@@ -1438,7 +1402,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle loc at zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 0, 0))
@@ -1450,7 +1414,7 @@ describe('no-thenable rule', () => {
 
   describe('multiple reports', () => {
     test('should report 5 consecutive .then() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1461,7 +1425,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report 10 consecutive .then() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1472,7 +1436,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report mixed .then() and other calls correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1485,7 +1449,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() calls at different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1499,7 +1463,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have correct messages for all reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1512,7 +1476,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report interleaved .then() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('map'))
@@ -1526,7 +1490,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should maintain order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then', 1, 0))
@@ -1539,7 +1503,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report any when no .then() calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('map'))
@@ -1550,7 +1514,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report single .then() among many calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1567,7 +1531,7 @@ describe('no-thenable rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/async.ts')
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});', filePath: '/src/utils/async.ts' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1576,11 +1540,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work with different source content', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = p.then(() => 1)',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = p.then(() => 1)', filePath: '/src/file.ts' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1589,7 +1549,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1599,7 +1559,7 @@ describe('no-thenable rule', () => {
 
     test('should work with long source', () => {
       const longSource = 'x'.repeat(10000) + '.then(() => {})'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1608,7 +1568,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work with options object', () => {
-      const { context, reports } = createMockContext({ strict: true })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true }], source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1617,7 +1577,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work with null options object', () => {
-      const { context, reports } = createMockContext(null)
+      const { context, reports } = createMockRuleContext({ options: [null], source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1626,7 +1586,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work with undefined options object', () => {
-      const { context, reports } = createMockContext(undefined)
+      const { context, reports } = createMockRuleContext({ options: [undefined], source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1662,7 +1622,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work with deeply nested workspaceRoot', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       context.workspaceRoot
       const visitor = noThenableRule.create(context)
 
@@ -1672,8 +1632,8 @@ describe('no-thenable rule', () => {
     })
 
     test('should report independently per context', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'promise.then(() => {});' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'promise.then(() => {});' })
 
       const v1 = noThenableRule.create(ctx1)
       const v2 = noThenableRule.create(ctx2)
@@ -1727,7 +1687,7 @@ describe('no-thenable rule', () => {
 
   describe('report descriptor', () => {
     test('should have message in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1736,7 +1696,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1745,7 +1705,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc.start in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1754,7 +1714,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc.end in report descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1763,7 +1723,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have message as string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1772,7 +1732,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should call report exactly once per .then() detection', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1781,7 +1741,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should call report zero times for non-.then() detection', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('map'))
@@ -1790,7 +1750,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc.start.line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1799,7 +1759,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc.start.column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1808,7 +1768,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc.end.line as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1817,7 +1777,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should have loc.end.column as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -1828,7 +1788,7 @@ describe('no-thenable rule', () => {
 
   describe('isThenable internal logic', () => {
     test('should not crash on function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression(() => {})).not.toThrow()
@@ -1836,7 +1796,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not crash on Symbol node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       expect(() => visitor.CallExpression(Symbol('test'))).not.toThrow()
@@ -1844,7 +1804,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should detect .then() when property name is exactly then', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1861,7 +1821,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not detect when callee type is Super', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1877,7 +1837,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not detect when property type is StringLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1893,7 +1853,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not detect when property type is NumericLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1909,7 +1869,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle deeply nested node structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1937,7 +1897,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node with all extra AST properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1961,7 +1921,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() when callee.object is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1979,7 +1939,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() when callee.object is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -1999,7 +1959,7 @@ describe('no-thenable rule', () => {
 
   describe('visitor robustness', () => {
     test('should handle rapid successive calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -2010,7 +1970,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle alternating valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2025,7 +1985,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not accumulate state between calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then'))
@@ -2042,7 +2002,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should work after many non-matching calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2054,7 +2014,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not be affected by previous null nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(null)
@@ -2069,7 +2029,7 @@ describe('no-thenable rule', () => {
 
   describe('additional edge cases', () => {
     test('should not report .then when property name has unicode characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       visitor.CallExpression(createCallExpression('then\u200B'))
@@ -2078,7 +2038,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node with circular reference gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node: Record<string, unknown> = {
@@ -2095,7 +2055,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee property name as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2111,7 +2071,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee property name as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2127,7 +2087,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() with optional member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2145,7 +2105,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle node that is a class instance', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       class CustomNode {
@@ -2161,7 +2121,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2180,7 +2140,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should handle callee with additional non-standard properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2200,7 +2160,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report for CallExpression with undefined type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2216,7 +2176,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report for node type that is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2232,7 +2192,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report when callee.type is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2248,7 +2208,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should not report when property type is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {
@@ -2267,7 +2227,7 @@ describe('no-thenable rule', () => {
     })
 
     test('should report .then() when property has extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'promise.then(() => {});' })
       const visitor = noThenableRule.create(context)
 
       const node = {

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noWithRule } from '../../../../src/rules/patterns/no-with.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'with (obj) { }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string): unknown {
   return {
@@ -209,7 +173,7 @@ describe('no-with rule', () => {
   // ===================== VISITOR STRUCTURE =====================
   describe('create', () => {
     test('should return visitor object with WithStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).toHaveProperty('WithStatement')
@@ -217,35 +181,35 @@ describe('no-with rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should return a defined visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should return an object type visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should have WithStatement as a function type', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(typeof visitor.WithStatement).toBe('function')
     })
 
     test('should allow creating multiple visitors from same context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor1 = noWithRule.create(context)
       const visitor2 = noWithRule.create(context)
 
@@ -253,70 +217,70 @@ describe('no-with rule', () => {
     })
 
     test('should return visitor that is not an array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(Array.isArray(visitor)).toBe(false)
     })
 
     test('should have WithStatement that accepts one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor.WithStatement.length).toBe(1)
     })
 
     test('should not have FunctionDeclaration handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('FunctionDeclaration')
     })
 
     test('should not have VariableDeclaration handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('VariableDeclaration')
     })
 
     test('should not have IfStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('IfStatement')
     })
 
     test('should not have ForStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('ForStatement')
     })
 
     test('should not have WhileStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('WhileStatement')
     })
 
     test('should not have ExpressionStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('ExpressionStatement')
     })
 
     test('should not have ReturnStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(visitor).not.toHaveProperty('ReturnStatement')
     })
 
     test('should have WithStatement that returns void', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -330,7 +294,7 @@ describe('no-with rule', () => {
   // ===================== DETECTING WITH STATEMENTS =====================
   describe('detecting with statements', () => {
     test('should report with statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -343,7 +307,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('data')
@@ -354,7 +318,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with literal object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createLiteral('test')
@@ -365,7 +329,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with statements in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -378,7 +342,7 @@ describe('no-with rule', () => {
     })
 
     test('should report multiple with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -392,7 +356,7 @@ describe('no-with rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -404,7 +368,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with MemberExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -419,7 +383,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with CallExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -434,7 +398,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with ObjectExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -448,7 +412,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with ArrayExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -462,7 +426,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with numeric literal object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createLiteral(42)
@@ -473,7 +437,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with boolean literal object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createLiteral(true)
@@ -484,7 +448,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with null literal object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createLiteral(null)
@@ -495,7 +459,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -506,7 +470,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with ExpressionStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -520,7 +484,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with deeply nested body statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -535,7 +499,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with BinaryExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -551,7 +515,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with ConditionalExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -567,7 +531,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with ThisExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = { type: 'ThisExpression' }
@@ -578,7 +542,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with ArrowFunctionExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -593,7 +557,7 @@ describe('no-with rule', () => {
     })
 
     test('should report two sequential with statements independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj1 = createIdentifier('a')
@@ -607,7 +571,7 @@ describe('no-with rule', () => {
     })
 
     test('should report five sequential with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -621,7 +585,7 @@ describe('no-with rule', () => {
     })
 
     test('should report ten sequential with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -635,7 +599,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with TemplateLiteral object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -650,7 +614,7 @@ describe('no-with rule', () => {
     })
 
     test('should report with statement with NewExpression object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = {
@@ -668,7 +632,7 @@ describe('no-with rule', () => {
   // ===================== NEGATIVE CASES =====================
   describe('negative cases - non-WithStatement nodes', () => {
     test('should not report for IfStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -682,7 +646,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ForStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -698,7 +662,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for WhileStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -712,7 +676,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for SwitchStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -726,7 +690,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for DoWhileStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -740,7 +704,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ForInStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -755,7 +719,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ForOfStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -770,7 +734,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for TryStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -783,7 +747,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for FunctionDeclaration node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -798,7 +762,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for VariableDeclaration node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -812,7 +776,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ReturnStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -825,7 +789,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ThrowStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -838,7 +802,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       visitor.WithStatement({})
@@ -847,7 +811,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for object with type null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -861,7 +825,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for object with type undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -875,7 +839,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for LabeledStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -889,7 +853,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for BreakStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       visitor.WithStatement({ type: 'BreakStatement', label: null })
@@ -898,7 +862,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ContinueStatement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       visitor.WithStatement({ type: 'ContinueStatement', label: null })
@@ -907,7 +871,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ClassDeclaration node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -921,7 +885,7 @@ describe('no-with rule', () => {
     })
 
     test('should not report for ImportDeclaration node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -938,7 +902,7 @@ describe('no-with rule', () => {
   // ===================== MESSAGE QUALITY =====================
   describe('message quality', () => {
     test('should mention with statement in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -949,7 +913,7 @@ describe('no-with rule', () => {
     })
 
     test('should mention not allowed in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -960,7 +924,7 @@ describe('no-with rule', () => {
     })
 
     test('should use single quotes around with', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -971,7 +935,7 @@ describe('no-with rule', () => {
     })
 
     test('should have exact message text', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -982,7 +946,7 @@ describe('no-with rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -993,7 +957,7 @@ describe('no-with rule', () => {
     })
 
     test('should have message containing statement word', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1004,7 +968,7 @@ describe('no-with rule', () => {
     })
 
     test('should have consistent message across multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1019,7 +983,7 @@ describe('no-with rule', () => {
     })
 
     test('should have message that is a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1031,7 +995,7 @@ describe('no-with rule', () => {
     })
 
     test('should have message shorter than 100 characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1045,7 +1009,7 @@ describe('no-with rule', () => {
   // ===================== EDGE CASES =====================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement(null)).not.toThrow()
@@ -1053,7 +1017,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement(undefined)).not.toThrow()
@@ -1061,7 +1025,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement('string')).not.toThrow()
@@ -1071,7 +1035,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1084,7 +1048,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node without object property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1097,7 +1061,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node without body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1110,7 +1074,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1126,7 +1090,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle with statement with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1140,7 +1104,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle with statement with undefined object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1153,7 +1117,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle with statement with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1167,7 +1131,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle with statement with undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1180,7 +1144,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1191,7 +1155,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle with statement with incorrect type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1205,7 +1169,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1226,7 +1190,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1247,7 +1211,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1267,7 +1231,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1287,7 +1251,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1305,7 +1269,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle numeric node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement(42)).not.toThrow()
@@ -1313,7 +1277,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle boolean node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement(false)).not.toThrow()
@@ -1321,7 +1285,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle string node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement('WithStatement')).not.toThrow()
@@ -1329,7 +1293,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle array node input', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(() => visitor.WithStatement([])).not.toThrow()
@@ -1337,7 +1301,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1355,7 +1319,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle loc with null end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1373,7 +1337,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle extra properties on node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1394,7 +1358,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node with type as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1408,7 +1372,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node with type as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1422,7 +1386,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle node with type as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1436,7 +1400,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle with statement with many extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1457,7 +1421,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle case-sensitive type check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1471,7 +1435,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle WITHSTATEMENT uppercase type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1485,7 +1449,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle With_Statement type with underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1499,7 +1463,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle symbol as type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1516,7 +1480,7 @@ describe('no-with rule', () => {
   // ===================== LOCATION =====================
   describe('location', () => {
     test('should report correct start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1527,7 +1491,7 @@ describe('no-with rule', () => {
     })
 
     test('should report correct start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1538,7 +1502,7 @@ describe('no-with rule', () => {
     })
 
     test('should report correct end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1549,7 +1513,7 @@ describe('no-with rule', () => {
     })
 
     test('should report correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1560,7 +1524,7 @@ describe('no-with rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1572,7 +1536,7 @@ describe('no-with rule', () => {
     })
 
     test('should report location at large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1583,7 +1547,7 @@ describe('no-with rule', () => {
     })
 
     test('should report location at large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1594,7 +1558,7 @@ describe('no-with rule', () => {
     })
 
     test('should report location at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1606,7 +1570,7 @@ describe('no-with rule', () => {
     })
 
     test('should have both start and end in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1618,7 +1582,7 @@ describe('no-with rule', () => {
     })
 
     test('should have line and column in start location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1630,7 +1594,7 @@ describe('no-with rule', () => {
     })
 
     test('should have line and column in end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1642,7 +1606,7 @@ describe('no-with rule', () => {
     })
 
     test('should preserve exact location for first of multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1656,7 +1620,7 @@ describe('no-with rule', () => {
     })
 
     test('should preserve exact location for second of multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1670,7 +1634,7 @@ describe('no-with rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const node = {
@@ -1689,7 +1653,7 @@ describe('no-with rule', () => {
   // ===================== MULTIPLE REPORTS =====================
   describe('multiple reports', () => {
     test('should report exactly 2 with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1702,7 +1666,7 @@ describe('no-with rule', () => {
     })
 
     test('should report exactly 4 with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1716,7 +1680,7 @@ describe('no-with rule', () => {
     })
 
     test('should report exactly 7 with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1730,7 +1694,7 @@ describe('no-with rule', () => {
     })
 
     test('should have correct message for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1745,7 +1709,7 @@ describe('no-with rule', () => {
     })
 
     test('should have correct location for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1761,7 +1725,7 @@ describe('no-with rule', () => {
     })
 
     test('should preserve report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1776,7 +1740,7 @@ describe('no-with rule', () => {
     })
 
     test('should report 0 after only non-WithStatement nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       visitor.WithStatement({ type: 'IfStatement' })
@@ -1787,7 +1751,7 @@ describe('no-with rule', () => {
     })
 
     test('should report correct count with mix of valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1803,7 +1767,7 @@ describe('no-with rule', () => {
     })
 
     test('should handle 20 sequential with statements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1817,7 +1781,7 @@ describe('no-with rule', () => {
     })
 
     test('should report after reset of reports array context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1836,7 +1800,7 @@ describe('no-with rule', () => {
   // ===================== CONTEXT VARIATIONS =====================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/different.ts')
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }', filePath: '/src/different.ts' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1847,7 +1811,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'with (x) { foo() }')
+      const { context, reports } = createMockRuleContext({ source: 'with (x) { foo() }', filePath: '/src/file.ts' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('x')
@@ -1858,7 +1822,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1869,7 +1833,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with options containing extra data', () => {
-      const { context, reports } = createMockContext({ extra: true, nested: { value: 1 } })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, nested: { value: 1 } }], source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1945,7 +1909,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with Windows-style file path', () => {
-      const { context, reports } = createMockContext({}, 'C:\\Users\\dev\\project\\file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }', filePath: 'C:\\Users\\dev\\project\\file.ts' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1956,7 +1920,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/a/b/c/d/e/f/g/h/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }', filePath: '/a/b/c/d/e/f/g/h/file.ts' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1967,7 +1931,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js')
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }', filePath: '/src/file.js' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1978,7 +1942,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with .jsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.jsx')
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }', filePath: '/src/component.jsx' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -1989,7 +1953,7 @@ describe('no-with rule', () => {
     })
 
     test('should work with .mjs file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/module.mjs')
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }', filePath: '/src/module.mjs' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2157,7 +2121,7 @@ describe('no-with rule', () => {
     })
 
     test('should have create that returns a RuleVisitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -2173,7 +2137,7 @@ describe('no-with rule', () => {
   // ===================== REPORT DESCRIPTOR =====================
   describe('report descriptor', () => {
     test('should have message property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2184,7 +2148,7 @@ describe('no-with rule', () => {
     })
 
     test('should have loc property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2195,7 +2159,7 @@ describe('no-with rule', () => {
     })
 
     test('should have loc.start in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2206,7 +2170,7 @@ describe('no-with rule', () => {
     })
 
     test('should have loc.end in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2217,7 +2181,7 @@ describe('no-with rule', () => {
     })
 
     test('should have line in loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2228,7 +2192,7 @@ describe('no-with rule', () => {
     })
 
     test('should have column in loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2239,7 +2203,7 @@ describe('no-with rule', () => {
     })
 
     test('should have line in loc.end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2250,7 +2214,7 @@ describe('no-with rule', () => {
     })
 
     test('should have column in loc.end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2261,7 +2225,7 @@ describe('no-with rule', () => {
     })
 
     test('should have numeric start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2272,7 +2236,7 @@ describe('no-with rule', () => {
     })
 
     test('should have numeric start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2283,7 +2247,7 @@ describe('no-with rule', () => {
     })
 
     test('should have numeric end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2294,7 +2258,7 @@ describe('no-with rule', () => {
     })
 
     test('should have numeric end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2305,7 +2269,7 @@ describe('no-with rule', () => {
     })
 
     test('should have message as string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2316,7 +2280,7 @@ describe('no-with rule', () => {
     })
 
     test('should have non-null loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2327,7 +2291,7 @@ describe('no-with rule', () => {
     })
 
     test('should have non-undefined loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2338,7 +2302,7 @@ describe('no-with rule', () => {
     })
 
     test('should report exactly one issue per WithStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2349,7 +2313,7 @@ describe('no-with rule', () => {
     })
 
     test('should have start line >= 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2360,7 +2324,7 @@ describe('no-with rule', () => {
     })
 
     test('should have start column >= 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2371,7 +2335,7 @@ describe('no-with rule', () => {
     })
 
     test('should have end column greater than or equal to start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')
@@ -2382,7 +2346,7 @@ describe('no-with rule', () => {
     })
 
     test('should have report object with exactly two keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'with (obj) { }' })
       const visitor = noWithRule.create(context)
 
       const obj = createIdentifier('obj')

@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferAtContextRule } from '../../../../src/rules/patterns/prefer-at-context.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: readonly [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const fn = function() { return this.x; }.bind(this);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBindCall(line = 1, column = 0, isFunctionExpression = true): unknown {
   return {
@@ -338,7 +300,7 @@ describe('prefer-at-context rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
@@ -346,31 +308,31 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('should have CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should have AssignmentExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
       expect(typeof visitor.AssignmentExpression).toBe('function')
     })
 
     test('should return exactly two visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(2)
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor1 = preferAtContextRule.create(context)
       const visitor2 = preferAtContextRule.create(context)
       expect(visitor1).not.toBe(visitor2)
@@ -381,12 +343,12 @@ describe('prefer-at-context rule', () => {
     })
 
     test('create should accept a RuleContext parameter', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       expect(() => preferAtContextRule.create(context)).not.toThrow()
     })
 
     test('should only have CallExpression and AssignmentExpression keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
       const keys = Object.keys(visitor).sort()
       expect(keys).toEqual(['AssignmentExpression', 'CallExpression'])
@@ -399,7 +361,7 @@ describe('prefer-at-context rule', () => {
 
   describe('detecting .bind(this) patterns', () => {
     test('should report .bind(this) on function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -410,7 +372,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report non-bind calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createNonBindCall())
@@ -419,7 +381,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report .bind() with non-this argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCallWithNonThisArg())
@@ -428,7 +390,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(10, 5))
@@ -439,7 +401,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(3, 8))
@@ -451,7 +413,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -463,7 +425,7 @@ describe('prefer-at-context rule', () => {
     test('should report at various line numbers', () => {
       const lineNumbers = [1, 5, 10, 25, 100, 500]
       for (const line of lineNumbers) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
         const visitor = preferAtContextRule.create(context)
 
         visitor.CallExpression(createBindCall(line, 0))
@@ -475,7 +437,7 @@ describe('prefer-at-context rule', () => {
     test('should report at various column numbers', () => {
       const columnNumbers = [0, 4, 8, 16, 32]
       for (const column of columnNumbers) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
         const visitor = preferAtContextRule.create(context)
 
         visitor.CallExpression(createBindCall(1, column))
@@ -485,7 +447,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report .bind(this) on FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -516,7 +478,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report .bind(this) with arrow function body in function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -554,7 +516,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report .bind(this) when callee object is not a MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -575,7 +537,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report .bind(this) on identifier object (non-function)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -601,7 +563,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle .bind(this) without callee object gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -632,7 +594,7 @@ describe('prefer-at-context rule', () => {
 
     test('should provide fix when callee is function expression with range', () => {
       const source = 'function() { return this.x; }.bind(this)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -669,7 +631,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not provide fix when callee object is not a function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -695,7 +657,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not provide fix for assignment pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -711,7 +673,7 @@ describe('prefer-at-context rule', () => {
 
   describe('detecting this.method = function() patterns', () => {
     test('should report this.method = function() when it uses this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -721,7 +683,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report non-this assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('normal'))
@@ -730,7 +692,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report assignment when function does not use this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -772,7 +734,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report assignment when function body has only literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -814,7 +776,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report when function body references this.x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -823,7 +785,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report location based on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this', 7, 12))
@@ -833,7 +795,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report when function uses this in return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -876,7 +838,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report when function uses this in call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -923,7 +885,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report when function uses this deep in nested expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -975,7 +937,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report when function uses nested FunctionExpression with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1030,7 +992,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report when function uses nested ArrowFunctionExpression with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1081,7 +1043,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report when function uses nested FunctionDeclaration with this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1133,7 +1095,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report when left uses FunctionDeclaration as right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1172,7 +1134,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report when this is used in if condition inside function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1225,21 +1187,21 @@ describe('prefer-at-context rule', () => {
 
   describe('edge cases - CallExpression', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully - string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -1247,7 +1209,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-object node gracefully - number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression(123)).not.toThrow()
@@ -1255,7 +1217,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-object node gracefully - boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
@@ -1263,7 +1225,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1299,7 +1261,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1313,7 +1275,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle bind with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1346,7 +1308,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle bind with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1391,7 +1353,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1413,7 +1375,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node with empty type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1432,7 +1394,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node with non-standard type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1450,7 +1412,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle callee property not named bind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1477,7 +1439,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle callee property not named apply', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1504,7 +1466,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node with arguments as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1530,7 +1492,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle bind(this) with null arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1557,7 +1519,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle bind(this) with computed MemberExpression property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1593,21 +1555,21 @@ describe('prefer-at-context rule', () => {
 
   describe('edge cases - AssignmentExpression', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully - string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression('string')).not.toThrow()
@@ -1615,7 +1577,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-object node gracefully - number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression(123)).not.toThrow()
@@ -1623,7 +1585,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-object node gracefully - boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression(true)).not.toThrow()
@@ -1631,7 +1593,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node without left property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1656,7 +1618,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node without right property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1679,7 +1641,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-function expression right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1707,7 +1669,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle arrow function as right side (not reported)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1735,7 +1697,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle non-MemberExpression left side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1770,7 +1732,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression({})).not.toThrow()
@@ -1778,7 +1740,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node without body in function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1806,7 +1768,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node with left as MemberExpression but object not ThisExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1848,7 +1810,7 @@ describe('prefer-at-context rule', () => {
 
   describe('location reporting', () => {
     test('should report correct line for bind call at line 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(1, 0))
@@ -1857,7 +1819,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report correct line for bind call at line 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(50, 0))
@@ -1866,7 +1828,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report correct column for bind call at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(1, 0))
@@ -1875,7 +1837,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report correct column for bind call at column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(1, 20))
@@ -1884,7 +1846,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report end location correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(3, 5))
@@ -1894,7 +1856,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1922,7 +1884,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report default location when loc.start is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1951,7 +1913,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle partial loc with only start.line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -1982,7 +1944,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle location at line 0 (edge)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(0, 0))
@@ -1992,7 +1954,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report assignment location based on right node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this', 15, 4))
@@ -2002,7 +1964,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report location spanning multiple lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -2039,7 +2001,7 @@ describe('prefer-at-context rule', () => {
 
   describe('message quality', () => {
     test('should mention arrow function in message for .bind(this)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2048,7 +2010,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention .bind(this) in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2057,7 +2019,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention this context in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2066,7 +2028,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention enclosing scope in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2075,7 +2037,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2084,7 +2046,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention prefer in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2093,7 +2055,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention capture in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2102,7 +2064,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention automatically in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2111,7 +2073,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention arrow function in assignment message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -2120,7 +2082,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention this context in assignment message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -2129,7 +2091,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention preserve in assignment message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -2138,7 +2100,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should mention context in assignment message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -2147,11 +2109,11 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should have different message for bind vs assignment', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor1 = preferAtContextRule.create(ctx1)
       visitor1.CallExpression(createBindCall())
 
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor2 = preferAtContextRule.create(ctx2)
       visitor2.AssignmentExpression(createAssignmentExpression('this'))
 
@@ -2159,7 +2121,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('bind message should be exactly the expected string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2170,7 +2132,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('assignment message should be exactly the expected string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -2187,7 +2149,7 @@ describe('prefer-at-context rule', () => {
 
   describe('multiple reports', () => {
     test('should report separately for each bind(this) call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(1, 0))
@@ -2198,7 +2160,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report separately for each assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.AssignmentExpression(createAssignmentExpression('this', 1, 0))
@@ -2208,7 +2170,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report for mixed bind and assignment patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2219,7 +2181,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report correct locations for multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(2, 0))
@@ -2230,7 +2192,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should report mixed safe and unsafe without false positives', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2241,7 +2203,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle 10 consecutive bind calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2252,7 +2214,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('each report should have independent message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2269,7 +2231,7 @@ describe('prefer-at-context rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);', filePath: '/project/src/utils.ts' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2277,11 +2239,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'this.handler = function(e) { return this.process(e); }.bind(this);',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'this.handler = function(e) { return this.process(e); }.bind(this);', filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2289,7 +2247,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2297,7 +2255,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should work with options in config', () => {
-      const { context, reports } = createMockContext({ strict: true })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true }], source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2305,7 +2263,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -2609,7 +2567,7 @@ describe('prefer-at-context rule', () => {
     ]
 
     test.each(safeCallCases)('should not report: %s', (_description, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -3113,7 +3071,7 @@ describe('prefer-at-context rule', () => {
     ]
 
     test.each(safeAssignCases)('should not report: %s', (_description, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression(node)).not.toThrow()
@@ -3427,7 +3385,7 @@ describe('prefer-at-context rule', () => {
     test.each(matchingCallCases)(
       'should report: %s at line %s col %s',
       (_description, node, expectedLine, expectedCol) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
         const visitor = preferAtContextRule.create(context)
 
         visitor.CallExpression(node)
@@ -3626,7 +3584,7 @@ describe('prefer-at-context rule', () => {
     test.each(matchingAssignCases)(
       'should report assignment: %s',
       (_description, node, _expectedLine) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
         const visitor = preferAtContextRule.create(context)
 
         visitor.AssignmentExpression(node)
@@ -3690,7 +3648,7 @@ describe('prefer-at-context rule', () => {
 
   describe('additional edge cases', () => {
     test('should handle function expression with params .bind(this) without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -3719,7 +3677,7 @@ describe('prefer-at-context rule', () => {
 
     test('should handle function expression with range but empty body', () => {
       const source = 'function() {}.bind(this)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -3747,7 +3705,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(99999, 0))
@@ -3756,7 +3714,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(1, 99999))
@@ -3765,7 +3723,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle assignment with function that has body with empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -3796,7 +3754,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not crash on deeply nested node structures', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -3858,7 +3816,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle call with boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression(false)).not.toThrow()
@@ -3866,7 +3824,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle assignment with boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression(false)).not.toThrow()
@@ -3874,7 +3832,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle array as node input for CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
@@ -3882,7 +3840,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle array as node input for AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       expect(() => visitor.AssignmentExpression([])).not.toThrow()
@@ -3890,7 +3848,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle function with this in assignment expression body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -3941,7 +3899,7 @@ describe('prefer-at-context rule', () => {
 
   describe('functionUsesThis detection patterns', () => {
     test('should detect this in variable declarator init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -3984,7 +3942,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4029,7 +3987,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4074,7 +4032,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4119,7 +4077,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4164,7 +4122,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4209,7 +4167,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4258,7 +4216,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4310,7 +4268,7 @@ describe('prefer-at-context rule', () => {
 
   describe('bind(this) with method chains', () => {
     test('should report when bind is on chained method result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4345,10 +4303,10 @@ describe('prefer-at-context rule', () => {
 
   describe('repeated visitor calls', () => {
     test('should create independent visitors that each track reports', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor1 = preferAtContextRule.create(ctx1)
 
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor2 = preferAtContextRule.create(ctx2)
 
       visitor1.CallExpression(createBindCall())
@@ -4359,7 +4317,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should allow same visitor to be reused', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(1, 0))
@@ -4373,7 +4331,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle mix of null and valid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(null)
@@ -4391,7 +4349,7 @@ describe('prefer-at-context rule', () => {
 
   describe('boundary values', () => {
     test('should handle node at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall(0, 0))
@@ -4403,7 +4361,7 @@ describe('prefer-at-context rule', () => {
 
     test('should handle node with very long source', () => {
       const longSource = 'x'.repeat(10000) + 'function() {}.bind(this)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -4412,7 +4370,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle empty string source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -4421,11 +4379,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle source with special characters', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const fn = function() { return this.x; }.bind(this); // special: \n\t\r',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this); // special: \n\t\r', filePath: '/src/file.ts' })
       const visitor = preferAtContextRule.create(context)
 
       visitor.CallExpression(createBindCall())
@@ -4470,7 +4424,7 @@ describe('prefer-at-context rule', () => {
 
   describe('expanded detection coverage', () => {
     test('should detect bind(this) on anonymous function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = createBindCall()
@@ -4484,7 +4438,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect bind(this) with single parameter function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4512,7 +4466,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect bind(this) with multi-parameter function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4544,7 +4498,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not detect bind with string literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4571,7 +4525,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not detect bind with numeric literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4598,7 +4552,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not detect bind with member expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4631,7 +4585,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this.prop = function with this in assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4676,7 +4630,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report this.prop = function without this usage in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4714,7 +4668,7 @@ describe('prefer-at-context rule', () => {
 
   describe('expanded edge case coverage', () => {
     test('should handle node with numeric type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = { type: 42 }
@@ -4723,7 +4677,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node with null type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = { type: null }
@@ -4732,7 +4686,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle node with undefined type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = { type: undefined }
@@ -4741,7 +4695,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle CallExpression with Symbol as type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = { type: Symbol('CallExpression') }
@@ -4750,7 +4704,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle AssignmentExpression with Symbol as type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = { type: Symbol('AssignmentExpression') }
@@ -4759,7 +4713,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle bind(this) at line 1 column 0 with multi-line loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4791,7 +4745,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle function with empty body that returns this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4824,7 +4778,7 @@ describe('prefer-at-context rule', () => {
 
   describe('visitor return value checks', () => {
     test('CallExpression visitor should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const result = visitor.CallExpression(createBindCall())
@@ -4832,7 +4786,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('AssignmentExpression visitor should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const result = visitor.AssignmentExpression(createAssignmentExpression('this'))
@@ -4840,7 +4794,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('CallExpression with safe node should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const result = visitor.CallExpression(createNonBindCall())
@@ -4848,7 +4802,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('AssignmentExpression with safe node should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const result = visitor.AssignmentExpression(createAssignmentExpression('normal'))
@@ -4856,7 +4810,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('CallExpression with null should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const result = visitor.CallExpression(null)
@@ -4864,7 +4818,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('AssignmentExpression with null should not return a value', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const result = visitor.AssignmentExpression(null)
@@ -4884,7 +4838,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report for non-bind MemberExpression property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4903,7 +4857,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should not report for bind on non-call expression node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4917,7 +4871,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle NaN as column number in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4948,7 +4902,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should handle negative column in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {
@@ -4979,7 +4933,7 @@ describe('prefer-at-context rule', () => {
     })
 
     test('should detect this in throw statement inside function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const fn = function() { return this.x; }.bind(this);' })
       const visitor = preferAtContextRule.create(context)
 
       const node = {

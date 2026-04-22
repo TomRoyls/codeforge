@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnsafeAssignmentRule } from '../../../../src/rules/patterns/no-unsafe-assignment.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x: string = value as any;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 describe('no-unsafe-assignment rule', () => {
   // ─── META TESTS (20+) ───────────────────────────────────────────────
@@ -143,7 +107,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── CREATE / VISITOR TESTS (8) ──────────────────────────────────────
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclarator')
@@ -152,7 +116,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should return exactly three visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const keys = Object.keys(visitor)
@@ -160,7 +124,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('visitor methods should be functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       expect(typeof visitor.VariableDeclarator).toBe('function')
@@ -169,26 +133,26 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should create visitor with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(typeof visitor.VariableDeclarator).toBe('function')
     })
 
     test('should create visitor with allowAnyInGenericArrays true', () => {
-      const { context } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(typeof visitor.VariableDeclarator).toBe('function')
     })
 
     test('should create independent visitors for each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor1 = noUnsafeAssignmentRule.create(context)
       const visitor2 = noUnsafeAssignmentRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('visitor should handle being called multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -213,7 +177,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       expect(() => noUnsafeAssignmentRule.create(context)).not.toThrow()
     })
   })
@@ -221,7 +185,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── DETECTION TESTS (30+) ──────────────────────────────────────────
   describe('VariableDeclarator - unsafe assignments', () => {
     test('should report variable with specific type assigned as any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -251,7 +215,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report variable with specific type assigned via type assertion to any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -280,7 +244,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report array of any assigned to typed variable when not allowed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -312,7 +276,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include variable name in error message when available', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -336,7 +300,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report TSNumberKeyword typed variable with as any init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -360,7 +324,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report TSBooleanKeyword typed variable with as any init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -384,7 +348,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report TSStringKeyword typed variable with TSTypeAssertion to any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -408,7 +372,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report variable with TSArrayType type and any init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -435,7 +399,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report when init is TSArrayType with TSAnyKeyword element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -459,7 +423,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should detect TSAsExpression with any in nested type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -485,7 +449,7 @@ describe('no-unsafe-assignment rule', () => {
 
   describe('AssignmentExpression - unsafe assignments', () => {
     test('should report assignment of as any value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -507,7 +471,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report assignment of type assertion to any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -525,7 +489,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report assignment of array of any when not allowed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -542,7 +506,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have generic message when left side not an identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -560,7 +524,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report assignment to obj.prop with as any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -577,7 +541,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include identifier name in message when left is Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -594,7 +558,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should detect TSTypeAssertion with any in assignment right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -612,7 +576,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should detect TSArrayType with any in assignment right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -632,7 +596,7 @@ describe('no-unsafe-assignment rule', () => {
 
   describe('Property - unsafe assignments', () => {
     test('should report property with as any value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -654,7 +618,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report property with type assertion to any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -672,7 +636,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report property with array of any when not allowed', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -689,7 +653,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should mention property in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -707,7 +671,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have generic message when key not an identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -725,7 +689,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report property with TSAsExpression to any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -743,7 +707,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report property with TSTypeAssertion to any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -764,7 +728,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── NOT REPORTING TESTS (30+) ─────────────────────────────────────
   describe('VariableDeclarator - valid assignments', () => {
     test('should not report variable without type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -781,7 +745,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report variable with any type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -805,7 +769,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report variable assigned non-any value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -826,7 +790,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report variable with no initializer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -846,7 +810,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should allow array of any when option is enabled', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -873,7 +837,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report variable typed as any receiving as any', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -897,7 +861,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report when init is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -918,7 +882,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report when init is a Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -939,7 +903,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report when init is a TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -960,7 +924,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report TSAsExpression with non-any type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -984,7 +948,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report TSTypeAssertion with non-any type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1008,7 +972,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report TSArrayType with non-any element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1032,7 +996,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report when id is not an Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1052,7 +1016,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report when typeAnnotation has no inner typeAnnotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1077,7 +1041,7 @@ describe('no-unsafe-assignment rule', () => {
 
   describe('AssignmentExpression - valid assignments', () => {
     test('should not report assignment of non-any value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1091,7 +1055,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should allow array of any when option is enabled', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1108,7 +1072,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment of string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1122,7 +1086,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment with TSAsExpression to string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1139,7 +1103,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment with TSAsExpression to number type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1156,7 +1120,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment with TSTypeAssertion to string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1173,7 +1137,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment of CallExpression result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1187,7 +1151,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment of TSArrayType with string element when allowAnyInGenericArrays enabled', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1204,7 +1168,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment without right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1217,7 +1181,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report assignment with right side as BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1233,7 +1197,7 @@ describe('no-unsafe-assignment rule', () => {
 
   describe('Property - valid assignments', () => {
     test('should not report property with non-any value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1247,7 +1211,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should allow array of any when option is enabled', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1264,7 +1228,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report property with string literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1278,7 +1242,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report property with number literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1292,7 +1256,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report property with identifier value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1306,7 +1270,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report property with TSAsExpression to string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1323,7 +1287,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report property with TSTypeAssertion to number type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1340,7 +1304,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not report property without value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1356,57 +1320,57 @@ describe('no-unsafe-assignment rule', () => {
   // ─── EDGE CASES (25+) ──────────────────────────────────────────────
   describe('edge cases', () => {
     test('should handle null VariableDeclarator node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
     })
 
     test('should handle undefined VariableDeclarator node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
     })
 
     test('should handle non-object VariableDeclarator node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
       expect(() => visitor.VariableDeclarator(123)).not.toThrow()
     })
 
     test('should handle null AssignmentExpression node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.AssignmentExpression(null)).not.toThrow()
     })
 
     test('should handle undefined AssignmentExpression node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
     })
 
     test('should handle null Property node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.Property(null)).not.toThrow()
     })
 
     test('should handle undefined Property node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.Property(undefined)).not.toThrow()
     })
 
     test('should handle VariableDeclarator without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       visitor.VariableDeclarator({ type: 'VariableDeclarator' })
       expect(reports.length).toBe(0)
     })
 
     test('should handle VariableDeclarator without init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1426,7 +1390,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle AssignmentExpression without right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1439,7 +1403,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle Property without value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1452,7 +1416,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle TSAsExpression without typeAnnotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1473,7 +1437,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle TSTypeAssertion without typeAnnotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1494,7 +1458,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle TSArrayType without elementType', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1552,7 +1516,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle non-any type in as expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1576,7 +1540,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle non-any type in type assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1600,7 +1564,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle array with non-any element type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1624,25 +1588,25 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle boolean node for VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.VariableDeclarator(true)).not.toThrow()
     })
 
     test('should handle numeric node for AssignmentExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.AssignmentExpression(42)).not.toThrow()
     })
 
     test('should handle string node for Property', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
       expect(() => visitor.Property('node')).not.toThrow()
     })
 
     test('should handle node with id that has no typeAnnotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1659,7 +1623,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle node with id that is not an Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1676,7 +1640,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle AssignmentExpression with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1693,7 +1657,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle Property with null key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1710,7 +1674,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle Property with key that has no name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1731,7 +1695,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── LOCATION TESTS (15+) ──────────────────────────────────────────
   describe('location reporting', () => {
     test('should include location in VariableDeclarator report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1761,7 +1725,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include location in AssignmentExpression report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1783,7 +1747,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include location in Property report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1806,7 +1770,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1830,7 +1794,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should preserve exact start and end positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1859,7 +1823,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle multi-line node location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1888,7 +1852,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should use default location when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1907,7 +1871,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should provide default location for Property without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1925,7 +1889,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should correctly report column number from node location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1953,7 +1917,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include end column from node location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1974,7 +1938,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle loc with only start property gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -1995,7 +1959,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report location for AssignmentExpression with MemberExpression left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2016,7 +1980,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report location for Property with Literal key', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2037,7 +2001,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should return default location for undefined loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2062,7 +2026,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should preserve line zero in node location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2093,7 +2057,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── MESSAGE TESTS (10+) ───────────────────────────────────────────
   describe('message quality', () => {
     test('should mention type safety in all messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2117,7 +2081,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should mention bypasses in messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2141,7 +2105,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have generic message when variable name not available', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2167,7 +2131,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include variable name in named variable message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2191,7 +2155,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include property name in named property message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2208,7 +2172,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should include assignment target in named assignment message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2225,7 +2189,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should mention any in all messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2249,7 +2213,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have property-specific message for Property nodes without key name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2267,7 +2231,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have consistent message format for VariableDeclarator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2292,7 +2256,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have consistent message format for Property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2310,7 +2274,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should have consistent message format for AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2331,7 +2295,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── MULTIPLE REPORTS TESTS (10+) ──────────────────────────────────
   describe('multiple reports', () => {
     test('should report each unsafe variable separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const makeNode = (name: string) => ({
@@ -2361,7 +2325,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report mixed visitor types separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2402,7 +2366,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should track reports independently across visitor methods', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2432,7 +2396,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report all unsafe assignments from different init types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2490,7 +2454,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should not count safe assignments in report total', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       // safe
@@ -2524,7 +2488,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report multiple Property violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const makeProp = (name: string) => ({
@@ -2543,7 +2507,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report multiple AssignmentExpression violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const makeAssign = (name: string) => ({
@@ -2562,7 +2526,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should accumulate reports correctly with mixed safe and unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       // unsafe
@@ -2598,7 +2562,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report array of any separately for each visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2630,7 +2594,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle rapid sequential calls without state corruption', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2767,7 +2731,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should respect different file paths in context', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;', filePath: '/custom/path.ts' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2790,7 +2754,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2881,10 +2845,10 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should create separate reports for different contexts', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext({
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const x: string = value as any;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ options: [{
         allowAnyInGenericArrays: true,
-      })
+      }], source: 'const x: string = value as any;' })
 
       const visitor1 = noUnsafeAssignmentRule.create(ctx1)
       const visitor2 = noUnsafeAssignmentRule.create(ctx2)
@@ -2913,7 +2877,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should handle context with string option for allowAnyInGenericArrays', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: 'true' })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: 'true' }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       // String 'true' is truthy via spread merge, so arrays of any are allowed
@@ -2940,7 +2904,7 @@ describe('no-unsafe-assignment rule', () => {
   // ─── OPTIONS TESTS ──────────────────────────────────────────────────
   describe('options - allowAnyInGenericArrays', () => {
     test('should allow any in arrays when option is true', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2964,7 +2928,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should still report as expression with any when allowAnyInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -2988,7 +2952,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should still report type assertion with any when allowAnyInGenericArrays is true', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -3012,7 +2976,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report any in arrays when option is false', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: false })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: false }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -3036,7 +3000,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should report any in arrays by default when no option provided', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       const node = {
@@ -3060,7 +3024,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should apply allowAnyInGenericArrays to AssignmentExpression', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.AssignmentExpression({
@@ -3076,7 +3040,7 @@ describe('no-unsafe-assignment rule', () => {
     })
 
     test('should apply allowAnyInGenericArrays to Property', () => {
-      const { context, reports } = createMockContext({ allowAnyInGenericArrays: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowAnyInGenericArrays: true }], source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.Property({
@@ -3108,7 +3072,7 @@ describe('no-unsafe-assignment rule', () => {
     ] as const)(
       'should report $name with $typeAnnotation type and as any init',
       ({ typeAnnotation, name }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
         const visitor = noUnsafeAssignmentRule.create(context)
 
         visitor.VariableDeclarator({
@@ -3148,7 +3112,7 @@ describe('no-unsafe-assignment rule', () => {
     ] as const)(
       'should not report $name with $typeAnnotation and literal init',
       ({ typeAnnotation, name }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
         const visitor = noUnsafeAssignmentRule.create(context)
 
         visitor.VariableDeclarator({
@@ -3178,7 +3142,7 @@ describe('no-unsafe-assignment rule', () => {
       { method: 'Property', value: null },
       { method: 'Property', value: undefined },
     ] as const)('should not throw when $method receives $value', ({ method, value }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       expect(() => visitor[method](value)).not.toThrow()
@@ -3194,7 +3158,7 @@ describe('no-unsafe-assignment rule', () => {
       { method: 'Property', value: false },
       { method: 'Property', value: '' },
     ] as const)('should not throw when $method receives primitive $value', ({ method, value }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       expect(() => visitor[method](value)).not.toThrow()
@@ -3212,7 +3176,7 @@ describe('no-unsafe-assignment rule', () => {
     ] as const)(
       'should not report $assertionType with $safeType type',
       ({ assertionType, safeType }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
         const visitor = noUnsafeAssignmentRule.create(context)
 
         visitor.VariableDeclarator({
@@ -3240,7 +3204,7 @@ describe('no-unsafe-assignment rule', () => {
     test.each([{ assertionType: 'TSAsExpression' }, { assertionType: 'TSTypeAssertion' }] as const)(
       'should report $assertionType with TSAnyKeyword type',
       ({ assertionType }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
         const visitor = noUnsafeAssignmentRule.create(context)
 
         visitor.VariableDeclarator({
@@ -3307,7 +3271,7 @@ describe('no-unsafe-assignment rule', () => {
         expected: 0,
       },
     ] as const)('should report $expected violations for $desc', ({ right, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.AssignmentExpression({
@@ -3353,7 +3317,7 @@ describe('no-unsafe-assignment rule', () => {
         expected: 0,
       },
     ] as const)('should report $expected violations for $desc', ({ value, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
       const visitor = noUnsafeAssignmentRule.create(context)
 
       visitor.Property({
@@ -3370,7 +3334,7 @@ describe('no-unsafe-assignment rule', () => {
     test.each(['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta'] as const)(
       'should include variable name %s in message',
       (varName) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
         const visitor = noUnsafeAssignmentRule.create(context)
 
         visitor.VariableDeclarator({
@@ -3398,7 +3362,7 @@ describe('no-unsafe-assignment rule', () => {
     test.each(['firstName', 'lastName', 'email', 'phone', 'address'] as const)(
       'should include property name %s in message',
       (propName) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = value as any;' })
         const visitor = noUnsafeAssignmentRule.create(context)
 
         visitor.Property({

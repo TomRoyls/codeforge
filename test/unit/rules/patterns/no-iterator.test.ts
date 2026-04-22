@@ -1,43 +1,6 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noIteratorRule } from '../../../../src/rules/patterns/no-iterator.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'obj.__iterator__',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createMemberExpression(propertyName: string, line = 1, column = 0): unknown {
   return {
@@ -227,42 +190,42 @@ describe('no-iterator rule - create and visitor', () => {
   })
 
   test('should return visitor object with MemberExpression method', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(visitor).toHaveProperty('MemberExpression')
   })
 
   test('should return visitor object with AssignmentExpression method', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(visitor).toHaveProperty('AssignmentExpression')
   })
 
   test('MemberExpression should be a function', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(typeof visitor.MemberExpression).toBe('function')
   })
 
   test('AssignmentExpression should be a function', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(typeof visitor.AssignmentExpression).toBe('function')
   })
 
   test('should return exactly two visitor methods', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(Object.keys(visitor)).toHaveLength(2)
   })
 
   test('should return a new visitor object on each create call', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor1 = noIteratorRule.create(context)
     const visitor2 = noIteratorRule.create(context)
 
@@ -270,7 +233,7 @@ describe('no-iterator rule - create and visitor', () => {
   })
 
   test('create should accept a valid RuleContext', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     expect(() => noIteratorRule.create(context)).not.toThrow()
   })
 })
@@ -280,7 +243,7 @@ describe('no-iterator rule - create and visitor', () => {
 // ============================================================================
 describe('no-iterator rule - detecting __iterator__', () => {
   test('should report obj.__iterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -290,7 +253,7 @@ describe('no-iterator rule - detecting __iterator__', () => {
   })
 
   test('should report obj.__iterator__ assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__iterator__'))
@@ -302,7 +265,7 @@ describe('no-iterator rule - detecting __iterator__', () => {
 
 describe('no-iterator rule - detecting __defineIterator__', () => {
   test('should report obj.__defineIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineIterator__'))
@@ -312,7 +275,7 @@ describe('no-iterator rule - detecting __defineIterator__', () => {
   })
 
   test('should report obj.__defineIterator__ assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__defineIterator__'))
@@ -324,7 +287,7 @@ describe('no-iterator rule - detecting __defineIterator__', () => {
 
 describe('no-iterator rule - detecting __defineSetter__', () => {
   test('should report obj.__defineSetter__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineSetter__'))
@@ -334,7 +297,7 @@ describe('no-iterator rule - detecting __defineSetter__', () => {
   })
 
   test('should report obj.__defineSetter__ assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__defineSetter__'))
@@ -346,7 +309,7 @@ describe('no-iterator rule - detecting __defineSetter__', () => {
 
 describe('no-iterator rule - detecting custom iterator patterns', () => {
   test('should report __customIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__customIterator__'))
@@ -355,7 +318,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __myIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__myIterator__'))
@@ -364,7 +327,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __ITERATOR__ access (uppercase)', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__ITERATOR__'))
@@ -373,7 +336,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __CustomIterator__ access (mixed case)', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__CustomIterator__'))
@@ -382,7 +345,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report custom iterator assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__myCustomIterator__'))
@@ -391,7 +354,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __MyITERATOR__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__MyITERATOR__'))
@@ -400,7 +363,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __listIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__listIterator__'))
@@ -409,7 +372,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __treeIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__treeIterator__'))
@@ -418,7 +381,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __rangeIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__rangeIterator__'))
@@ -427,7 +390,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __asyncIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__asyncIterator__'))
@@ -436,7 +399,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __mapiterator__ access (lowercase)', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__mapiterator__'))
@@ -445,7 +408,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __SynCIterator__ access (mixed case)', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__SynCIterator__'))
@@ -454,7 +417,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __arrayIterator__ access via assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__arrayIterator__'))
@@ -463,7 +426,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __hashIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__hashIterator__'))
@@ -472,7 +435,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __setIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__setIterator__'))
@@ -481,7 +444,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __objectIterator__ assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__objectIterator__'))
@@ -490,7 +453,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __reverseIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__reverseIterator__'))
@@ -499,7 +462,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
   })
 
   test('should report __entryIterator__ access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__entryIterator__'))
@@ -513,7 +476,7 @@ describe('no-iterator rule - detecting custom iterator patterns', () => {
 // ============================================================================
 describe('no-iterator rule - allowing regular properties', () => {
   test('should not report regular property access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('name'))
@@ -524,7 +487,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report regular property assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('name'))
@@ -534,7 +497,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report properties starting with single underscore', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('_iterator'))
@@ -544,7 +507,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report properties without iterator in name', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__private'))
@@ -554,7 +517,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report Symbol.iterator access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('Symbol'))
@@ -563,7 +526,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report length property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('length'))
@@ -572,7 +535,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report prototype property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('prototype'))
@@ -581,7 +544,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report constructor property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('constructor'))
@@ -590,7 +553,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report hasOwnProperty property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('hasOwnProperty'))
@@ -599,7 +562,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report forEach property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('forEach'))
@@ -608,7 +571,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report map property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('map'))
@@ -617,7 +580,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report filter property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('filter'))
@@ -626,7 +589,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report next property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('next'))
@@ -635,7 +598,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report done property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('done'))
@@ -644,7 +607,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report value property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('value'))
@@ -653,7 +616,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report __proto__ property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__proto__'))
@@ -662,7 +625,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report __defineGetter__ property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineGetter__'))
@@ -671,7 +634,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report __lookupGetter__ property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__lookupGetter__'))
@@ -680,7 +643,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report __lookupSetter__ property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__lookupSetter__'))
@@ -689,7 +652,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report regular assignment to name', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('firstName'))
@@ -698,7 +661,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report assignment to items property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('items'))
@@ -707,7 +670,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report assignment to data property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('data'))
@@ -716,7 +679,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report assignment to _iterator property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('_iterator'))
@@ -725,7 +688,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report assignment to __private property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__private'))
@@ -734,7 +697,7 @@ describe('no-iterator rule - allowing regular properties', () => {
   })
 
   test('should not report empty string property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression(''))
@@ -748,77 +711,77 @@ describe('no-iterator rule - allowing regular properties', () => {
 // ============================================================================
 describe('no-iterator rule - edge cases', () => {
   test('should handle null MemberExpression node gracefully', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.MemberExpression(null)).not.toThrow()
   })
 
   test('should handle undefined MemberExpression node gracefully', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.MemberExpression(undefined)).not.toThrow()
   })
 
   test('should handle non-object MemberExpression node gracefully (string)', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.MemberExpression('string')).not.toThrow()
   })
 
   test('should handle non-object MemberExpression node gracefully (number)', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.MemberExpression(123)).not.toThrow()
   })
 
   test('should handle non-object MemberExpression node gracefully (boolean)', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.MemberExpression(true)).not.toThrow()
   })
 
   test('should handle null AssignmentExpression node gracefully', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.AssignmentExpression(null)).not.toThrow()
   })
 
   test('should handle undefined AssignmentExpression node gracefully', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.AssignmentExpression(undefined)).not.toThrow()
   })
 
   test('should handle non-object AssignmentExpression node gracefully (string)', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.AssignmentExpression('string')).not.toThrow()
   })
 
   test('should handle non-object AssignmentExpression node gracefully (number)', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.AssignmentExpression(123)).not.toThrow()
   })
 
   test('should handle non-object AssignmentExpression node gracefully (boolean)', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     expect(() => visitor.AssignmentExpression(true)).not.toThrow()
   })
 
   test('should handle MemberExpression without type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = { property: { type: 'Identifier', name: '__iterator__' } }
@@ -828,7 +791,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle MemberExpression with wrong type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -841,7 +804,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression without type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -856,7 +819,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression with wrong type', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -872,7 +835,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression without left', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -884,7 +847,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression with null left', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -897,7 +860,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression with undefined left', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -910,7 +873,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression with non-MemberExpression left', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -926,7 +889,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle MemberExpression without property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -939,7 +902,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle MemberExpression with null property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -953,7 +916,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle MemberExpression with non-Identifier property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -967,7 +930,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle MemberExpression with non-string Identifier name', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -981,7 +944,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle MemberExpression with non-string Literal value', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -995,7 +958,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle AssignmentExpression with left MemberExpression missing property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -1011,7 +974,7 @@ describe('no-iterator rule - edge cases', () => {
   })
 
   test('should handle deeply nested object node without crashing', () => {
-    const { context } = createMockContext()
+    const { context } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     const node = {
@@ -1030,7 +993,7 @@ describe('no-iterator rule - edge cases', () => {
 // ============================================================================
 describe('no-iterator rule - location reporting', () => {
   test('should report correct location for MemberExpression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 10, 5))
@@ -1040,7 +1003,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report correct location for AssignmentExpression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__iterator__', 15, 8))
@@ -1050,7 +1013,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location at line 1 column 0 by default', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1060,7 +1023,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report correct location for literal property access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__iterator__', 20, 10))
@@ -1070,7 +1033,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report correct location for literal assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpressionWithLiteral('__iterator__', 30, 15))
@@ -1080,7 +1043,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location for __defineIterator__', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineIterator__', 5, 2))
@@ -1090,7 +1053,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location for __defineSetter__', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineSetter__', 7, 3))
@@ -1100,7 +1063,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should include end location in report', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 1, 0))
@@ -1110,7 +1073,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location at high line numbers', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 500, 20))
@@ -1120,7 +1083,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location at column 0', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 1, 0))
@@ -1129,7 +1092,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location for each violation separately', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 1, 0))
@@ -1141,7 +1104,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location for assignment at line 100', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__iterator__', 100, 0))
@@ -1150,7 +1113,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location with same start and end line', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 3, 5))
@@ -1159,7 +1122,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should report location for custom iterator pattern', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__myIterator__', 42, 7))
@@ -1169,7 +1132,7 @@ describe('no-iterator rule - location reporting', () => {
   })
 
   test('should have loc defined in report', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 2, 4))
@@ -1183,7 +1146,7 @@ describe('no-iterator rule - location reporting', () => {
 // ============================================================================
 describe('no-iterator rule - message quality', () => {
   test('should include property name in member expression message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1193,7 +1156,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should mention assignment in assignment expression message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__iterator__'))
@@ -1202,7 +1165,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should mention "avoided" in message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1211,7 +1174,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should include property name in custom iterator message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__customIterator__'))
@@ -1220,7 +1183,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should include property name in __defineIterator__ message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineIterator__'))
@@ -1229,7 +1192,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should include property name in __defineSetter__ message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__defineSetter__'))
@@ -1238,7 +1201,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should mention non-standard in assignment message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__iterator__'))
@@ -1247,7 +1210,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should mention "Unexpected" in member expression message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1256,7 +1219,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should have different messages for access vs assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1266,7 +1229,7 @@ describe('no-iterator rule - message quality', () => {
   })
 
   test('should mention "iterator properties" in message', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1280,7 +1243,7 @@ describe('no-iterator rule - message quality', () => {
 // ============================================================================
 describe('no-iterator rule - multiple violations', () => {
   test('should report multiple iterator property accesses', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1291,7 +1254,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report both member and assignment expressions', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1301,7 +1264,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report five __iterator__ accesses independently', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     for (let i = 0; i < 5; i++) {
@@ -1312,7 +1275,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report mixed violations correctly', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1324,7 +1287,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should maintain order of reports', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__', 1, 0))
@@ -1337,8 +1300,8 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report iterator in separate contexts independently', () => {
-    const ctx1 = createMockContext()
-    const ctx2 = createMockContext()
+    const ctx1 = createMockRuleContext({ source: 'obj.__iterator__' })
+    const ctx2 = createMockRuleContext({ source: 'obj.__iterator__' })
 
     const visitor1 = noIteratorRule.create(ctx1.context)
     const visitor2 = noIteratorRule.create(ctx2.context)
@@ -1352,7 +1315,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report all three known patterns in MemberExpression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1363,7 +1326,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report all three known patterns in AssignmentExpression', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression('__iterator__'))
@@ -1374,7 +1337,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should report 10 mixed violations', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     for (let i = 0; i < 5; i++) {
@@ -1386,7 +1349,7 @@ describe('no-iterator rule - multiple violations', () => {
   })
 
   test('should not conflate reports between member and assignment', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1402,7 +1365,7 @@ describe('no-iterator rule - multiple violations', () => {
 // ============================================================================
 describe('no-iterator rule - context behavior', () => {
   test('should work with different file paths', () => {
-    const { context, reports } = createMockContext({}, '/src/custom.ts')
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__', filePath: '/src/custom.ts' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1411,7 +1374,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should work with different source content', () => {
-    const { context, reports } = createMockContext({}, '/src/file.ts', 'foo.__iterator__')
+    const { context, reports } = createMockRuleContext({ source: 'foo.__iterator__', filePath: '/src/file.ts' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1420,7 +1383,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should work with empty options', () => {
-    const { context, reports } = createMockContext({})
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1429,7 +1392,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should work with options present', () => {
-    const { context, reports } = createMockContext({ strict: true })
+    const { context, reports } = createMockRuleContext({ options: [{ strict: true }], source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1439,7 +1402,7 @@ describe('no-iterator rule - context behavior', () => {
 
   test('should not crash with a long file path', () => {
     const longPath = '/src/' + 'a'.repeat(500) + '/file.ts'
-    const { context, reports } = createMockContext({}, longPath)
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__', filePath: longPath })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1448,8 +1411,8 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should create independent visitors for independent contexts', () => {
-    const ctx1 = createMockContext()
-    const ctx2 = createMockContext()
+    const ctx1 = createMockRuleContext({ source: 'obj.__iterator__' })
+    const ctx2 = createMockRuleContext({ source: 'obj.__iterator__' })
 
     const visitor1 = noIteratorRule.create(ctx1.context)
     const visitor2 = noIteratorRule.create(ctx2.context)
@@ -1461,7 +1424,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should handle multiple create calls', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     noIteratorRule.create(context)
     noIteratorRule.create(context)
 
@@ -1472,7 +1435,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should work with default workspace root', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1481,7 +1444,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should call context.report exactly once per violation', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('__iterator__'))
@@ -1490,7 +1453,7 @@ describe('no-iterator rule - context behavior', () => {
   })
 
   test('should not call context.report for non-violations', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression('name'))
@@ -1505,7 +1468,7 @@ describe('no-iterator rule - context behavior', () => {
 // ============================================================================
 describe('no-iterator rule - literal property access', () => {
   test('should report obj["__iterator__"] access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__iterator__'))
@@ -1514,7 +1477,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report obj["__defineIterator__"] access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__defineIterator__'))
@@ -1523,7 +1486,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report assignment with literal property', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpressionWithLiteral('__iterator__'))
@@ -1532,7 +1495,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should not report regular literal property access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('name'))
@@ -1542,7 +1505,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report obj["__defineSetter__"] access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__defineSetter__'))
@@ -1551,7 +1514,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report obj["__myIterator__"] access', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__myIterator__'))
@@ -1560,7 +1523,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report assignment with literal __defineIterator__', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpressionWithLiteral('__defineIterator__'))
@@ -1569,7 +1532,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report assignment with literal __defineSetter__', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpressionWithLiteral('__defineSetter__'))
@@ -1578,7 +1541,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should not report literal property "toString"', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('toString'))
@@ -1587,7 +1550,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should not report literal property "length"', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('length'))
@@ -1596,7 +1559,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should not report literal property "__proto__"', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__proto__'))
@@ -1605,7 +1568,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report custom iterator via literal', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__customIterator__'))
@@ -1614,7 +1577,7 @@ describe('no-iterator rule - literal property access', () => {
   })
 
   test('should report uppercase iterator via literal', () => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty('__ITERATOR__'))
@@ -1651,7 +1614,7 @@ describe('no-iterator rule - data-driven MemberExpression detection', () => {
   ]
 
   test.each(iteratorProperties)('should report MemberExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression(prop))
@@ -1681,7 +1644,7 @@ describe('no-iterator rule - data-driven AssignmentExpression detection', () => 
   ]
 
   test.each(iteratorProperties)('should report AssignmentExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression(prop))
@@ -1716,7 +1679,7 @@ describe('no-iterator rule - data-driven non-violation MemberExpression', () => 
   ]
 
   test.each(safeProperties)('should not report MemberExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpression(prop))
@@ -1740,7 +1703,7 @@ describe('no-iterator rule - data-driven non-violation AssignmentExpression', ()
   ]
 
   test.each(safeProperties)('should not report AssignmentExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpression(prop))
@@ -1764,7 +1727,7 @@ describe('no-iterator rule - data-driven literal MemberExpression detection', ()
   ]
 
   test.each(iteratorLiterals)('should report literal MemberExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty(prop))
@@ -1783,7 +1746,7 @@ describe('no-iterator rule - data-driven literal AssignmentExpression detection'
   ]
 
   test.each(iteratorLiterals)('should report literal AssignmentExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.AssignmentExpression(createAssignmentExpressionWithLiteral(prop))
@@ -1806,7 +1769,7 @@ describe('no-iterator rule - data-driven safe literal MemberExpression', () => {
   ]
 
   test.each(safeLiterals)('should not report literal MemberExpression for %s', (prop) => {
-    const { context, reports } = createMockContext()
+    const { context, reports } = createMockRuleContext({ source: 'obj.__iterator__' })
     const visitor = noIteratorRule.create(context)
 
     visitor.MemberExpression(createMemberExpressionWithLiteralProperty(prop))

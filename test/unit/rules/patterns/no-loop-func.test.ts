@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noLoopFuncRule } from '../../../../src/rules/patterns/no-loop-func.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'for (;;) {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { rules: { 'no-loop-func': ['error', options] } },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 // Factory functions for creating AST nodes
 function createForStatement(body: unknown, lineNumber = 1, column = 0): unknown {
@@ -312,35 +276,35 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with ForStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(visitor).toHaveProperty('ForStatement')
     })
 
     test('should return visitor object with ForInStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(visitor).toHaveProperty('ForInStatement')
     })
 
     test('should return visitor object with ForOfStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(visitor).toHaveProperty('ForOfStatement')
     })
 
     test('should return visitor object with WhileStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(visitor).toHaveProperty('WhileStatement')
     })
 
     test('should return function type for each visitor method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(typeof visitor.ForStatement).toBe('function')
@@ -350,7 +314,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should return exactly 4 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const keys = Object.keys(visitor)
@@ -358,7 +322,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should create a new visitor on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor1 = noLoopFuncRule.create(context)
       const visitor2 = noLoopFuncRule.create(context)
 
@@ -366,7 +330,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/other/path.ts')
+      const { context } = createMockRuleContext({ source: 'for (;;) {}', filePath: '/other/path.ts' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(visitor).toHaveProperty('ForStatement')
@@ -379,7 +343,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('detecting function declarations in ForStatement', () => {
     test('should report FunctionDeclaration inside for loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -389,7 +353,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct message for FunctionDeclaration in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -400,7 +364,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report FunctionExpression inside for loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -410,7 +374,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report ArrowFunctionExpression inside for loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -420,7 +384,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report function in nested body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createFunctionDeclaration()))
@@ -429,7 +393,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report when no function in for loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement()])
@@ -439,7 +403,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function declaration with various names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration('processItem')])
@@ -451,7 +415,7 @@ describe('no-loop-func rule', () => {
 
   describe('detecting function declarations in ForInStatement', () => {
     test('should report FunctionDeclaration inside for-in loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -461,7 +425,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct message for FunctionDeclaration in for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -472,7 +436,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report FunctionExpression inside for-in loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -482,7 +446,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report ArrowFunctionExpression inside for-in loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -492,7 +456,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report when no function in for-in loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement()])
@@ -502,7 +466,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function directly as body without BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(createForInStatement(createFunctionExpression()))
@@ -513,7 +477,7 @@ describe('no-loop-func rule', () => {
 
   describe('detecting function declarations in ForOfStatement', () => {
     test('should report FunctionDeclaration inside for-of loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -523,7 +487,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct message for FunctionDeclaration in for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -534,7 +498,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report FunctionExpression inside for-of loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -544,7 +508,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report ArrowFunctionExpression inside for-of loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -554,7 +518,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report when no function in for-of loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement()])
@@ -564,7 +528,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect arrow function directly as body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForOfStatement(createForOfStatement(createArrowFunctionExpression()))
@@ -575,7 +539,7 @@ describe('no-loop-func rule', () => {
 
   describe('detecting function declarations in WhileStatement', () => {
     test('should report FunctionDeclaration inside while loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -585,7 +549,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct message for FunctionDeclaration in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -596,7 +560,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report FunctionExpression inside while loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -606,7 +570,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report ArrowFunctionExpression inside while loop block', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -616,7 +580,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report when no function in while loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createExpressionStatement()])
@@ -626,7 +590,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function declaration directly as body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(createWhileStatement(createFunctionDeclaration('directFunc')))
@@ -640,7 +604,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('not reporting non-function constructs', () => {
     test('should not report ExpressionStatement in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([createExpressionStatement()])))
@@ -649,7 +613,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report VariableDeclaration in for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(
@@ -660,7 +624,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ReturnStatement in for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForOfStatement(createForOfStatement(createBlockStatement([createReturnStatement()])))
@@ -669,7 +633,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report CallExpression in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const callExpr = {
@@ -682,7 +646,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([])))
@@ -691,7 +655,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement in for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(createForInStatement(createBlockStatement([])))
@@ -700,7 +664,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement in for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForOfStatement(createForOfStatement(createBlockStatement([])))
@@ -709,7 +673,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(createWhileStatement(createBlockStatement([])))
@@ -718,7 +682,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report DoWhileStatement in for loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const doWhile = createDoWhileStatement(createExpressionStatement())
@@ -728,7 +692,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report plain object without type in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const plainObj = { value: 42 }
@@ -738,7 +702,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report numeric literal in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -749,7 +713,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report string literal in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -760,7 +724,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report BreakStatement in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'BreakStatement' }])))
@@ -769,7 +733,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ContinueStatement in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(
@@ -780,7 +744,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ThrowStatement in for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(
@@ -791,7 +755,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report SwitchStatement without functions in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const switchCase = createSwitchCase([createExpressionStatement()])
@@ -802,7 +766,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report IfStatement without functions in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const ifStmt = createIfStatement(createExpressionStatement())
@@ -812,7 +776,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report TryStatement without functions in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const block = createBlockStatement([createExpressionStatement()])
@@ -823,7 +787,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report LabeledStatement with non-function body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const labeled = createLabeledStatement(createExpressionStatement())
@@ -833,7 +797,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report WithStatement with non-function body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const withStmt = createWithStatement(createExpressionStatement())
@@ -843,7 +807,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report UpdateExpression in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'UpdateExpression' }])))
@@ -852,7 +816,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report AssignmentExpression in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(
@@ -863,7 +827,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report BinaryExpression in for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForOfStatement(
@@ -874,7 +838,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ConditionalExpression in for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(
@@ -885,7 +849,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report NewExpression in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'NewExpression' }])))
@@ -894,7 +858,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report MemberExpression in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(
@@ -905,7 +869,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ArrayExpression in for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForOfStatement(
@@ -916,7 +880,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ObjectExpression in for-in loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(
@@ -927,7 +891,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report TemplateLiteral in for loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'TemplateLiteral' }])))
@@ -936,7 +900,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report TaggedTemplateExpression in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(
@@ -952,7 +916,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null node for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForStatement(null)).not.toThrow()
@@ -960,7 +924,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle undefined node for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForStatement(undefined)).not.toThrow()
@@ -968,7 +932,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle non-object node for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForStatement('string')).not.toThrow()
@@ -977,7 +941,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle null node for ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForInStatement(null)).not.toThrow()
@@ -985,7 +949,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle null node for ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForOfStatement(null)).not.toThrow()
@@ -993,7 +957,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle null node for WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.WhileStatement(null)).not.toThrow()
@@ -1001,7 +965,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle node without body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const node = { type: 'ForStatement' }
@@ -1011,7 +975,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle node with null body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const node = { type: 'ForStatement', body: null }
@@ -1021,7 +985,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle empty BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([])
@@ -1031,7 +995,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1072,7 +1036,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle IfStatement with null alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const ifStmt = createIfStatement(createExpressionStatement(), null)
@@ -1083,7 +1047,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle unknown node type in body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([{ type: 'UnknownStatement' }])
@@ -1093,7 +1057,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle body as non-array in BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = { type: 'BlockStatement', body: 'not-an-array' }
@@ -1103,7 +1067,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle undefined node for ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForInStatement(undefined)).not.toThrow()
@@ -1111,7 +1075,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle undefined node for ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForOfStatement(undefined)).not.toThrow()
@@ -1119,7 +1083,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle undefined node for WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.WhileStatement(undefined)).not.toThrow()
@@ -1127,7 +1091,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForStatement(true)).not.toThrow()
@@ -1136,7 +1100,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle numeric node for all visitors', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForStatement(0)).not.toThrow()
@@ -1147,7 +1111,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle node with undefined body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const node = { type: 'ForStatement', body: undefined }
@@ -1157,7 +1121,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle node with empty string body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const node = { type: 'ForStatement', body: '' }
@@ -1167,7 +1131,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle deeply nested non-function structures', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const innerIf = createIfStatement(createExpressionStatement(), createExpressionStatement())
@@ -1179,7 +1143,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle BlockStatement body as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = { type: 'BlockStatement', body: 42 }
@@ -1189,7 +1153,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle node that is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       expect(() => visitor.ForStatement([1, 2, 3])).not.toThrow()
@@ -1202,7 +1166,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location for ForStatement with function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1213,7 +1177,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report location with end position for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1224,7 +1188,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct location for ForInStatement with function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1235,7 +1199,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct location for ForOfStatement with function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1246,7 +1210,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct location for WhileStatement with function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1257,7 +1221,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1268,7 +1232,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report end line matching node end location for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1278,7 +1242,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report end column matching node end column for ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1288,7 +1252,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report different locations for different loop types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1304,7 +1268,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report location for high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1315,7 +1279,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report location at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1326,7 +1290,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should include both start and end in location object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1341,7 +1305,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report location for ForStatement at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1352,7 +1316,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should preserve exact location across all loop types at same position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1364,7 +1328,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle location with large column offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1379,7 +1343,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention loop in ForStatement message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1389,7 +1353,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention loop in ForInStatement message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1399,7 +1363,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention loop in ForOfStatement message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1409,7 +1373,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention loop in WhileStatement message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1419,7 +1383,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention function in all messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1435,7 +1399,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention moving function outside in messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1445,7 +1409,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should have unique messages for each loop type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1459,7 +1423,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should have non-empty messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1472,7 +1436,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention Unexpected in all messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1487,7 +1451,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should mention capturing correct variable values in messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1502,7 +1466,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('multiple loop types in same context', () => {
     test('should report for all loop types independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1515,7 +1479,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should only report for loops with functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const bodyWithFunction = createBlockStatement([createFunctionDeclaration()])
@@ -1530,7 +1494,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report once per loop even with multiple functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([
@@ -1543,7 +1507,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report for each distinct loop call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1555,7 +1519,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correctly when mixing function types across loops', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([createFunctionDeclaration()])))
@@ -1570,7 +1534,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should accumulate reports across all four loop types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const funcBody = createBlockStatement([createFunctionDeclaration()])
@@ -1587,7 +1551,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle interleaved report and no-report calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const funcBody = createBlockStatement([createFunctionDeclaration()])
@@ -1602,7 +1566,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not mix up messages between loop types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1614,7 +1578,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle 10 consecutive loop calls correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const funcBody = createBlockStatement([createFunctionDeclaration()])
@@ -1627,7 +1591,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle mix of all four types called multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const funcBody = createBlockStatement([createFunctionDeclaration()])
@@ -1648,11 +1612,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('context handling', () => {
     test('should work with different source code strings', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'while (true) { function f() {} }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'while (true) { function f() {} }', filePath: '/src/file.ts' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1662,7 +1622,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1675,7 +1635,7 @@ describe('no-loop-func rule', () => {
       const paths = ['/src/a.ts', '/src/b.ts', '/deep/nested/c.ts']
 
       paths.forEach((path) => {
-        const { context, reports } = createMockContext({}, path)
+        const { context, reports } = createMockRuleContext({ source: 'for (;;) {}', filePath: path })
         const visitor = noLoopFuncRule.create(context)
 
         const body = createBlockStatement([createFunctionDeclaration()])
@@ -1738,7 +1698,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ extraOption: true, anotherSetting: 'value' })
+      const { context, reports } = createMockRuleContext({ options: [{ extraOption: true, anotherSetting: 'value' }], source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1845,7 +1805,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('nested function detection', () => {
     test('should detect function inside IfStatement consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const ifStmt = createIfStatement(createFunctionDeclaration())
@@ -1856,7 +1816,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function inside IfStatement alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const ifStmt = createIfStatement(createExpressionStatement(), createFunctionDeclaration())
@@ -1867,7 +1827,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function deeply nested in if-else chain', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const nestedIf = createIfStatement(createFunctionDeclaration())
@@ -1879,7 +1839,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function in nested BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const innerBlock = createBlockStatement([createFunctionDeclaration()])
@@ -1890,7 +1850,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect multiple functions in loop body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([
@@ -1903,7 +1863,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function inside nested LabeledStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const labeled = createLabeledStatement(createFunctionDeclaration())
@@ -1914,7 +1874,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function inside WithStatement body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const withStmt = createWithStatement(createFunctionDeclaration())
@@ -1925,7 +1885,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not traverse into TryStatement catch clause (rule limitation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const catchBody = createBlockStatement([createFunctionDeclaration()])
@@ -1938,7 +1898,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function inside IfStatement in while loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const ifStmt = createIfStatement(createBlockStatement([createArrowFunctionExpression()]))
@@ -1949,7 +1909,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect function in deeply nested blocks in for-of loop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const level3 = createBlockStatement([createFunctionExpression()])
@@ -1966,7 +1926,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('parameterized function type detection', () => {
     test('should detect FunctionDeclaration in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -1976,7 +1936,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -1986,7 +1946,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect ArrowFunctionExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -1996,7 +1956,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionDeclaration in ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2006,7 +1966,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionExpression in ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -2016,7 +1976,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect ArrowFunctionExpression in ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -2026,7 +1986,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionDeclaration in ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2036,7 +1996,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionExpression in ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -2046,7 +2006,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect ArrowFunctionExpression in ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -2056,7 +2016,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionDeclaration in WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2066,7 +2026,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect FunctionExpression in WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionExpression()])
@@ -2076,7 +2036,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should detect ArrowFunctionExpression in WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createArrowFunctionExpression()])
@@ -2091,7 +2051,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('parameterized non-function types', () => {
     test('should not report ExpressionStatement in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -2101,7 +2061,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report VariableDeclaration in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -2111,7 +2071,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ReturnStatement in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'ReturnStatement' }])))
@@ -2119,7 +2079,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report BreakStatement in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'BreakStatement' }])))
@@ -2127,7 +2087,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ContinueStatement in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -2137,7 +2097,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ThrowStatement in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'ThrowStatement' }])))
@@ -2145,7 +2105,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report UpdateExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'UpdateExpression' }])))
@@ -2153,7 +2113,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report AssignmentExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -2163,7 +2123,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report BinaryExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'BinaryExpression' }])))
@@ -2171,7 +2131,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ConditionalExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -2181,7 +2141,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report NewExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'NewExpression' }])))
@@ -2189,7 +2149,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report MemberExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'MemberExpression' }])))
@@ -2197,7 +2157,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ArrayExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'ArrayExpression' }])))
@@ -2205,7 +2165,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report ObjectExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'ObjectExpression' }])))
@@ -2213,7 +2173,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report TemplateLiteral in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([{ type: 'TemplateLiteral' }])))
@@ -2221,7 +2181,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report TaggedTemplateExpression in ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(
@@ -2236,7 +2196,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('parameterized loop type null handling', () => {
     test('should handle null node for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitorObj = noLoopFuncRule.create(context)
 
       expect(() => visitorObj.ForStatement(null)).not.toThrow()
@@ -2244,7 +2204,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle null node for ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitorObj = noLoopFuncRule.create(context)
 
       expect(() => visitorObj.ForInStatement(null)).not.toThrow()
@@ -2252,7 +2212,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle null node for ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitorObj = noLoopFuncRule.create(context)
 
       expect(() => visitorObj.ForOfStatement(null)).not.toThrow()
@@ -2260,7 +2220,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should handle null node for WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitorObj = noLoopFuncRule.create(context)
 
       expect(() => visitorObj.WhileStatement(null)).not.toThrow()
@@ -2273,7 +2233,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('parameterized empty body across loop types', () => {
     test('should not report empty BlockStatement for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForStatement(createForStatement(createBlockStatement([])))
@@ -2281,7 +2241,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement for ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForInStatement(createForInStatement(createBlockStatement([])))
@@ -2289,7 +2249,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement for ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.ForOfStatement(createForOfStatement(createBlockStatement([])))
@@ -2297,7 +2257,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should not report empty BlockStatement for WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       visitor.WhileStatement(createWhileStatement(createBlockStatement([])))
@@ -2310,7 +2270,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('parameterized location across loop types', () => {
     test('should report correct location for ForStatement at line 5 col 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2321,7 +2281,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct location for ForInStatement at line 5 col 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2332,7 +2292,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct location for ForOfStatement at line 5 col 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2343,7 +2303,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should report correct location for WhileStatement at line 5 col 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2359,7 +2319,7 @@ describe('no-loop-func rule', () => {
   // ============================================================
   describe('parameterized message content across loop types', () => {
     test('should include "for loop" in message for ForStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2369,7 +2329,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should include "for-in loop" in message for ForInStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2379,7 +2339,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should include "for-of loop" in message for ForOfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])
@@ -2389,7 +2349,7 @@ describe('no-loop-func rule', () => {
     })
 
     test('should include "while loop" in message for WhileStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'for (;;) {}' })
       const visitor = noLoopFuncRule.create(context)
 
       const body = createBlockStatement([createFunctionDeclaration()])

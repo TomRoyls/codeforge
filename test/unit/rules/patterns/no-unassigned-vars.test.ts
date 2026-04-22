@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnassignedVarsRule } from '../../../../src/rules/patterns/no-unassigned-vars.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'let x;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVariableDeclarator(id: unknown, init: unknown, line = 1, column = 0): unknown {
   return {
@@ -154,21 +118,21 @@ describe('no-unassigned-vars rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclarator')
     })
 
     test('should return a function for VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(typeof visitor.VariableDeclarator).toBe('function')
     })
 
     test('should return the same method names for each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor1 = noUnassignedVarsRule.create(context)
       const visitor2 = noUnassignedVarsRule.create(context)
 
@@ -176,15 +140,15 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should only have VariableDeclarator visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['VariableDeclarator'])
     })
 
     test('should create independent visitors per context', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'let x;' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'let x;' })
       const visitor1 = noUnassignedVarsRule.create(ctx1)
       const visitor2 = noUnassignedVarsRule.create(ctx2)
 
@@ -196,7 +160,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/custom/path/file.ts')
+      const { context } = createMockRuleContext({ source: 'let x;', filePath: '/custom/path/file.ts' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() =>
@@ -205,7 +169,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should accept context with different source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const y = 5;')
+      const { context } = createMockRuleContext({ source: 'const y = 5;', filePath: '/src/file.ts' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() =>
@@ -214,7 +178,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should return visitor that is callable multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null))
@@ -229,7 +193,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('invalid variables (without init) - detection', () => {
     test('should report variable with null init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -240,7 +204,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with undefined init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), undefined))
@@ -250,7 +214,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable without init property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -265,7 +229,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should include variable name in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('myVariable'), null))
@@ -274,7 +238,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report for multiple unassigned variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -288,7 +252,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable named with single character', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null))
@@ -298,7 +262,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with underscore name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('_unused'), null))
@@ -308,7 +272,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with dollar sign name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('$elem'), null))
@@ -318,7 +282,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with camelCase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -330,7 +294,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with UPPER_CASE name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('MAX_RETRIES'), null))
@@ -340,7 +304,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with numeric-style name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('item1'), null))
@@ -350,7 +314,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with double underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('__private'), null))
@@ -360,7 +324,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report each variable in sequence independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('first'), null))
@@ -371,7 +335,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when init is explicitly set to null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -380,7 +344,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when init is explicitly set to undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), undefined))
@@ -389,7 +353,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with Unicode-like name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('café'), null))
@@ -399,7 +363,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with trailing underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('value_'), null))
@@ -409,7 +373,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with dollar and underscore name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('$_'), null))
@@ -419,7 +383,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report with ConstructorPascalCase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('MyClass'), null))
@@ -429,7 +393,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report many unassigned variables at once', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -440,7 +404,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with name containing numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x123y456'), null))
@@ -450,7 +414,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report even when variable name is a keyword-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('class'), null))
@@ -460,7 +424,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with very long name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
       const longName = 'a'.repeat(200)
 
@@ -471,7 +435,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report empty-string named variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier(''), null))
@@ -480,7 +444,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when id has name property set to empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator({
@@ -494,7 +458,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report after previously valid declarators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), createLiteral(1)))
@@ -505,7 +469,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when init is false-like but present (0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       // 0 is falsy but is a valid init - should NOT report
@@ -515,7 +479,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should distinguish between null init and 0 init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('withNull'), null))
@@ -528,7 +492,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when init is NaN literal node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       // NaN as an identifier is still an init
@@ -540,7 +504,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when all variables in sequence are unassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const names = ['alpha', 'beta', 'gamma', 'delta']
@@ -559,7 +523,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('valid variables (with init) - not reporting', () => {
     test('should not report variable with literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), createLiteral(5)))
@@ -568,7 +532,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with number init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), createLiteral(42)))
@@ -577,7 +541,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with string init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -588,7 +552,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with boolean init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -599,7 +563,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with null literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -610,7 +574,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with object init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -624,7 +588,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with array init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -635,7 +599,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with identifier init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -646,7 +610,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with 0 init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), createLiteral(0)))
@@ -655,7 +619,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with empty string init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), createLiteral('')))
@@ -664,7 +628,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with false init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -675,7 +639,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with CallExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -690,7 +654,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with ArrowFunctionExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -705,7 +669,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with FunctionExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -721,7 +685,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with NewExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -736,7 +700,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with MemberExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -751,7 +715,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with BinaryExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -767,7 +731,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with ConditionalExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -783,7 +747,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with TemplateLiteral init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -798,7 +762,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with UnaryExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -813,7 +777,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with AssignmentExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -829,7 +793,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with LogicalExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -845,7 +809,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with AwaitExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -859,7 +823,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with SpreadElement init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -873,7 +837,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with regex literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -888,7 +852,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with numeric literal init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -899,7 +863,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with SequenceExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -913,7 +877,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with TypeCastExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -928,7 +892,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report when init is an empty object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -942,7 +906,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report when init is an empty array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -956,7 +920,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report when init is a boolean false literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -971,42 +935,42 @@ describe('no-unassigned-vars rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully (string)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
     })
 
     test('should handle non-object node gracefully (number)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() => visitor.VariableDeclarator(123)).not.toThrow()
     })
 
     test('should handle non-object node gracefully (boolean)', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() => visitor.VariableDeclarator(true)).not.toThrow()
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1019,7 +983,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1033,7 +997,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1046,7 +1010,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle null id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1060,7 +1024,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1074,7 +1038,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id with ObjectPattern type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1088,7 +1052,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id with ArrayPattern type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1102,7 +1066,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1116,7 +1080,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id with undefined name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1130,7 +1094,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id with null name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1144,7 +1108,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle id with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier(''), null))
@@ -1154,7 +1118,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1168,7 +1132,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1209,7 +1173,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node that is a plain empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       expect(() => visitor.VariableDeclarator({})).not.toThrow()
@@ -1217,7 +1181,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1226,7 +1190,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with only type and id (no init, no loc)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1240,7 +1204,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with numeric type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1254,7 +1218,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with boolean type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1268,7 +1232,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with FunctionDeclaration type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1286,7 +1250,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('location', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 10, 5))
@@ -1296,7 +1260,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1312,7 +1276,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1332,7 +1296,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1352,7 +1316,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1370,7 +1334,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1388,7 +1352,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1404,7 +1368,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 1, 0))
@@ -1414,7 +1378,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 9999, 50))
@@ -1424,7 +1388,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report location at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 0, 0))
@@ -1434,7 +1398,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should include both start and end in location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 5, 3))
@@ -1444,7 +1408,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should preserve end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 5, 3))
@@ -1454,7 +1418,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc with null start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1474,7 +1438,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc with only start.line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1494,7 +1458,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle loc where start is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -1517,7 +1481,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('message quality', () => {
     test('should mention variable in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1526,7 +1490,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should mention never assigned in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1535,7 +1499,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should mention value in error message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1544,7 +1508,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should format error message with variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('myVar'), null))
@@ -1553,7 +1517,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should contain single quotes around variable name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('testVar'), null))
@@ -1562,7 +1526,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should be a non-empty string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1572,7 +1536,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should produce consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('abc'), null))
@@ -1585,7 +1549,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should mention the specific variable name in each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('first'), null))
@@ -1598,7 +1562,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should produce message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1607,7 +1571,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should contain exactly one variable reference', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('targetVar'), null))
@@ -1621,7 +1585,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('multiple reports', () => {
     test('should report each unassigned variable separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null))
@@ -1633,7 +1597,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should count correct number of reports for mixed variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null))
@@ -1647,7 +1611,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle alternating assigned and unassigned', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1659,7 +1623,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report zero when all variables have init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1672,7 +1636,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report all when none have init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1683,7 +1647,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should preserve report order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('first'), null))
@@ -1696,7 +1660,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle single report correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('only'), null))
@@ -1706,7 +1670,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle rapid sequential calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1717,7 +1681,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not confuse variable names across reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('foo'), null))
@@ -1728,7 +1692,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle mixed with various init types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null))
@@ -1777,7 +1741,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with empty source string', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1787,7 +1751,7 @@ describe('no-unassigned-vars rule', () => {
 
     test('should work with long source string', () => {
       const longSource = 'let x;'.repeat(1000)
-      const { context, reports } = createMockContext({}, '/src/file.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/file.ts' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1796,7 +1760,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with .ts file path', () => {
-      const { context, reports } = createMockContext({}, '/src/typescript.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/src/typescript.ts' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1805,7 +1769,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/src/component.tsx' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1814,7 +1778,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/javascript.js')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/src/javascript.js' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1823,7 +1787,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/a/b/c/d/e/f/g/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/a/b/c/d/e/f/g/file.ts' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1862,7 +1826,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with different workspace roots', () => {
-      const { context, reports } = createMockContext({}, '/home/user/project/src/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/home/user/project/src/file.ts' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -1918,7 +1882,7 @@ describe('no-unassigned-vars rule', () => {
       { name: 'undefined identifier', init: { type: 'Identifier', name: 'undefined' } },
       { name: 'Infinity', init: { type: 'Identifier', name: 'Infinity' } },
     ] as Array<{ name: string; init: unknown }>)('should not report for $name init', ({ init }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), init))
@@ -1932,7 +1896,7 @@ describe('no-unassigned-vars rule', () => {
       { name: 'null', init: null },
       { name: 'undefined', init: undefined },
     ] as Array<{ name: string; init: unknown }>)('should report for $name init', ({ init }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), init))
@@ -2033,7 +1997,7 @@ describe('no-unassigned-vars rule', () => {
         init: { type: 'YieldExpression', argument: { type: 'Literal', value: 1 } },
       },
     ] as Array<{ name: string; init: unknown }>)('should not report for $name init', ({ init }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), init))
@@ -2058,7 +2022,7 @@ describe('no-unassigned-vars rule', () => {
       '__dunder',
       'trailing_',
     ])('should report unassigned variable with name "%s"', (varName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier(varName), null))
@@ -2084,7 +2048,7 @@ describe('no-unassigned-vars rule', () => {
       '__dunder',
       'trailing_',
     ])('should not report assigned variable with name "%s"', (varName) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2111,7 +2075,7 @@ describe('no-unassigned-vars rule', () => {
       'ThrowStatement',
       'TryStatement',
     ])('should not report for node type "%s"', (nodeType) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2150,7 +2114,7 @@ describe('no-unassigned-vars rule', () => {
         },
       },
     ] as Array<{ name: string; id: unknown }>)('should not report for id type $name', ({ id }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2174,7 +2138,7 @@ describe('no-unassigned-vars rule', () => {
     ] as Array<{ line: number; column: number }>)(
       'should report correct location at line=$line, column=$column',
       ({ line, column }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x;' })
         const visitor = noUnassignedVarsRule.create(context)
 
         visitor.VariableDeclarator(
@@ -2196,7 +2160,7 @@ describe('no-unassigned-vars rule', () => {
     ] as Array<{ name: string; init: unknown }>)(
       'should not report falsy-but-present init: $name',
       ({ init }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x;' })
         const visitor = noUnassignedVarsRule.create(context)
 
         visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), init))
@@ -2238,7 +2202,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('detection - additional', () => {
     test('should report variable with double dollar sign name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('$$'), null))
@@ -2248,7 +2212,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with leading underscore and trailing dollar', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('_$'), null))
@@ -2258,7 +2222,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable with mixed case alphanumeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('xYz123'), null))
@@ -2268,7 +2232,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report when node init property exists but is void expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2283,7 +2247,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable named "undefined" string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('undefined'), null))
@@ -2293,7 +2257,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable named "null" string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('null'), null))
@@ -2303,7 +2267,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable named with reserved word "let"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('let'), null))
@@ -2313,7 +2277,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report variable named with reserved word "function"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('function'), null))
@@ -2327,7 +2291,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('not reporting - additional init types', () => {
     test('should not report variable with UpdateExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2343,7 +2307,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with TaggedTemplateExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2358,7 +2322,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with ClassExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2373,7 +2337,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with ThisExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2386,7 +2350,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should not report variable with ChainExpression init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2404,7 +2368,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('edge cases - additional', () => {
     test('should handle node where id is a string primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2418,7 +2382,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node where id is a number primitive', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2432,7 +2396,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with array as type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2446,7 +2410,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with init set to empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2461,7 +2425,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with init set to number 0 (primitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2476,7 +2440,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with init set to boolean false (primitive)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2491,7 +2455,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with init set to empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2506,7 +2470,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node with init set to empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2521,7 +2485,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle deeply nested loc structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2543,7 +2507,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle node where type is object instead of string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2561,7 +2525,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('location - additional', () => {
     test('should handle negative line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, -1, 0))
@@ -2570,7 +2534,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle negative column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null, 1, -5))
@@ -2579,7 +2543,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle very large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(
@@ -2590,7 +2554,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle fractional line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       const node = {
@@ -2610,7 +2574,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should preserve exact location data for multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null, 1, 0))
@@ -2630,7 +2594,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('message quality - additional', () => {
     test('should have message matching expected template', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('testVar'), null))
@@ -2639,7 +2603,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should have message that does not contain double spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2648,7 +2612,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should have message with capitalized first letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2657,7 +2621,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should have consistent message length across variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), null))
@@ -2670,7 +2634,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should produce message without newlines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2683,7 +2647,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('multiple reports - additional', () => {
     test('should handle 500 sequential reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 500; i++) {
@@ -2694,7 +2658,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should correctly count reports when interleaved with valid declarators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2711,7 +2675,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should report correctly after many valid declarators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2727,7 +2691,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle all valid followed by all invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2746,7 +2710,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should handle mix with undefined init', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('a'), createLiteral(1)))
@@ -2764,7 +2728,7 @@ describe('no-unassigned-vars rule', () => {
 
   describe('context handling - additional', () => {
     test('should work with .mjs file path', () => {
-      const { context, reports } = createMockContext({}, '/src/module.mjs')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/src/module.mjs' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2773,7 +2737,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with .cjs file path', () => {
-      const { context, reports } = createMockContext({}, '/src/commonjs.cjs')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/src/commonjs.cjs' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2782,7 +2746,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with file path containing spaces', () => {
-      const { context, reports } = createMockContext({}, '/src/my project/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: '/src/my project/file.ts' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2791,7 +2755,7 @@ describe('no-unassigned-vars rule', () => {
     })
 
     test('should work with relative file path', () => {
-      const { context, reports } = createMockContext({}, './src/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'let x;', filePath: './src/file.ts' })
 
       const visitor = noUnassignedVarsRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), null))
@@ -2840,7 +2804,7 @@ describe('no-unassigned-vars rule', () => {
       'DebuggerStatement',
       'LabeledStatement',
     ])('should not report for node type "%s"', (nodeType) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2895,7 +2859,7 @@ describe('no-unassigned-vars rule', () => {
         init: { type: 'SpreadElement', argument: { type: 'Identifier', name: 'arr' } },
       },
     ] as Array<{ name: string; init: unknown }>)('should not report for $name init', ({ init }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'let x;' })
       const visitor = noUnassignedVarsRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator(createIdentifier('x'), init))
@@ -2914,7 +2878,7 @@ describe('no-unassigned-vars rule', () => {
     ] as Array<{ line: number; column: number }>)(
       'should correctly report at line=$line, column=$column',
       ({ line, column }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x;' })
         const visitor = noUnassignedVarsRule.create(context)
 
         visitor.VariableDeclarator(
@@ -2931,7 +2895,7 @@ describe('no-unassigned-vars rule', () => {
     test.each(['$$', '$0', '_0', 'i', 'j', 'k', 'el', 'fn', 'cb', 'err'])(
       'should report unassigned variable with short/special name "%s"',
       (varName) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'let x;' })
         const visitor = noUnassignedVarsRule.create(context)
 
         visitor.VariableDeclarator(createVariableDeclarator(createIdentifier(varName), null))

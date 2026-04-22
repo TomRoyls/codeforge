@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noInferrableTypesRule } from '../../../../src/rules/patterns/no-inferrable-types.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x: string = "hello";',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVariableDeclarator(
   typeName: string,
@@ -115,7 +79,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report without type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclaratorNoAnnotation())
@@ -189,20 +153,20 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('create should return a visitor object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(visitor).toBeDefined()
       expect(typeof visitor).toBe('object')
     })
 
     test('visitor should have VariableDeclarator method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(typeof visitor.VariableDeclarator).toBe('function')
     })
 
     test('create returns new visitor each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor1 = noInferrableTypesRule.create(context)
       const visitor2 = noInferrableTypesRule.create(context)
       expect(visitor1).not.toBe(visitor2)
@@ -219,31 +183,31 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('visitor creation', () => {
     test('should create visitor with default options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(visitor.VariableDeclarator).toBeDefined()
     })
 
     test('should create visitor with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(visitor.VariableDeclarator).toBeDefined()
     })
 
     test('should create visitor with custom file path', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";', filePath: '/custom/path.ts' })
       const visitor = noInferrableTypesRule.create(context)
       expect(visitor.VariableDeclarator).toBeDefined()
     })
 
     test('should create visitor with different source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'let x: number = 42;')
+      const { context } = createMockRuleContext({ source: 'let x: number = 42;', filePath: '/src/file.ts' })
       const visitor = noInferrableTypesRule.create(context)
       expect(visitor.VariableDeclarator).toBeDefined()
     })
 
     test('should create visitor with empty source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', '')
+      const { context } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noInferrableTypesRule.create(context)
       expect(visitor.VariableDeclarator).toBeDefined()
     })
@@ -254,7 +218,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('detecting string inferrable types', () => {
     test('should report TSStringKeyword with StringLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
@@ -264,7 +228,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report TSStringKeyword with Literal string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -281,7 +245,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report message mentions inferrable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
@@ -290,7 +254,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report message mentions remove type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
@@ -299,7 +263,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report message contains the word type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
@@ -308,7 +272,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report with template string variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -324,7 +288,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report empty string literal with string annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -341,7 +305,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report long string literal with string annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -362,7 +326,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('detecting number inferrable types', () => {
     test('should report TSNumberKeyword with NumericLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSNumberKeyword', 'NumericLiteral'))
@@ -372,7 +336,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report TSNumberKeyword with Literal number value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -389,7 +353,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report zero value with number annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -405,7 +369,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report negative number with number annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -421,7 +385,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report float with number annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -438,7 +402,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report number message is inferrable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSNumberKeyword', 'NumericLiteral'))
@@ -452,7 +416,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('detecting boolean inferrable types', () => {
     test('should report TSBooleanKeyword with BooleanLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSBooleanKeyword', 'BooleanLiteral'))
       expect(reports.length).toBe(1)
@@ -460,7 +424,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report TSBooleanKeyword with Literal true value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -477,7 +441,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report TSBooleanKeyword with Literal false value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -494,7 +458,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report boolean message mentions inferrable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSBooleanKeyword', 'BooleanLiteral'))
 
@@ -502,7 +466,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report boolean message mentions remove', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSBooleanKeyword', 'BooleanLiteral'))
 
@@ -515,7 +479,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('type annotation mismatches', () => {
     test('should not report TSStringKeyword with NumericLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       // String annotation but number init - getInitType returns 'number', mismatch
@@ -535,7 +499,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is not a literal type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -551,7 +515,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -567,7 +531,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -583,7 +547,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -599,7 +563,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -615,7 +579,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -631,7 +595,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -647,7 +611,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -663,7 +627,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -684,7 +648,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('no type annotation cases', () => {
     test('should not report when typeAnnotation is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -699,7 +663,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -715,7 +679,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -731,7 +695,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has unrecognized type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -747,7 +711,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSAnyKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -763,7 +727,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSVoidKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -779,7 +743,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSNeverKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -795,7 +759,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSObjectKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -811,7 +775,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSSymbolKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -827,7 +791,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSNullKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -843,7 +807,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has TSUndefinedKeyword', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -859,7 +823,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation type is empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -875,7 +839,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when typeAnnotation has no type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -896,7 +860,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('init edge cases', () => {
     test('should not report when init is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -912,7 +876,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -928,7 +892,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -943,7 +907,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init is an empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -959,7 +923,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report when init Literal has null value but is StringLiteral type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -976,7 +940,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report NumericLiteral without value property (ts-morph path)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -993,7 +957,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report StringLiteral without value property (ts-morph path)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1010,7 +974,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report BooleanLiteral regardless of value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1027,7 +991,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when Literal has no value and is not string/number/boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1044,7 +1008,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when Literal value is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1060,7 +1024,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when Literal value is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1076,7 +1040,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when Literal value is an object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1092,7 +1056,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when Literal value is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1108,7 +1072,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init type is TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1124,7 +1088,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report when init type is TaggedTemplateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1145,19 +1109,19 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
@@ -1165,7 +1129,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral')
@@ -1175,7 +1139,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1191,7 +1155,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node with empty string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1207,7 +1171,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1222,7 +1186,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle boolean node value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(true)).not.toThrow()
       expect(() => visitor.VariableDeclarator(false)).not.toThrow()
@@ -1230,35 +1194,35 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle numeric node zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(0)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle empty string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator('')).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should not report for boolean false node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(false)
       expect(reports.length).toBe(0)
     })
 
     test('should handle node that is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator([])).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle NaN node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(Number.NaN)).not.toThrow()
       expect(reports.length).toBe(0)
@@ -1270,7 +1234,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 10, 5)
@@ -1281,7 +1245,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 1, 0)
@@ -1292,7 +1256,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 500, 100)
@@ -1303,7 +1267,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSNumberKeyword', 'NumericLiteral', 5, 10)
@@ -1314,7 +1278,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral')
@@ -1327,7 +1291,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report default location when loc has partial data', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1345,7 +1309,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1362,7 +1326,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle loc with string line/column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1380,7 +1344,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should preserve exact column values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSBooleanKeyword', 'BooleanLiteral', 3, 8)
@@ -1395,7 +1359,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('message content', () => {
     test('should include the type name in message for string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1411,7 +1375,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should include the type name in message for number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1427,7 +1391,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should include the type name in message for boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1443,7 +1407,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should include inferrable in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
 
@@ -1451,7 +1415,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should include cleaner code suggestion in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSNumberKeyword', 'NumericLiteral'))
 
@@ -1459,7 +1423,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should have complete message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
 
@@ -1476,7 +1440,7 @@ describe('no-inferrable-types rule', () => {
       ]
 
       for (const { annotation, init, expected } of types) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
         const visitor = noInferrableTypesRule.create(context)
         visitor.VariableDeclarator(createVariableDeclarator(annotation, init))
 
@@ -1492,7 +1456,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('multiple reports', () => {
     test('should report multiple violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral', 1, 0))
@@ -1504,7 +1468,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report three violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral', 1, 0))
@@ -1519,7 +1483,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report many violations independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1532,7 +1496,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should track locations separately for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral', 1, 0))
@@ -1547,7 +1511,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should only report violations not non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       // Report
@@ -1565,7 +1529,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle mix of violations and non-violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       // violation
@@ -1581,8 +1545,8 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not carry state between visitor calls', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const x: string = "hello";' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const x: string = "hello";' })
 
       const visitor1 = noInferrableTypesRule.create(ctx1)
       const visitor2 = noInferrableTypesRule.create(ctx2)
@@ -1597,7 +1561,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle alternating valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       // valid - reports
@@ -1625,7 +1589,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('realistic variable declarations', () => {
     test('should detect const x: string = "hello"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1641,7 +1605,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect let count: number = 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1657,7 +1621,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect const flag: boolean = true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1673,7 +1637,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect const name: string = "world"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1689,7 +1653,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect const price: number = 9.99', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1705,7 +1669,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect const active: boolean = false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1721,7 +1685,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report const x = "hello" (no annotation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1736,7 +1700,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report const x = 42 (no annotation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1751,7 +1715,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report const x = true (no annotation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1766,7 +1730,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report let x: string (no init)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1781,7 +1745,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report const fn = () => {} (no annotation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1796,7 +1760,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report const obj = {} (no annotation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1816,7 +1780,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('nodes without id property', () => {
     test('should handle node without id gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1832,7 +1796,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node with null id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1848,7 +1812,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle destructuring pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -1869,7 +1833,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('visitor method behavior', () => {
     test('VariableDeclarator should be callable multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1882,7 +1846,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('VariableDeclarator should return void/undefined', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const result = visitor.VariableDeclarator(
@@ -1892,7 +1856,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('VariableDeclarator should return void for null input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const result = visitor.VariableDeclarator(null)
@@ -1900,7 +1864,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('visitor should not have other node handlers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       // Only VariableDeclarator should exist
@@ -1943,7 +1907,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/helpers.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";', filePath: '/project/src/utils/helpers.ts' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
@@ -1952,7 +1916,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/test.ts', 'let myVar: number = 42;')
+      const { context, reports } = createMockRuleContext({ source: 'let myVar: number = 42;', filePath: '/src/test.ts' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('TSNumberKeyword', 'NumericLiteral'))
@@ -1993,7 +1957,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('boundary location values', () => {
     test('should handle zero line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 0, 0)
@@ -2003,7 +1967,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 99999, 0)
@@ -2013,7 +1977,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 1, 99999)
@@ -2028,7 +1992,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('special literal values', () => {
     test('should detect whitespace string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2044,7 +2008,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect newline string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2060,7 +2024,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect unicode string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2076,7 +2040,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect very small number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2092,7 +2056,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect very large number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2108,7 +2072,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should detect Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2130,7 +2094,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('ts-morph path - literals without value property', () => {
     test('should report StringLiteral without value as string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2147,7 +2111,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report NumericLiteral without value as number type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2164,7 +2128,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report StringLiteral with string value via primary path', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2181,7 +2145,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report NumericLiteral with number value via primary path', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2198,7 +2162,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle Literal type with string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2215,7 +2179,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle Literal type with number value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2232,7 +2196,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle Literal type with boolean value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2254,7 +2218,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('type annotation and init combinations', () => {
     test('TSStringKeyword + Literal(string) should report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2270,7 +2234,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('TSStringKeyword + Literal(number) should report (mismatch but still inferrable)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2288,7 +2252,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('TSStringKeyword + Literal(boolean) should report (mismatch)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2305,7 +2269,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('TSNumberKeyword + Literal(string) should report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2322,7 +2286,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('TSBooleanKeyword + Literal(string) should report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2339,7 +2303,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('TSStringKeyword + CallExpression should not report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2355,7 +2319,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('all three types with matching inits should all report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       visitor.VariableDeclarator({
@@ -2392,7 +2356,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('exact report message format', () => {
     test('string message follows exact format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2410,7 +2374,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('number message follows exact format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2428,7 +2392,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('boolean message follows exact format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2446,7 +2410,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('BooleanLiteral message follows exact format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2469,7 +2433,7 @@ describe('no-inferrable-types rule', () => {
   // ============================================================
   describe('robustness with unusual node shapes', () => {
     test('should handle node where init.type is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2486,7 +2450,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node where typeAnnotation.type is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2502,7 +2466,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2521,7 +2485,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle deeply nested init value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2537,7 +2501,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle Symbol as init value type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2554,7 +2518,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle BigInt as init value type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2571,7 +2535,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node where init is a function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2588,7 +2552,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node where init is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2604,7 +2568,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node where init is a Map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2620,7 +2584,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle node where init is a Date', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
       const node = {
@@ -2669,14 +2633,14 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should not report without type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclaratorNoAnnotation())
       expect(reports.length).toBe(0)
     })
 
     test('should report string type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSStringKeyword', 'StringLiteral'))
       expect(reports.length).toBe(1)
@@ -2684,7 +2648,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report number type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSNumberKeyword', 'NumericLiteral'))
       expect(reports.length).toBe(1)
@@ -2692,7 +2656,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report boolean type annotation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       visitor.VariableDeclarator(createVariableDeclarator('TSBooleanKeyword', 'BooleanLiteral'))
       expect(reports.length).toBe(1)
@@ -2700,26 +2664,26 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
       expect(() => visitor.VariableDeclarator(123)).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral')
       delete (node as Record<string, unknown>).loc
@@ -2728,7 +2692,7 @@ describe('no-inferrable-types rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
       const node = createVariableDeclarator('TSStringKeyword', 'StringLiteral', 10, 5)
       visitor.VariableDeclarator(node)

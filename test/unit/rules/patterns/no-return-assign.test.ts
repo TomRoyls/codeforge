@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noReturnAssignRule } from '../../../../src/rules/patterns/no-return-assign.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'return x;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { rules: { 'no-return-assign': ['error', options] } },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createReturnStatement(argument: unknown, lineNumber = 1, column = 0): unknown {
   return {
@@ -113,7 +77,7 @@ describe('no-return-assign rule', () => {
 
   describe('create', () => {
     test('should return visitor object with ReturnStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(visitor).toHaveProperty('ReturnStatement')
@@ -122,7 +86,7 @@ describe('no-return-assign rule', () => {
 
   describe('detecting return with assignment', () => {
     test('should report return with assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -131,7 +95,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report correct message for return with assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -140,7 +104,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with += assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('+=')))
@@ -149,7 +113,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with -= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('-=')))
@@ -158,7 +122,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with *= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('*=')))
@@ -167,7 +131,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with /= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('/=')))
@@ -176,7 +140,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with %= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('%=')))
@@ -187,7 +151,7 @@ describe('no-return-assign rule', () => {
 
   describe('compound assignment operators', () => {
     test('should report return with <<= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('<<=')))
@@ -196,7 +160,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with >>= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('>>=')))
@@ -205,7 +169,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with >>>= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('>>>=')))
@@ -214,7 +178,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with &= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('&=')))
@@ -223,7 +187,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with |= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('|=')))
@@ -232,7 +196,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with ^= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('^=')))
@@ -241,7 +205,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with **= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('**=')))
@@ -250,7 +214,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with &&= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('&&=')))
@@ -259,7 +223,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with ||= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('||=')))
@@ -268,7 +232,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with ??= assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('??=')))
@@ -295,7 +259,7 @@ describe('no-return-assign rule', () => {
         '||=',
         '??=',
       ]
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (const op of operators) {
@@ -309,7 +273,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should produce exactly one report per compound assignment operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('&=')))
@@ -323,7 +287,7 @@ describe('no-return-assign rule', () => {
 
   describe('not reporting regular return statements', () => {
     test('should not report return with identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createIdentifier('x')))
@@ -332,7 +296,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const literal = {
@@ -345,7 +309,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const returnNode = {
@@ -362,7 +326,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with undefined argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const returnNode = {
@@ -378,7 +342,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -393,7 +357,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const callExpr = {
@@ -409,7 +373,7 @@ describe('no-return-assign rule', () => {
 
   describe('safe return expressions', () => {
     test('should not report return with conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const condExpr = {
@@ -424,7 +388,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const logicalExpr = {
@@ -439,7 +403,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const memberExpr = {
@@ -453,7 +417,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const arrayExpr = {
@@ -469,7 +433,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const objectExpr = {
@@ -482,7 +446,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const unaryExpr = {
@@ -496,7 +460,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const updateExpr = {
@@ -511,7 +475,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with new expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const newExpr = {
@@ -525,7 +489,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const seqExpr = {
@@ -538,7 +502,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const templateLit = {
@@ -552,7 +516,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with arrow function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const arrowExpr = {
@@ -566,7 +530,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const funcExpr = {
@@ -581,7 +545,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with tagged template expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const taggedExpr = {
@@ -595,7 +559,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with yield expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const yieldExpr = {
@@ -608,7 +572,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with await expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const awaitExpr = {
@@ -627,7 +591,7 @@ describe('no-return-assign rule', () => {
 
   describe('multiple return statements', () => {
     test('should report multiple returns with assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=', 1, 0)))
@@ -638,7 +602,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report any returns without assignments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createIdentifier('x')))
@@ -651,7 +615,7 @@ describe('no-return-assign rule', () => {
 
   describe('mixed return sequences', () => {
     test('should report only the assignment returns in a mixed sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createIdentifier('a')))
@@ -662,7 +626,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report all-assignment sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -673,7 +637,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle alternating safe and unsafe returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -685,7 +649,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report zero for all-safe long sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -696,7 +660,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report all for all-unsafe long sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -707,7 +671,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle single safe return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createIdentifier('only')))
@@ -716,7 +680,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle single unsafe return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -725,7 +689,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report after many safe returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -737,7 +701,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should count reports accurately for interleaved pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const safeTypes = [
@@ -775,7 +739,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not affect report count when visitor is called with safe nodes after unsafe ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -789,7 +753,7 @@ describe('no-return-assign rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(null)).not.toThrow()
@@ -797,7 +761,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(undefined)).not.toThrow()
@@ -805,7 +769,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement('string')).not.toThrow()
@@ -814,7 +778,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const node = {
@@ -830,7 +794,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle ReturnStatement without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const node = {
@@ -873,7 +837,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument that is not an object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const node = {
@@ -892,7 +856,7 @@ describe('no-return-assign rule', () => {
 
   describe('additional edge cases', () => {
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(true)).not.toThrow()
@@ -900,7 +864,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle numeric node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(0)).not.toThrow()
@@ -908,7 +872,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({})
@@ -917,7 +881,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle node with type as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({ type: 42 })
@@ -926,7 +890,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle node with type as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({ type: null })
@@ -935,7 +899,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle node with type as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({ type: { name: 'ReturnStatement' } })
@@ -944,7 +908,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument that is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -957,7 +921,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument that is a boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -970,7 +934,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument that is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -983,7 +947,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument that is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -996,7 +960,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(
@@ -1012,7 +976,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should be case-sensitive for AssignmentExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(
@@ -1028,7 +992,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should be case-sensitive for ReturnStatement type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1041,7 +1005,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle deeply nested argument that is not AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const deeplyNested = {
@@ -1061,7 +1025,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle argument with type as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement({ type: '' }))
@@ -1070,7 +1034,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle NaN as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(Number.NaN)).not.toThrow()
@@ -1078,7 +1042,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle BigInt as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(BigInt(0))).not.toThrow()
@@ -1086,7 +1050,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(() => visitor.ReturnStatement(Symbol('test'))).not.toThrow()
@@ -1094,7 +1058,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle node with only loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1105,7 +1069,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle ReturnStatement with argument having type AssignmentExpression but as a string variant', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(
@@ -1123,7 +1087,7 @@ describe('no-return-assign rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for return with assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 10, 5))
@@ -1133,7 +1097,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 5, 10))
@@ -1145,7 +1109,7 @@ describe('no-return-assign rule', () => {
 
   describe('detailed location reporting', () => {
     test('should report correct end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 3, 0))
@@ -1154,7 +1118,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 1, 5))
@@ -1163,7 +1127,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 0, 0))
@@ -1173,7 +1137,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 9999, 0))
@@ -1182,7 +1146,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report location at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 1, 500))
@@ -1191,7 +1155,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1204,7 +1168,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report default location when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1217,7 +1181,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report default location when loc is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1230,7 +1194,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report default location when loc has missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1244,7 +1208,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report default location when loc has missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1258,7 +1222,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle multiple reports with different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 1, 0))
@@ -1271,7 +1235,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should preserve location for each report independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('='), 5, 10))
@@ -1282,7 +1246,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report location for different operators on same line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=', 3, 0), 3, 0))
@@ -1299,7 +1263,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle loc with non-numeric line gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1315,7 +1279,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle loc with non-numeric column gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1333,7 +1297,7 @@ describe('no-return-assign rule', () => {
 
   describe('message quality', () => {
     test('should mention return in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1342,7 +1306,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should mention assignment in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1351,7 +1315,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1365,7 +1329,7 @@ describe('no-return-assign rule', () => {
   describe('extended message quality', () => {
     test('should have same message regardless of operator', () => {
       const operators = ['=', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=']
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (const op of operators) {
@@ -1379,7 +1343,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have same message across different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=', 1, 0)))
@@ -1391,7 +1355,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1400,7 +1364,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1409,7 +1373,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have message that is a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1418,7 +1382,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not include operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('+=')))
@@ -1427,7 +1391,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not include variable name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1436,7 +1400,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should mention should not in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1447,7 +1411,7 @@ describe('no-return-assign rule', () => {
 
   describe('visitor and context', () => {
     test('should return visitor that is an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -1455,15 +1419,15 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have ReturnStatement as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       expect(typeof visitor.ReturnStatement).toBe('function')
     })
 
     test('should create independent visitors for different contexts', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'return x;' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'return x;' })
 
       const visitor1 = noReturnAssignRule.create(ctx1)
       const visitor2 = noReturnAssignRule.create(ctx2)
@@ -1476,7 +1440,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle context with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'return x;', filePath: '/custom/path/file.ts' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1485,7 +1449,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle context with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'return x = y;')
+      const { context, reports } = createMockRuleContext({ source: 'return x = y;', filePath: '/src/file.ts' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1494,7 +1458,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should work with context having empty config', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -1503,7 +1467,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should work when called multiple times on same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1514,7 +1478,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should have only ReturnStatement method on visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const keys = Object.keys(visitor)
@@ -1524,7 +1488,7 @@ describe('no-return-assign rule', () => {
 
   describe('assignment expression structure', () => {
     test('should report when left side is a member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1544,7 +1508,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when right side is a call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1564,7 +1528,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when right side is a binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1585,7 +1549,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when left side is a destructuring pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1604,7 +1568,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when both sides are member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1628,7 +1592,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when assignment has no operator property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1643,7 +1607,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when assignment has no left property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1658,7 +1622,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when assignment has no right property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1673,7 +1637,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report assignment with empty operator string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -1689,7 +1653,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report chained assignment (nested AssignmentExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const chainedAssign = {
@@ -1710,7 +1674,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not confuse LogicalExpression with AssignmentExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const logicalAssign = {
@@ -1725,7 +1689,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not confuse BinaryExpression with AssignmentExpression even with = in operator name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -1782,8 +1746,8 @@ describe('no-return-assign rule', () => {
     })
 
     test('should produce consistent results for same input', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'return x;' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'return x;' })
 
       const v1 = noReturnAssignRule.create(ctx1)
       const v2 = noReturnAssignRule.create(ctx2)
@@ -1797,7 +1761,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not mutate input node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const node = createReturnStatement(createAssignmentExpression('=')) as Record<string, unknown>
@@ -1810,7 +1774,7 @@ describe('no-return-assign rule', () => {
 
   describe('bulk operations', () => {
     test('should handle 100 consecutive unsafe returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1821,7 +1785,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle 100 consecutive safe returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1832,7 +1796,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle alternating returns in bulk', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1847,7 +1811,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle mixed types in bulk', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const safeExprs = [
@@ -1876,7 +1840,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should handle one unsafe in 200 returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -1893,7 +1857,7 @@ describe('no-return-assign rule', () => {
 
   describe('return statement argument variations', () => {
     test('should not report bare return (no argument)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1905,7 +1869,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with argument set to 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1918,7 +1882,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with argument set to empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1931,7 +1895,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with argument set to false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1944,7 +1908,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with argument as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1957,7 +1921,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with argument that has no type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -1970,7 +1934,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when argument is exactly AssignmentExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -2108,7 +2072,7 @@ describe('no-return-assign rule', () => {
 
   describe('loc variations on assignment expression', () => {
     test('should report when assignment expression has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2128,7 +2092,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when ReturnStatement loc has zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -2143,7 +2107,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when ReturnStatement loc start > end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -2157,7 +2121,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when ReturnStatement loc has negative values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -2171,7 +2135,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when loc is an empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -2184,7 +2148,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when loc.start is an empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement({
@@ -2201,7 +2165,7 @@ describe('no-return-assign rule', () => {
 
   describe('comparison operators are not assignments', () => {
     test('should not report return with equality check (==)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2216,7 +2180,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with strict equality (===)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2231,7 +2195,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with inequality (!=)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2246,7 +2210,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with strict inequality (!==)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2261,7 +2225,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with greater than (>)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2276,7 +2240,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with less than (<)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2291,7 +2255,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with greater than or equal (>=)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2306,7 +2270,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report return with less than or equal (<=)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const binaryExpr = {
@@ -2323,7 +2287,7 @@ describe('no-return-assign rule', () => {
 
   describe('type sensitivity', () => {
     test('should only match exact AssignmentExpression type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const variations = [
@@ -2348,7 +2312,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should only match exact ReturnStatement type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const variations = [
@@ -2370,7 +2334,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should not report when argument type is a subtype-like string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(
@@ -2386,7 +2350,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report when argument type is exactly AssignmentExpression with no extra chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(
@@ -2404,7 +2368,7 @@ describe('no-return-assign rule', () => {
 
   describe('report descriptor completeness', () => {
     test('report should always have both message and loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -2414,7 +2378,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('report loc should always have start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -2424,7 +2388,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('report loc start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -2434,7 +2398,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('report loc end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(createAssignmentExpression('=')))
@@ -2444,7 +2408,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('every report in a batch should have complete descriptor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2462,7 +2426,7 @@ describe('no-return-assign rule', () => {
 
   describe('assignment with complex right-hand side', () => {
     test('should report return with ternary on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2483,7 +2447,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with object literal on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2508,7 +2472,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with array literal on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2530,7 +2494,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with function call on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2557,7 +2521,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with arrow function on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2577,7 +2541,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with await on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2600,7 +2564,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with template literal on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2620,7 +2584,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with new expression on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2640,7 +2604,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with typeof on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2660,7 +2624,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with logical AND on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2681,7 +2645,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with nullish coalescing on right side of assignment', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {
@@ -2702,7 +2666,7 @@ describe('no-return-assign rule', () => {
     })
 
     test('should report return with spread element on right side via array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'return x;' })
       const visitor = noReturnAssignRule.create(context)
 
       const assign = {

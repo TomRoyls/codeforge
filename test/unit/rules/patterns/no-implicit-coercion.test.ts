@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noImplicitCoercionRule } from '../../../../src/rules/patterns/no-implicit-coercion.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '+x;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createUnaryExpression(operator: string, argument: unknown, line = 1, column = 0): unknown {
   return {
@@ -186,7 +148,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(visitor).toHaveProperty('UnaryExpression')
@@ -194,21 +156,21 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should return UnaryExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(typeof visitor.UnaryExpression).toBe('function')
     })
 
     test('should return BinaryExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return a new visitor object on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor1 = noImplicitCoercionRule.create(context)
       const visitor2 = noImplicitCoercionRule.create(context)
 
@@ -216,26 +178,26 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not return null from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('should have exactly 2 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(2)
     })
 
     test('should accept context with default options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       expect(() => noImplicitCoercionRule.create(context)).not.toThrow()
     })
 
     test('should accept context with custom options', () => {
-      const { context } = createMockContext({ allowNumeric: true })
+      const { context } = createMockRuleContext({ options: [{ allowNumeric: true }], source: '+x;' })
       expect(() => noImplicitCoercionRule.create(context)).not.toThrow()
     })
   })
@@ -245,7 +207,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('detecting number coercion with +x', () => {
     test('should report +x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('x'))
@@ -257,7 +219,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report +str', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('str'))
@@ -268,7 +230,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report +(value)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('value'))
@@ -279,7 +241,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report +obj', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('obj'))
@@ -290,7 +252,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report +result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('result'))
@@ -301,7 +263,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report +inputVal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('inputVal'))
@@ -314,7 +276,7 @@ describe('no-implicit-coercion rule', () => {
 
   describe('detecting boolean coercion with !!x', () => {
     test('should report !!x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'))
@@ -327,7 +289,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report !!value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('value'))
@@ -339,7 +301,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report !!flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('flag'))
@@ -351,7 +313,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report !!obj', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('obj'))
@@ -363,7 +325,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report !!items', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('items'))
@@ -375,7 +337,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report !!result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('result'))
@@ -389,7 +351,7 @@ describe('no-implicit-coercion rule', () => {
 
   describe('detecting string coercion with x + ""', () => {
     test('should report x + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral(''))
@@ -401,7 +363,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report "" + x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(''), createIdentifier('x'))
@@ -412,7 +374,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report num + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('num'), createLiteral(''))
@@ -423,7 +385,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report "" + num', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(''), createIdentifier('num'))
@@ -434,7 +396,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report obj + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('obj'), createLiteral(''))
@@ -445,7 +407,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report "" + result', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(''), createIdentifier('result'))
@@ -456,7 +418,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report value + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('value'), createLiteral(''))
@@ -467,7 +429,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report data + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('data'), createLiteral(''))
@@ -478,7 +440,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report "" + data', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(''), createIdentifier('data'))
@@ -494,7 +456,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('not reporting valid patterns', () => {
     test('should not report +0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createLiteral(0))
@@ -505,7 +467,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report +1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createLiteral(1))
@@ -516,7 +478,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report !x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('!', createIdentifier('x'))
@@ -527,7 +489,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report !flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('!', createIdentifier('flag'))
@@ -538,7 +500,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report "hello" + "world"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral('hello'), createLiteral('world'))
@@ -549,7 +511,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x + y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createIdentifier('y'))
@@ -560,7 +522,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x + 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral(1))
@@ -571,7 +533,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report 1 + x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral(1), createIdentifier('x'))
@@ -582,7 +544,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report -x (negation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('-', createIdentifier('x'))
@@ -593,7 +555,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report ~x (bitwise not)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('~', createIdentifier('x'))
@@ -604,7 +566,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report typeof x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('typeof', createIdentifier('x'))
@@ -615,7 +577,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report void x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('void', createIdentifier('x'))
@@ -626,7 +588,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report delete obj.prop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('delete', createIdentifier('obj'))
@@ -637,7 +599,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x - y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('-', createIdentifier('x'), createIdentifier('y'))
@@ -648,7 +610,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x * y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('*', createIdentifier('x'), createIdentifier('y'))
@@ -659,7 +621,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x / y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('/', createIdentifier('x'), createIdentifier('y'))
@@ -670,7 +632,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x % y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('%', createIdentifier('x'), createIdentifier('y'))
@@ -681,7 +643,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x === y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('y'))
@@ -692,7 +654,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x !== y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('!==', createIdentifier('x'), createIdentifier('y'))
@@ -703,7 +665,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x < y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('<', createIdentifier('x'), createIdentifier('y'))
@@ -714,7 +676,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x > y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('>', createIdentifier('x'), createIdentifier('y'))
@@ -725,7 +687,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x <= y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('<=', createIdentifier('x'), createIdentifier('y'))
@@ -736,7 +698,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x >= y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('>=', createIdentifier('x'), createIdentifier('y'))
@@ -747,7 +709,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x && y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('&&', createIdentifier('x'), createIdentifier('y'))
@@ -758,7 +720,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x || y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('||', createIdentifier('x'), createIdentifier('y'))
@@ -769,7 +731,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report +42 (literal not excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createLiteral(42))
@@ -780,7 +742,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report +(-1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerUnary = createUnaryExpression('-', createLiteral(1))
@@ -792,7 +754,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x + "hello" (non-empty string right)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral('hello'))
@@ -803,7 +765,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report "hello" + x (non-empty string left)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createLiteral('hello'), createIdentifier('x'))
@@ -814,7 +776,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x + null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral(null))
@@ -830,63 +792,63 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('edge cases', () => {
     test('should handle null node gracefully in UnaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.UnaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully in UnaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.UnaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle null node gracefully in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully in UnaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.UnaryExpression('string')).not.toThrow()
     })
 
     test('should handle non-object node gracefully in BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
     })
 
     test('should handle number node gracefully in UnaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.UnaryExpression(42)).not.toThrow()
     })
 
     test('should handle boolean node gracefully in UnaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       expect(() => visitor.UnaryExpression(true)).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -901,7 +863,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle node without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -914,7 +876,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle node without argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -926,7 +888,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle BinaryExpression without left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -940,7 +902,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle BinaryExpression without right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -954,7 +916,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle BinaryExpression without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -968,7 +930,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -977,7 +939,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle node with type mismatch (wrong type value)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -991,7 +953,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle +x where x is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const callNode = { type: 'CallExpression', callee: createIdentifier('fn') }
@@ -1003,7 +965,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle +x where x is a MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const memberNode = {
@@ -1019,7 +981,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle !!x where x is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const callNode = { type: 'CallExpression', callee: createIdentifier('fn') }
@@ -1032,7 +994,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle BinaryExpression with nested expression left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const nested = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -1044,7 +1006,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle BinaryExpression with nested expression right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const nested = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -1056,7 +1018,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle ! followed by non-unary expression (!+x)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerPlus = createUnaryExpression('+', createIdentifier('x'))
@@ -1068,7 +1030,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle deeply nested !! pattern (!!(!x))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'))
@@ -1080,7 +1042,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle +x with boolean literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createLiteral(true))
@@ -1096,7 +1058,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('location reporting', () => {
     test('should report correct location for +x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('x'), 25, 10)
@@ -1108,7 +1070,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report correct end location for +x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('x'), 5, 3)
@@ -1120,7 +1082,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1130,7 +1092,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report correct location for !!x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'), 10, 5)
@@ -1143,7 +1105,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report correct location for x + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral(''), 7, 2)
@@ -1155,7 +1117,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report correct end location for x + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral(''), 3, 4)
@@ -1167,7 +1129,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1188,7 +1150,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle loc with non-number column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1209,7 +1171,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1228,7 +1190,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle loc with undefined end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1247,7 +1209,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1264,7 +1226,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle node without loc property reporting default location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1282,7 +1244,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle location for BinaryExpression with large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createLiteral(''), 500, 30)
@@ -1294,7 +1256,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle location for UnaryExpression at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('x'), 0, 0)
@@ -1306,7 +1268,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should preserve exact location coordinates', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = createUnaryExpression('+', createIdentifier('x'), 42, 17)
@@ -1323,7 +1285,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('message quality', () => {
     test('should mention Number for +x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1332,7 +1294,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should mention Boolean for !!x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'))
@@ -1342,7 +1304,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should mention String for x + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1353,7 +1315,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should mention implicit for number coercion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1362,7 +1324,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should mention explicit as alternative', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1371,7 +1333,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should mention implicit for boolean coercion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'))
@@ -1381,7 +1343,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should mention implicit for string coercion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1392,7 +1354,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should contain +x pattern in number coercion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1401,7 +1363,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should contain !!x pattern in boolean coercion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'))
@@ -1411,7 +1373,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should contain x + "" pattern in string coercion message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1427,7 +1389,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('multiple reports', () => {
     test('should report separately for multiple +x calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1437,7 +1399,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report separately for !!x and +y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'))
@@ -1448,7 +1410,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report separately for x + "" and y + ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.BinaryExpression(
@@ -1462,7 +1424,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report separately for mixed coercion types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1478,7 +1440,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should have correct messages for mixed reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1496,7 +1458,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle interleaved valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1507,7 +1469,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle many sequential reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1518,7 +1480,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report for +x in different locations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x'), 1, 0))
@@ -1532,7 +1494,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report for valid nodes mixed with invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('-', createIdentifier('x')))
@@ -1544,7 +1506,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should handle BinaryExpression interleaved with UnaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1562,7 +1524,7 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: '+x;', filePath: '/custom/path.ts' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1571,7 +1533,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1580,11 +1542,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should work with long source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = +y; const z = !!w;',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = +y; const z = !!w;', filePath: '/src/file.ts' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
@@ -1593,7 +1551,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not call report for valid node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('-', createIdentifier('x')))
@@ -1633,7 +1591,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should use context getSource for fix text', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const result = +val;')
+      const { context, reports } = createMockRuleContext({ source: 'const result = +val;', filePath: '/src/file.ts' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1656,7 +1614,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should provide fix for boolean coercion when range is available', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const r = !!val;')
+      const { context, reports } = createMockRuleContext({ source: 'const r = !!val;', filePath: '/src/file.ts' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1684,7 +1642,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should provide fix for string coercion when range is available', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'val + ""')
+      const { context, reports } = createMockRuleContext({ source: 'val + ""', filePath: '/src/file.ts' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1707,7 +1665,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not provide fix when node has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
 
       const node = {
@@ -1730,98 +1688,98 @@ describe('no-implicit-coercion rule', () => {
   // ===========================================================================
   describe('unary operator coverage', () => {
     test('should report +x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
       expect(reports.length).toBe(1)
     })
 
     test('should report +value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('value')))
       expect(reports.length).toBe(1)
     })
 
     test('should report +str', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('str')))
       expect(reports.length).toBe(1)
     })
 
     test('should report +num', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('num')))
       expect(reports.length).toBe(1)
     })
 
     test('should report +data', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('data')))
       expect(reports.length).toBe(1)
     })
 
     test('should not report !x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('!', createIdentifier('x')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report !flag', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('!', createIdentifier('flag')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report -x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('-', createIdentifier('x')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report -num', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('-', createIdentifier('num')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ~x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('~', createIdentifier('x')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report ~bits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('~', createIdentifier('bits')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report typeof x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('typeof', createIdentifier('x')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report void x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('void', createIdentifier('x')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report delete x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('delete', createIdentifier('x')))
       expect(reports.length).toBe(0)
@@ -1830,7 +1788,7 @@ describe('no-implicit-coercion rule', () => {
 
   describe('binary operator coverage', () => {
     test('should report x + "" (concat with empty string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createIdentifier('x'), createLiteral('')),
@@ -1839,7 +1797,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x - "" (subtraction)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('-', createIdentifier('x'), createLiteral('')),
@@ -1848,7 +1806,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x * "" (multiplication)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('*', createIdentifier('x'), createLiteral('')),
@@ -1857,7 +1815,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x / "" (division)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('/', createIdentifier('x'), createLiteral('')),
@@ -1866,7 +1824,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x % "" (modulo)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('%', createIdentifier('x'), createLiteral('')),
@@ -1875,7 +1833,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x === "" (strict equality)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('===', createIdentifier('x'), createLiteral('')),
@@ -1884,7 +1842,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x !== "" (strict inequality)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('!==', createIdentifier('x'), createLiteral('')),
@@ -1893,7 +1851,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x == "" (equality)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('==', createIdentifier('x'), createLiteral('')),
@@ -1902,7 +1860,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x != "" (inequality)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('!=', createIdentifier('x'), createLiteral('')),
@@ -1911,7 +1869,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x < "" (less than)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('<', createIdentifier('x'), createLiteral('')),
@@ -1920,7 +1878,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x > "" (greater than)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('>', createIdentifier('x'), createLiteral('')),
@@ -1929,7 +1887,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x <= "" (less than or equal)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('<=', createIdentifier('x'), createLiteral('')),
@@ -1938,7 +1896,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x >= "" (greater than or equal)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('>=', createIdentifier('x'), createLiteral('')),
@@ -1947,7 +1905,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x && "" (logical and)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('&&', createIdentifier('x'), createLiteral('')),
@@ -1956,7 +1914,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x || "" (logical or)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('||', createIdentifier('x'), createLiteral('')),
@@ -1965,7 +1923,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x ** "" (exponentiation)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('**', createIdentifier('x'), createLiteral('')),
@@ -1974,7 +1932,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x & "" (bitwise and)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('&', createIdentifier('x'), createLiteral('')),
@@ -1983,7 +1941,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x | "" (bitwise or)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('|', createIdentifier('x'), createLiteral('')),
@@ -1992,7 +1950,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x ^ "" (bitwise xor)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('^', createIdentifier('x'), createLiteral('')),
@@ -2001,7 +1959,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x << "" (left shift)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('<<', createIdentifier('x'), createLiteral('')),
@@ -2010,7 +1968,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x >> "" (right shift)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('>>', createIdentifier('x'), createLiteral('')),
@@ -2019,7 +1977,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x >>> "" (unsigned right shift)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('>>>', createIdentifier('x'), createLiteral('')),
@@ -2028,7 +1986,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x in "" (in operator)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('in', createIdentifier('x'), createLiteral('')),
@@ -2037,7 +1995,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report x instanceof "" (instanceof)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('instanceof', createIdentifier('x'), createLiteral('')),
@@ -2048,7 +2006,7 @@ describe('no-implicit-coercion rule', () => {
 
   describe('string coercion operand combinations', () => {
     test('should report Identifier + EmptyString', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createIdentifier('x'), createLiteral('')),
@@ -2057,7 +2015,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report EmptyString + Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createLiteral(''), createIdentifier('x')),
@@ -2066,7 +2024,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report Identifier + NonEmptyString', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createIdentifier('x'), createLiteral('hello')),
@@ -2075,7 +2033,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report NonEmptyString + Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createLiteral('hello'), createIdentifier('x')),
@@ -2084,7 +2042,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report Identifier + Number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createIdentifier('x'), createLiteral(42)),
@@ -2093,7 +2051,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report Number + Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createLiteral(42), createIdentifier('x')),
@@ -2102,7 +2060,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should not report Identifier + Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createIdentifier('x'), createIdentifier('y')),
@@ -2111,7 +2069,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('should report EmptyString + EmptyString', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(''), createLiteral('')))
       expect(reports.length).toBe(1)
@@ -2120,49 +2078,49 @@ describe('no-implicit-coercion rule', () => {
 
   describe('number literal exclusions for +operator', () => {
     test('should not report +0 (zero excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(0)))
       expect(reports.length).toBe(0)
     })
 
     test('should not report +1 (one excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(1)))
       expect(reports.length).toBe(0)
     })
 
     test('should report +42 (forty-two not excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(42)))
       expect(reports.length).toBe(1)
     })
 
     test('should report +(-1) (negative one not excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(-1)))
       expect(reports.length).toBe(1)
     })
 
     test('should report +(3.14) (pi not excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(3.14)))
       expect(reports.length).toBe(1)
     })
 
     test('should report +(100) (hundred not excluded)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(100)))
       expect(reports.length).toBe(1)
     })
 
     test('should not report +(-0) (negative zero is zero)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createLiteral(-0)))
       expect(reports.length).toBe(0)
@@ -2171,14 +2129,14 @@ describe('no-implicit-coercion rule', () => {
 
   describe('message content by coercion type', () => {
     test('number coercion message should contain Number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.UnaryExpression(createUnaryExpression('+', createIdentifier('x')))
       expect(reports[0].message).toContain('Number')
     })
 
     test('boolean coercion message should contain Boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       const inner = createUnaryExpression('!', createIdentifier('x'))
       visitor.UnaryExpression(createUnaryExpression('!', inner))
@@ -2186,7 +2144,7 @@ describe('no-implicit-coercion rule', () => {
     })
 
     test('string coercion message should contain String', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '+x;' })
       const visitor = noImplicitCoercionRule.create(context)
       visitor.BinaryExpression(
         createBinaryExpression('+', createIdentifier('x'), createLiteral('')),

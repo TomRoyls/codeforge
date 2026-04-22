@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnsafeDeclarationMergingRule } from '../../../../src/rules/patterns/no-unsafe-declaration-merging.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'class Foo {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createClassDeclaration(name: string, line = 1, column = 0): unknown {
   return {
@@ -206,7 +170,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(visitor).toHaveProperty('ClassDeclaration')
@@ -215,56 +179,56 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should return ClassDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(typeof visitor.ClassDeclaration).toBe('function')
     })
 
     test('should return TSInterfaceDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(typeof visitor.TSInterfaceDeclaration).toBe('function')
     })
 
     test('should return FunctionDeclaration as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(typeof visitor.FunctionDeclaration).toBe('function')
     })
 
     test('should return exactly 3 visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(Object.keys(visitor)).toHaveLength(3)
     })
 
     test('should not have VariableDeclaration visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(visitor).not.toHaveProperty('VariableDeclaration')
     })
 
     test('should not have TSTypeAliasDeclaration visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(visitor).not.toHaveProperty('TSTypeAliasDeclaration')
     })
 
     test('should not have TSEnumDeclaration visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(visitor).not.toHaveProperty('TSEnumDeclaration')
     })
 
     test('should return a non-null visitor object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(visitor).toBeDefined()
@@ -278,7 +242,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('detecting class-interface merging', () => {
     test('should report when class and interface have same name (class first)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Foo', 1, 0))
@@ -291,7 +255,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report when class and interface have same name (interface first)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Bar', 1, 0))
@@ -302,7 +266,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report correct message for class-interface merging', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass', 1, 0))
@@ -313,7 +277,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with single character name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -324,7 +288,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with underscore prefix name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('_Internal', 1, 0))
@@ -335,7 +299,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with dollar sign in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('$jQuery', 1, 0))
@@ -346,7 +310,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with numeric suffix in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Component2', 1, 0))
@@ -357,7 +321,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with PascalCase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyAwesomeClass', 1, 0))
@@ -368,7 +332,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with camelCase name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('myComponent', 1, 0))
@@ -378,7 +342,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with common generic name like Props', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Props', 1, 0))
@@ -388,7 +352,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report when class has superClass property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const classNode = {
@@ -405,7 +369,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report when interface has extends property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const interfaceNode = {
@@ -427,7 +391,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report only once for a class-interface pair', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Unique', 1, 0))
@@ -440,7 +404,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report on the second declaration (interface after class)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Late', 1, 0))
@@ -451,7 +415,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report on the second declaration (class after interface)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Late', 1, 0))
@@ -462,7 +426,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report after many safe declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Safe1', 1, 0))
@@ -477,7 +441,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report for names that differ only by case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass', 1, 0))
@@ -487,7 +451,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with very long name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const longName = 'A'.repeat(100)
@@ -504,7 +468,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('detecting function-interface merging', () => {
     test('should report when function and interface have same name (function first)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('handler', 1, 0))
@@ -517,7 +481,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report when function and interface have same name (interface first)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('callback', 1, 0))
@@ -528,7 +492,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should suggest namespace in message for function-interface merging', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fn', 1, 0))
@@ -538,7 +502,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with camelCase function name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('processData', 1, 0))
@@ -549,7 +513,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with single character function name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('f', 1, 0))
@@ -560,7 +524,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with underscore prefix function name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('_helper', 1, 0))
@@ -570,7 +534,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report function-interface with numbers in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('parse2JSON', 1, 0))
@@ -580,7 +544,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report on the second declaration (interface after function)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('compute', 1, 0))
@@ -591,7 +555,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report on the second declaration (function after interface)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('setup', 1, 0))
@@ -602,7 +566,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with function that has async property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const funcNode = {
@@ -619,7 +583,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with function that has generator property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const funcNode = {
@@ -636,7 +600,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report function-class with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('Service', 1, 0))
@@ -646,7 +610,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report class-function with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Service', 1, 0))
@@ -656,7 +620,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report only once for function-interface pair', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('unique', 1, 0))
@@ -666,7 +630,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report after many safe function declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('a', 1, 0))
@@ -684,7 +648,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('allowing safe declarations', () => {
     test('should not report when declarations have different names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Foo', 1, 0))
@@ -695,7 +659,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report multiple interfaces with same name (safe merging)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Entity', 1, 0))
@@ -705,7 +669,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report multiple classes with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Service', 1, 0))
@@ -715,7 +679,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report multiple functions with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('process', 1, 0))
@@ -725,7 +689,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report class and function with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Handler', 1, 0))
@@ -735,7 +699,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report function and class with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('Handler', 1, 0))
@@ -745,7 +709,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report single class declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('OnlyClass', 1, 0))
@@ -754,7 +718,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report single interface declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('OnlyInterface', 1, 0))
@@ -763,7 +727,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report single function declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('onlyFunction', 1, 0))
@@ -772,7 +736,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report three different names for all three types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Alpha', 1, 0))
@@ -783,7 +747,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report with only interfaces in file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('I1', 1, 0))
@@ -795,7 +759,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report with only classes in file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('C1', 1, 0))
@@ -806,7 +770,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report with only functions in file', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fn1', 1, 0))
@@ -817,14 +781,14 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report when no declarations are made', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       noUnsafeDeclarationMergingRule.create(context)
 
       expect(reports.length).toBe(0)
     })
 
     test('should not report three interfaces with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Shared', 1, 0))
@@ -835,7 +799,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report three classes with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Duplicate', 1, 0))
@@ -846,7 +810,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report when all names are unique across all types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -859,7 +823,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report class-function-interface with different names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Cls', 1, 0))
@@ -875,7 +839,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('message quality', () => {
     test('should use single quotes around declaration name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyType', 1, 0))
@@ -885,7 +849,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should include declaration name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('processData', 1, 0))
@@ -895,7 +859,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should mention both class and interface in class-interface message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Widget', 1, 0))
@@ -906,7 +870,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should mention both function and interface in function-interface message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('handler', 1, 0))
@@ -917,7 +881,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should contain unexpected type behavior for class-interface', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -927,7 +891,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should contain namespace suggestion for function-interface', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('Y', 1, 0))
@@ -937,7 +901,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should start message with Unsafe declaration merging', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Z', 1, 0))
@@ -947,7 +911,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not mention function in class-interface message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('CI', 1, 0))
@@ -957,7 +921,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not mention class in function-interface message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('FI', 1, 0))
@@ -967,12 +931,12 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should produce consistent messages for same type pair', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor1 = noUnsafeDeclarationMergingRule.create(ctx1)
       visitor1.ClassDeclaration(createClassDeclaration('Name1', 1, 0))
       visitor1.TSInterfaceDeclaration(createInterfaceDeclaration('Name1', 5, 0))
 
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor2 = noUnsafeDeclarationMergingRule.create(ctx2)
       visitor2.ClassDeclaration(createClassDeclaration('Name2', 1, 0))
       visitor2.TSInterfaceDeclaration(createInterfaceDeclaration('Name2', 5, 0))
@@ -984,7 +948,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should format message correctly for short name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -995,7 +959,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should format message correctly for long name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const longName = 'VeryLongComponentNameThatDescribesTheFullPurpose'
@@ -1011,7 +975,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration(null)).not.toThrow()
@@ -1020,7 +984,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration(undefined)).not.toThrow()
@@ -1029,7 +993,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration('string')).not.toThrow()
@@ -1037,7 +1001,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const classNode = {
@@ -1057,7 +1021,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node without id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1071,7 +1035,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with non-Identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1090,7 +1054,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1106,7 +1070,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Item', 1, 0))
@@ -1117,7 +1081,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1127,7 +1091,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle variable with non-string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1145,7 +1109,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle missing name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1162,7 +1126,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const classNode = {
@@ -1180,7 +1144,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle id as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1195,7 +1159,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle id as string instead of object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1210,7 +1174,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle id as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1225,7 +1189,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle id as array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1240,7 +1204,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration(true)).not.toThrow()
@@ -1248,28 +1212,28 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration([])).not.toThrow()
     })
 
     test('should handle numeric zero node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration(0)).not.toThrow()
     })
 
     test('should handle empty string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration('')).not.toThrow()
     })
 
     test('should handle node with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1284,7 +1248,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with whitespace-only name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1300,7 +1264,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle deeply nested id object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1319,7 +1283,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle multiple null nodes then valid node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(null)
@@ -1333,7 +1297,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with loc as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1348,7 +1312,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with loc as string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1363,7 +1327,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with loc as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1378,7 +1342,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with loc as array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1393,7 +1357,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle node with abstract property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const node = {
@@ -1410,7 +1374,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle TSInterfaceDeclaration with null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(null)
@@ -1426,7 +1390,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('multiple unsafe mergings', () => {
     test('should report multiple unsafe mergings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -1438,7 +1402,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report only unsafe mergings, not safe ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -1450,7 +1414,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report three unsafe mergings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -1464,7 +1428,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report five unsafe mergings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1476,7 +1440,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report only the last pair when only it is unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Safe', 1, 0))
@@ -1490,7 +1454,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report only the first pair when only it is unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('First', 1, 0))
@@ -1503,7 +1467,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report mixed safe and unsafe pairs correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       // Safe: class + class
@@ -1520,7 +1484,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have correct messages for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Alpha', 1, 0))
@@ -1536,7 +1500,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report class-interface-function-interface pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -1550,7 +1514,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report alternating safe and unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('U1', 1, 0))
@@ -1564,7 +1528,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report count matches unsafe count only', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       // 3 unsafe + 4 safe = 3 reports
@@ -1585,7 +1549,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report many safe declarations then one unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1600,7 +1564,7 @@ describe('no-unsafe-declaration-merging rule', () => {
 
     test('should report same name appearing in multiple unsafe types', () => {
       // Interface A registered, then Class A (unsafe), then Function A (also unsafe against stored Interface)
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Multi', 1, 0))
@@ -1612,7 +1576,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report reports in declaration order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('First', 1, 0))
@@ -1631,7 +1595,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('loc edge cases', () => {
     test('should handle loc with non-number line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1652,7 +1616,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle loc with undefined start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1671,7 +1635,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle empty loc object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1688,7 +1652,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report loc at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1699,7 +1663,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report loc at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1709,7 +1673,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report loc at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -1719,7 +1683,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should provide default loc when no loc on node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('NoLoc', 1, 0))
@@ -1738,7 +1702,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report loc with zero values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Zero', 1, 0))
@@ -1760,7 +1724,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should use second declaration location not first', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Loc', 1, 0))
@@ -1771,7 +1735,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report loc with end properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('End', 1, 0))
@@ -1783,7 +1747,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle loc with missing end object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('NoEnd', 1, 0))
@@ -1803,7 +1767,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle loc start with missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('NoCol', 1, 0))
@@ -1824,7 +1788,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle loc start with missing line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('NoLine', 1, 0))
@@ -1845,7 +1809,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle loc with NaN values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('NaN', 1, 0))
@@ -1867,7 +1831,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle loc with boolean values for line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('BoolLine', 1, 0))
@@ -1893,7 +1857,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/types.ts')
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}', filePath: '/project/src/types.ts' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('T', 1, 0))
@@ -1903,11 +1867,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should work with different source content', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'interface Foo {} class Foo {}',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'interface Foo {} class Foo {}', filePath: '/src/file.ts' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Foo', 1, 0))
@@ -1917,7 +1877,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should work with different workspace roots', () => {
-      const { context, reports } = createMockContext({}, '/home/user/project/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}', filePath: '/home/user/project/file.ts' })
       context.workspaceRoot = '/home/user/project'
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
@@ -1928,7 +1888,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should work with config containing additional options', () => {
-      const { context, reports } = createMockContext({ strictMode: true, level: 'max' })
+      const { context, reports } = createMockRuleContext({ options: [{ strictMode: true, level: 'max' }], source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Opts', 1, 0))
@@ -1938,7 +1898,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should work with config having rules', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       context.config = {
         options: [{}],
         rules: { 'no-unsafe-declaration-merging': 'warn' },
@@ -1952,7 +1912,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('E', 1, 0))
@@ -2008,8 +1968,8 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should create independent visitors per context', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'class Foo {}' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'class Foo {}' })
 
       const visitor1 = noUnsafeDeclarationMergingRule.create(ctx1)
       const visitor2 = noUnsafeDeclarationMergingRule.create(ctx2)
@@ -2025,8 +1985,8 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not cross-contaminate between visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'class Foo {}' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'class Foo {}' })
 
       const visitor1 = noUnsafeDeclarationMergingRule.create(ctx1)
       const visitor2 = noUnsafeDeclarationMergingRule.create(ctx2)
@@ -2078,7 +2038,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('report descriptor', () => {
     test('should have message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2088,7 +2048,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2098,7 +2058,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have loc with start in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2108,7 +2068,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have loc with end in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2118,7 +2078,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have loc start with line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2129,7 +2089,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have loc end with line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2140,7 +2100,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have non-empty message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2151,7 +2111,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have numeric loc start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2161,7 +2121,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have numeric loc start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2171,7 +2131,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have numeric loc end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2181,7 +2141,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should have numeric loc end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Desc', 1, 0))
@@ -2191,7 +2151,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report for function-interface with loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fnDesc', 3, 5))
@@ -2207,7 +2167,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('declaration tracking', () => {
     test('should track first declaration of a name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Tracked', 1, 0))
@@ -2218,7 +2178,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not overwrite first declaration with same type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Same', 1, 0))
@@ -2230,7 +2190,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should trigger on interface then class with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Track', 1, 0))
@@ -2241,7 +2201,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report class-function same name as unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('CF', 1, 0))
@@ -2251,7 +2211,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report function-class same name as unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('FC', 1, 0))
@@ -2261,7 +2221,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should track across different node types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -2274,7 +2234,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report both class-interface and interface-function for same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Triple', 1, 0))
@@ -2286,7 +2246,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report only class-interface for class-function-interface', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Order', 1, 0))
@@ -2299,7 +2259,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not track safe names after safe collision', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Safe', 1, 0))
@@ -2311,7 +2271,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle three interfaces same name safely', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('ISame', 1, 0))
@@ -2322,7 +2282,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle class then function then interface with different names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('C', 1, 0))
@@ -2333,7 +2293,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle function then class then interface with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('AllThree', 1, 0))
@@ -2351,7 +2311,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('name variations', () => {
     test('should report with snake_case name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('my_class', 1, 0))
@@ -2362,7 +2322,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with UPPER_CASE name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MY_CLASS', 1, 0))
@@ -2372,7 +2332,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with trailing underscore name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Name_', 1, 0))
@@ -2382,7 +2342,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with consecutive underscores in name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('my__name', 1, 0))
@@ -2392,7 +2352,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with dollar sign prefix name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('$name', 1, 0))
@@ -2402,7 +2362,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with mixed alphanumeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Component2A', 1, 0))
@@ -2412,7 +2372,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with common TypeScript pattern name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('IUserService', 1, 0))
@@ -2422,7 +2382,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with short two-char name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('fn', 1, 0))
@@ -2432,7 +2392,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with three-char name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Abc', 1, 0))
@@ -2442,7 +2402,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report names that differ by trailing digit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Name', 1, 0))
@@ -2452,7 +2412,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should not report names that differ by prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Config', 1, 0))
@@ -2462,7 +2422,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report with name containing mixed case and numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('XMLParser2', 1, 0))
@@ -2478,7 +2438,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('order variations', () => {
     test('should report when interface comes between class and function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('X', 1, 0))
@@ -2492,7 +2452,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report when function comes between interface and class', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Y', 1, 0))
@@ -2504,7 +2464,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report when class comes between function and interface', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('Z', 1, 0))
@@ -2517,7 +2477,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle all three types in different order - IFC', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Ord', 1, 0))
@@ -2529,7 +2489,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle all three types in different order - CIF', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Ord', 1, 0))
@@ -2542,7 +2502,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle all three types in different order - FCI', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('Ord', 1, 0))
@@ -2555,7 +2515,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle all three types in different order - FIC', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('Ord', 1, 0))
@@ -2567,7 +2527,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle all three types in different order - ICF', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('Ord', 1, 0))
@@ -2579,7 +2539,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle repeated same-type before unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Rep', 1, 0))
@@ -2591,7 +2551,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle interface repeated before unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.TSInterfaceDeclaration(createInterfaceDeclaration('RepI', 1, 0))
@@ -2607,7 +2567,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('visitor invocation', () => {
     test('should handle calling ClassDeclaration multiple times rapidly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -2618,7 +2578,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle calling TSInterfaceDeclaration multiple times rapidly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2629,7 +2589,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle calling FunctionDeclaration multiple times rapidly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2640,7 +2600,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report once when class registered then many interfaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Many', 1, 0))
@@ -2653,7 +2613,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should report once when function registered then many interfaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('ManyFn', 1, 0))
@@ -2665,7 +2625,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle interleaved safe and unsafe declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('A', 1, 0))
@@ -2679,7 +2639,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle many different names with one unsafe', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2692,7 +2652,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle visitor called with no arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       expect(() => visitor.ClassDeclaration()).not.toThrow()
@@ -2742,7 +2702,7 @@ describe('no-unsafe-declaration-merging rule', () => {
   // ==========================================
   describe('stress and robustness', () => {
     test('should handle many unique declaration names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -2753,7 +2713,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle many unique interface names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -2764,7 +2724,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle many unique function names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -2775,7 +2735,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle mixed batch of declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       // 50 classes, 50 functions, 50 interfaces - all unique names
@@ -2789,7 +2749,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle batch with all unsafe mergings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2801,7 +2761,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle large name without issues', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       const hugeName = 'A'.repeat(1000)
@@ -2812,7 +2772,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle alternating types with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       // Class → Interface → Function → Interface → Class
@@ -2826,7 +2786,7 @@ describe('no-unsafe-declaration-merging rule', () => {
     })
 
     test('should handle same name with all three types in sequence twice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'class Foo {}' })
       const visitor = noUnsafeDeclarationMergingRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Seq', 1, 0))

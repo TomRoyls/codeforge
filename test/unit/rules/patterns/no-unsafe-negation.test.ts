@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnsafeNegationRule } from '../../../../src/rules/patterns/no-unsafe-negation.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = '!(a in b);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createUnaryExpression(operator: string, argument: unknown, line = 1, column = 0): unknown {
   return {
@@ -296,21 +260,21 @@ describe('no-unsafe-negation rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(visitor).toHaveProperty('UnaryExpression')
     })
 
     test('should return a visitor with UnaryExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(typeof visitor.UnaryExpression).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor1 = noUnsafeNegationRule.create(context)
       const visitor2 = noUnsafeNegationRule.create(context)
 
@@ -318,21 +282,21 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should accept a valid context without throwing', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
 
       expect(() => noUnsafeNegationRule.create(context)).not.toThrow()
     })
 
     test('should return visitor with only UnaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['UnaryExpression'])
     })
 
     test('should create independent visitors with separate report state', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: '!(a in b);' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: '!(a in b);' })
       const visitor1 = noUnsafeNegationRule.create(ctx1)
       const visitor2 = noUnsafeNegationRule.create(ctx2)
 
@@ -348,7 +312,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should accept context with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);', filePath: '/custom/path.ts' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -362,7 +326,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should accept context with custom source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '!(x in y)')
+      const { context, reports } = createMockRuleContext({ source: '!(x in y)', filePath: '/src/file.ts' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -378,7 +342,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('invalid cases - in operator', () => {
     test('should report ! with in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -393,7 +357,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with in operator and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -407,7 +371,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with in operator and member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -421,7 +385,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include operator name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -435,7 +399,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with both sides as member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -449,7 +413,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with left as literal and right as identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -463,7 +427,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with both sides as literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -477,7 +441,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with left as call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -491,7 +455,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with nested in expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const innerBinary = createBinaryExpression('in', createIdentifier('c'), createIdentifier('d'))
@@ -507,7 +471,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report exactly once per invocation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -521,7 +485,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for in operator with numeric literal left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -535,7 +499,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for in operator with null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -549,7 +513,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for in operator with boolean literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -563,7 +527,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for in operator regardless of prefix field', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -582,7 +546,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('invalid cases - instanceof operator', () => {
     test('should report ! with instanceof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -597,7 +561,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with instanceof operator and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -611,7 +575,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with instanceof operator and member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -625,7 +589,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include operator name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -639,7 +603,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with both sides as member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -653,7 +617,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with left as call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -667,7 +631,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with right as call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -681,7 +645,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with both sides as literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -695,7 +659,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report exactly once per invocation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -709,7 +673,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report with nested instanceof on right side', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const innerBinary = createBinaryExpression(
@@ -729,7 +693,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for instanceof with numeric left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -743,7 +707,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for instanceof with boolean left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -757,7 +721,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for instanceof with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -771,7 +735,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for instanceof regardless of prefix field', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -792,7 +756,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for deeply nested in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const deepBinary = createBinaryExpression(
@@ -809,7 +773,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('valid cases - other operators', () => {
     test('should not report positive negation operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -823,7 +787,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report negative negation operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -837,7 +801,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report bitwise NOT operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -851,7 +815,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report typeof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('typeof', createIdentifier('a')))
@@ -860,7 +824,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report void operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('void', createIdentifier('a')))
@@ -869,7 +833,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report delete operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('delete', createMemberExpression()))
@@ -878,7 +842,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report typeof with in operator argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -892,7 +856,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report void with in operator argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -906,7 +870,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report delete with in operator argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -920,7 +884,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report + with instanceof operator argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -934,7 +898,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report - with instanceof operator argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -948,7 +912,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ~ with instanceof operator argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -962,7 +926,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report typeof with instanceof argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -978,7 +942,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('valid cases - non-relational operators', () => {
     test('should not report ! with equality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -992,7 +956,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with inequality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1006,7 +970,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with less than operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1020,7 +984,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with greater than operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1034,7 +998,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with less than or equal operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1048,7 +1012,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with greater than or equal operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1062,7 +1026,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with addition operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1076,7 +1040,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with subtraction operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1090,7 +1054,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with logical and operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1104,7 +1068,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with logical or operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1118,7 +1082,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with loose equality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1132,7 +1096,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with loose inequality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1146,7 +1110,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with multiplication operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1160,7 +1124,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with division operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1174,7 +1138,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with modulo operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1188,7 +1152,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with exponentiation operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1202,7 +1166,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with bitwise AND operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1216,7 +1180,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with bitwise OR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1230,7 +1194,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with bitwise XOR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1244,7 +1208,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with left shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1258,7 +1222,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with right shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1272,7 +1236,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with unsigned right shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1286,7 +1250,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with nullish coalescing operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1302,7 +1266,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('valid cases - non-BinaryExpression arguments', () => {
     test('should not report ! with identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createIdentifier('a')))
@@ -1311,7 +1275,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(true)))
@@ -1320,7 +1284,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createCallExpression()))
@@ -1329,7 +1293,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createMemberExpression()))
@@ -1338,7 +1302,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1352,7 +1316,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with logical OR expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1366,7 +1330,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createConditionalExpression()))
@@ -1375,7 +1339,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with array expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createArrayExpression()))
@@ -1384,7 +1348,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with object expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createObjectExpression()))
@@ -1393,7 +1357,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createFunctionExpression()))
@@ -1402,7 +1366,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with assignment expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createAssignmentExpression()))
@@ -1411,7 +1375,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with update expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createUpdateExpression()))
@@ -1420,7 +1384,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with nested unary expression (!!(x))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1437,7 +1401,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(0)))
@@ -1446,7 +1410,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(null)))
@@ -1455,7 +1419,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral('hello')))
@@ -1464,7 +1428,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with boolean false literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(false)))
@@ -1473,7 +1437,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with logical AND using in inside', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const inBinary = createBinaryExpression('in', createIdentifier('a'), createIdentifier('b'))
@@ -1486,7 +1450,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with logical OR using instanceof inside', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const instBinary = createBinaryExpression(
@@ -1506,7 +1470,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with nullish coalescing using in inside', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const inBinary = createBinaryExpression('in', createIdentifier('a'), createIdentifier('b'))
@@ -1521,21 +1485,21 @@ describe('no-unsafe-negation rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(() => visitor.UnaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(() => visitor.UnaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(() => visitor.UnaryExpression('string')).not.toThrow()
@@ -1543,7 +1507,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1559,7 +1523,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node without argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1575,7 +1539,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1591,7 +1555,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1642,7 +1606,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with empty type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression({
@@ -1657,7 +1621,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression({
@@ -1672,7 +1636,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle argument with empty type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1689,7 +1653,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle argument with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1706,7 +1670,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle argument that is not an object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', 'string'))
@@ -1715,7 +1679,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle argument that is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', 42))
@@ -1724,7 +1688,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle BinaryExpression without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1740,7 +1704,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle BinaryExpression with null operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1757,7 +1721,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle BinaryExpression with numeric operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1774,7 +1738,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with boolean true as operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1791,7 +1755,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with loc as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1808,7 +1772,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with partial loc (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -1825,7 +1789,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with empty object argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', {}))
@@ -1834,7 +1798,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node with argument having type but no operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1850,7 +1814,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle NaN as column value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression({
@@ -1865,7 +1829,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle Infinity as line value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression({
@@ -1880,7 +1844,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle negative column value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1898,7 +1862,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1915,7 +1879,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1932,7 +1896,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1947,7 +1911,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report location for instanceof at arbitrary position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1964,7 +1928,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report location with high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1980,7 +1944,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report location with high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -1996,7 +1960,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle node without loc by providing default location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression({
@@ -2011,7 +1975,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should preserve start and end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2029,7 +1993,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report different locations for different violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2056,7 +2020,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report location for in at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2073,7 +2037,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report location for instanceof at line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2090,7 +2054,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle loc with start missing line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -2108,7 +2072,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle loc with start missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -2126,7 +2090,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle loc with end missing line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -2144,7 +2108,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle loc with end missing column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const node = {
@@ -2164,7 +2128,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('message quality', () => {
     test('should include negating in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2178,7 +2142,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include left operand in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2192,7 +2156,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2206,7 +2170,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include unexpected in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2220,7 +2184,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include operator keyword in message for in', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2234,7 +2198,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should include operator keyword in message for instanceof', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2248,7 +2212,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2262,7 +2226,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should have string type message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2276,7 +2240,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should have different messages for in vs instanceof', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2296,7 +2260,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2317,7 +2281,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('multiple reports', () => {
     test('should handle multiple violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2337,7 +2301,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle consecutive violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2363,7 +2327,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle alternating valid and invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2390,7 +2354,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle many consecutive in violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2408,7 +2372,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle many consecutive instanceof violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2426,7 +2390,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report correct messages for mixed violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2447,7 +2411,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should preserve order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2481,7 +2445,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for mixed valid/invalid followed by more invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       // valid
@@ -2512,7 +2476,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle 50 consecutive violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2528,7 +2492,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle mixed operator violations and non-violations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const operators = ['in', '===', 'instanceof', '<', 'in', '>', 'instanceof', '==', 'in', '+']
@@ -2548,7 +2512,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/helpers.ts')
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);', filePath: '/project/src/utils/helpers.ts' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2562,7 +2526,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '!(key in obj)')
+      const { context, reports } = createMockRuleContext({ source: '!(key in obj)', filePath: '/src/file.ts' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2576,7 +2540,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ extraProp: true, anotherProp: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ extraProp: true, anotherProp: 42 }], source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2590,7 +2554,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2677,7 +2641,7 @@ describe('no-unsafe-negation rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/long/path/to/some/deeply/nested/directory/structure/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);', filePath: longPath })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2691,11 +2655,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should work with special characters in source', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        '!("\'key" in obj /* comment */)',
-      )
+      const { context, reports } = createMockRuleContext({ source: '!("\'key" in obj /* comment */)', filePath: '/src/file.ts' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2745,7 +2705,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not call logger during normal operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2783,7 +2743,7 @@ describe('no-unsafe-negation rule', () => {
       ['>>'],
       ['>>>'],
     ])('should not report ! with %s operator', (operator) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2799,7 +2759,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('parameterized - relational operators should report', () => {
     test('should report ! with in operator via parametrized check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2814,7 +2774,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with instanceof operator via parametrized check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2833,7 +2793,7 @@ describe('no-unsafe-negation rule', () => {
     test.each([['+'], ['-'], ['~'], ['typeof'], ['void'], ['delete']])(
       'should not report %s with in operator argument',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
         const visitor = noUnsafeNegationRule.create(context)
 
         visitor.UnaryExpression(
@@ -2852,7 +2812,7 @@ describe('no-unsafe-negation rule', () => {
     test.each([['+'], ['-'], ['~'], ['typeof'], ['void'], ['delete']])(
       'should not report %s with instanceof operator argument',
       (operator) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
         const visitor = noUnsafeNegationRule.create(context)
 
         visitor.UnaryExpression(
@@ -2884,7 +2844,7 @@ describe('no-unsafe-negation rule', () => {
       ['AssignmentExpression', createAssignmentExpression()],
       ['UpdateExpression', createUpdateExpression()],
     ])('should not report ! with %s argument', (_name, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', node))
@@ -2904,7 +2864,7 @@ describe('no-unsafe-negation rule', () => {
       [0, 0],
       [999, 999],
     ] as const)('should report correct location at line %i column %i', (line, column) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2934,7 +2894,7 @@ describe('no-unsafe-negation rule', () => {
     ] as const)(
       'should report correct location at line %i column %i for instanceof',
       (line, column) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
         const visitor = noUnsafeNegationRule.create(context)
 
         visitor.UnaryExpression(
@@ -2961,7 +2921,7 @@ describe('no-unsafe-negation rule', () => {
       ['boolean', true],
       ['empty object', {}],
     ])('should not throw for %s node', (_name, node) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       expect(() => visitor.UnaryExpression(node)).not.toThrow()
@@ -2978,7 +2938,7 @@ describe('no-unsafe-negation rule', () => {
       ['%', createMemberExpression(), createLiteral(5)],
       ['**', createIdentifier('a'), createIdentifier('b')],
     ])('should not report ! BinaryExpression with %s operator', (operator, left, right) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -2999,7 +2959,7 @@ describe('no-unsafe-negation rule', () => {
       ['call expression left, identifier right', createCallExpression(), createIdentifier('b')],
       ['identifier left, call expression right', createIdentifier('a'), createCallExpression()],
     ])('should report for in with %s', (_desc, left, right) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createBinaryExpression('in', left, right)))
@@ -3020,7 +2980,7 @@ describe('no-unsafe-negation rule', () => {
       ['identifier left, member expression right', createIdentifier('a'), createMemberExpression()],
       ['call expression left, identifier right', createCallExpression(), createIdentifier('Obj')],
     ])('should report for instanceof with %s', (_desc, left, right) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3033,7 +2993,7 @@ describe('no-unsafe-negation rule', () => {
 
   describe('additional individual tests', () => {
     test('should not report ! with loose equality and identifier operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3047,7 +3007,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with loose inequality and literal operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3061,7 +3021,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with strict equality and member expression operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3075,7 +3035,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with strict inequality and call expression operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3089,7 +3049,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with in and both sides as call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3103,7 +3063,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report ! with instanceof and both sides as call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3117,7 +3077,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for !true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(true)))
@@ -3126,7 +3086,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for !false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(false)))
@@ -3135,7 +3095,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for !0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(0)))
@@ -3144,7 +3104,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for !1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(1)))
@@ -3153,7 +3113,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral('')))
@@ -3162,7 +3122,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for non-empty string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral('hello')))
@@ -3171,7 +3131,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for in with deeply nested member arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const nestedMember = {
@@ -3193,7 +3153,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for instanceof with deeply nested call arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const nestedCall = {
@@ -3214,7 +3174,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for void with in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3228,7 +3188,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for void with instanceof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3242,7 +3202,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for delete with in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3256,7 +3216,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report for delete with instanceof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3270,7 +3230,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle double negation !! with in operator correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3287,7 +3247,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should handle triple negation !!! with in operator correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const innerUnary = createUnaryExpression(
@@ -3302,7 +3262,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report in with mixed valid and invalid in same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createIdentifier('x')))
@@ -3318,7 +3278,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report instanceof with mixed valid and invalid in same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(createUnaryExpression('!', createLiteral(true)))
@@ -3334,7 +3294,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should not report ! with nullish coalescing and identifier operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(
@@ -3348,7 +3308,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should report for in with multiple levels of nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       const inner = createBinaryExpression(
@@ -3363,7 +3323,7 @@ describe('no-unsafe-negation rule', () => {
     })
 
     test('should correctly handle operator field as undefined on BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: '!(a in b);' })
       const visitor = noUnsafeNegationRule.create(context)
 
       visitor.UnaryExpression(

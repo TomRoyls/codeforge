@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUselessConcatRule } from '../../../../src/rules/patterns/no-useless-concat.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const s = "" + str;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBinaryExpression(
   operator: string,
@@ -310,21 +274,21 @@ describe('no-useless-concat rule', () => {
   // --- Create / Visitor ---
   describe('create', () => {
     test('should return visitor object with BinaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should return a function for BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -332,14 +296,14 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not return undefined from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor1 = noUselessConcatRule.create(context)
       const visitor2 = noUselessConcatRule.create(context)
 
@@ -347,21 +311,21 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should accept context with different file paths', () => {
-      const { context } = createMockContext({}, '/src/other.ts')
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;', filePath: '/src/other.ts' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should accept context with different source code', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'x + ""')
+      const { context } = createMockRuleContext({ source: 'x + ""', filePath: '/src/file.ts' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should work with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
@@ -371,7 +335,7 @@ describe('no-useless-concat rule', () => {
   // --- Detection: Empty String Left ---
   describe('detecting empty string concat on left', () => {
     test('should report when left operand is empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -382,7 +346,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + variable pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -397,7 +361,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + number pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createNumericLiteral(42))
@@ -408,7 +372,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + boolean pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -423,7 +387,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + call expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -438,7 +402,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + member expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createMemberExpression())
@@ -449,7 +413,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + template literal pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createTemplateLiteral())
@@ -460,7 +424,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + unary expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -475,7 +439,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + array expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createArrayExpression())
@@ -486,7 +450,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + conditional expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -501,7 +465,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + new expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createNewExpression())
@@ -512,7 +476,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + function expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -527,7 +491,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + arrow function pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -542,7 +506,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + nested binary expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const innerBinary = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -554,7 +518,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + object expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createObjectExpression())
@@ -565,7 +529,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + update expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createUpdateExpression())
@@ -576,7 +540,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + await expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createAwaitExpression())
@@ -587,7 +551,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + sequence expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -602,7 +566,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + assignment expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -617,7 +581,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report "" + logical expression pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -635,7 +599,7 @@ describe('no-useless-concat rule', () => {
   // --- Detection: Empty String Right ---
   describe('detecting empty string concat on right', () => {
     test('should report when right operand is empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('str'), createEmptyStringLiteral())
@@ -646,7 +610,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report variable + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -661,7 +625,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report number + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNumericLiteral(42), createEmptyStringLiteral())
@@ -672,7 +636,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report boolean + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -687,7 +651,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report call expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -702,7 +666,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report member expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createMemberExpression(), createEmptyStringLiteral())
@@ -713,7 +677,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report template literal + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createTemplateLiteral(), createEmptyStringLiteral())
@@ -724,7 +688,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report unary expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -739,7 +703,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report array expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createArrayExpression(), createEmptyStringLiteral())
@@ -750,7 +714,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report conditional expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -765,7 +729,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report new expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNewExpression(), createEmptyStringLiteral())
@@ -776,7 +740,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report function expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -791,7 +755,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report arrow function + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -806,7 +770,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report nested binary expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const innerBinary = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -818,7 +782,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report object expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createObjectExpression(), createEmptyStringLiteral())
@@ -829,7 +793,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report update expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createUpdateExpression(), createEmptyStringLiteral())
@@ -840,7 +804,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report await expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createAwaitExpression(), createEmptyStringLiteral())
@@ -851,7 +815,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report sequence expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -866,7 +830,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report assignment expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -881,7 +845,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report logical expression + "" pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -899,7 +863,7 @@ describe('no-useless-concat rule', () => {
   // --- Valid Concatenations ---
   describe('allowing valid concatenations', () => {
     test('should not report when both operands are non-empty strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -914,7 +878,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating non-empty string with variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -929,7 +893,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating variable with non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -944,7 +908,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating two variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -955,7 +919,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating number literal with variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNumericLiteral(42), createIdentifier('x'))
@@ -966,7 +930,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating variable with number literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createNumericLiteral(42))
@@ -977,7 +941,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating two number literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNumericLiteral(1), createNumericLiteral(2))
@@ -988,7 +952,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty string and right is number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1003,7 +967,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is number and right is non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1018,7 +982,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating boolean with variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createBooleanLiteral(true), createIdentifier('x'))
@@ -1029,7 +993,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when concatenating variable with boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createBooleanLiteral(false))
@@ -1040,7 +1004,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty string and right is call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1055,7 +1019,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is call expression and right is non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1070,7 +1034,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when both sides are member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createMemberExpression(), createMemberExpression())
@@ -1081,7 +1045,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when both sides are call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1096,7 +1060,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty single character string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1111,7 +1075,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when right is non-empty single character string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1126,7 +1090,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty string with spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1141,7 +1105,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when right is non-empty string with spaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1156,7 +1120,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty string with special chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1171,7 +1135,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when right is non-empty string with tab', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1186,7 +1150,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty unicode string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1201,7 +1165,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty emoji string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1216,7 +1180,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is non-empty string and right is template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1231,7 +1195,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when both sides are non-empty long strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1246,7 +1210,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is conditional expression and right is variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createConditionalExpression(), createIdentifier('x'))
@@ -1257,7 +1221,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is array expression and right is variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createArrayExpression(), createIdentifier('x'))
@@ -1268,7 +1232,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is object expression and right is variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createObjectExpression(), createIdentifier('x'))
@@ -1279,7 +1243,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is unary expression and right is variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1294,7 +1258,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when left is new expression and right is variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNewExpression(), createIdentifier('x'))
@@ -1332,7 +1296,7 @@ describe('no-useless-concat rule', () => {
     ]
 
     test('should not report for minus operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('-', createIdentifier('a'), createIdentifier('b'))
@@ -1343,7 +1307,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for multiply operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('*', createIdentifier('a'), createIdentifier('b'))
@@ -1354,7 +1318,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for division operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('/', createIdentifier('a'), createIdentifier('b'))
@@ -1365,7 +1329,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for strict equality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('a'), createIdentifier('b'))
@@ -1376,7 +1340,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for less than operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('<', createIdentifier('a'), createIdentifier('b'))
@@ -1387,7 +1351,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for remainder operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('%', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1398,7 +1362,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for exponentiation operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('**', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1409,7 +1373,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for strict inequality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1424,7 +1388,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for loose equality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('==', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1435,7 +1399,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for loose inequality operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('!=', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1446,7 +1410,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for greater than operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('>', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1457,7 +1421,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for less than or equal operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('<=', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1468,7 +1432,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for greater than or equal operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('>=', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1479,7 +1443,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for left shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('<<', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1490,7 +1454,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for right shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('>>', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1501,7 +1465,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for unsigned right shift operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1516,7 +1480,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for bitwise AND operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('&', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1527,7 +1491,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for bitwise OR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('|', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1538,7 +1502,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for bitwise XOR operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('^', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1549,7 +1513,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for in operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('in', createEmptyStringLiteral(), createIdentifier('obj'))
@@ -1560,7 +1524,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for instanceof operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1575,7 +1539,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for minus operator even with empty string left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('-', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1586,7 +1550,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for minus operator even with empty string right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('-', createIdentifier('str'), createEmptyStringLiteral())
@@ -1597,7 +1561,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for multiply operator even with empty string left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('*', createEmptyStringLiteral(), createIdentifier('str'))
@@ -1608,7 +1572,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for division operator even with empty string right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('/', createIdentifier('str'), createEmptyStringLiteral())
@@ -1619,7 +1583,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for strict equality with empty string on both sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1634,7 +1598,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for less than with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('<', createEmptyStringLiteral(), createIdentifier('x'))
@@ -1645,7 +1609,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for greater than with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('>', createEmptyStringLiteral(), createIdentifier('x'))
@@ -1656,7 +1620,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for bitwise AND with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('&', createEmptyStringLiteral(), createIdentifier('x'))
@@ -1667,7 +1631,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for remainder with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('%', createEmptyStringLiteral(), createIdentifier('x'))
@@ -1678,7 +1642,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report for exponentiation with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('**', createEmptyStringLiteral(), createIdentifier('x'))
@@ -1692,21 +1656,21 @@ describe('no-useless-concat rule', () => {
   // --- Edge Cases ---
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
@@ -1714,7 +1678,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -1728,7 +1692,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -1743,7 +1707,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle missing operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -1756,7 +1720,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle missing left operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -1769,7 +1733,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle missing right operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -1782,7 +1746,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle null left operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', null, createIdentifier('str'))
@@ -1792,7 +1756,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle null right operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('str'), null)
@@ -1802,7 +1766,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle literal that is not a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1817,7 +1781,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle literal with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1832,7 +1796,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle literal without value property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', { type: 'Literal' }, createIdentifier('str'))
@@ -1843,7 +1807,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle empty string on both sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1858,7 +1822,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle empty string left with boolean right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1873,7 +1837,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle boolean left with empty string right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1888,7 +1852,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle empty string left with null literal right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createNullLiteral())
@@ -1899,7 +1863,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle null literal left with empty string right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNullLiteral(), createEmptyStringLiteral())
@@ -1910,7 +1874,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle empty string left with number zero right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createNumericLiteral(0))
@@ -1921,7 +1885,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle number zero left with empty string right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createNumericLiteral(0), createEmptyStringLiteral())
@@ -1932,7 +1896,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle NaN left with empty string right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -1947,7 +1911,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle empty string left with undefined identifier right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), {
@@ -1961,7 +1925,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle empty string left with nested binary on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const inner = createBinaryExpression('+', createIdentifier('a'), createIdentifier('b'))
@@ -1973,7 +1937,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle deeply nested empty string concat', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const inner = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -1986,7 +1950,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle node that is a plain empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(() => visitor.BinaryExpression({})).not.toThrow()
@@ -1994,7 +1958,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle node that is an array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       expect(() => visitor.BinaryExpression([1, 2, 3])).not.toThrow()
@@ -2005,7 +1969,7 @@ describe('no-useless-concat rule', () => {
   // --- Location Reporting ---
   describe('location reporting', () => {
     test('should include location in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2023,7 +1987,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report correct start line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2039,7 +2003,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report correct start column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2055,7 +2019,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report correct end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2071,7 +2035,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2087,7 +2051,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report location for right-side empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2104,7 +2068,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report location for both-sides empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2120,7 +2084,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle zero line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2137,7 +2101,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2153,7 +2117,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2169,7 +2133,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle multiline expression location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2186,7 +2150,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -2203,7 +2167,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should provide default location when loc is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -2221,7 +2185,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should provide default location when loc is undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -2238,7 +2202,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should provide default location when loc has missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = {
@@ -2260,7 +2224,7 @@ describe('no-useless-concat rule', () => {
   // --- Message Quality ---
   describe('message quality', () => {
     test('should mention useless in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2271,7 +2235,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should mention concatenation in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2282,7 +2246,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should mention empty string in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2293,7 +2257,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2304,7 +2268,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should be the same message for left and right empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const nodeLeft = createBinaryExpression(
@@ -2325,7 +2289,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should start with "Unexpected" in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2336,7 +2300,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should be consistent across multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node1 = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('a'))
@@ -2349,7 +2313,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should have message that is a string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2360,7 +2324,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should have message ending with a period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('str'))
@@ -2371,7 +2335,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should have message from right-side empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('str'), createEmptyStringLiteral())
@@ -2387,7 +2351,7 @@ describe('no-useless-concat rule', () => {
   // --- Multiple Reports ---
   describe('multiple violations', () => {
     test('should report multiple useless concatenations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node1 = createBinaryExpression(
@@ -2408,7 +2372,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report three left-side violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -2424,7 +2388,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report three right-side violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -2440,7 +2404,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report five mixed violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2457,7 +2421,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report each violation with correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node1 = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('a'), {
@@ -2477,7 +2441,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should not report when mixing valid and invalid expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const invalid = createBinaryExpression(
@@ -2498,7 +2462,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report ten violations in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2514,7 +2478,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report double empty string as one violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2529,7 +2493,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should report only invalid among many valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       for (let i = 0; i < 9; i++) {
@@ -2552,7 +2516,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should handle alternating valid and invalid expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       for (let i = 0; i < 6; i++) {
@@ -2572,7 +2536,7 @@ describe('no-useless-concat rule', () => {
   // --- Context Variations ---
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;', filePath: '/src/components/App.tsx' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2583,7 +2547,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = "" + y')
+      const { context, reports } = createMockRuleContext({ source: 'const x = "" + y', filePath: '/src/file.ts' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('y'))
@@ -2594,7 +2558,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;', filePath: '/src/index.js' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2605,7 +2569,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with .jsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/App.jsx')
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;', filePath: '/src/App.jsx' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2616,7 +2580,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;', filePath: '/src/App.tsx' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2627,7 +2591,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with deep file path', () => {
-      const { context, reports } = createMockContext({}, '/very/deep/nested/path/to/module/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;', filePath: '/very/deep/nested/path/to/module/file.ts' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2638,7 +2602,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with config options', () => {
-      const { context, reports } = createMockContext({ someOption: true })
+      const { context, reports } = createMockRuleContext({ options: [{ someOption: true }], source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2649,7 +2613,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with empty config options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2689,7 +2653,7 @@ describe('no-useless-concat rule', () => {
     })
 
     test('should work with minimal source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), createIdentifier('x'))
@@ -2725,7 +2689,7 @@ describe('no-useless-concat rule', () => {
       { op: 'in', name: 'in' },
       { op: 'instanceof', name: 'instanceof' },
     ])('should not report for $name operator ($op) with empty string left', ({ op }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(op, createEmptyStringLiteral(), createIdentifier('x'))
@@ -2768,7 +2732,7 @@ describe('no-useless-concat rule', () => {
         desc: 'arrow function',
       },
     ])('should report "" + $desc', ({ right }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', createEmptyStringLiteral(), right)
@@ -2811,7 +2775,7 @@ describe('no-useless-concat rule', () => {
         desc: 'arrow function',
       },
     ])('should report $desc + ""', ({ left }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', left, createEmptyStringLiteral())
@@ -2835,7 +2799,7 @@ describe('no-useless-concat rule', () => {
       { value: 'false', desc: 'string false' },
       { value: ' ', desc: 'single space' },
     ])('should not report "$value" + variable ($desc)', ({ value }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression(
@@ -2860,7 +2824,7 @@ describe('no-useless-concat rule', () => {
       { value: false, desc: 'boolean false' },
       { value: null, desc: 'null' },
     ])('should not report literal $desc + variable', ({ value }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const s = "" + str;' })
       const visitor = noUselessConcatRule.create(context)
 
       const node = createBinaryExpression('+', { type: 'Literal', value }, createIdentifier('x'))

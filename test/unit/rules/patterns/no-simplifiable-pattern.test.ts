@@ -1,46 +1,26 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noSimplifiablePatternRule } from '../../../../src/rules/patterns/no-simplifiable-pattern.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
+interface LocalReportDescriptor extends ReportDescriptor {
   data?: { test: string }
 }
 
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'x ? true : false;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-        data: descriptor.data,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
+function createMockContextWithData(overrides: Parameters<typeof createMockRuleContext>[0] = {}) {
+  const localReports: LocalReportDescriptor[] = []
+  const result = createMockRuleContext(overrides)
+  const originalReport = result.context.report.bind(result.context)
+  result.context.report = (descriptor: LocalReportDescriptor) => {
+    localReports.push({
+      message: descriptor.message,
+      loc: descriptor.loc,
+      fix: descriptor.fix,
+      data: descriptor.data,
+    })
+    originalReport(descriptor)
+  }
+  return { context: result.context, reports: localReports }
 }
 
 function createConditionalExpression(
@@ -206,7 +186,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with ConditionalExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(visitor).toHaveProperty('ConditionalExpression')
@@ -214,8 +194,11 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should return same visitor structure for different contexts', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext({}, '/other/file.ts')
+      const { context: ctx1 } = createMockContextWithData({ source: 'x ? true : false;' })
+      const { context: ctx2 } = createMockContextWithData({
+        source: 'x ? true : false;',
+        filePath: '/other/file.ts',
+      })
       const visitor1 = noSimplifiablePatternRule.create(ctx1)
       const visitor2 = noSimplifiablePatternRule.create(ctx2)
 
@@ -223,15 +206,19 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should return visitor with only ConditionalExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['ConditionalExpression'])
     })
 
     test('should create independent visitors for each context', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockContextWithData({
+        source: 'x ? true : false;',
+      })
+      const { context: ctx2, reports: r2 } = createMockContextWithData({
+        source: 'x ? true : false;',
+      })
       const visitor1 = noSimplifiablePatternRule.create(ctx1)
       const visitor2 = noSimplifiablePatternRule.create(ctx2)
 
@@ -248,7 +235,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle being called multiple times', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -264,7 +251,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not throw when context has minimal config', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => {
@@ -279,14 +266,17 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
       expect(visitor).not.toBeNull()
       expect(visitor).toBeDefined()
     })
 
     test('should accept context with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockContextWithData({
+        source: '',
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -308,7 +298,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('detecting x ? true : false pattern', () => {
     test('should report x ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -326,7 +316,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report value ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -342,7 +332,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report flag ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -359,7 +349,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix to !!test', () => {
       const source = 'x ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -378,7 +371,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report isActive ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -394,7 +387,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report result ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -410,7 +403,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report enabled ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -426,7 +419,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report ok ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -442,7 +435,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report done ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -458,7 +451,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report visible ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -474,7 +467,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report check ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -489,7 +482,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report isValid ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -505,7 +498,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report cond ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -521,7 +514,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report hasPermission ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -537,7 +530,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report canEdit ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -552,7 +545,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report bool ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -568,7 +561,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report data ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -583,7 +576,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report shouldShow ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -598,7 +591,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report arr ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -613,7 +606,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report obj ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -633,7 +626,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('detecting x ? false : true pattern', () => {
     test('should report x ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -650,7 +643,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report condition ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -667,7 +660,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix to !test', () => {
       const source = 'x ? false : true;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -686,7 +682,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report isActive ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -702,7 +698,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report value ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -718,7 +714,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report flag ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -734,7 +730,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report enabled ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -749,7 +745,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report result ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -764,7 +760,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report check ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -779,7 +775,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report ok ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -794,7 +790,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report done ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -809,7 +805,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report visible ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -824,7 +820,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report isValid ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -839,7 +835,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report cond ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -854,7 +850,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report hasPermission ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -869,7 +865,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report shouldShow ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -884,7 +880,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report bool ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -899,7 +895,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report data ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -914,7 +910,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report arr ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -929,7 +925,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report obj ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -949,7 +945,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('detecting !!x ? true : false pattern', () => {
     test('should report !!x ? true : false with special message about already being boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -978,7 +974,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix to x (remove unnecessary ternary)', () => {
       const source = '!!x ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -1009,7 +1008,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !!value ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createDoubleNegation(createIdentifier('value'), 2)
@@ -1022,7 +1021,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !!flag ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createDoubleNegation(createIdentifier('flag'), 2)
@@ -1034,7 +1033,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !!isActive ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createDoubleNegation(createIdentifier('isActive'), 2)
@@ -1046,7 +1045,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !!result ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createDoubleNegation(createIdentifier('result'), 2)
@@ -1063,7 +1062,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('valid patterns that should not report', () => {
     test('should not report x ? 1 : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1078,7 +1077,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? "yes" : "no"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1093,7 +1092,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? true : null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1108,7 +1107,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? null : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1123,7 +1122,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? false : null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1138,7 +1137,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? undefined : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1153,7 +1152,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !x ? true : false (can be simplified to !!(!x))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createUnaryExpression('!', createIdentifier('x'), 1)
@@ -1165,7 +1164,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !x ? false : true (can be simplified to !(!x))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createUnaryExpression('!', createIdentifier('x'), 1)
@@ -1177,7 +1176,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report !!x ? false : true (can be simplified to !(!!x))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const innerNot = createUnaryExpression('!', createIdentifier('x'), 3)
@@ -1190,7 +1189,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? true : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1205,7 +1204,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? false : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1220,7 +1219,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? 42 : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1235,7 +1234,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? "a" : "b"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1250,7 +1249,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? 0 : 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1265,7 +1264,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? "" : "default"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1280,7 +1279,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? true : undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1295,7 +1294,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? false : undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1310,7 +1309,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? null : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1325,7 +1324,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? null : null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1340,7 +1339,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? undefined : undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1355,7 +1354,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? 100 : 200', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1370,7 +1369,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? "enabled" : "disabled"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1385,7 +1384,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? -1 : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1400,7 +1399,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? 3.14 : 2.71', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1415,7 +1414,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? null : undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1430,7 +1429,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? undefined : null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1445,7 +1444,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? 0 : ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1460,7 +1459,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? NaN : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1475,7 +1474,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? Infinity : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1490,7 +1489,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? BigInt(1) : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1505,7 +1504,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report x ? /regex/ : "fallback"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1525,21 +1524,21 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression('string')).not.toThrow()
@@ -1548,7 +1547,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -1563,7 +1562,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node without test', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -1576,7 +1575,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node without consequent', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -1589,7 +1588,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node without alternate', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -1602,7 +1601,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node without loc but with range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -1620,7 +1619,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -1641,7 +1640,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1659,7 +1658,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1674,7 +1673,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle non-identifier test in getTestDescription (uses "condition")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createUnaryExpression('!', createIdentifier('x'), 1)
@@ -1687,7 +1686,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node with empty object as test', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => {
@@ -1702,7 +1701,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node with empty object as consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1717,7 +1716,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node with empty object as alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1732,7 +1731,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle wrong node type like "IfStatement"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1746,7 +1745,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle wrong node type like "BinaryExpression"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1760,7 +1759,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle number as test value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1775,7 +1774,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle string as test value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1790,7 +1789,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle boolean as test value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1805,7 +1804,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle consequent with type but non-Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1819,7 +1818,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle alternate with type but non-Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1833,7 +1832,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle consequent as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1847,7 +1846,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle alternate as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1861,7 +1860,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle Literal with value true but wrong type field', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -1880,7 +1879,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location for line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1898,7 +1897,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report correct location for line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1916,7 +1915,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report correct location for line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1934,7 +1933,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report location for false:true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1952,7 +1951,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -1970,7 +1969,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should include location in report for !!x ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -1999,7 +1998,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -2018,7 +2017,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2036,7 +2035,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report correct location with high column offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2053,7 +2052,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report location for !x ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createUnaryExpression('!', createIdentifier('x'), 0)
@@ -2072,7 +2071,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report location for !x ? false : true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createUnaryExpression('!', createIdentifier('x'), 0)
@@ -2091,7 +2090,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report location with multi-line offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2108,7 +2107,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should provide location object with start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2124,7 +2123,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should provide location start with line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2140,7 +2139,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should provide location end with line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2161,7 +2160,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention unnecessary ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2177,7 +2176,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should mention !!{{test}} for true:false pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2192,7 +2191,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should mention Boolean({{test}}) for true:false pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2207,7 +2206,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should mention !{{test}} for false:true pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2222,7 +2221,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should mention !!{{test}} for !!x ? true : false (special case)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -2246,7 +2245,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should contain Unnecessary at start of message for standard patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2261,7 +2260,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should mention ternary in false:true pattern message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2276,7 +2275,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should mention ternary in !!x ? true:false pattern message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createDoubleNegation(createIdentifier('x'), 2)
@@ -2288,7 +2287,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should have data.test populated for identifier test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2303,7 +2302,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should have data.test set to condition for non-identifier test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = createUnaryExpression('!', createIdentifier('x'), 0)
@@ -2320,7 +2319,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('multiple sequential visits', () => {
     test('should report each time visitor is called with matching pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2343,7 +2342,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report independently for different pattern types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2368,7 +2367,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report for valid pattern between two invalid ones', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2397,7 +2396,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should accumulate reports correctly across 5 calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2413,7 +2412,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should track data.test for each report separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2435,7 +2434,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle null node between valid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2459,7 +2458,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle mix of !!x and simple patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const simpleNode = createConditionalExpression(
@@ -2482,7 +2481,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle 10 rapid sequential visits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -2499,7 +2498,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should correctly handle alternating valid and invalid patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       for (let i = 0; i < 4; i++) {
@@ -2525,7 +2524,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should track locations independently for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node1 = createConditionalExpression(
@@ -2558,7 +2557,7 @@ describe('no-simplifiable-pattern rule', () => {
   // ============================================================
   describe('context variations', () => {
     test('should work with default file path', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2573,7 +2572,10 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/helpers.ts')
+      const { context, reports } = createMockContextWithData({
+        source: 'x ? true : false;',
+        filePath: '/project/src/utils/helpers.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2588,7 +2590,10 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js', 'x ? true : false;')
+      const { context, reports } = createMockContextWithData({
+        source: 'x ? true : false;',
+        filePath: '/src/file.js',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2605,11 +2610,10 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should work with .jsx file extension', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/component.jsx',
-        'flag ? true : false',
-      )
+      const { context, reports } = createMockContextWithData({
+        source: 'flag ? true : false',
+        filePath: '/src/component.jsx',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2626,7 +2630,10 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockContextWithData({
+        source: '',
+        filePath: '/src/empty.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2644,7 +2651,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should work with source code containing pattern', () => {
       const source = 'const result = isActive ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2663,7 +2673,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should work with multiline source code', () => {
       const source = 'const x = 1;\nconst y = a ? true : false;\nconst z = 3;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2680,11 +2693,10 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/home/user/projects/myapp/src/components/ui/Button.tsx',
-        'visible ? true : false',
-      )
+      const { context, reports } = createMockContextWithData({
+        source: 'visible ? true : false',
+        filePath: '/home/user/projects/myapp/src/components/ui/Button.tsx',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2735,7 +2747,10 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle context with extra config options', () => {
-      const { context, reports } = createMockContext({ strict: true, customFlag: 'yes' })
+      const { context, reports } = createMockContextWithData({
+        options: [{ strict: true, customFlag: 'yes' }],
+        source: 'x ? true : false;',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2756,7 +2771,10 @@ describe('no-simplifiable-pattern rule', () => {
   describe('fix functionality', () => {
     test('should provide fix for x ? true : false', () => {
       const source = 'x ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2775,7 +2793,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix for x ? false : true', () => {
       const source = 'value ? false : true;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2794,7 +2815,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix for !!x ? true : false (special case - fix to !!x)', () => {
       const source = '!!x ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -2826,7 +2850,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix with correct range for true:false pattern', () => {
       const source = 'flag ? true : false'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2844,7 +2871,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix with correct range for false:true pattern', () => {
       const source = 'flag ? false : true'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2862,7 +2892,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix using source code for test expression', () => {
       const source = 'isActive ? true : false'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2879,7 +2912,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should provide fix without range when node lacks range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = {
@@ -2900,7 +2933,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix for !x ? true : false using source', () => {
       const source = '!x ? true : false'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -2926,7 +2962,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix for !x ? false : true using source', () => {
       const source = '!x ? false : true'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -2952,7 +2991,10 @@ describe('no-simplifiable-pattern rule', () => {
 
     test('should provide fix with offset range when node is not at start', () => {
       const source = '  x ? true : false;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -2989,7 +3031,7 @@ describe('no-simplifiable-pattern rule', () => {
     ] as const)(
       'should report $name ? true : false and extract test name "$expected"',
       ({ name, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
         const visitor = noSimplifiablePatternRule.create(context)
 
         const node = createConditionalExpression(
@@ -3019,7 +3061,7 @@ describe('no-simplifiable-pattern rule', () => {
     ] as const)(
       'should report $name ? false : true and extract test name "$expected"',
       ({ name, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
         const visitor = noSimplifiablePatternRule.create(context)
 
         const node = createConditionalExpression(
@@ -3039,7 +3081,7 @@ describe('no-simplifiable-pattern rule', () => {
       { cons: true, alt: false, expected: true },
       { cons: false, alt: true, expected: true },
     ])('should detect pattern with consequent=$cons, alternate=$alt', ({ cons, alt, expected }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -3065,7 +3107,7 @@ describe('no-simplifiable-pattern rule', () => {
       { cons: false, alt: false },
       { cons: 42, alt: 0 },
     ])('should NOT report with consequent=$cons, alternate=$alt', ({ cons, alt }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -3087,7 +3129,10 @@ describe('no-simplifiable-pattern rule', () => {
       { name: 'flag', source: 'flag ? true : false', expectedFix: '!!flag' },
       { name: 'isActive', source: 'isActive ? true : false', expectedFix: '!!isActive' },
     ] as const)('should fix $source to $expectedFix', ({ name, source, expectedFix }) => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -3109,7 +3154,10 @@ describe('no-simplifiable-pattern rule', () => {
       { name: 'flag', source: 'flag ? false : true', expectedFix: '!flag' },
       { name: 'isActive', source: 'isActive ? false : true', expectedFix: '!isActive' },
     ] as const)('should fix $source to $expectedFix', ({ name, source, expectedFix }) => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockContextWithData({
+        source: source,
+        filePath: '/src/file.ts',
+      })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const node = createConditionalExpression(
@@ -3134,7 +3182,7 @@ describe('no-simplifiable-pattern rule', () => {
       { input: 'string', description: 'string' },
       { input: true, description: 'boolean primitive' },
     ])('should handle $description node gracefully', ({ input }) => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression(input)).not.toThrow()
@@ -3148,7 +3196,7 @@ describe('no-simplifiable-pattern rule', () => {
       { type: 'ArrowFunctionExpression' },
       { type: 'ReturnStatement' },
     ])('should not report for node type $type', ({ type }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -3164,7 +3212,7 @@ describe('no-simplifiable-pattern rule', () => {
 
   describe('additional coverage', () => {
     test('should not report for x ? true : 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3175,7 +3223,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report for x ? 0 : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3186,7 +3234,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report for a ? true : false with single char identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3202,7 +3250,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report for z ? false : true with single char identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3218,7 +3266,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report for _underscore ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3234,7 +3282,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report for $dollar ? true : false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3250,7 +3298,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node with only type and consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -3262,7 +3310,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node with only type and alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -3274,7 +3322,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle node with only type and test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression({
@@ -3286,7 +3334,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report with empty string identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3302,7 +3350,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report for Literal consequent with non-boolean value and Literal alternate false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3317,7 +3365,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report for Literal consequent false and Literal alternate with non-boolean value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3332,7 +3380,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle false:true with identifier named "condition"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3348,7 +3396,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle true:false with identifier named "condition"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3364,7 +3412,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should not report for consequent being non-boolean truthy literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(
@@ -3379,28 +3427,28 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should handle array as node input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression([])).not.toThrow()
     })
 
     test('should handle function as node input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression(() => {})).not.toThrow()
     })
 
     test('should handle Symbol as node input', () => {
-      const { context } = createMockContext()
+      const { context } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       expect(() => visitor.ConditionalExpression(Symbol('test'))).not.toThrow()
     })
 
     test('should report with loc but no range on test node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       const testNode = {
@@ -3417,7 +3465,7 @@ describe('no-simplifiable-pattern rule', () => {
     })
 
     test('should report for both true:false and false:true in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockContextWithData({ source: 'x ? true : false;' })
       const visitor = noSimplifiablePatternRule.create(context)
 
       visitor.ConditionalExpression(

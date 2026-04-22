@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnnecessaryQualifierRule } from '../../../../src/rules/patterns/no-unnecessary-qualifier.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'import * as A from "lib"; import { B } from "lib"; A.B;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createProgram(imports: unknown[], body: unknown[] = []): unknown {
   return {
@@ -248,7 +212,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(visitor).toHaveProperty('Program')
@@ -257,7 +221,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
     // NEW create tests
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -265,28 +229,28 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should return visitor with exactly Program and MemberExpression methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(Object.keys(visitor).sort()).toEqual(['MemberExpression', 'Program'])
     })
 
     test('should have Program as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(typeof visitor.Program).toBe('function')
     })
 
     test('should have MemberExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(typeof visitor.MemberExpression).toBe('function')
     })
 
     test('should return new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor1 = noUnnecessaryQualifierRule.create(context)
       const visitor2 = noUnnecessaryQualifierRule.create(context)
 
@@ -320,7 +284,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report without Program being called first', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // Call MemberExpression without calling Program first
@@ -331,7 +295,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should create independent visitors with separate import state', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor1 = noUnnecessaryQualifierRule.create(context)
       const visitor2 = noUnnecessaryQualifierRule.create(context)
 
@@ -352,7 +316,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle Program being called multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // First program with no namespace
@@ -369,7 +333,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should overwrite imports when Program is called again', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program1 = createProgram([
@@ -397,7 +361,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('detecting unnecessary qualifiers', () => {
     test('should report when namespace qualifier has direct import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -416,7 +380,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report when aliased import matches namespace member', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -432,7 +396,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report multiple unnecessary qualifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -449,7 +413,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -467,7 +431,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
     // NEW detection positive tests
     test('should detect qualifier with single-letter names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -481,7 +445,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with underscore prefix names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -495,7 +459,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with dollar sign names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -509,7 +473,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with long namespace name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -523,7 +487,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with long member name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -541,7 +505,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with camelCase names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -555,7 +519,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with PascalCase names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -569,7 +533,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with UPPER_SNAKE_CASE names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -583,7 +547,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with numeric-like property names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -597,7 +561,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect when there are many other imports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -615,7 +579,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report for each MemberExpression call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -633,7 +597,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect when named import has aliased imported name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -648,7 +612,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with mixed import types in same declaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // A single import declaration with both namespace and named
@@ -673,7 +637,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect across multiple import declarations from same source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -692,7 +656,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with single member accessed multiple times in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -709,7 +673,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -725,7 +689,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should detect with location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -743,7 +707,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('not reporting valid qualifiers', () => {
     test('should not report when no namespace import exists', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([createNamedImport('B', 'B', 'lib')])
@@ -756,7 +720,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when member is not directly imported', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -772,7 +736,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when imports are from different sources', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -788,7 +752,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report computed member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -808,7 +772,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report optional chaining member expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -828,7 +792,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when qualifier is not a namespace import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -844,7 +808,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report nested member expressions with non-identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -867,7 +831,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
     // NEW negative detection tests
     test('should not report when namespace exists but member imported from different source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -881,7 +845,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when using a default import as qualifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -895,7 +859,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when qualifier name matches no import at all', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -909,7 +873,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when member is a default import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -923,7 +887,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when both computed and optional are true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -945,7 +909,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when object is a MemberExpression (chained)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -973,7 +937,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when namespace from different source shares member name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -987,7 +951,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when namespace import has no matching named import at all', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([createNamespaceImport('A', 'lib')])
@@ -998,7 +962,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when named import local name differs from property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1013,7 +977,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report for CallExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1033,7 +997,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when source values differ slightly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1047,7 +1011,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when source values differ by trailing slash', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1061,7 +1025,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when namespace and named import names are swapped', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1080,7 +1044,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report for property access on this', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1104,7 +1068,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program(null)).not.toThrow()
@@ -1112,7 +1076,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program(undefined)).not.toThrow()
@@ -1120,7 +1084,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program('string')).not.toThrow()
@@ -1130,7 +1094,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle program without body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       visitor.Program({ type: 'Program' })
@@ -1142,7 +1106,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle program with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       visitor.Program({ type: 'Program', body: [] })
@@ -1154,7 +1118,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle import without specifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1173,7 +1137,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle import without source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1196,7 +1160,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1218,7 +1182,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1234,7 +1198,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle non-identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1257,7 +1221,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
     // NEW edge case tests
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program(true)).not.toThrow()
@@ -1265,7 +1229,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle numeric node 0', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program(0)).not.toThrow()
@@ -1273,7 +1237,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle empty string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program('')).not.toThrow()
@@ -1281,14 +1245,14 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle array as Program node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       expect(() => visitor.Program([])).not.toThrow()
     })
 
     test('should handle body with null elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = {
@@ -1302,7 +1266,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle body with non-ImportDeclaration nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram(
@@ -1320,7 +1284,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle specifier with null local', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1342,7 +1306,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle specifier with missing local name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1363,7 +1327,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle specifier with empty string name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1385,7 +1349,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle source with non-string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1407,7 +1371,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle source with null value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1429,7 +1393,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle source as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1451,7 +1415,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle specifiers as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1468,7 +1432,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle specifier as null element in array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1484,7 +1448,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle specifier as non-object element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1500,7 +1464,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle unknown specifier type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1522,7 +1486,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1544,7 +1508,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with undefined object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1566,7 +1530,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with null property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1588,7 +1552,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with missing property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1609,7 +1573,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with empty loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1632,7 +1596,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with partial loc (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1659,7 +1623,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle loc with non-numeric line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1687,7 +1651,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle loc with non-numeric column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1715,7 +1679,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1739,7 +1703,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle computed as string "true" (truthy but not boolean true)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1762,7 +1726,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle optional as string "true"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1785,7 +1749,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle computed as 1 (truthy number)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1808,7 +1772,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle computed as undefined (not set)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1830,7 +1794,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle object with empty name string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1852,7 +1816,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle ImportSpecifier without imported field', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1876,7 +1840,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle ImportSpecifier with null imported', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1900,7 +1864,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle multiple namespace imports from same source', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1918,7 +1882,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle non-ImportDeclaration nodes in body', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1934,7 +1898,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle body as non-array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       visitor.Program({ type: 'Program', body: 'not-array' })
@@ -1944,7 +1908,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle body as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       visitor.Program({ type: 'Program', body: null })
@@ -1954,7 +1918,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle object identifier with numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1968,7 +1932,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle deeply malformed specifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -1989,7 +1953,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('location reporting', () => {
     test('should report correct start line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2007,7 +1971,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2026,7 +1990,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
     // NEW location tests
     test('should report location for first of multiple reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2046,7 +2010,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report location for same member at different positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2065,7 +2029,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2088,7 +2052,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report end location correctly for different member lengths', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2108,7 +2072,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle location with line 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2134,7 +2098,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle location at exact boundary values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2152,7 +2116,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('message quality', () => {
     test('should mention unnecessary in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2168,7 +2132,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should mention the qualifier name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2184,7 +2148,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should mention the member name in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2200,7 +2164,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should suggest using unqualified name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2217,7 +2181,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
     // NEW message tests
     test('should contain the fully qualified form in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2232,7 +2196,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should mention already imported in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2247,7 +2211,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should include qualifier in single quotes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2262,7 +2226,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should include member name in single quotes for suggestion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2277,7 +2241,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should produce consistent messages for same pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2293,7 +2257,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should produce different messages for different qualifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2313,7 +2277,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should produce different messages for different members', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2332,7 +2296,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should message include the full qualified name with dot notation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2349,7 +2313,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('multiple reports', () => {
     test('should report each MemberExpression independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2366,7 +2330,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report different members from same namespace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2388,7 +2352,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report for multiple namespaces', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2406,7 +2370,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should mix reports and non-reports correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2424,7 +2388,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should correctly accumulate reports across many calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2441,7 +2405,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report after Program reinitialization', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // First setup
@@ -2466,7 +2430,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/custom/path/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;', filePath: '/custom/path/file.ts' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2480,11 +2444,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/test.ts',
-        'import * as React from "react"; import { useState } from "react"; React.useState;',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'import * as React from "react"; import { useState } from "react"; React.useState;', filePath: '/src/test.ts' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2498,7 +2458,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/test.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/test.ts' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2581,7 +2541,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not call logger during normal operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2619,7 +2579,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('report descriptor', () => {
     test('should include message property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2634,7 +2594,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should include loc property in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2649,7 +2609,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should have loc with start and end in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2670,7 +2630,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report message as non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2722,7 +2682,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should have message matching expected format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2740,7 +2700,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should have correct loc shape matching SourceLocation interface', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2762,7 +2722,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('integration scenarios', () => {
     test('should handle typical React scenario', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2780,7 +2740,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle lodash-like scenario', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2796,7 +2756,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle rxjs-like scenario', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2816,7 +2776,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle node built-ins scenario', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2830,7 +2790,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle testing library scenario', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2844,7 +2804,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle scenario with only namespace (no named imports)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([createNamespaceImport('A', 'lib')])
@@ -2857,7 +2817,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle scenario with only named imports (no namespace)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2871,7 +2831,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle scenario with mixed import styles from different sources', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2892,7 +2852,7 @@ describe('no-unnecessary-qualifier rule', () => {
 
   describe('additional edge cases', () => {
     test('should handle loc with null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2916,7 +2876,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with CallExpression as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2942,7 +2902,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression with Super as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2964,7 +2924,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle same name used as both namespace and named import', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // A is namespace from lib1, and also named import from lib2
@@ -2980,7 +2940,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle import with numeric source value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -2999,7 +2959,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle import with boolean source value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3018,7 +2978,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not report when optional is false explicitly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3040,7 +3000,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should not crash when node type is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3062,7 +3022,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle member expression where property type is not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3084,7 +3044,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle chained member expression A.B.C where B is namespace', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3108,7 +3068,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle source with empty string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3128,7 +3088,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle deeply nested Program body items', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // Body with deeply nested objects that are not ImportDeclarations
@@ -3151,7 +3111,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle identifier object with missing name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3173,7 +3133,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should report with correct message format for underscore names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3189,7 +3149,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle case-sensitive namespace matching', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3208,7 +3168,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle case-sensitive member matching', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3227,7 +3187,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle source matching case-sensitively', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3242,7 +3202,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle alias import where local name matches member but imported differs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const program = createProgram([
@@ -3261,7 +3221,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle MemberExpression before Program gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       // Call MemberExpression before Program
@@ -3279,7 +3239,7 @@ describe('no-unnecessary-qualifier rule', () => {
     })
 
     test('should handle very long source strings', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'import * as A from "lib"; import { B } from "lib"; A.B;' })
       const visitor = noUnnecessaryQualifierRule.create(context)
 
       const longSource = '@very/long/deeply/nested/package/path/v1/sub/module'

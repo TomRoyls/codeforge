@@ -1,45 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noUselessFallbackInSpreadRule } from '../../../../src/rules/patterns/no-useless-fallback-in-spread.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = { ...obj || {} };',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIdentifier(name: string, start = 0): unknown {
   return {
@@ -304,7 +264,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('create', () => {
     test('should return visitor object with SpreadElement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       expect(visitor).toHaveProperty('SpreadElement')
@@ -312,7 +272,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should return a new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor1 = noUselessFallbackInSpreadRule.create(context)
       const visitor2 = noUselessFallbackInSpreadRule.create(context)
 
@@ -320,7 +280,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should return visitor with only SpreadElement key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -328,30 +288,30 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not throw when create is called without options', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       expect(() => noUselessFallbackInSpreadRule.create(context)).not.toThrow()
     })
 
     test('should accept context with empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
       expect(typeof visitor.SpreadElement).toBe('function')
     })
 
     test('should accept context with custom file path', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };', filePath: '/custom/path.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
       expect(typeof visitor.SpreadElement).toBe('function')
     })
 
     test('should accept context with custom source', () => {
-      const { context } = createMockContext({}, '/src/test.ts', 'const a = 1')
+      const { context } = createMockRuleContext({ source: 'const a = 1', filePath: '/src/test.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
       expect(typeof visitor.SpreadElement).toBe('function')
     })
 
     test('SpreadElement should be a synchronous function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
       const result = visitor.SpreadElement(null)
       expect(result).toBeUndefined()
@@ -362,7 +322,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('detecting useless fallback in object spread', () => {
     test('should report ...obj || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -381,7 +341,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...data || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -398,7 +358,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...config || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -415,7 +375,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...props || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -432,7 +392,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...settings || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -449,7 +409,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report with MemberExpression left operand in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const left = createMemberExpression('options', 'data', 0)
@@ -464,7 +424,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report with CallExpression left operand in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const left = createCallExpression('getData', 0)
@@ -479,7 +439,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...options || {} with properties in parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -497,7 +457,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix to remove || {}', () => {
       const source = 'const x = { ...obj || {} };'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 15)
@@ -513,7 +473,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...defaults || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -530,7 +490,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...state || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -547,7 +507,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...payload || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -564,7 +524,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...result || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -581,7 +541,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...response || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -598,7 +558,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...context || {} in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -619,7 +579,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('detecting useless fallback in array spread', () => {
     test('should report ...arr || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -637,7 +597,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...items || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -654,7 +614,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...list || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -672,7 +632,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix to remove || []', () => {
       const source = 'const x = [...arr || []];'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('arr', 14)
@@ -688,7 +648,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...values || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -705,7 +665,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...elements || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -722,7 +682,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...results || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -739,7 +699,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...entries || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -756,7 +716,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report with MemberExpression left operand in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const left = createMemberExpression('data', 'items', 0)
@@ -771,7 +731,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report with CallExpression left operand in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const left = createCallExpression('getItems', 0)
@@ -786,7 +746,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...rows || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -803,7 +763,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...chunks || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -820,7 +780,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...parts || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -837,7 +797,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...args || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -854,7 +814,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report ...deps || [] in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -875,7 +835,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('valid patterns that should not report', () => {
     test('should not report spread without fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = createSpreadElement(createIdentifier('obj', 0), 0)
@@ -887,7 +847,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with non-empty object fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -904,7 +864,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with non-empty array fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -921,7 +881,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with && operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalAndExpression(
@@ -938,7 +898,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with null fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -955,7 +915,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with undefined fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -972,7 +932,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with number fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -989,7 +949,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with string fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1006,7 +966,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread not in object or array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1023,7 +983,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with ?? operator in object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalNullishExpression(
@@ -1040,7 +1000,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with ?? operator in array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalNullishExpression(
@@ -1057,7 +1017,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when spread parent is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1074,7 +1034,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when spread parent is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1091,7 +1051,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when spread parent is NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1108,7 +1068,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report array fallback in object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1125,7 +1085,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report object fallback in array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1142,7 +1102,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report boolean literal fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1159,7 +1119,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report identifier fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const right = createIdentifier('fallback', 8)
@@ -1173,7 +1133,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report numeric literal fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1190,7 +1150,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when spread parent is TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1207,7 +1167,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with && and empty array fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalAndExpression(
@@ -1224,7 +1184,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with false literal fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1241,7 +1201,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when parent has type SequenceExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1258,7 +1218,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread of plain identifier in array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = createSpreadElement(createIdentifier('arr', 0), 0)
@@ -1270,7 +1230,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread of member expression without fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const left = createMemberExpression('obj', 'data', 0)
@@ -1283,7 +1243,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with BigInt literal fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const right = {
@@ -1303,7 +1263,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with regex literal fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const right = {
@@ -1323,7 +1283,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when parent type is ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1340,7 +1300,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report when spread parent type is TaggedTemplateExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1357,7 +1317,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with object containing only spread property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const nonEmptyObject = {
@@ -1376,7 +1336,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not report spread with array containing null element', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const arrayWithNull = {
@@ -1399,7 +1359,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       visitor.SpreadElement(null)
@@ -1408,7 +1368,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       visitor.SpreadElement(undefined)
@@ -1417,7 +1377,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       expect(() => visitor.SpreadElement('string')).not.toThrow()
@@ -1428,7 +1388,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle spread element without argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = {
@@ -1446,7 +1406,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle spread element without parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1462,7 +1422,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle logical expression without right operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 0)
@@ -1480,7 +1440,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle logical expression without left operand', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const rightOperand = createEmptyObjectLiteral(8)
@@ -1498,7 +1458,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle node without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 0)
@@ -1530,7 +1490,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1547,7 +1507,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle node without type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = { loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 5 } } }
@@ -1559,7 +1519,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle spread with argument that is a plain literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = createSpreadElement(createLiteral(42, 0), 0)
@@ -1571,7 +1531,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle spread with argument that is a string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = createSpreadElement(createLiteral('hello', 0), 0)
@@ -1583,7 +1543,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle node with empty loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 0)
@@ -1608,7 +1568,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle SpreadElement with undefined argument property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = { type: 'SpreadElement', argument: undefined }
@@ -1620,7 +1580,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle SpreadElement with null argument property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = { type: 'SpreadElement', argument: null }
@@ -1632,7 +1592,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle left operand being a Literal instead of Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createLiteral('obj', 0)
@@ -1647,7 +1607,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle deeply nested object as parent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1669,7 +1629,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle ArrayExpression parent with elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1686,7 +1646,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle node with number type properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = { type: 'SpreadElement', argument: 42 }
@@ -1698,7 +1658,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle argument being a boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = { type: 'SpreadElement', argument: true }
@@ -1710,7 +1670,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle spread with argument as array (invalid AST)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = { type: 'SpreadElement', argument: [] }
@@ -1722,7 +1682,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle SpreadElement with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1743,7 +1703,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle empty object source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 0)
@@ -1759,7 +1719,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle ObjectExpression with properties array containing undefined entries', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1780,7 +1740,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('location tracking', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1798,7 +1758,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location starting at spread argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1816,7 +1776,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location on line 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1833,7 +1793,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location with correct start column for object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1850,7 +1810,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location with correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1867,7 +1827,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location with correct start column for array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1884,7 +1844,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location for deeply nested spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = {
@@ -1908,7 +1868,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should have start and end in reported location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1928,7 +1888,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report correct location for array spread on different line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1945,7 +1905,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should preserve location from argument node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = {
@@ -1969,7 +1929,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location for object spread at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -1986,7 +1946,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location for array spread at offset position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2003,7 +1963,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle location with very large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2020,7 +1980,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should include end location that matches argument end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2037,7 +1997,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report location for consecutive spreads', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2059,7 +2019,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('message quality', () => {
     test('should mention useless fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2076,7 +2036,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should mention spread pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2093,7 +2053,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should mention safe for object spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2110,7 +2070,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should show ...obj || {} can be simplified', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2128,7 +2088,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should show ...arr || [] can be simplified', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2146,7 +2106,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should include message about simplification', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2163,7 +2123,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should have non-empty message for array spread', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2180,7 +2140,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should mention spreading in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2197,7 +2157,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should mention undefined/null safety in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2215,7 +2175,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should contain specific pattern in message for array fallback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2237,7 +2197,7 @@ describe('no-useless-fallback-in-spread rule', () => {
   describe('fix functionality', () => {
     test('should provide fix for ...obj || {}', () => {
       const source = 'const x = { ...obj || {} };'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 15)
@@ -2254,7 +2214,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix for ...data || {}', () => {
       const source = 'const x = { ...data || {} };'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('data', 15)
@@ -2271,7 +2231,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix for ...arr || []', () => {
       const source = 'const x = [...arr || []];'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('arr', 14)
@@ -2288,7 +2248,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix for ...items || []', () => {
       const source = 'const x = [...items || []];'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('items', 14)
@@ -2304,7 +2264,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not provide fix when range is not available', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 0)
@@ -2337,7 +2297,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix range that covers the logical expression', () => {
       const source = 'const x = { ...config || {} };'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('config', 15)
@@ -2355,7 +2315,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide fix with source text matching left operand for array', () => {
       const source = 'const x = [...values || []];'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('values', 14)
@@ -2370,7 +2330,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not provide fix for spread without range on argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('obj', 0)
@@ -2392,7 +2352,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide correct fix for settings variable', () => {
       const source = 'const x = { ...settings || {} };'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('settings', 15)
@@ -2408,7 +2368,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should provide correct fix for elements variable', () => {
       const source = 'const x = [...elements || []];'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('elements', 14)
@@ -2427,7 +2387,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('multiple reports', () => {
     test('should report each time visitor is called with matching pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2445,7 +2405,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report independently for object and array spreads', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const objExpr = createLogicalOrExpression(
@@ -2471,7 +2431,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should only report for matching patterns when mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       // Matching: object spread with || {}
@@ -2494,7 +2454,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report three consecutive matching object spreads', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -2512,7 +2472,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should accumulate reports across different variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const names = ['obj', 'data', 'config']
@@ -2531,7 +2491,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report five matching and skip five non-matching', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       // 5 matching
@@ -2557,7 +2517,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report for different parent types independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       // Object spread matching
@@ -2591,7 +2551,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should handle rapid successive calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2609,8 +2569,8 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not mix reports between two different visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
 
       const visitor1 = noUselessFallbackInSpreadRule.create(ctx1)
       const visitor2 = noUselessFallbackInSpreadRule.create(ctx2)
@@ -2631,7 +2591,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should report correct message for each occurrence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const objExpr = createLogicalOrExpression(
@@ -2663,7 +2623,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
   describe('context handling', () => {
     test('should work with default context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2680,7 +2640,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };', filePath: '/src/components/App.tsx' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2697,7 +2657,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/utils.js')
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };', filePath: '/src/utils.js' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2716,7 +2676,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     test('should work with complex source code', () => {
       const source =
         'function merge(defaults, overrides) { return { ...defaults || {}, ...overrides || {} }; }'
-      const { context, reports } = createMockContext({}, '/src/merge.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/merge.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2734,7 +2694,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should call report on context when pattern matches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2752,7 +2712,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should not call report when pattern does not match', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const spreadElement = createSpreadElement(createIdentifier('obj', 0), 0)
@@ -2765,7 +2725,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should access source through getSource', () => {
       const source = '{ ...opts || {} }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       expect(context.getSource()).toBe(source)
@@ -2785,7 +2745,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should handle context with long file path', () => {
       const longPath = '/very/deeply/nested/directory/structure/that/goes/on/and/on/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };', filePath: longPath })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2803,7 +2763,7 @@ describe('no-useless-fallback-in-spread rule', () => {
 
     test('should handle context with unicode in source', () => {
       const source = 'const café = { ...datos || {} };'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const leftOperand = createIdentifier('datos', 18)
@@ -2818,7 +2778,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     })
 
     test('should work when context has extra options', () => {
-      const { context, reports } = createMockContext({ customOption: true, anotherOption: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ customOption: true, anotherOption: 42 }], source: 'const x = { ...obj || {} };' })
       const visitor = noUselessFallbackInSpreadRule.create(context)
 
       const logicalExpr = createLogicalOrExpression(
@@ -2852,7 +2812,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     ] satisfies Array<{ name: string; rightStart: number }>)(
       'should report ...$name || {} in object spread',
       ({ name, rightStart }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
         const visitor = noUselessFallbackInSpreadRule.create(context)
 
         const logicalExpr = createLogicalOrExpression(
@@ -2883,7 +2843,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     ] satisfies Array<{ name: string; rightStart: number }>)(
       'should report ...$name || [] in array spread',
       ({ name, rightStart }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
         const visitor = noUselessFallbackInSpreadRule.create(context)
 
         const logicalExpr = createLogicalOrExpression(
@@ -2916,7 +2876,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     ] satisfies Array<{ desc: string; value: unknown }>)(
       'should not report when right operand is $desc',
       ({ value }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
         const visitor = noUselessFallbackInSpreadRule.create(context)
 
         const rightOperand = createLiteral(value, 8)
@@ -2944,7 +2904,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     ] satisfies Array<{ parentType: string }>)(
       'should not report when parent type is $parentType',
       ({ parentType }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
         const visitor = noUselessFallbackInSpreadRule.create(context)
 
         const logicalExpr = createLogicalOrExpression(
@@ -2969,7 +2929,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     ] satisfies Array<{ operator: string; desc: string }>)(
       'should not report with $desc ($operator) operator in object spread',
       ({ operator }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
         const visitor = noUselessFallbackInSpreadRule.create(context)
 
         const logicalExpr = {
@@ -2995,7 +2955,7 @@ describe('no-useless-fallback-in-spread rule', () => {
     ] satisfies Array<{ operator: string; desc: string }>)(
       'should not report with $desc ($operator) operator in array spread',
       ({ operator }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'const x = { ...obj || {} };' })
         const visitor = noUselessFallbackInSpreadRule.create(context)
 
         const logicalExpr = {

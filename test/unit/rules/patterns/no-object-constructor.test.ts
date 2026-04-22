@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noObjectConstructorRule } from '../../../../src/rules/patterns/no-object-constructor.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'new Object();',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(callee: unknown, args: unknown[] = [], line = 1, column = 0): unknown {
   return {
@@ -179,40 +141,40 @@ describe('no-object-constructor rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       expect(visitor).toHaveProperty('NewExpression')
     })
 
     test('should return object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
       expect(typeof visitor).toBe('object')
     })
 
     test('NewExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
       expect(typeof visitor.NewExpression).toBe('function')
     })
 
     test('create should be callable multiple times', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor1 = noObjectConstructorRule.create(context)
       const visitor2 = noObjectConstructorRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('visitor should have exactly one method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
       expect(Object.keys(visitor)).toHaveLength(1)
     })
 
     test('each call to create returns independent visitor', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'new Object();' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'new Object();' })
       const v1 = noObjectConstructorRule.create(ctx1)
       const v2 = noObjectConstructorRule.create(ctx2)
 
@@ -226,7 +188,7 @@ describe('no-object-constructor rule', () => {
 
   describe('detecting new Object() calls', () => {
     test('should report new Object()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'))
@@ -238,7 +200,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object({})', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -251,7 +213,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with single identifier argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [createIdentifier('someValue')])
@@ -262,7 +224,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with number literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [{ type: 'Literal', value: 42 }])
@@ -273,7 +235,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with string literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -286,7 +248,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object(null)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -299,7 +261,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [createIdentifier('undefined')])
@@ -310,7 +272,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with multiple arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -324,7 +286,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with array expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -337,7 +299,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with function expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -350,7 +312,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object at different line positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 5, 0))
@@ -360,7 +322,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object at different column positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 1, 20))
@@ -370,7 +332,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object at large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 999, 50))
@@ -381,7 +343,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 0, 0))
@@ -390,7 +352,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with call expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -403,7 +365,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with template literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -416,7 +378,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with arrow function argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -429,7 +391,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with boolean literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -442,7 +404,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with member expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -459,7 +421,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with spread element argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -472,7 +434,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with three arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -487,7 +449,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with new expression as argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -500,7 +462,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with binary expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -518,7 +480,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report new Object with conditional expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [
@@ -538,7 +500,7 @@ describe('no-object-constructor rule', () => {
 
   describe('not reporting valid code', () => {
     test('should not report new Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Array'))
@@ -549,7 +511,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Map()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Map'))
@@ -560,7 +522,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Set()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Set'))
@@ -571,7 +533,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Date()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Date'))
@@ -582,7 +544,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new MyClass()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('MyClass'))
@@ -593,7 +555,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report {} literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = { type: 'ObjectExpression', properties: [] }
@@ -602,7 +564,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Error()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Error')))
@@ -611,7 +573,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Promise()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Promise')))
@@ -620,7 +582,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new RegExp()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('RegExp')))
@@ -629,7 +591,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Function()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Function')))
@@ -638,7 +600,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Number()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Number')))
@@ -647,7 +609,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new String()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('String')))
@@ -656,7 +618,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Boolean()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Boolean')))
@@ -665,7 +627,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new WeakMap()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('WeakMap')))
@@ -674,7 +636,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new WeakSet()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('WeakSet')))
@@ -683,7 +645,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Proxy()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Proxy')))
@@ -692,7 +654,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Int8Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Int8Array')))
@@ -701,7 +663,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new Float64Array()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Float64Array')))
@@ -710,7 +672,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new ArrayBuffer()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('ArrayBuffer')))
@@ -719,7 +681,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new DataView()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('DataView')))
@@ -728,7 +690,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report ns.Object() member expression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -743,7 +705,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report window.Object() member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -758,7 +720,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report globalThis.Object() member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -773,7 +735,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report Object.create() call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -792,7 +754,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report Object.keys() call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -811,7 +773,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report Object.assign() call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -830,7 +792,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report lowercase object identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('object')))
@@ -839,7 +801,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report OBJECT uppercase identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('OBJECT')))
@@ -848,7 +810,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report Objec identifier (typo)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Objec')))
@@ -857,7 +819,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report Objecty identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Objecty')))
@@ -866,7 +828,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report MyObject identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('MyObject')))
@@ -875,7 +837,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new CustomClass()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('CustomClass')))
@@ -884,7 +846,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new HTMLElement()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('HTMLElement')))
@@ -895,21 +857,21 @@ describe('no-object-constructor rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       expect(() => visitor.NewExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       expect(() => visitor.NewExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       expect(() => visitor.NewExpression('string')).not.toThrow()
@@ -917,7 +879,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -931,7 +893,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'), [], 42, 10)
@@ -943,7 +905,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -952,7 +914,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -965,7 +927,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle member expression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -979,7 +941,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle boolean node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       expect(() => visitor.NewExpression(true)).not.toThrow()
@@ -987,7 +949,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle array node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       expect(() => visitor.NewExpression([])).not.toThrow()
@@ -995,7 +957,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1009,7 +971,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1023,7 +985,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with string callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1037,7 +999,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with number callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1051,7 +1013,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with boolean callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1065,7 +1027,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with callee missing name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1079,7 +1041,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with callee name as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1093,7 +1055,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with callee name as empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1107,7 +1069,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node without arguments property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1120,7 +1082,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with null arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1134,7 +1096,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1148,7 +1110,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'))
@@ -1160,7 +1122,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1173,7 +1135,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with wrong type CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1187,7 +1149,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle callee that is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({ type: 'ObjectExpression', properties: [] })
@@ -1197,7 +1159,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle callee that is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -1211,7 +1173,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with only loc.start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1230,7 +1192,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1247,7 +1209,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with undefined loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1263,7 +1225,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with non-numeric loc.start.line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1279,7 +1241,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle node with non-numeric loc.start.column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1295,7 +1257,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle deeply nested callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -1314,7 +1276,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle options with extra fields', () => {
-      const { context, reports } = createMockContext({ customOption: true, anotherOption: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ customOption: true, anotherOption: 42 }], source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1325,7 +1287,7 @@ describe('no-object-constructor rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 1, 0))
@@ -1335,7 +1297,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 5, 10))
@@ -1345,7 +1307,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 100, 50))
@@ -1355,7 +1317,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 1, 0))
@@ -1366,7 +1328,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1382,7 +1344,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report default location when node is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(null)
@@ -1391,7 +1353,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should preserve exact location values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 7, 3))
@@ -1401,7 +1363,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report location at line 2 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 2, 0))
@@ -1410,7 +1372,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report location at line 1 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 1, 20))
@@ -1421,7 +1383,7 @@ describe('no-object-constructor rule', () => {
 
   describe('message quality', () => {
     test('should mention {} in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1430,7 +1392,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should mention new Object in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1439,7 +1401,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should have non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1448,7 +1410,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should have consistent message across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1458,7 +1420,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should mention object literal in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1467,7 +1429,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('message should not contain undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1476,7 +1438,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('message should start with capital letter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1485,7 +1447,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('message should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1494,7 +1456,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('message should contain literal for args case', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(
@@ -1505,7 +1467,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('message should be a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1514,7 +1476,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('message for args case should mention new Object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(
@@ -1528,7 +1490,7 @@ describe('no-object-constructor rule', () => {
   describe('auto-fix', () => {
     test('should provide fix for new Object()', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1549,7 +1511,7 @@ describe('no-object-constructor rule', () => {
 
     test('should NOT provide fix for new Object(value) with argument', () => {
       const source = 'new Object(x)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1568,7 +1530,7 @@ describe('no-object-constructor rule', () => {
 
     test('fix text should be exactly {}', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1586,7 +1548,7 @@ describe('no-object-constructor rule', () => {
 
     test('fix range should be a tuple of two numbers', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1604,7 +1566,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not provide fix when range is absent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1621,7 +1583,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix for new Object with 2 args', () => {
       const source = 'new Object(a, b)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1639,7 +1601,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix for new Object with 3 args', () => {
       const source = 'new Object(a, b, c)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1657,7 +1619,7 @@ describe('no-object-constructor rule', () => {
 
     test('should provide fix at non-zero offset', () => {
       const source = 'const x = new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1677,7 +1639,7 @@ describe('no-object-constructor rule', () => {
 
     test('fix range start should be less than end', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1695,7 +1657,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix with string argument', () => {
       const source = "new Object('test')"
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1713,7 +1675,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix with number argument', () => {
       const source = 'new Object(42)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1731,7 +1693,7 @@ describe('no-object-constructor rule', () => {
 
     test('should provide fix with large range values', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1750,7 +1712,7 @@ describe('no-object-constructor rule', () => {
 
     test('fix should only be provided for zero arguments', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1769,7 +1731,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix with object expression argument', () => {
       const source = 'new Object({})'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1787,7 +1749,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix with null argument', () => {
       const source = 'new Object(null)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1805,7 +1767,7 @@ describe('no-object-constructor rule', () => {
 
     test('fix text should not include semicolons', () => {
       const source = 'new Object();'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -1824,7 +1786,7 @@ describe('no-object-constructor rule', () => {
 
   describe('multiple calls', () => {
     test('should report each call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1834,7 +1796,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should report 5 calls to NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1845,7 +1807,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle alternating valid and invalid calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1858,7 +1820,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle mixed valid and invalid in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Array')))
@@ -1870,7 +1832,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle same node called multiple times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression(createIdentifier('Object'))
@@ -1881,7 +1843,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle different nodes sequentially', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 1, 0))
@@ -1895,8 +1857,8 @@ describe('no-object-constructor rule', () => {
     })
 
     test('different visitors should be independent', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'new Object();' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'new Object();' })
 
       const v1 = noObjectConstructorRule.create(ctx1)
       const v2 = noObjectConstructorRule.create(ctx2)
@@ -1909,7 +1871,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle many sequential calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -1920,7 +1882,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle valid then invalid then valid sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Array')))
@@ -1934,7 +1896,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should accumulate reports across calls without resetting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1950,7 +1912,7 @@ describe('no-object-constructor rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/home/user/project/src/app.ts')
+      const { context, reports } = createMockRuleContext({ source: 'new Object();', filePath: '/home/user/project/src/app.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1959,7 +1921,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = new Object()')
+      const { context, reports } = createMockRuleContext({ source: 'const x = new Object()', filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -1968,7 +1930,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should work with empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -2021,7 +1983,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/src/file.js')
+      const { context, reports } = createMockRuleContext({ source: 'new Object();', filePath: '/src/file.js' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -2030,7 +1992,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'new Object();', filePath: '/src/component.tsx' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -2039,7 +2001,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should work with nested directory path', () => {
-      const { context, reports } = createMockContext({}, '/src/deep/nested/dir/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'new Object();', filePath: '/src/deep/nested/dir/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -2049,7 +2011,7 @@ describe('no-object-constructor rule', () => {
 
     test('should work with long source code', () => {
       const source = 'const a = 1;\nconst b = 2;\nconst c = new Object();\nconst d = 4;'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object'), [], 3, 10))
@@ -2084,7 +2046,7 @@ describe('no-object-constructor rule', () => {
 
   describe('rule identification', () => {
     test('should only trigger on exact Object identifier match', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const names = ['object', 'OBJECT', 'Objec', 'Objecty', 'MyObject', 'obj', 'OBJ']
@@ -2096,7 +2058,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should be case-sensitive for Object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('object')))
@@ -2110,7 +2072,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle Object.create static method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -2125,7 +2087,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle this.Object member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -2140,7 +2102,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new SomeObject()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('SomeObject')))
@@ -2149,7 +2111,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new ObjectHolder()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('ObjectHolder')))
@@ -2158,7 +2120,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new ObjectFactory()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('ObjectFactory')))
@@ -2167,7 +2129,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle callee with type but not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({
@@ -2182,7 +2144,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle callee as array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression([createIdentifier('Object')])
@@ -2192,7 +2154,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should detect Object with whitespace around identifier name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = createNewExpression({ type: 'Identifier', name: 'Object' })
@@ -2203,7 +2165,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle new Object() followed by member access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('Object')))
@@ -2212,7 +2174,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not report new TypeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       visitor.NewExpression(createNewExpression(createIdentifier('TypeError')))
@@ -2223,7 +2185,7 @@ describe('no-object-constructor rule', () => {
 
   describe('location edge cases', () => {
     test('should handle loc with only start.line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -2240,7 +2202,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle loc with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -2256,7 +2218,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should handle loc.start with negative column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -2275,7 +2237,7 @@ describe('no-object-constructor rule', () => {
   describe('fix edge cases', () => {
     test('should provide fix for zero-arg new Object at end of file', () => {
       const source = 'new Object()'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -2293,7 +2255,7 @@ describe('no-object-constructor rule', () => {
     })
 
     test('should not provide fix when range is null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Object();' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {
@@ -2311,7 +2273,7 @@ describe('no-object-constructor rule', () => {
 
     test('should not provide fix for new Object with undefined identifier arg', () => {
       const source = 'new Object(undefined)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = noObjectConstructorRule.create(context)
 
       const node = {

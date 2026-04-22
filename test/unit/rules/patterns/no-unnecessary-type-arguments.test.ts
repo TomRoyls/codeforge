@@ -1,43 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noUnnecessaryTypeArgumentsRule } from '../../../../src/rules/patterns/no-unnecessary-type-arguments.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'new Array<string>()',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(
   calleeName: string,
@@ -184,20 +146,20 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should return a visitor from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(visitor).toBeDefined()
       expect(typeof visitor).toBe('object')
     })
 
     test('visitor should have NewExpression handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(typeof visitor.NewExpression).toBe('function')
     })
 
     test('visitor should have CallExpression handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(typeof visitor.CallExpression).toBe('function')
     })
@@ -205,7 +167,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('detecting unnecessary type arguments in new expressions', () => {
     test('should report new Array<string>() with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -215,7 +177,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array<number>() with arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(
@@ -227,7 +189,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Map<string, number>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', ['string', 'number']))
@@ -237,7 +199,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Set<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['string']))
@@ -247,7 +209,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Promise<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', ['string']))
@@ -257,7 +219,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new WeakMap<object, string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakMap', ['object', 'string']))
@@ -267,7 +229,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new WeakSet<object>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakSet', ['object']))
@@ -277,7 +239,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report new expressions without type arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createNewExpression('Array', [])
@@ -288,7 +250,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report unknown constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('CustomClass', ['string']))
@@ -297,7 +259,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new ReadonlyArray<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('ReadonlyArray', ['string']))
@@ -307,7 +269,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new ReadonlyMap<string, number>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('ReadonlyMap', ['string', 'number']))
@@ -317,7 +279,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new ReadonlySet<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('ReadonlySet', ['string']))
@@ -327,7 +289,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Record<string, unknown>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Record', ['string', 'unknown']))
@@ -337,7 +299,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Partial<{ foo: string }>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Partial', ['FooType']))
@@ -347,7 +309,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Required<{ foo: string }>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Required', ['FooType']))
@@ -357,7 +319,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Pick<{ foo: string }, "foo">()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Pick', ['FooType', 'FooKey']))
@@ -367,7 +329,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Omit<{ foo: string }, "foo">()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Omit', ['FooType', 'FooKey']))
@@ -377,7 +339,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Exclude<string, number>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Exclude', ['string', 'number']))
@@ -387,7 +349,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Extract<string, number>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Extract', ['string', 'number']))
@@ -397,7 +359,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new NonNullable<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('NonNullable', ['string']))
@@ -407,7 +369,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new ReturnType<() => string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('ReturnType', ['FuncType']))
@@ -417,7 +379,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Parameters<() => string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Parameters', ['FuncType']))
@@ -427,7 +389,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new InstanceType<typeof Foo>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('InstanceType', ['FooConstructor']))
@@ -437,7 +399,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Map without arguments with inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', ['string', 'number'], []))
@@ -447,7 +409,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Map with arguments with inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(
@@ -459,7 +421,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Set without arguments with inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['string'], []))
@@ -469,7 +431,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Set with arguments with inferred from constructor message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['number'], [{ type: 'ArrayExpression' }]))
@@ -479,7 +441,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new WeakMap without arguments with inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakMap', ['object', 'string'], []))
@@ -489,7 +451,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new WeakMap with arguments with constructor inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(
@@ -501,7 +463,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new WeakSet without arguments with inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakSet', ['object'], []))
@@ -511,7 +473,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new WeakSet with arguments with constructor inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(
@@ -523,7 +485,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Promise with executor inferred message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', ['void']))
@@ -533,7 +495,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array with any[] hint message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string'], []))
@@ -543,7 +505,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for utility types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Record', ['string', 'number']))
@@ -553,7 +515,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Partial', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Partial', ['T']))
@@ -563,7 +525,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Required', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Required', ['T']))
@@ -573,7 +535,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Pick', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Pick', ['T', 'K']))
@@ -583,7 +545,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Omit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Omit', ['T', 'K']))
@@ -593,7 +555,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Exclude', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Exclude', ['T', 'U']))
@@ -603,7 +565,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Extract', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Extract', ['T', 'U']))
@@ -613,7 +575,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for NonNullable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('NonNullable', ['T']))
@@ -623,7 +585,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for ReturnType', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('ReturnType', ['F']))
@@ -633,7 +595,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for Parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Parameters', ['F']))
@@ -643,7 +605,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should use potentially inferred message for InstanceType', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('InstanceType', ['C']))
@@ -655,7 +617,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('detecting unnecessary type arguments in call expressions', () => {
     test('should report Promise.resolve<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('resolve', ['string'], [], true, 'Promise'))
@@ -665,7 +627,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Promise.all<string[]>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('all', ['string[]'], [], true, 'Promise'))
@@ -675,7 +637,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Array.from<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('from', ['string'], [], true, 'Array'))
@@ -685,7 +647,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report call expressions without type arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('resolve', [], [], true, 'Promise')
@@ -696,7 +658,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report unknown function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('customMethod', ['string'], [], true, 'Custom'))
@@ -705,7 +667,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Promise.reject<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('reject', ['string'], [], true, 'Promise'))
@@ -715,7 +677,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Promise.allSettled<Promise<string>>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(
@@ -727,7 +689,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Promise.race<Promise<string>>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('race', ['Promise<string>'], [], true, 'Promise'))
@@ -737,7 +699,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Promise.any<Promise<string>>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('any', ['Promise<string>'], [], true, 'Promise'))
@@ -747,7 +709,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Array.of<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('of', ['string'], [], true, 'Array'))
@@ -757,7 +719,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Object.keys<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('keys', ['string'], [], true, 'Object'))
@@ -767,7 +729,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Object.values<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('values', ['string'], [], true, 'Object'))
@@ -777,7 +739,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Object.entries<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('entries', ['string'], [], true, 'Object'))
@@ -787,7 +749,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Object.assign<string>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('assign', ['string'], [], true, 'Object'))
@@ -797,7 +759,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report inferrable constructor called as function with type args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('Array', ['string'], [], false)
@@ -808,7 +770,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Map called as function with type args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('Map', ['string', 'number'], [], false)
@@ -818,7 +780,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Set called as function with type args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('Set', ['string'], [], false)
@@ -828,7 +790,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report Promise called as function with type args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('Promise', ['string'], [], false)
@@ -838,7 +800,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report ReadonlyArray called as function with type args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('ReadonlyArray', ['string'], [], false)
@@ -848,7 +810,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report unknown standalone function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('myFunction', ['string'], [], false)
@@ -858,7 +820,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report unknown member function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('custom', ['string'], [], true, 'MyLib'))
@@ -867,7 +829,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should include inferred from arguments in message for Promise.resolve', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('resolve', ['string'], [], true, 'Promise'))
@@ -877,7 +839,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should include inferred from arguments in message for Object.keys', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('keys', ['string'], [], true, 'Object'))
@@ -889,25 +851,25 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully in NewExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(() => visitor.NewExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully in NewExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(() => visitor.NewExpression(undefined)).not.toThrow()
     })
 
     test('should handle null node gracefully in CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       expect(() => visitor.NewExpression('string')).not.toThrow()
@@ -915,7 +877,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createNewExpression('Array', ['string'])
@@ -925,7 +887,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createNewExpression('Array', ['string'], [], 10, 5)
@@ -936,7 +898,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -949,7 +911,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle empty type arguments params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -964,25 +926,25 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle undefined node in CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle boolean node in NewExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(() => visitor.NewExpression(true)).not.toThrow()
     })
 
     test('should handle number node in CallExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
       expect(() => visitor.CallExpression(42)).not.toThrow()
     })
 
     test('should handle empty object node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression({})
@@ -991,7 +953,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle empty object node in CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression({})
@@ -1000,7 +962,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1014,7 +976,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1027,7 +989,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1040,7 +1002,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with string callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1053,7 +1015,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with numeric callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1066,7 +1028,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with typeParameters instead of typeArguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1084,7 +1046,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with both typeParameters and typeArguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1104,7 +1066,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1122,7 +1084,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle CallExpression with member callee but missing object name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1143,7 +1105,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle CallExpression with member callee but missing property name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1164,7 +1126,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle CallExpression with member callee but null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1185,7 +1147,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle CallExpression with member callee but null property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1206,7 +1168,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with loc containing null start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1223,7 +1185,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle node with loc containing string line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1243,7 +1205,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('location reporting', () => {
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1253,7 +1215,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report location at line 5 column 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', ['string', 'number'], [], 5, 10))
@@ -1263,7 +1225,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['number'], [], 100, 50))
@@ -1273,7 +1235,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string'], [], 3, 5))
@@ -1282,7 +1244,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report location for CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(
@@ -1294,7 +1256,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1313,7 +1275,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('multiple invocations', () => {
     test('should report for each NewExpression call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1324,7 +1286,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report for each CallExpression call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('resolve', ['string'], [], true, 'Promise'))
@@ -1335,7 +1297,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report for mixed NewExpression and CallExpression calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1347,7 +1309,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should only report when conditions match in mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1359,7 +1321,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle many sequential NewExpression calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const constructors = ['Array', 'Map', 'Set', 'WeakMap', 'WeakSet', 'Promise']
@@ -1371,7 +1333,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle many sequential CallExpression calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const methods = [
@@ -1390,8 +1352,8 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not accumulate reports across different visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'new Array<string>()' })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'new Array<string>()' })
 
       const visitor1 = noUnnecessaryTypeArgumentsRule.create(ctx1)
       const visitor2 = noUnnecessaryTypeArgumentsRule.create(ctx2)
@@ -1407,7 +1369,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('message content verification', () => {
     test('Array with no args message mentions any[]', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string'], []))
@@ -1416,7 +1378,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Array with args message mentions inferred from constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string'], [{ type: 'Literal' }]))
@@ -1425,7 +1387,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Map with no args message mentions usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', ['string', 'number'], []))
@@ -1434,7 +1396,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Map with args message mentions constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', ['string', 'number'], [{ type: 'Literal' }]))
@@ -1443,7 +1405,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Set with no args message mentions usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['string'], []))
@@ -1452,7 +1414,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Set with args message mentions constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['string'], [{ type: 'Literal' }]))
@@ -1461,7 +1423,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('WeakMap with no args message mentions usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakMap', ['object', 'string'], []))
@@ -1470,7 +1432,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('WeakMap with args message mentions constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(
@@ -1481,7 +1443,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('WeakSet with no args message mentions usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakSet', ['object'], []))
@@ -1490,7 +1452,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('WeakSet with args message mentions constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('WeakSet', ['object'], [{ type: 'Literal' }]))
@@ -1499,7 +1461,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Promise message mentions executor function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', ['string']))
@@ -1508,7 +1470,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Promise.resolve call message mentions name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('resolve', ['string'], [], true, 'Promise'))
@@ -1517,7 +1479,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('Array.from call message mentions name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('from', ['string'], [], true, 'Array'))
@@ -1526,7 +1488,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('utility type message mentions potentially inferred', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Record', ['string', 'number']))
@@ -1535,7 +1497,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('all messages start with Unnecessary type argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1574,7 +1536,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
     for (const name of constructors) {
       test(`should report new ${name}<T>()`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
         const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
         visitor.NewExpression(createNewExpression(name, ['T']))
@@ -1584,7 +1546,7 @@ describe('no-unnecessary-type-arguments rule', () => {
       })
 
       test(`should report ${name}() call expression with type args`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
         const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
         const node = createCallExpression(name, ['T'], [], false)
@@ -1613,7 +1575,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
     for (const fn of functions) {
       test(`should report ${fn.name}<T>()`, () => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
         const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
         visitor.CallExpression(createCallExpression(fn.method, ['T'], [], true, fn.object))
@@ -1624,7 +1586,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     }
 
     test('should report all Promise static methods at once', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const promiseMethods = ['resolve', 'reject', 'all', 'allSettled', 'race', 'any']
@@ -1636,7 +1598,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report all Array static methods at once', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('from', ['T'], [], true, 'Array'))
@@ -1646,7 +1608,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report all Object static methods at once', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const objectMethods = ['keys', 'values', 'entries', 'assign']
@@ -1660,7 +1622,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('negative cases - should not report', () => {
     test('should not report for Foo constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Foo', ['string']))
@@ -1669,7 +1631,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for MyClass constructor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('MyClass', ['T', 'U']))
@@ -1678,7 +1640,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for Foo.bar call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('bar', ['string'], [], true, 'Foo'))
@@ -1687,7 +1649,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for myFunction call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('myFunction', ['string'], [], false))
@@ -1696,7 +1658,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for process.exit call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('exit', ['number'], [], true, 'process'))
@@ -1705,7 +1667,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for console.log call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('log', ['string'], [], true, 'console'))
@@ -1714,7 +1676,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report NewExpression without typeArguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1729,7 +1691,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report CallExpression without typeArguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1748,7 +1710,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report when typeArguments params is empty', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1768,7 +1730,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report Promise.resolve for non-member callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = createCallExpression('resolve', ['string'], [], false)
@@ -1778,7 +1740,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for React.createElement call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('createElement', ['Props'], [], true, 'React'))
@@ -1787,7 +1749,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for lodash.map call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('map', ['T'], [], true, '_'))
@@ -1796,7 +1758,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should not report for Array custom method call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.CallExpression(createCallExpression('customMethod', ['T'], [], true, 'Array'))
@@ -1807,7 +1769,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()', filePath: '/project/src/utils.ts' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1816,11 +1778,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should work with different source content', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const x = new Map<K, V>()',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x = new Map<K, V>()', filePath: '/src/file.ts' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', ['K', 'V']))
@@ -1829,7 +1787,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should work with empty source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', ['string']))
@@ -1838,7 +1796,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should work with options in context', () => {
-      const { context, reports } = createMockContext({ strict: true })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true }], source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1847,7 +1805,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should work with empty options in context', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['string']))
@@ -1858,7 +1816,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('CallExpression with non-member callee types', () => {
     test('should handle CallExpression with FunctionExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1876,7 +1834,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle CallExpression with ArrowFunctionExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1894,7 +1852,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle CallExpression with CallExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1918,7 +1876,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('NewExpression with non-Identifier callee', () => {
     test('should handle NewExpression with MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1940,7 +1898,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should handle NewExpression with FunctionExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       const node = {
@@ -1960,7 +1918,7 @@ describe('no-unnecessary-type-arguments rule', () => {
 
   describe('Array special cases', () => {
     test('should report new Array<boolean>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['boolean']))
@@ -1969,7 +1927,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array<any>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['any']))
@@ -1978,7 +1936,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array<void>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['void']))
@@ -1987,7 +1945,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array<unknown>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['unknown']))
@@ -1996,7 +1954,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array<never>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['never']))
@@ -2005,7 +1963,7 @@ describe('no-unnecessary-type-arguments rule', () => {
     })
 
     test('should report new Array<object>()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'new Array<string>()' })
       const visitor = noUnnecessaryTypeArgumentsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', ['object']))

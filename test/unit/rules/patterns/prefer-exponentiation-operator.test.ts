@@ -1,45 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferExponentiationOperatorRule } from '../../../../src/rules/patterns/prefer-exponentiation-operator.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'Math.pow(2, 3);',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createCallExpression(callee: unknown, args: unknown[], line = 1, column = 0): unknown {
   return {
@@ -153,14 +115,14 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -168,7 +130,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('CallExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
@@ -179,7 +141,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor1 = preferExponentiationOperatorRule.create(context)
       const visitor2 = preferExponentiationOperatorRule.create(context)
 
@@ -187,7 +149,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should accept context and return object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -196,7 +158,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('detecting Math.pow() calls', () => {
     test('should report Math.pow(2, 3)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -209,7 +171,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(x, y)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -221,7 +183,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(2, 0.5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -233,7 +195,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(base, exponent)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -248,7 +210,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(0, 0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -260,7 +222,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(1, 1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -272,7 +234,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with negative exponent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -284,7 +246,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with large numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -296,7 +258,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with fractional base', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -308,7 +270,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(Math.PI, 2)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -321,7 +283,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(n, 2) for squaring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -333,7 +295,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(n, 3) for cubing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -345,7 +307,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(x, 0.5) for square root', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -357,7 +319,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(2, 10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -369,7 +331,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with string literal base', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -381,7 +343,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report nested Math.pow calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const innerCallee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -396,7 +358,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(null, null)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -408,7 +370,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(undefined, undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -423,7 +385,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow(true, false)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -435,7 +397,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with single argument and still report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -447,7 +409,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -459,7 +421,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with three arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -477,7 +439,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('not reporting valid code', () => {
     test('should not report Math.sqrt()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'sqrt')
@@ -489,7 +451,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.max()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'max')
@@ -501,7 +463,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.min()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'min')
@@ -513,7 +475,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report pow() without Math object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = createCallExpression(createIdentifier('pow'), [
@@ -527,7 +489,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report myMath.pow()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('myMath'), 'pow')
@@ -539,7 +501,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.pow accessed via computed property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -559,7 +521,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.abs()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'abs')
@@ -571,7 +533,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.ceil()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'ceil')
@@ -583,7 +545,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.floor()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'floor')
@@ -595,7 +557,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.round()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'round')
@@ -607,7 +569,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.random()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'random')
@@ -619,7 +581,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.log()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'log')
@@ -631,7 +593,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.sin()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'sin')
@@ -643,7 +605,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.cos()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'cos')
@@ -655,7 +617,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.tan()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'tan')
@@ -667,7 +629,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.exp()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'exp')
@@ -679,7 +641,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report aMath.pow() with lowercase math-like name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('aMath'), 'pow')
@@ -691,7 +653,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.powPow() different method', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'powPow')
@@ -703,7 +665,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report foo.bar()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('foo'), 'bar')
@@ -715,7 +677,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report a standalone function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = createCallExpression(createIdentifier('calculate'), [
@@ -729,7 +691,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report console.log()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('console'), 'log')
@@ -741,7 +703,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Array.from()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Array'), 'from')
@@ -753,7 +715,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report MATH.pow() with all-caps MATH', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('MATH'), 'pow')
@@ -765,7 +727,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report math.pow() with lowercase math', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('math'), 'pow')
@@ -779,21 +741,21 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -801,7 +763,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -816,7 +778,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -829,7 +791,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -839,7 +801,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -852,7 +814,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
@@ -860,7 +822,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression(0)).not.toThrow()
@@ -869,14 +831,14 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle empty string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression('')).not.toThrow()
     })
 
     test('should handle node with empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -893,7 +855,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -909,7 +871,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with null arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -926,7 +888,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee as plain identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -942,7 +904,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee with non-identifier object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -963,7 +925,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle location at line 0 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -977,7 +939,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -991,7 +953,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node type that is not CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1007,7 +969,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee with null object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1026,7 +988,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee with undefined object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1045,7 +1007,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee with non-identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1065,7 +1027,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee property being a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const innerCallee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1088,14 +1050,14 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       expect(() => visitor.CallExpression([])).not.toThrow()
     })
 
     test('should handle deeply nested Math.pow', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1108,7 +1070,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1124,7 +1086,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with Symbol properties', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const sym = Symbol('test')
@@ -1136,7 +1098,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('location accuracy', () => {
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1149,7 +1111,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report location at line 5 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1162,7 +1124,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report location at line 100 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1175,7 +1137,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1188,7 +1150,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report location with loc undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1205,7 +1167,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should use default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1222,7 +1184,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle partial location (only start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1244,7 +1206,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('message quality', () => {
     test('should mention ** operator in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1254,7 +1216,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should mention Math.pow in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1264,7 +1226,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1274,7 +1236,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should mention exponentiation in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1284,7 +1246,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should return a string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1294,7 +1256,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should have a non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1304,8 +1266,8 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should produce same message for different Math.pow calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor1 = preferExponentiationOperatorRule.create(ctx1)
       const visitor2 = preferExponentiationOperatorRule.create(ctx2)
 
@@ -1322,7 +1284,7 @@ describe('prefer-exponentiation-operator rule', () => {
   describe('auto-fix', () => {
     test('should provide fix for Math.pow(2, 3)', () => {
       const source = 'Math.pow(2, 3)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1347,7 +1309,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix for Math.pow(x, y)', () => {
       const source = 'Math.pow(x, y)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1369,7 +1331,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix for Math.pow(base + 1, 2)', () => {
       const source = 'Math.pow(base + 1, 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1391,7 +1353,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix with correct range for Math.pow(10, 5)', () => {
       const source = 'Math.pow(10, 5)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1414,7 +1376,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix for Math.pow(n, 2)', () => {
       const source = 'Math.pow(n, 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1436,7 +1398,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix for Math.pow(a * b, c + d)', () => {
       const source = 'Math.pow(a * b, c + d)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1458,7 +1420,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix for Math.pow at non-zero offset', () => {
       const source = 'const x = Math.pow(2, 3)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1480,7 +1442,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should provide fix with empty base and exponent source when args have no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1494,7 +1456,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix that replaces entire Math.pow call', () => {
       const source = 'Math.pow(2, 3)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1518,7 +1480,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should handle fix when first arg has no range', () => {
       const source = 'Math.pow(x, 3)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1538,7 +1500,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should handle fix when second arg has no range', () => {
       const source = 'Math.pow(2, y)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1557,7 +1519,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle fix when both args have no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1578,7 +1540,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should provide fix that includes ** between base and exponent', () => {
       const source = 'Math.pow(4, 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1602,7 +1564,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('multiple invocations', () => {
     test('should report each Math.pow call separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1616,7 +1578,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report three Math.pow calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1628,7 +1590,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow mixed with other calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const powCallee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1642,7 +1604,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should accumulate reports across multiple visitor calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const powCallee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1657,7 +1619,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle alternating Math.pow and other calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const powCallee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1673,7 +1635,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('context interaction', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils/math.ts')
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);', filePath: '/project/src/utils/math.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1683,7 +1645,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/math.js')
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);', filePath: '/project/src/math.js' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1694,7 +1656,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should work with different source code', () => {
       const source = 'const result = Math.pow(x, y);'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1706,7 +1668,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1717,7 +1679,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should work with complex source code', () => {
       const source = 'function calculate() { return Math.pow(2, 10); }'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1754,7 +1716,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('single argument Math.pow', () => {
     test('should report Math.pow with one argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1766,7 +1728,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not provide fix for single argument Math.pow', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1778,7 +1740,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should still report correct message for single argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1800,7 +1762,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should have create method that accepts RuleContext', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       expect(() => preferExponentiationOperatorRule.create(context)).not.toThrow()
     })
 
@@ -1814,7 +1776,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('argument types', () => {
     test('should report Math.pow with CallExpression arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1828,7 +1790,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with MemberExpression arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1842,7 +1804,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with mixed argument types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1857,7 +1819,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with negative literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1869,7 +1831,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with zero exponent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1881,7 +1843,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with one exponent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -1895,7 +1857,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('visitor method coverage', () => {
     test('should not throw for node with missing type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = { callee: createIdentifier('test'), arguments: [] }
@@ -1905,7 +1867,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with type OtherExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = { type: 'OtherExpression' }
@@ -1915,7 +1877,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle CallExpression with string callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1929,7 +1891,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle CallExpression with number callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1943,7 +1905,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle CallExpression with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1957,7 +1919,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle CallExpression with callee as MemberExpression with numeric property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -1979,7 +1941,7 @@ describe('prefer-exponentiation-operator rule', () => {
   describe('fix text content', () => {
     test('should generate fix with space around ** for literals', () => {
       const source = 'Math.pow(3, 4)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2001,7 +1963,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should generate fix preserving original base source', () => {
       const source = 'Math.pow(arr[0], 2)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2024,7 +1986,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should generate fix preserving original exponent source', () => {
       const source = 'Math.pow(2, x + 1)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2046,7 +2008,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
     test('should generate fix with longer expression', () => {
       const source = 'Math.pow(getValue(), getExponent())'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2069,7 +2031,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('schema and configuration', () => {
     test('should work with options containing extra fields', () => {
-      const { context, reports } = createMockContext({ extra: true, ignore: ['test'] })
+      const { context, reports } = createMockRuleContext({ options: [{ extra: true, ignore: ['test'] }], source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2154,7 +2116,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('report descriptor structure', () => {
     test('should have message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2164,7 +2126,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should have loc in report when node has location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2177,7 +2139,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('report loc should have start and end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2190,7 +2152,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('report loc start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2203,7 +2165,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('report loc end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2218,7 +2180,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('additional callee variations', () => {
     test('should not report when object is a Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -2238,7 +2200,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report when object is a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -2258,7 +2220,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report when property is empty string identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), '')
@@ -2270,7 +2232,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report when callee is a ThisExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -2285,7 +2247,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report Math.Power', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'Power')
@@ -2297,7 +2259,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report POW (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'POW')
@@ -2309,7 +2271,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report powobj.pow()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('powobj'), 'pow')
@@ -2321,7 +2283,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report chained Math.pow.call()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const mathPow = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2334,7 +2296,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should not report window.Math.pow()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const windowMath = createMemberExpression(createIdentifier('window'), 'Math')
@@ -2347,7 +2309,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should report Math.pow with negative fractional exponent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2361,7 +2323,7 @@ describe('prefer-exponentiation-operator rule', () => {
 
   describe('rule definition properties', () => {
     test('should have exactly one visitor method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -2403,7 +2365,7 @@ describe('prefer-exponentiation-operator rule', () => {
   describe('additional edge cases for robustness', () => {
     test('should handle CallExpression with extra arguments beyond 2', () => {
       const source = 'Math.pow(2, 3, 4, 5)'
-      const { context, reports } = createMockContext({}, '/src/file.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/file.ts' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2427,7 +2389,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle SpreadElement arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2442,7 +2404,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with loc as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2459,7 +2421,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle node with loc containing non-numeric values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2479,7 +2441,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle being called multiple times with same node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2493,7 +2455,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with template literal args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2508,7 +2470,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with ArrowFunctionExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2523,7 +2485,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with ObjectExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2538,7 +2500,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with ArrayExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2553,7 +2515,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with ConditionalExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2568,7 +2530,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with UnaryExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2583,7 +2545,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with UpdateExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2598,7 +2560,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with AssignmentExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2618,7 +2580,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with SequenceExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2633,7 +2595,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with NewExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2648,7 +2610,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with FunctionExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2668,7 +2630,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with TaggedTemplateExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2683,7 +2645,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with AwaitExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2701,7 +2663,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle Math.pow with YieldExpression args', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const callee = createMemberExpression(createIdentifier('Math'), 'pow')
@@ -2716,7 +2678,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee property as null identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {
@@ -2736,7 +2698,7 @@ describe('prefer-exponentiation-operator rule', () => {
     })
 
     test('should handle callee property as undefined identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'Math.pow(2, 3);' })
       const visitor = preferExponentiationOperatorRule.create(context)
 
       const node = {

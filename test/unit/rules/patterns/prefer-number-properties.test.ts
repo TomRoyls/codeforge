@@ -1,43 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { preferNumberPropertiesRule } from '../../../../src/rules/patterns/prefer-number-properties.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'x === NaN;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBinaryExpression(
   operator: string,
@@ -143,22 +105,22 @@ describe('prefer-number-properties rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should return a function for BinaryExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should create new visitor for each context', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'x === NaN;' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'x === NaN;' })
 
       const visitor1 = preferNumberPropertiesRule.create(ctx1)
       const visitor2 = preferNumberPropertiesRule.create(ctx2)
@@ -169,7 +131,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('detecting NaN comparisons', () => {
     test('should report x === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('NaN'))
@@ -181,7 +143,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN === x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('NaN'), createIdentifier('x'))
@@ -192,7 +154,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('==', createIdentifier('x'), createIdentifier('NaN'))
@@ -203,7 +165,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN == x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('==', createIdentifier('NaN'), createIdentifier('x'))
@@ -214,7 +176,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('!==', createIdentifier('x'), createIdentifier('NaN'))
@@ -226,7 +188,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN !== x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('!==', createIdentifier('NaN'), createIdentifier('x'))
@@ -238,7 +200,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('!=', createIdentifier('x'), createIdentifier('NaN'))
@@ -249,7 +211,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN != x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('!=', createIdentifier('NaN'), createIdentifier('x'))
@@ -260,7 +222,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -275,7 +237,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN === x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -290,7 +252,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -305,7 +267,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN == x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -320,7 +282,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -336,7 +298,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN !== x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -352,7 +314,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -367,7 +329,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN != x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -382,7 +344,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('NaN'), createIdentifier('NaN'))
@@ -393,7 +355,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN === Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -408,7 +370,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN === Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -423,7 +385,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -440,7 +402,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('detecting Infinity comparisons', () => {
     test('should report x === Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -456,7 +418,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity === x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -471,7 +433,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('==', createIdentifier('x'), createIdentifier('Infinity'))
@@ -482,7 +444,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity == x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('==', createIdentifier('Infinity'), createIdentifier('x'))
@@ -493,7 +455,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -509,7 +471,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity !== x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -525,7 +487,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('!=', createIdentifier('x'), createIdentifier('Infinity'))
@@ -536,7 +498,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity != x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('!=', createIdentifier('Infinity'), createIdentifier('x'))
@@ -547,7 +509,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Number.POSITIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -562,7 +524,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY === x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -577,7 +539,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Number.NEGATIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -592,7 +554,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NEGATIVE_INFINITY === x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -607,7 +569,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == Number.POSITIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -622,7 +584,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY == x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -637,7 +599,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == Number.NEGATIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -652,7 +614,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NEGATIVE_INFINITY == x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -667,7 +629,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== Number.POSITIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -683,7 +645,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY !== x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -699,7 +661,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== Number.NEGATIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -715,7 +677,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NEGATIVE_INFINITY !== x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -731,7 +693,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != Number.POSITIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -746,7 +708,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != Number.NEGATIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -761,7 +723,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity === Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -776,7 +738,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity === Number.POSITIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -791,7 +753,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY === Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -806,7 +768,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY === Number.NEGATIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -823,7 +785,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('not reporting valid comparisons', () => {
     test('should not report x === 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), {
@@ -837,7 +799,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('y'))
@@ -848,7 +810,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x > 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('>', createIdentifier('x'), { type: 'Literal', value: 0 })
@@ -859,7 +821,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x + y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('+', createIdentifier('x'), createIdentifier('y'))
@@ -870,7 +832,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -885,7 +847,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), {
@@ -899,7 +861,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x > NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('>', createIdentifier('x'), createIdentifier('NaN'))
@@ -910,7 +872,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x < NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('<', createIdentifier('x'), createIdentifier('NaN'))
@@ -921,7 +883,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x >= NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('>=', createIdentifier('x'), createIdentifier('NaN'))
@@ -932,7 +894,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x <= NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('<=', createIdentifier('x'), createIdentifier('NaN'))
@@ -943,7 +905,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x > Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('>', createIdentifier('x'), createIdentifier('Infinity'))
@@ -954,7 +916,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x < Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('<', createIdentifier('x'), createIdentifier('Infinity'))
@@ -965,7 +927,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x >= Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('>=', createIdentifier('x'), createIdentifier('Infinity'))
@@ -976,7 +938,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x <= Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('<=', createIdentifier('x'), createIdentifier('Infinity'))
@@ -987,7 +949,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x - y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('-', createIdentifier('x'), createIdentifier('y'))
@@ -998,7 +960,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x * y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('*', createIdentifier('x'), createIdentifier('y'))
@@ -1009,7 +971,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x / y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('/', createIdentifier('x'), createIdentifier('y'))
@@ -1020,7 +982,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x % y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('%', createIdentifier('x'), createIdentifier('y'))
@@ -1031,7 +993,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x ** y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('**', createIdentifier('x'), createIdentifier('y'))
@@ -1042,7 +1004,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x | y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('|', createIdentifier('x'), createIdentifier('y'))
@@ -1053,7 +1015,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x & y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('&', createIdentifier('x'), createIdentifier('y'))
@@ -1064,7 +1026,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x ^ y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('^', createIdentifier('x'), createIdentifier('y'))
@@ -1075,7 +1037,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x << y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('<<', createIdentifier('x'), createIdentifier('y'))
@@ -1086,7 +1048,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x >> y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('>>', createIdentifier('x'), createIdentifier('y'))
@@ -1097,7 +1059,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x in y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('in', createIdentifier('x'), createIdentifier('y'))
@@ -1108,7 +1070,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x instanceof y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1123,7 +1085,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createLiteral(true))
@@ -1134,7 +1096,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createLiteral(false))
@@ -1145,7 +1107,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === ""', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createLiteral(''))
@@ -1156,7 +1118,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createLiteral(0))
@@ -1167,7 +1129,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === -1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createLiteral(-1))
@@ -1180,7 +1142,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('not reporting wrong member expressions', () => {
     test('should not report x === Math.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1195,7 +1157,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === window.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1210,7 +1172,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === global.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1225,7 +1187,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Number["NaN"] (computed member still matches)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1240,7 +1202,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Math.Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1255,7 +1217,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === window.Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1270,7 +1232,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1285,7 +1247,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Number["POSITIVE_INFINITY"] (computed member still matches)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1300,7 +1262,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Number["NEGATIVE_INFINITY"] (computed member still matches)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1315,7 +1277,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.isFinite', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1330,7 +1292,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.isNaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1345,7 +1307,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.MAX_SAFE_INTEGER', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1360,7 +1322,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.MIN_SAFE_INTEGER', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1375,7 +1337,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.MAX_VALUE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1390,7 +1352,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === Number.MIN_VALUE', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1407,7 +1369,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('complex operand types', () => {
     test('should report obj.prop === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1422,7 +1384,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN === obj.prop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1437,7 +1399,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report foo() === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1452,7 +1414,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN === foo()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1467,7 +1429,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report arr[0] === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1482,7 +1444,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report obj.prop === Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1497,7 +1459,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity === obj.prop', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1512,7 +1474,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report foo() === Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1527,7 +1489,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity === foo()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1542,7 +1504,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report obj.prop === Number.NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1557,7 +1519,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report obj.prop === Number.POSITIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1572,7 +1534,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report obj.prop !== Number.NEGATIVE_INFINITY', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1587,7 +1549,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report this.val === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const thisVal = {
@@ -1604,7 +1566,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report result === NaN with literal zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1619,7 +1581,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report 0 / 0 === NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const division = createBinaryExpression('/', createLiteral(0), createLiteral(0))
@@ -1633,21 +1595,21 @@ describe('prefer-number-properties rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
@@ -1655,7 +1617,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1670,7 +1632,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1688,7 +1650,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -1699,7 +1661,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1713,7 +1675,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node without left/right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1725,7 +1687,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(() => visitor.BinaryExpression(true)).not.toThrow()
@@ -1733,7 +1695,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(() => visitor.BinaryExpression(0)).not.toThrow()
@@ -1742,7 +1704,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       expect(() => visitor.BinaryExpression({})).not.toThrow()
@@ -1750,7 +1712,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node with wrong type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1763,7 +1725,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node with null left and NaN right (reports NaN)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1778,7 +1740,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node with null right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1793,7 +1755,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node with undefined left and NaN right (reports NaN)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1808,7 +1770,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle node with undefined right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -1823,7 +1785,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle NaN identifier with different casing on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('nan'), createIdentifier('x'))
@@ -1834,7 +1796,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle NaN identifier with different casing on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('nan'))
@@ -1845,7 +1807,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle Infinity identifier with different casing on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1860,7 +1822,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle NaN-like identifier nanValue', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1875,7 +1837,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle Infinity-like identifier InfinityValue', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1890,7 +1852,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle NaN-like identifier isNaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('isNaN'))
@@ -1901,7 +1863,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle NaN-like identifier NumberNaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -1916,7 +1878,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle member expression with non-identifier object for NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const memberExpr = {
@@ -1934,7 +1896,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle member expression with non-identifier property for NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const memberExpr = {
@@ -1952,7 +1914,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle member expression without object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const memberExpr = {
@@ -1969,7 +1931,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should handle member expression without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const memberExpr = {
@@ -1986,7 +1948,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;', filePath: '/custom/path.ts' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -1997,7 +1959,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'const x = 5;')
+      const { context, reports } = createMockRuleContext({ source: 'const x = 5;', filePath: '/src/file.ts' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2010,7 +1972,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('location tracking', () => {
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2028,7 +1990,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report correct location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2046,7 +2008,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report correct location for Infinity at line 5 column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2064,7 +2026,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2085,7 +2047,7 @@ describe('prefer-number-properties rule', () => {
       const lines = [1, 2, 5, 10, 50, 100, 500, 1000]
 
       for (const line of lines) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
         const visitor = preferNumberPropertiesRule.create(context)
 
         const node = createBinaryExpression(
@@ -2105,7 +2067,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('message quality', () => {
     test('should mention Number.isNaN for NaN comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2116,7 +2078,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention !Number.isNaN for negative NaN comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2127,7 +2089,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention Number.isFinite for Infinity comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2138,7 +2100,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention that NaN comparisons return false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2149,7 +2111,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention always return false in NaN negative comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2160,7 +2122,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention Number.isFinite for POSITIVE_INFINITY comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2175,7 +2137,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention Number.isFinite for NEGATIVE_INFINITY comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2190,7 +2152,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention !Number.isFinite for negative Infinity comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2201,7 +2163,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention !Number.isFinite for negative POSITIVE_INFINITY comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2216,7 +2178,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention !Number.isFinite for negative NEGATIVE_INFINITY comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2231,7 +2193,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention NaN in NaN positive message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2242,7 +2204,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention Infinity in Infinity positive message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2253,7 +2215,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention Number.isNaN for == NaN loose equality', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2265,7 +2227,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention Number.isFinite for == Infinity loose equality', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2277,7 +2239,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention !Number.isNaN for != NaN loose inequality', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2288,7 +2250,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should mention !Number.isFinite for != Infinity loose inequality', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2301,7 +2263,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('report consistency', () => {
     test('should produce exactly one report per NaN comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2312,7 +2274,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should produce exactly one report per Infinity comparison', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2323,7 +2285,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report separately for multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2337,7 +2299,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report separately for NaN then Infinity', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2354,7 +2316,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report for valid then report for NaN', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2368,7 +2330,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report for NaN in sequence of mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2387,7 +2349,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('identifier case sensitivity', () => {
     test('should not report x === nan (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('nan'))
@@ -2398,7 +2360,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === NAN (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('NAN'))
@@ -2409,7 +2371,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === infinity (lowercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2424,7 +2386,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report x === INFINITY (uppercase)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2439,7 +2401,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === NaN (exact case)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression('===', createIdentifier('x'), createIdentifier('NaN'))
@@ -2450,7 +2412,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Infinity (exact case)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = createBinaryExpression(
@@ -2467,7 +2429,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('strict vs loose equality operators', () => {
     test('should report x === NaN (strict)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2478,7 +2440,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == NaN (loose)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2489,7 +2451,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== NaN (strict negative)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2500,7 +2462,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != NaN (loose negative)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2511,7 +2473,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x === Infinity (strict)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2522,7 +2484,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x == Infinity (loose)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2533,7 +2495,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x !== Infinity (strict negative)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2544,7 +2506,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report x != Infinity (loose negative)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2555,7 +2517,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report == NaN with message about Number.isNaN not negated', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2567,7 +2529,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report != NaN with negated message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2578,7 +2540,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report == Infinity with message about Number.isFinite not negated', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2590,7 +2552,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report != Infinity with negated message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2603,7 +2565,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('positional symmetry', () => {
     test('should report NaN on left side of ===', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2614,7 +2576,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report NaN on right side of ===', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2625,7 +2587,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity on left side of ===', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2636,7 +2598,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Infinity on right side of ===', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2647,7 +2609,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN on left side of ==', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2662,7 +2624,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NaN on right side of ==', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2677,7 +2639,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY on left side of !==', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2692,7 +2654,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.POSITIVE_INFINITY on right side of !==', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2707,7 +2669,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NEGATIVE_INFINITY on left side of !=', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2722,7 +2684,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should report Number.NEGATIVE_INFINITY on right side of !=', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2739,7 +2701,7 @@ describe('prefer-number-properties rule', () => {
 
   describe('operator precedence edge cases', () => {
     test('should not report x === NaN with non-equality operator in node type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       const node = {
@@ -2755,7 +2717,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report NaN with < operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2766,7 +2728,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report Infinity with > operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2777,7 +2739,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report NaN with >= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2788,7 +2750,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report Infinity with <= operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2799,7 +2761,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report NaN with + operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2810,7 +2772,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report Infinity with - operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2821,7 +2783,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report NaN with * operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2832,7 +2794,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report Infinity with / operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2843,7 +2805,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report NaN with % operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(
@@ -2854,7 +2816,7 @@ describe('prefer-number-properties rule', () => {
     })
 
     test('should not report NaN with ** operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'x === NaN;' })
       const visitor = preferNumberPropertiesRule.create(context)
 
       visitor.BinaryExpression(

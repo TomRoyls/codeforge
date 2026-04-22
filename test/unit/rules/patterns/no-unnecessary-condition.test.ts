@@ -1,44 +1,6 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noUnnecessaryConditionRule } from '../../../../src/rules/patterns/no-unnecessary-condition.js'
 import noUnnecessaryConditionDefault from '../../../../src/rules/patterns/no-unnecessary-condition.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'if (true) { }',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createIfStatement(testValue: unknown, line = 1, column = 0): unknown {
   return {
@@ -172,32 +134,32 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('visitor creation', () => {
     test('should return object with IfStatement handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(typeof visitor.IfStatement).toBe('function')
     })
 
     test('should return object with ConditionalExpression handler', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(typeof visitor.ConditionalExpression).toBe('function')
     })
 
     test('should return only IfStatement and ConditionalExpression handlers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(Object.keys(visitor).sort()).toEqual(['ConditionalExpression', 'IfStatement'])
     })
 
     test('should create fresh visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor1 = noUnnecessaryConditionRule.create(context)
       const visitor2 = noUnnecessaryConditionRule.create(context)
       expect(visitor1).not.toBe(visitor2)
     })
 
     test('should return callable visitor functions', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(() => visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))).not.toThrow()
       expect(() =>
@@ -208,7 +170,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('detecting unnecessary conditions in if statements', () => {
     test('should report if with true literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -218,7 +180,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report if with false literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(false)))
@@ -228,7 +190,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report if with null literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(null)))
@@ -238,7 +200,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report if with variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'Identifier', name: 'x' }))
@@ -247,7 +209,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report if with Literal true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(true)))
@@ -257,7 +219,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report if with Literal false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(false)))
@@ -267,7 +229,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report if with RegExpLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createRegExpLiteral()))
@@ -277,7 +239,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report if with Literal number 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(0)))
@@ -286,7 +248,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report if with Literal empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral('')))
@@ -295,7 +257,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report if with CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -306,7 +268,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report if with MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -321,7 +283,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report if with BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -337,7 +299,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral true with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -346,7 +308,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral false with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(false)))
@@ -355,7 +317,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal null with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(null)))
@@ -364,7 +326,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report RegExpLiteral with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createRegExpLiteral()))
@@ -373,7 +335,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal true with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(true)))
@@ -382,7 +344,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal false with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(false)))
@@ -393,7 +355,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('detecting unnecessary conditions in ternary expressions', () => {
     test('should report ternary with true literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createBooleanLiteral(true)))
@@ -403,7 +365,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with false literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createBooleanLiteral(false)))
@@ -413,7 +375,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report ternary with variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression({ type: 'Identifier', name: 'x' }))
@@ -422,7 +384,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with Literal true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createLiteral(true)))
@@ -432,7 +394,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with Literal false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createLiteral(false)))
@@ -442,7 +404,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with Literal null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createLiteral(null)))
@@ -452,7 +414,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with RegExpLiteral', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createRegExpLiteral()))
@@ -462,7 +424,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with !true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -474,7 +436,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with !false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -486,7 +448,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with true || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -503,7 +465,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with false && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -520,7 +482,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report ternary with variable condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -531,7 +493,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report ternary with MemberExpression condition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -548,7 +510,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('detecting unnecessary negations in if statements', () => {
     test('should report !true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createBooleanLiteral(true))))
@@ -558,7 +520,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -570,7 +532,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createLiteral(null))))
@@ -580,7 +542,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !Literal(true)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createLiteral(true))))
@@ -590,7 +552,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !Literal(false)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createLiteral(false))))
@@ -600,7 +562,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report !variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -611,7 +573,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report !CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -627,7 +589,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !BooleanLiteral(true) with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createBooleanLiteral(true))))
@@ -636,7 +598,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !BooleanLiteral(false) with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -647,7 +609,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !Literal(null) with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createLiteral(null))))
@@ -658,7 +620,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('unary expressions with non-bang operators', () => {
     test('should not report +true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('+', createBooleanLiteral(true))))
@@ -667,7 +629,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report -false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -678,7 +640,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report void true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -689,7 +651,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report typeof x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -700,7 +662,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report delete x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -717,7 +679,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report ~true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('~', createBooleanLiteral(true))))
@@ -728,7 +690,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('detecting unnecessary logical expressions in if statements', () => {
     test('should report true || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -745,7 +707,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -762,7 +724,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(true) || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -779,7 +741,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(false) && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -796,7 +758,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral(true) && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -813,7 +775,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral(false) || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -830,7 +792,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(true) && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -847,7 +809,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(false) || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -864,7 +826,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report x && y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -884,7 +846,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report x || y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -904,7 +866,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral(true) || x with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -920,7 +882,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral(false) && x with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -936,7 +898,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report when right side is unnecessary but left is literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -949,7 +911,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report when right side is unnecessary in ||', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -962,7 +924,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report when neither side is unnecessary in &&', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -979,7 +941,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report when neither side is unnecessary in ||', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -998,7 +960,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('logical expressions with null and other values', () => {
     test('should not report null || x since null is not BooleanLiteral/Literal true|false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1014,7 +976,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report null && x since null is not BooleanLiteral/Literal true|false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1030,7 +992,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report Literal(null) || x in logical', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1046,7 +1008,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report true && Literal(null) as unnecessary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1060,7 +1022,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report true || Literal(null) as unnecessary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1074,7 +1036,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false && Literal(null) as unnecessary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1088,7 +1050,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false || Literal(null) as unnecessary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1104,7 +1066,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('nested logical expressions', () => {
     test('should not report (true || x) && y since left is LogicalExpression not literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1124,7 +1086,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report x || (false && y) since left is identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1144,7 +1106,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report (false && x) || y since left is LogicalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1164,7 +1126,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report true || (false && x)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1184,7 +1146,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false && (true || x)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1204,7 +1166,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report deeply nested: true || (false && (true || x))', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1228,7 +1190,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report x && (y || z)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1254,7 +1216,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('logical expressions in ternary', () => {
     test('should report ternary with true && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1271,7 +1233,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with false || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1288,7 +1250,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with Literal(true) || x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1304,7 +1266,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with Literal(false) && x', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1320,7 +1282,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report ternary with x && y', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1342,7 +1304,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('negations in ternary expressions', () => {
     test('should report ternary with !Literal(true)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1354,7 +1316,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with !Literal(false)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1366,7 +1328,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report ternary with !Literal(null)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1378,7 +1340,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report ternary with !variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -1391,7 +1353,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('location and reporting', () => {
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createIfStatement(createBooleanLiteral(true), 10, 5)
@@ -1402,7 +1364,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true), 3, 2))
@@ -1413,7 +1375,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report correct location for ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createBooleanLiteral(true), 5, 10))
@@ -1423,7 +1385,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1433,7 +1395,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true), 999, 42))
@@ -1443,7 +1405,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createIfStatement(createBooleanLiteral(true))
@@ -1453,7 +1415,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should include both message and loc in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true), 7, 3))
@@ -1464,7 +1426,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report separate locations for multiple calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true), 1, 0))
@@ -1476,7 +1438,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node with loc but no start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createIfStatement(createBooleanLiteral(true))
@@ -1486,7 +1448,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle ConditionalExpression without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createConditionalExpression(createBooleanLiteral(true))
@@ -1498,7 +1460,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('multiple visitor calls', () => {
     test('should accumulate reports from multiple IfStatement calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1509,7 +1471,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should accumulate reports from mixed visitor calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1519,7 +1481,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not cross-contaminate between calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1530,7 +1492,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle many sequential calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1541,7 +1503,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle alternating report and no-report calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1555,25 +1517,25 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully in IfStatement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(() => visitor.IfStatement(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully in IfStatement', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(() => visitor.IfStatement(undefined)).not.toThrow()
     })
 
     test('should handle null node gracefully in ConditionalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       expect(() => visitor.ConditionalExpression(null)).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.IfStatement('string')).not.toThrow()
@@ -1581,7 +1543,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createIfStatement(createBooleanLiteral(true))
@@ -1591,7 +1553,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle wrong node type in IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const wrongType = {
@@ -1605,7 +1567,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle wrong node type in ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const wrongType = {
@@ -1619,7 +1581,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node with null test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(null))
@@ -1628,7 +1590,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node with undefined test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = {
@@ -1643,7 +1605,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node without test property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = {
@@ -1657,56 +1619,56 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle empty object node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.IfStatement({})).not.toThrow()
     })
 
     test('should handle boolean true as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.IfStatement(true)).not.toThrow()
     })
 
     test('should handle boolean false as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.IfStatement(false)).not.toThrow()
     })
 
     test('should handle array as node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.IfStatement([])).not.toThrow()
     })
 
     test('should handle number node in ConditionalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.ConditionalExpression(42)).not.toThrow()
     })
 
     test('should handle string node in ConditionalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.ConditionalExpression('hello')).not.toThrow()
     })
 
     test('should handle undefined node in ConditionalExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(() => visitor.ConditionalExpression(undefined)).not.toThrow()
     })
 
     test('should handle node with type but no other props in IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement({ type: 'IfStatement' })
@@ -1714,7 +1676,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node with type but no other props in ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression({ type: 'ConditionalExpression' })
@@ -1722,7 +1684,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle deeply nested UnaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const nested = createUnaryExpression(
@@ -1735,7 +1697,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle LogicalExpression with non-&&/|| operator via null check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createIfStatement(
@@ -1753,7 +1715,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('createMockContext variations', () => {
     test('should work with custom file path', () => {
-      const { context, reports } = createMockContext({}, '/custom/path.ts')
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }', filePath: '/custom/path.ts' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1762,7 +1724,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should work with custom source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'if (false) {}')
+      const { context, reports } = createMockRuleContext({ source: 'if (false) {}', filePath: '/src/file.ts' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(false)))
@@ -1771,7 +1733,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should work with options', () => {
-      const { context, reports } = createMockContext({ checkComplexConditions: true })
+      const { context, reports } = createMockRuleContext({ options: [{ checkComplexConditions: true }], source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1780,7 +1742,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createBooleanLiteral(true)))
@@ -1806,7 +1768,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('RegExpLiteral detection', () => {
     test('should report RegExpLiteral in if statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createRegExpLiteral()))
@@ -1816,7 +1778,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report RegExpLiteral in ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createRegExpLiteral()))
@@ -1826,7 +1788,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report RegExpLiteral with flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const regex = { type: 'RegExpLiteral', pattern: 'test', flags: 'gi' }
@@ -1836,7 +1798,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report Literal(null) || RegExpLiteral since null is not bool literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1851,7 +1813,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('BooleanLiteral edge cases', () => {
     test('should not report BooleanLiteral with string value "true"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'BooleanLiteral', value: 'true' }))
@@ -1860,7 +1822,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report BooleanLiteral with number value 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'BooleanLiteral', value: 1 }))
@@ -1869,7 +1831,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report BooleanLiteral with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'BooleanLiteral' }))
@@ -1878,7 +1840,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report Literal with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'Literal' }))
@@ -1887,7 +1849,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report Literal with number value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(42)))
@@ -1896,7 +1858,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report Literal with string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral('hello')))
@@ -1905,7 +1867,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report Literal with undefined value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createLiteral(undefined)))
@@ -1914,8 +1876,8 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report BooleanLiteral true and Literal true as same message', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'if (true) { }' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'if (true) { }' })
       const v1 = noUnnecessaryConditionRule.create(ctx1)
       const v2 = noUnnecessaryConditionRule.create(ctx2)
 
@@ -1928,7 +1890,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('IfStatement with various non-matching test nodes', () => {
     test('should not report with ArrowFunctionExpression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1943,7 +1905,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with FunctionExpression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1958,7 +1920,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with ObjectExpression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'ObjectExpression', properties: [] }))
@@ -1967,7 +1929,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with ArrayExpression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement({ type: 'ArrayExpression', elements: [] }))
@@ -1976,7 +1938,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with TemplateLiteral test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -1991,7 +1953,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with AssignmentExpression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2007,7 +1969,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with NewExpression test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2024,7 +1986,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('ConditionalExpression with non-matching test nodes', () => {
     test('should not report with number literal test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createLiteral(42)))
@@ -2033,7 +1995,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with string literal test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createLiteral('hello')))
@@ -2042,7 +2004,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with undefined literal test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(createLiteral(undefined)))
@@ -2051,7 +2013,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report with function call test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2068,7 +2030,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('negation with non-literal arguments', () => {
     test('should not report !MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2085,7 +2047,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report !(x && y)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2108,7 +2070,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report !ArrayExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2119,7 +2081,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report !Literal(42)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createLiteral(42))))
@@ -2128,7 +2090,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should not report !Literal("hello")', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(createIfStatement(createUnaryExpression('!', createLiteral('hello'))))
@@ -2139,7 +2101,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('logical expressions with both sides always truthy/falsy', () => {
     test('should report true && true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2153,7 +2115,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report true && false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2167,7 +2129,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false || true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2181,7 +2143,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false || false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2195,7 +2157,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report true || false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2209,7 +2171,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report false && true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2225,7 +2187,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('combined negation and logical', () => {
     test('should report !(true || x) in if', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2244,7 +2206,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !BooleanLiteral(true) in ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2255,7 +2217,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report !BooleanLiteral(false) in ternary', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(
@@ -2268,7 +2230,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('LogicalExpression with Literal variants', () => {
     test('should report Literal(true) && x with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2284,7 +2246,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(false) || x with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2300,7 +2262,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(true) || x with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2316,7 +2278,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should report Literal(false) && x with exact message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(
@@ -2334,7 +2296,7 @@ describe('no-unnecessary-condition rule', () => {
 
   describe('visiting with empty and malformed nodes', () => {
     test('should handle IfStatement with node having only consequent', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement({
@@ -2347,7 +2309,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle ConditionalExpression with missing alternate', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression({
@@ -2361,7 +2323,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = createIfStatement(createBooleanLiteral(true))
@@ -2374,7 +2336,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle test node with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const test = createBooleanLiteral(true)
@@ -2385,7 +2347,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle null as IfStatement with no report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.IfStatement(null)
@@ -2393,7 +2355,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle ConditionalExpression with null test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       visitor.ConditionalExpression(createConditionalExpression(null))
@@ -2401,7 +2363,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should handle ConditionalExpression with undefined test', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       const node = {
@@ -2424,7 +2386,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should have exactly two visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -2434,7 +2396,7 @@ describe('no-unnecessary-condition rule', () => {
     })
 
     test('should have visitor methods that accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'if (true) { }' })
       const visitor = noUnnecessaryConditionRule.create(context)
 
       expect(visitor.IfStatement.length).toBe(1)

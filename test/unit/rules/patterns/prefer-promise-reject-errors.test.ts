@@ -4,43 +4,7 @@ import {
   default as defaultExport,
 } from '../../../../src/rules/patterns/prefer-promise-reject-errors.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createNewExpression(
   calleeName: string,
@@ -213,21 +177,21 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('create', () => {
     test('should return visitor object with NewExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(visitor).toHaveProperty('NewExpression')
     })
 
     test('should return a function for NewExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(typeof visitor.NewExpression).toBe('function')
     })
 
     test('should return new visitor on each create call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = preferPromiseRejectErrorsRule.create(context)
       const visitor2 = preferPromiseRejectErrorsRule.create(context)
 
@@ -235,7 +199,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should return object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -243,14 +207,14 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not return undefined from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(visitor).toBeDefined()
     })
 
     test('visitor should have only NewExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['NewExpression'])
@@ -262,7 +226,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('detecting promises without reject', () => {
     test('should report Promise without reject handler', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -271,7 +235,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report Promise with reject handler', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, true))
@@ -280,7 +244,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Other', true, false))
@@ -289,7 +253,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report NewExpression without executor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', false, false))
@@ -298,7 +262,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report correct message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -307,7 +271,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report multiple promises without reject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 1, 0))
@@ -318,7 +282,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report only promises without reject among others', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, true))
@@ -330,7 +294,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report Promise with no params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([]))
@@ -339,7 +303,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report Promise with single resolve param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'Identifier', name: 'resolve' }]))
@@ -348,7 +312,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report Promise with two params (resolve and reject)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(
@@ -362,7 +326,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report Promise with three params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(
@@ -377,7 +341,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report Promise with many params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(
@@ -393,7 +357,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report regardless of resolve param name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'Identifier', name: 'fulfill' }]))
@@ -402,7 +366,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report when param has different type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'RestElement', name: 'args' }]))
@@ -411,7 +375,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report when first param name is underscore', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'Identifier', name: '_' }]))
@@ -420,7 +384,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise new expressions like Date', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Date', true, false))
@@ -429,7 +393,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise new expressions like Map', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Map', true, false))
@@ -438,7 +402,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise new expressions like Set', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Set', true, false))
@@ -447,7 +411,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise new expressions like Array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Array', true, false))
@@ -456,7 +420,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise new expressions like Error', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Error', true, false))
@@ -465,7 +429,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report non-Promise new expressions like RegExp', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('RegExp', true, false))
@@ -474,7 +438,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should be case-sensitive - lowercase promise should not be flagged', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('promise', true, false))
@@ -483,7 +447,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should be case-sensitive - PROMISE should not be flagged', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('PROMISE', true, false))
@@ -492,7 +456,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report Promise1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise1', true, false))
@@ -501,7 +465,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report MyPromise', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('MyPromise', true, false))
@@ -510,7 +474,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report A promise (with space-like name)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -531,7 +495,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('edge cases', () => {
     test('should handle null node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression(null)).not.toThrow()
@@ -540,7 +504,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle undefined node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression(undefined)).not.toThrow()
@@ -549,7 +513,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle non-object node in NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression('string')).not.toThrow()
@@ -559,7 +523,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -572,7 +536,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node without callee property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -585,7 +549,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node without arguments property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -598,7 +562,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -618,7 +582,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle executor without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -636,7 +600,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle executor without params property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -654,7 +618,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle non-FunctionExpression executor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -672,7 +636,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -711,7 +675,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression(true)).not.toThrow()
@@ -721,7 +685,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle number zero node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression(0)).not.toThrow()
@@ -729,7 +693,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle empty string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression('')).not.toThrow()
@@ -737,7 +701,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle NaN node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression(Number.NaN)).not.toThrow()
@@ -745,7 +709,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression([])).not.toThrow()
@@ -753,7 +717,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression(() => {})).not.toThrow()
@@ -761,7 +725,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with wrong type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -775,7 +739,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with ExpressionStatement type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -789,7 +753,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -803,7 +767,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -817,7 +781,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with non-Identifier callee (MemberExpression)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -836,7 +800,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with callee without name property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -850,7 +814,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with callee having null name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -864,7 +828,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle empty arguments array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -879,7 +843,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle null arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -893,7 +857,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle undefined arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -906,7 +870,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle string arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -920,7 +884,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle object arguments (non-array)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -934,7 +898,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle first argument being null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -949,7 +913,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle first argument being undefined', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -964,7 +928,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle first argument being a string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -979,7 +943,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle first argument being a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -994,7 +958,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle first argument being a Literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1009,7 +973,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle first argument being an Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1024,7 +988,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle ArrowFunctionExpression executor with empty params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1039,7 +1003,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle ArrowFunctionExpression executor with single param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1059,7 +1023,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report for FunctionDeclaration as executor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1079,7 +1043,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle params as non-array (string)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1094,7 +1058,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle params as non-array (object)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1109,7 +1073,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle params as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1124,7 +1088,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle multiple arguments where first is not executor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1142,7 +1106,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with Symbol.toPrimitive type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1156,7 +1120,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle deeply frozen object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = Object.freeze({
@@ -1179,7 +1143,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with prototype properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = Object.create({
@@ -1201,7 +1165,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle executor params with non-Identifier elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'AssignmentPattern', left: {}, right: {} }]))
@@ -1210,7 +1174,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle executor params with destructuring', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'ObjectPattern', properties: [] }]))
@@ -1219,7 +1183,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle executor with empty params array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([]))
@@ -1233,7 +1197,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('message quality', () => {
     test('should mention reject in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1242,7 +1206,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should mention promise in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1251,7 +1215,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should mention error in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1260,7 +1224,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should use parentheses around reject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1269,7 +1233,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 1, 0))
@@ -1280,7 +1244,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should always produce the exact same message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1294,7 +1258,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should have message with sentence structure', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1303,7 +1267,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should have message starting with Promise', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1312,7 +1276,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should have message ending with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1321,7 +1285,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should mention executor in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1330,7 +1294,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should have message length greater than 20 chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1339,7 +1303,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should have message under 200 chars', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1353,7 +1317,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('location reporting', () => {
     test('should report correct location for promise without reject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 10, 5))
@@ -1363,7 +1327,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 5, 10))
@@ -1373,7 +1337,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 1, 0))
@@ -1383,7 +1347,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report location at high line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 1000, 0))
@@ -1392,7 +1356,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report location at high column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 1, 80))
@@ -1401,7 +1365,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report end location from node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 3, 5))
@@ -1411,7 +1375,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report correct location for each of multiple violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false, 5, 10))
@@ -1427,7 +1391,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should provide default location when node has no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1448,7 +1412,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1469,7 +1433,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with undefined loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1489,7 +1453,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with loc having only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1510,7 +1474,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with loc having only end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1531,7 +1495,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with string line/column values in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1556,7 +1520,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle node with NaN line in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1585,7 +1549,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('scalability', () => {
     test('should handle 50 sequential violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1596,7 +1560,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle 100 mixed calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1607,7 +1571,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle large number of non-matching nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 200; i++) {
@@ -1618,7 +1582,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle alternating valid and invalid rapidly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1630,7 +1594,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle single violation after many non-matches', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1647,7 +1611,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/app.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/app.ts' })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1656,7 +1620,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with .js file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/app.js')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/app.js' })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1665,7 +1629,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/component.tsx' })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1674,7 +1638,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with .jsx file path', () => {
-      const { context, reports } = createMockContext({}, '/project/src/component.jsx')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/component.jsx' })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1683,7 +1647,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'new Promise(r => {})')
+      const { context, reports } = createMockRuleContext({ source: 'new Promise(r => {})', filePath: '/src/file.ts' })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1692,7 +1656,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1701,7 +1665,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with options containing allowPlainReject', () => {
-      const { context, reports } = createMockContext({ allowPlainReject: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowPlainReject: true }] })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1710,7 +1674,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should work with options containing extra properties', () => {
-      const { context, reports } = createMockContext({ foo: 'bar', baz: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ foo: 'bar', baz: 42 }] })
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1841,12 +1805,12 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('create should accept context argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(() => preferPromiseRejectErrorsRule.create(context)).not.toThrow()
     })
 
     test('create should return an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const result = preferPromiseRejectErrorsRule.create(context)
       expect(typeof result).toBe('object')
     })
@@ -1857,7 +1821,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('visitor behavior', () => {
     test('should not report when same visitor handles multiple valid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1868,7 +1832,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should accumulate reports across calls on same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1882,7 +1846,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle mixed node types on same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(null)
@@ -1897,8 +1861,8 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not affect reports from different visitors', () => {
-      const { context: ctx1, reports: reports1 } = createMockContext()
-      const { context: ctx2, reports: reports2 } = createMockContext()
+      const { context: ctx1, reports: reports1 } = createMockRuleContext()
+      const { context: ctx2, reports: reports2 } = createMockRuleContext()
 
       const visitor1 = preferPromiseRejectErrorsRule.create(ctx1)
       const visitor2 = preferPromiseRejectErrorsRule.create(ctx2)
@@ -1911,7 +1875,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle call with no arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       expect(() => visitor.NewExpression()).not.toThrow()
@@ -1919,7 +1883,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should return void from NewExpression', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const result = visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -1927,7 +1891,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should return void from NewExpression with null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const result = visitor.NewExpression(null)
@@ -1935,7 +1899,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle being called after edge case inputs', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       // Feed edge cases first
@@ -1958,7 +1922,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('real-world patterns', () => {
     test('should not report Promise with resolve and reject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -1981,7 +1945,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report Promise with only resolve', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2001,7 +1965,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report Promise with no executor params at all', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2021,7 +1985,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report Promise with catch-style third param', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2044,7 +2008,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle Promise with extra arguments after executor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2065,7 +2029,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle Promise with three extra arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2088,7 +2052,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not crash when executor has body property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2109,7 +2073,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not crash when executor has async true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2130,7 +2094,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not crash when executor has generator true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2151,7 +2115,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report Promise with empty params (no resolve no reject)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([]))
@@ -2160,7 +2124,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should report Promise with destructured param but no reject', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression(createPromiseNode([{ type: 'ObjectPattern', properties: [] }]))
@@ -2174,7 +2138,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('non-matching node types', () => {
     test('should not report CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2187,7 +2151,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2200,7 +2164,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report FunctionDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2212,7 +2176,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report VariableDeclaration', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2224,7 +2188,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report ExpressionStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2236,7 +2200,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report BlockStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2248,7 +2212,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report ReturnStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2260,7 +2224,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report IfStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2273,7 +2237,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report TryStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2285,7 +2249,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report ThrowStatement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({
@@ -2302,7 +2266,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('callee type variations', () => {
     test('should not report when callee is MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2321,7 +2285,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report when callee is CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2340,7 +2304,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report when callee type is not Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2358,7 +2322,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report when callee has numeric name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2373,7 +2337,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should not report when callee name is empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const node = {
@@ -2393,7 +2357,7 @@ describe('prefer-promise-reject-errors rule', () => {
   // ========================================
   describe('integration-like tests', () => {
     test('should correctly identify violations in a sequence of different node types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       visitor.NewExpression({ type: 'CallExpression' })
@@ -2409,7 +2373,7 @@ describe('prefer-promise-reject-errors rule', () => {
     })
 
     test('should handle being called with many different shapes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferPromiseRejectErrorsRule.create(context)
 
       const shapes: unknown[] = [
@@ -2452,7 +2416,7 @@ describe('prefer-promise-reject-errors rule', () => {
 
     test('should produce consistent results across multiple runs', () => {
       for (let run = 0; run < 5; run++) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = preferPromiseRejectErrorsRule.create(context)
 
         visitor.NewExpression(createNewExpression('Promise', true, false))
@@ -2467,9 +2431,9 @@ describe('prefer-promise-reject-errors rule', () => {
 
     test('should handle create being called multiple times with different contexts', () => {
       const contexts = [
-        createMockContext({}, '/a.ts'),
-        createMockContext({}, '/b.ts'),
-        createMockContext({}, '/c.ts'),
+        createMockRuleContext({ filePath: '/a.ts' }),
+        createMockRuleContext({ filePath: '/b.ts' }),
+        createMockRuleContext({ filePath: '/c.ts' }),
       ]
 
       for (const { context, reports } of contexts) {
@@ -2509,7 +2473,7 @@ describe('prefer-promise-reject-errors rule', () => {
       ]
 
       for (const { params, expected } of testCases) {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext()
         const visitor = preferPromiseRejectErrorsRule.create(context)
         visitor.NewExpression(createPromiseNode(params))
 

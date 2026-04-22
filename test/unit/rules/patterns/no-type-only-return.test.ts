@@ -1,45 +1,5 @@
-import { describe, test, expect, vi } from 'vitest'
 import { noTypeOnlyReturnRule } from '../../../../src/rules/patterns/no-type-only-return.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-  fix?: { range: [number, number]; text: string }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'function test() {}',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        fix: descriptor.fix,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFunctionDeclaration(hasReturnType = true, line = 1, column = 0): unknown {
   return {
@@ -186,7 +146,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration')
@@ -196,7 +156,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should return visitor with exit handlers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionDeclaration:exit')
@@ -205,7 +165,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('each visitor method should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(typeof visitor['FunctionDeclaration']).toBe('function')
@@ -215,7 +175,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('each exit handler should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(typeof visitor['FunctionDeclaration:exit']).toBe('function')
@@ -224,15 +184,15 @@ describe('no-type-only-return rule', () => {
     })
 
     test('create should return a non-null object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
       expect(visitor).not.toBeNull()
       expect(typeof visitor).toBe('object')
     })
 
     test('calling create multiple times returns independent visitors', () => {
-      const { context: ctx1 } = createMockContext()
-      const { context: ctx2 } = createMockContext()
+      const { context: ctx1 } = createMockRuleContext({ source: 'function test() {}' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'function test() {}' })
       const visitor1 = noTypeOnlyReturnRule.create(ctx1)
       const visitor2 = noTypeOnlyReturnRule.create(ctx2)
 
@@ -241,7 +201,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('visitor should have exactly 7 keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -249,7 +209,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('create does not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       expect(() => noTypeOnlyReturnRule.create(context)).not.toThrow()
     })
   })
@@ -259,7 +219,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('function declaration detection', () => {
     test('should report function declaration with return type but empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -272,7 +232,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report function declaration without return type and empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(false, 1, 0))
@@ -282,7 +242,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report function declaration with return type and valid return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -292,7 +252,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report only once per function even with multiple empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -303,7 +263,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function exit properly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -314,7 +274,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should track nested functions separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -328,7 +288,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for function declaration at various line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 42, 0))
@@ -338,7 +298,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for function declaration at column offset', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 8))
@@ -348,7 +308,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report even when function has an id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -363,7 +323,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for deeply nested function declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -384,7 +344,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('function expression detection', () => {
     test('should report function expression with return type but empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -397,7 +357,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report function expression without return type and empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(false, 1, 0))
@@ -407,7 +367,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report function expression with return type and valid return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -417,7 +377,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function expression exit properly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -428,7 +388,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report only once per function expression with multiple empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -439,7 +399,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle nested function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -453,7 +413,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for function expression at arbitrary line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 99, 5))
@@ -463,7 +423,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for function expression with null id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression({
@@ -483,7 +443,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('arrow function expression detection', () => {
     test('should report arrow function with return type but empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -496,7 +456,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report arrow function without return type and empty return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(false, 1, 0))
@@ -506,7 +466,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report arrow function with return type and valid return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -516,7 +476,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle arrow function exit properly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -527,7 +487,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report only once per arrow function with multiple empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -538,7 +498,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle nested arrow functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -552,7 +512,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for arrow function at various positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 50, 12))
@@ -562,7 +522,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for arrow function with complex return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression({
@@ -586,7 +546,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('NOT reporting', () => {
     test('should not report when function returns a value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -596,7 +556,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when function has no return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(false, 1, 0))
@@ -606,7 +566,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when there is no return statement at all', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -616,7 +576,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report function expression with no return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(false))
@@ -626,7 +586,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report arrow function with no return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(false))
@@ -636,7 +596,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has argument object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -650,7 +610,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has identifier argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -664,7 +624,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has call expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -678,7 +638,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has numeric literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -692,7 +652,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has boolean literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -706,7 +666,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has array expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -720,7 +680,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has binary expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -734,7 +694,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has template literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -748,7 +708,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has member expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -762,7 +722,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has conditional expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -776,7 +736,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has arrow function expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -790,7 +750,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has new expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -804,7 +764,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has function expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -818,7 +778,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when return has a string literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -832,7 +792,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when no function is on the stack', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(false, 2, 0))
@@ -841,7 +801,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report after function exit for subsequent empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -852,7 +812,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when first return has value (suppresses later empty return)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -867,7 +827,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for function with no body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -877,7 +837,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for empty function stack', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       // Multiple returns with no enclosing function
@@ -888,7 +848,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when returnType annotation exists but return is valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -898,7 +858,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for arrow function with no return type and valid return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(false))
@@ -908,7 +868,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report when multiple valid returns exist', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -920,7 +880,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for return with logical expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -934,7 +894,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for return with unary expression argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -948,7 +908,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for return with null literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -967,7 +927,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('edge cases', () => {
     test('should handle null function node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
@@ -975,7 +935,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle undefined function node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
@@ -983,7 +943,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle non-object function node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration('string')).not.toThrow()
@@ -992,7 +952,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle null return statement node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1001,7 +961,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle undefined return statement node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1010,7 +970,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle non-object return statement node gracefully', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1020,7 +980,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function without returnType property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       const node = {
@@ -1036,7 +996,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function with null returnType', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       const node = {
@@ -1053,7 +1013,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle return statement without argument property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1066,7 +1026,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle return statement without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1079,7 +1039,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle empty function stack on return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ReturnStatement(createReturnStatement(false, 2, 0))
@@ -1088,7 +1048,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle return with undefined argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1102,7 +1062,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle boolean true as function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(true)).not.toThrow()
@@ -1110,7 +1070,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle empty object as function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration({})).not.toThrow()
@@ -1118,7 +1078,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle array as function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration([])).not.toThrow()
@@ -1126,7 +1086,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle boolean true as return node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1135,7 +1095,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle empty object as return node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1144,7 +1104,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle array as return node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1153,7 +1113,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle NaN as function node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(Number.NaN)).not.toThrow()
@@ -1161,7 +1121,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle NaN as return node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1170,7 +1130,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function with empty returnType object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       // Empty returnType object is truthy but has no typeAnnotation
@@ -1187,7 +1147,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function with returnType set to 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       // 0 is falsy but not null or undefined
@@ -1203,7 +1163,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function with returnType set to empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1218,7 +1178,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle function with false returnType', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1238,7 +1198,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('location reporting', () => {
     test('should report correct location for return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1249,7 +1209,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle return statement with no loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1263,7 +1223,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location at line 10, column 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1274,7 +1234,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report end location from return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1285,7 +1245,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should use default location when loc is missing on return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1297,7 +1257,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location at line 1, column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1308,7 +1268,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1319,7 +1279,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location for function expression return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 5, 2))
@@ -1330,7 +1290,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location for arrow function return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 3, 1))
@@ -1341,7 +1301,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle loc with partial start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1357,7 +1317,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle loc with partial end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1373,7 +1333,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle loc with string line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1388,7 +1348,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle loc with non-numeric column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1404,7 +1364,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1414,7 +1374,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report location with non-zero end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1433,7 +1393,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('messages', () => {
     test('should report correct message for type-only return', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1445,7 +1405,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should mention return type annotation in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1455,7 +1415,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should mention bug in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1468,19 +1428,19 @@ describe('no-type-only-return rule', () => {
       const expected =
         'Function has a return type annotation but returns nothing. This is likely a bug - you should return a value of the declared type.'
 
-      const { context: ctx1, reports: r1 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function test() {}' })
       const v1 = noTypeOnlyReturnRule.create(ctx1)
       v1.FunctionDeclaration(createFunctionDeclaration(true))
       v1.ReturnStatement(createReturnStatement(false))
       expect(r1[0].message).toBe(expected)
 
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'function test() {}' })
       const v2 = noTypeOnlyReturnRule.create(ctx2)
       v2.FunctionExpression(createFunctionExpression(true))
       v2.ReturnStatement(createReturnStatement(false))
       expect(r2[0].message).toBe(expected)
 
-      const { context: ctx3, reports: r3 } = createMockContext()
+      const { context: ctx3, reports: r3 } = createMockRuleContext({ source: 'function test() {}' })
       const v3 = noTypeOnlyReturnRule.create(ctx3)
       v3.ArrowFunctionExpression(createArrowFunctionExpression(true))
       v3.ReturnStatement(createReturnStatement(false))
@@ -1488,7 +1448,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('message should mention declared type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1498,7 +1458,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('message should mention returning a value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1508,7 +1468,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1519,7 +1479,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('message should not contain placeholder tokens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1532,12 +1492,12 @@ describe('no-type-only-return rule', () => {
     })
 
     test('message should be identical for function expression and declaration', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function test() {}' })
       const v1 = noTypeOnlyReturnRule.create(ctx1)
       v1.FunctionDeclaration(createFunctionDeclaration(true))
       v1.ReturnStatement(createReturnStatement(false))
 
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'function test() {}' })
       const v2 = noTypeOnlyReturnRule.create(ctx2)
       v2.FunctionExpression(createFunctionExpression(true))
       v2.ReturnStatement(createReturnStatement(false))
@@ -1546,7 +1506,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('report descriptor should not include fix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1561,7 +1521,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('multiple reports', () => {
     test('should handle multiple function declarations correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1580,7 +1540,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle mixed function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1599,7 +1559,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for each independent function in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1612,7 +1572,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for functions with valid returns in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1625,7 +1585,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should track three levels of nesting', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1642,7 +1602,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle mixed valid and invalid functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       // valid
@@ -1669,7 +1629,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle nested same-type functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -1683,7 +1643,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report correct location for each report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1700,7 +1660,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle interleaved function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1714,7 +1674,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle 10 sequential functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1733,7 +1693,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('context handling', () => {
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1743,7 +1703,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}', filePath: '/project/src/utils.ts' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1753,11 +1713,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/test.ts',
-        'const x: string = "hello"',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello"', filePath: '/src/test.ts' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1767,7 +1723,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should work with complex config options', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 'error' })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, level: 'error' }], source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1777,7 +1733,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should work with .tsx file path', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}', filePath: '/src/component.tsx' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1787,7 +1743,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1798,7 +1754,7 @@ describe('no-type-only-return rule', () => {
 
     test('should work with long source code', () => {
       const longSource = 'export function test(): string {\n'.repeat(100)
-      const { context, reports } = createMockContext({}, '/src/big.ts', longSource)
+      const { context, reports } = createMockRuleContext({ source: longSource, filePath: '/src/big.ts' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1808,8 +1764,8 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should create independent function stacks per visitor', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'function test() {}' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'function test() {}' })
       const visitor1 = noTypeOnlyReturnRule.create(ctx1)
       const visitor2 = noTypeOnlyReturnRule.create(ctx2)
 
@@ -1824,7 +1780,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle special characters in file path', () => {
-      const { context, reports } = createMockContext({}, '/src/[special]/test-file_2.ts')
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}', filePath: '/src/[special]/test-file_2.ts' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1834,9 +1790,9 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle deeply nested config', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         nested: { deep: { value: true } },
-      })
+      }], source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1851,7 +1807,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('exit handlers', () => {
     test('should handle FunctionDeclaration:exit', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1859,7 +1815,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle FunctionExpression:exit', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -1867,7 +1823,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle ArrowFunctionExpression:exit', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -1875,7 +1831,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle multiple exits', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1889,14 +1845,14 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle exit without matching enter', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => (visitor['FunctionDeclaration:exit'] as () => void)()).not.toThrow()
     })
 
     test('should handle multiple unmatched exits', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => {
@@ -1912,7 +1868,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('function type checking', () => {
     test('should only handle known function types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -1931,7 +1887,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should ignore unknown node types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({ type: 'UnknownType' } as unknown)
@@ -1941,7 +1897,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not track MethodDefinition as a function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -1955,7 +1911,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle node with numeric type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({ type: 42 } as unknown)
@@ -1977,7 +1933,7 @@ describe('no-type-only-return rule', () => {
     ] as const)(
       '$type with returnType=$hasReturnType, returnArgument=$hasArgument -> reports=$expected',
       ({ type, hasReturnType, hasArgument, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
         const visitor = noTypeOnlyReturnRule.create(context)
 
         const funcNode = {
@@ -2007,7 +1963,7 @@ describe('no-type-only-return rule', () => {
     ] as const)(
       '$type with returnType=$hasReturnType, returnArgument=$hasArgument -> reports=$expected',
       ({ type, hasReturnType, hasArgument, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
         const visitor = noTypeOnlyReturnRule.create(context)
 
         const funcNode = {
@@ -2037,7 +1993,7 @@ describe('no-type-only-return rule', () => {
     ] as const)(
       '$type with returnType=$hasReturnType, returnArgument=$hasArgument -> reports=$expected',
       ({ type, hasReturnType, hasArgument, expected }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
         const visitor = noTypeOnlyReturnRule.create(context)
 
         const funcNode = {
@@ -2065,7 +2021,7 @@ describe('no-type-only-return rule', () => {
       { line: 42, column: 0 },
       { line: 1, column: 99 },
     ])('should report at line=$line, column=$column', ({ line, column }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2083,7 +2039,7 @@ describe('no-type-only-return rule', () => {
       { invalidNode: true, description: 'boolean' },
       { invalidNode: {}, description: 'empty object' },
     ])('should not throw for FunctionDeclaration with $description node', ({ invalidNode }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(invalidNode)).not.toThrow()
@@ -2097,7 +2053,7 @@ describe('no-type-only-return rule', () => {
       { invalidNode: true, description: 'boolean' },
       { invalidNode: {}, description: 'empty object' },
     ])('should not throw for FunctionExpression with $description node', ({ invalidNode }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.FunctionExpression(invalidNode)).not.toThrow()
@@ -2111,7 +2067,7 @@ describe('no-type-only-return rule', () => {
       { invalidNode: true, description: 'boolean' },
       { invalidNode: {}, description: 'empty object' },
     ])('should not throw for ArrowFunctionExpression with $description node', ({ invalidNode }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.ArrowFunctionExpression(invalidNode)).not.toThrow()
@@ -2125,7 +2081,7 @@ describe('no-type-only-return rule', () => {
       { invalidNode: true, description: 'boolean' },
       { invalidNode: {}, description: 'empty object' },
     ])('should not throw for ReturnStatement with $description node', ({ invalidNode }) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       expect(() => visitor.ReturnStatement(invalidNode)).not.toThrow()
@@ -2143,7 +2099,7 @@ describe('no-type-only-return rule', () => {
       { nodeType: 'ImportDeclaration' },
       { nodeType: 'ExportDeclaration' },
     ])('should not track $nodeType as a function', ({ nodeType }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2161,7 +2117,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('return type variations', () => {
     test('should report for TSTypeReference return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2175,7 +2131,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSUnionType return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2189,7 +2145,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSIntersectionType return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2203,7 +2159,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSArrayType return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2217,7 +2173,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSTupleType return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2231,7 +2187,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSVoidKeyword return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2245,7 +2201,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSTypeLiteral return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2259,7 +2215,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSFunctionType return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2273,7 +2229,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSNeverKeyword return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2287,7 +2243,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for TSAnyKeyword return type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2306,7 +2262,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('stack state transitions', () => {
     test('should reset state after function exit and re-enter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2321,7 +2277,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle enter-exit-enter pattern', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -2333,7 +2289,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle deeply nested then unwound stack', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2350,7 +2306,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle enter without exit for multiple functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2363,7 +2319,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle rapid enter-exit cycles', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -2376,7 +2332,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle mixed type nesting three deep', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2393,7 +2349,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle nested function where inner does not report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2407,7 +2363,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should handle valid inner, invalid outer', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2426,7 +2382,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('additional non-reporting', () => {
     test('should not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2439,7 +2395,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2452,7 +2408,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for ClassDeclaration node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2465,7 +2421,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for WhileStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2478,7 +2434,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for ForStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2491,7 +2447,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for SwitchStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2504,7 +2460,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for TryStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2517,7 +2473,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for BlockStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2530,7 +2486,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for ThrowStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2543,7 +2499,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for ExpressionStatement node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2556,7 +2512,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for InterfaceDeclaration node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2569,7 +2525,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report for TypeAlias node type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -2587,7 +2543,7 @@ describe('no-type-only-return rule', () => {
   // ========================================================================
   describe('deduplication', () => {
     test('should report only once even after multiple empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2599,7 +2555,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should not report again after first report even in long sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2611,7 +2567,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report once for function expression with many empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))
@@ -2623,7 +2579,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report once for arrow function with many empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.ArrowFunctionExpression(createArrowFunctionExpression(true, 1, 0))
@@ -2634,7 +2590,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report for valid then empty return in same function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2645,7 +2601,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report at first empty return location in dedup scenario', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration(true, 1, 0))
@@ -2657,7 +2613,7 @@ describe('no-type-only-return rule', () => {
     })
 
     test('should report once for mixed valid and empty returns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'function test() {}' })
       const visitor = noTypeOnlyReturnRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(true, 1, 0))

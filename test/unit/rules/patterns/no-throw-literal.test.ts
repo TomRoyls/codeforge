@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noThrowLiteralRule } from '../../../../src/rules/patterns/no-throw-literal.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'throw new Error();',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { rules: { 'no-throw-literal': ['error', options] } },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createThrowStatement(argument: unknown, lineNumber = 1, column = 0): unknown {
   return {
@@ -430,14 +394,14 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with ThrowStatement method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(visitor).toHaveProperty('ThrowStatement')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(visitor).not.toBeNull()
@@ -445,22 +409,22 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should return an object from create', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('should have ThrowStatement as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(typeof visitor.ThrowStatement).toBe('function')
     })
 
     test('should create independent visitors for different contexts', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'throw new Error();' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor1 = noThrowLiteralRule.create(ctx1)
       const visitor2 = noThrowLiteralRule.create(ctx2)
 
@@ -474,7 +438,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle being called with no arguments', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(() => visitor.ThrowStatement()).not.toThrow()
@@ -506,7 +470,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should return visitor that only has ThrowStatement key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -519,7 +483,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('detecting throw with string literals', () => {
     test('should report throw with string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error message')))
@@ -528,7 +492,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('')))
@@ -537,7 +501,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with multi-line string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('multi\nline')))
@@ -546,7 +510,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct message for string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error')))
@@ -557,7 +521,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with numeric literals', () => {
     test('should report throw with numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(42)))
@@ -566,7 +530,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with negative number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(-1)))
@@ -575,7 +539,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with zero', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(0)))
@@ -584,7 +548,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with decimal number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(3.14)))
@@ -595,7 +559,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with boolean literals', () => {
     test('should report throw with true', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBooleanLiteral(true)))
@@ -604,7 +568,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with false', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBooleanLiteral(false)))
@@ -615,7 +579,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with null literal', () => {
     test('should report throw with null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNullLiteral()))
@@ -626,7 +590,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with object expression', () => {
     test('should report throw with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createObjectExpression()))
@@ -635,7 +599,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with object properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const obj = {
@@ -660,7 +624,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with array expression', () => {
     test('should report throw with empty array', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createArrayExpression()))
@@ -669,7 +633,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with array elements', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const arr = {
@@ -688,7 +652,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with template literal', () => {
     test('should report throw with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createTemplateLiteral('error message')))
@@ -697,7 +661,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with empty template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createTemplateLiteral('')))
@@ -708,7 +672,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with RegExp literal', () => {
     test('should report throw with RegExp literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createRegExpLiteral('pattern')))
@@ -719,7 +683,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with BigInt literal', () => {
     test('should report throw with BigInt literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBigIntLiteral('42n')))
@@ -730,7 +694,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with this expression', () => {
     test('should report throw with this expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createThisExpression()))
@@ -741,7 +705,7 @@ describe('no-throw-literal rule', () => {
 
   describe('detecting throw with generic Literal node with value', () => {
     test('should report throw with generic Literal containing string value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const literal = {
@@ -758,7 +722,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report throw with generic Literal containing numeric value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const literal = {
@@ -780,7 +744,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('not reporting valid throw statements', () => {
     test('should not report throw with new Error()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('Error')))
@@ -789,7 +753,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new TypeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('TypeError')))
@@ -798,7 +762,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new RangeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('RangeError')))
@@ -807,7 +771,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with error variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createIdentifier('errorVar')))
@@ -816,7 +780,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with function call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createCallExpression('getError')))
@@ -825,7 +789,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createMemberExpression('obj', 'error')))
@@ -834,7 +798,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with conditional expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createConditionalExpression()))
@@ -843,7 +807,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with logical expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createLogicalExpression('||')))
@@ -852,7 +816,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with binary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBinaryExpression('+')))
@@ -861,7 +825,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createUnaryExpression('!')))
@@ -870,7 +834,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with await expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createAwaitExpression()))
@@ -879,7 +843,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new SyntaxError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('SyntaxError')))
@@ -888,7 +852,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new ReferenceError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('ReferenceError')))
@@ -897,7 +861,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new URIError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('URIError')))
@@ -906,7 +870,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new EvalError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('EvalError')))
@@ -915,7 +879,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new CustomError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('CustomError')))
@@ -924,7 +888,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with new AssertionError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('AssertionError')))
@@ -933,7 +897,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with catch parameter err', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createIdentifier('err')))
@@ -942,7 +906,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with catch parameter e', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createIdentifier('e')))
@@ -951,7 +915,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with getError() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createCallExpression('getError')))
@@ -960,7 +924,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with createError() call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createCallExpression('createError')))
@@ -969,7 +933,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with sequence expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createSequenceExpression()))
@@ -978,7 +942,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with parenthesized expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createParenthesizedExpression()))
@@ -987,7 +951,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with TS as expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createTSAsExpression()))
@@ -996,7 +960,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with TS type assertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createTSTypeAssertion()))
@@ -1005,7 +969,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with TS non-null expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createTSNonNullExpression()))
@@ -1014,7 +978,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with logical AND expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createLogicalExpression('&&')))
@@ -1023,7 +987,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with nullish coalescing expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createLogicalExpression('??')))
@@ -1032,7 +996,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with obj.prop member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createMemberExpression('errors', 'NotFound')))
@@ -1041,7 +1005,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not report throw with typeof unary expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createUnaryExpression('typeof')))
@@ -1055,7 +1019,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('edge cases', () => {
     test('should handle null throw statement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(() => visitor.ThrowStatement(null)).not.toThrow()
@@ -1063,7 +1027,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle undefined throw statement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(() => visitor.ThrowStatement(undefined)).not.toThrow()
@@ -1071,7 +1035,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(() => visitor.ThrowStatement('string')).not.toThrow()
@@ -1080,7 +1044,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle throw statement without argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const throwStmt = {
@@ -1096,7 +1060,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle throw statement with null argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const throwStmt = {
@@ -1113,7 +1077,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle throw statement with undefined argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const throwStmt = {
@@ -1130,7 +1094,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle argument without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const arg = { value: 'some value' }
@@ -1140,7 +1104,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const throwStmt = {
@@ -1184,7 +1148,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle node with empty type string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const arg = { type: '', value: 'something' }
@@ -1194,7 +1158,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle node with numeric type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const throwStmt = { type: 123 }
@@ -1202,7 +1166,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle boolean throw statement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(() => visitor.ThrowStatement(true)).not.toThrow()
@@ -1210,14 +1174,14 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle array throw statement node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       expect(() => visitor.ThrowStatement([])).not.toThrow()
     })
 
     test('should handle deep nested throw with object literal argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const deepObj = {
@@ -1240,7 +1204,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle very long string literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const longStr = 'a'.repeat(10000)
@@ -1250,7 +1214,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle string with special characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error\n\t\r')))
@@ -1259,7 +1223,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle string with unicode characters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('错误 🚨')))
@@ -1268,7 +1232,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle NaN numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(Number.NaN)))
@@ -1277,7 +1241,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle Infinity numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(Number.POSITIVE_INFINITY)))
@@ -1286,7 +1250,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle RegExp with flags', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const regex = {
@@ -1301,7 +1265,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle template literal with interpolations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const tpl = {
@@ -1319,7 +1283,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle very large numeric literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(1e20)))
@@ -1328,7 +1292,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle BigInt with negative value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBigIntLiteral('-42n')))
@@ -1337,7 +1301,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should handle repeated calls on same visitor', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1353,7 +1317,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('location reporting', () => {
     test('should report correct location for throw statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error'), 10, 5))
@@ -1363,7 +1327,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(42), 5, 10))
@@ -1373,7 +1337,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 1, 0))
@@ -1383,7 +1347,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location at high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 999, 50))
@@ -1393,7 +1357,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for boolean literal throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBooleanLiteral(true), 3, 8))
@@ -1403,7 +1367,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for null literal throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNullLiteral(), 7, 2))
@@ -1413,7 +1377,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for object expression throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createObjectExpression(), 15, 4))
@@ -1423,7 +1387,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for array expression throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createArrayExpression(), 20, 10))
@@ -1433,7 +1397,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for template literal throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createTemplateLiteral('err'), 4, 1))
@@ -1443,7 +1407,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for regex literal throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createRegExpLiteral('abc'), 2, 6))
@@ -1453,7 +1417,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for BigInt literal throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBigIntLiteral('100n'), 8, 3))
@@ -1463,7 +1427,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report location for this expression throw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createThisExpression(), 11, 7))
@@ -1473,7 +1437,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should always report loc as an object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('x')))
@@ -1483,7 +1447,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should have start object in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(1)))
@@ -1494,7 +1458,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should have end object in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(1)))
@@ -1510,7 +1474,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should mention error in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error')))
@@ -1519,7 +1483,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should mention thrown in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(42)))
@@ -1528,7 +1492,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error')))
@@ -1539,7 +1503,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should be actionable message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBooleanLiteral(true)))
@@ -1548,7 +1512,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should have same message for all literal types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       const message = 'Expected an error object to be thrown.'
 
@@ -1566,7 +1530,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should be a non-empty message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('x')))
@@ -1575,7 +1539,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should be a string message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(0)))
@@ -1584,7 +1548,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err')))
@@ -1593,7 +1557,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should mention object in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err')))
@@ -1602,7 +1566,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should not contain placeholder tokens', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err')))
@@ -1616,7 +1580,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('multiple violations', () => {
     test('should report multiple throw literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error1')))
@@ -1627,7 +1591,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report only literals, not valid throws', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error')))
@@ -1639,7 +1603,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report all string literal throws', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('a')))
@@ -1650,7 +1614,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report all numeric literal throws', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(1)))
@@ -1661,7 +1625,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report mix of valid and invalid throws correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('Error')))
@@ -1675,7 +1639,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report mixed literal types in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       const types = [
@@ -1699,7 +1663,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should accumulate reports across calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -1710,7 +1674,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should maintain correct order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('first'), 1))
@@ -1723,7 +1687,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report zero violations when all throws are valid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNewExpression('Error')))
@@ -1735,7 +1699,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should correctly count when interleaving valid and invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       // invalid, valid, invalid, valid, invalid
@@ -1754,7 +1718,7 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('context handling', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/errors.ts')
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();', filePath: '/src/utils/errors.ts' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error')))
@@ -1763,7 +1727,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should work with different source content', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'throw "bad";')
+      const { context, reports } = createMockRuleContext({ source: 'throw "bad";', filePath: '/src/file.ts' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('bad')))
@@ -1867,7 +1831,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should work with .ts file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/module.ts')
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();', filePath: '/src/module.ts' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(0)))
@@ -1876,7 +1840,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should work with .tsx file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/component.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();', filePath: '/src/component.tsx' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err')))
@@ -1885,7 +1849,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should work with .js file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/index.js')
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();', filePath: '/src/index.js' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createBooleanLiteral(false)))
@@ -1894,7 +1858,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should work with deeply nested file path', () => {
-      const { context, reports } = createMockContext({}, '/src/a/b/c/d/e/file.ts')
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();', filePath: '/src/a/b/c/d/e/file.ts' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNullLiteral()))
@@ -1935,70 +1899,70 @@ describe('no-throw-literal rule', () => {
   // ============================================================
   describe('parameterized literal type detection', () => {
     test('should detect StringLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err')))
       expect(reports.length).toBe(1)
     })
 
     test('should detect NumericLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(42)))
       expect(reports.length).toBe(1)
     })
 
     test('should detect BooleanLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createBooleanLiteral(true)))
       expect(reports.length).toBe(1)
     })
 
     test('should detect NullLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNullLiteral()))
       expect(reports.length).toBe(1)
     })
 
     test('should detect BigIntLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createBigIntLiteral('1n')))
       expect(reports.length).toBe(1)
     })
 
     test('should detect RegExpLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createRegExpLiteral('abc')))
       expect(reports.length).toBe(1)
     })
 
     test('should detect TemplateLiteral as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createTemplateLiteral('err')))
       expect(reports.length).toBe(1)
     })
 
     test('should detect ObjectExpression as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createObjectExpression()))
       expect(reports.length).toBe(1)
     })
 
     test('should detect ArrayExpression as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createArrayExpression()))
       expect(reports.length).toBe(1)
     })
 
     test('should detect ThisExpression as invalid throw argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createThisExpression()))
       expect(reports.length).toBe(1)
@@ -2007,98 +1971,98 @@ describe('no-throw-literal rule', () => {
 
   describe('parameterized valid throw types', () => {
     test('should not report for NewExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('Error')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createIdentifier('err')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createCallExpression('getError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for MemberExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createMemberExpression('obj', 'err')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createConditionalExpression()))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for LogicalExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createLogicalExpression('||')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createBinaryExpression('+')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for UnaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createUnaryExpression('!')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for AwaitExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createAwaitExpression()))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for SequenceExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createSequenceExpression()))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for ParenthesizedExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createParenthesizedExpression()))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for TSAsExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createTSAsExpression()))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for TSTypeAssertion', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createTSTypeAssertion()))
       expect(reports.length).toBe(0)
     })
 
     test('should not report for TSNonNullExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createTSNonNullExpression()))
       expect(reports.length).toBe(0)
@@ -2107,98 +2071,98 @@ describe('no-throw-literal rule', () => {
 
   describe('parameterized new expression types', () => {
     test('should not report throw new Error()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('Error')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new TypeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('TypeError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new RangeError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('RangeError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new SyntaxError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('SyntaxError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new ReferenceError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('ReferenceError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new URIError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('URIError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new EvalError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('EvalError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new CustomError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('CustomError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new AssertionError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('AssertionError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new AppError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('AppError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new DatabaseError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('DatabaseError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new NetworkError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('NetworkError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new ValidationError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('ValidationError')))
       expect(reports.length).toBe(0)
     })
 
     test('should not report throw new MyError()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNewExpression('MyError')))
       expect(reports.length).toBe(0)
@@ -2207,70 +2171,70 @@ describe('no-throw-literal rule', () => {
 
   describe('parameterized numeric values', () => {
     test('should report throw with numeric value 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(0)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(1)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value -1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(-1)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value 42', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(42)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value 3.14', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(3.14)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value -3.14', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(-3.14)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value 1e10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(1e10)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value -1e10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(-1e10)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value 0.5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(0.5)))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with numeric value 100', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNumericLiteral(100)))
       expect(reports.length).toBe(1)
@@ -2279,70 +2243,70 @@ describe('no-throw-literal rule', () => {
 
   describe('parameterized string values', () => {
     test('should report throw with empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with single char string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('a')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with error string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('error')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with multi-word string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('Error message')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with multiline string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('multi\nline')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with tab string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('tab\there')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with padded string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('  spaces  ')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with special chars string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('special!@#$%')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with unicode string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('unicode 🚨')))
       expect(reports.length).toBe(1)
     })
 
     test('should report throw with long string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(
         createThrowStatement(createStringLiteral('very long string that goes on and on')),
@@ -2353,7 +2317,7 @@ describe('no-throw-literal rule', () => {
 
   describe('parameterized location values', () => {
     test('should report correct location at line 1 col 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 1, 0))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -2361,7 +2325,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 1 col 10', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 1, 10))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -2369,7 +2333,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 5 col 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 5, 0))
       expect(reports[0].loc?.start.line).toBe(5)
@@ -2377,7 +2341,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 10 col 20', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 10, 20))
       expect(reports[0].loc?.start.line).toBe(10)
@@ -2385,7 +2349,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 100 col 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 100, 50))
       expect(reports[0].loc?.start.line).toBe(100)
@@ -2393,7 +2357,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 1 col 1', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 1, 1))
       expect(reports[0].loc?.start.line).toBe(1)
@@ -2401,7 +2365,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 2 col 3', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 2, 3))
       expect(reports[0].loc?.start.line).toBe(2)
@@ -2409,7 +2373,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 25 col 8', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 25, 8))
       expect(reports[0].loc?.start.line).toBe(25)
@@ -2417,7 +2381,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 50 col 12', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 50, 12))
       expect(reports[0].loc?.start.line).toBe(50)
@@ -2425,7 +2389,7 @@ describe('no-throw-literal rule', () => {
     })
 
     test('should report correct location at line 999 col 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createStringLiteral('err'), 999, 0))
       expect(reports[0].loc?.start.line).toBe(999)

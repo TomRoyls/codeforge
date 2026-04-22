@@ -1,47 +1,7 @@
-import { describe, expect, test, vi } from 'vitest'
 
-import type { RuleContext } from '../../../../src/plugins/types.js'
 
 import { noUnnecessarySliceRule } from '../../../../src/rules/patterns/no-unnecessary-slice.js'
-
-interface ReportDescriptor {
-  fix?: { range: [number, number]; text: string }
-  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
-  message: string
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'arr.slice();',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    config: { options: [options] },
-    getAST: () => null,
-    getComments: () => [],
-    getFilePath: () => filePath,
-    getSource: () => source,
-    getTokens: () => [],
-    logger: {
-      debug: vi.fn(),
-      error: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-    },
-    report(descriptor: ReportDescriptor) {
-      reports.push({
-        fix: descriptor.fix,
-        loc: descriptor.loc,
-        message: descriptor.message,
-      })
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createSliceCall(objectName = 'arr', args: unknown[], line = 1, column = 0): unknown {
   const objectEnd = column + objectName.length
@@ -181,21 +141,21 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('create', () => {
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(visitor).toHaveProperty('CallExpression')
     })
 
     test('should return CallExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(typeof visitor.CallExpression).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor1 = noUnnecessarySliceRule.create(context)
       const visitor2 = noUnnecessarySliceRule.create(context)
 
@@ -205,7 +165,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('detecting slice() with no arguments', () => {
     test('should report arr.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -216,7 +176,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report array.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('array', []))
@@ -225,7 +185,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report items.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('items', []))
@@ -234,7 +194,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix for slice()', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'arr')
+      const { context, reports } = createMockRuleContext({ source: 'arr', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -244,7 +204,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report data.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('data', []))
@@ -253,7 +213,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report list.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('list', []))
@@ -262,7 +222,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report result.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('result', []))
@@ -271,7 +231,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report values.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('values', []))
@@ -280,7 +240,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report collection.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('collection', []))
@@ -289,7 +249,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report nums.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('nums', []))
@@ -298,7 +258,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report elements.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('elements', []))
@@ -307,7 +267,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report buffer.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('buffer', []))
@@ -316,7 +276,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report chunks.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('chunks', []))
@@ -325,7 +285,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report entries.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('entries', []))
@@ -334,7 +294,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report rows.slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('rows', []))
@@ -343,7 +303,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide correct fix text for longer variable name', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'myCollection')
+      const { context, reports } = createMockRuleContext({ source: 'myCollection', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('myCollection', []))
@@ -352,7 +312,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide correct fix text for short variable name', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'a')
+      const { context, reports } = createMockRuleContext({ source: 'a', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('a', []))
@@ -363,7 +323,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('detecting slice(0) with zero argument', () => {
     test('should report arr.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0)]))
@@ -374,7 +334,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report array.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('array', [createLiteral(0)]))
@@ -383,7 +343,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix for slice(0)', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'arr')
+      const { context, reports } = createMockRuleContext({ source: 'arr', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0)]))
@@ -393,7 +353,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report data.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('data', [createLiteral(0)]))
@@ -402,7 +362,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report list.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('list', [createLiteral(0)]))
@@ -411,7 +371,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report items.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('items', [createLiteral(0)]))
@@ -420,7 +380,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report result.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('result', [createLiteral(0)]))
@@ -429,7 +389,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report values.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('values', [createLiteral(0)]))
@@ -438,7 +398,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report collection.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('collection', [createLiteral(0)]))
@@ -447,7 +407,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report nums.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('nums', [createLiteral(0)]))
@@ -456,7 +416,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report elements.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('elements', [createLiteral(0)]))
@@ -465,7 +425,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report buffer.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('buffer', [createLiteral(0)]))
@@ -474,7 +434,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report chunks.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('chunks', [createLiteral(0)]))
@@ -483,7 +443,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report entries.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('entries', [createLiteral(0)]))
@@ -492,7 +452,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report rows.slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('rows', [createLiteral(0)]))
@@ -501,7 +461,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide correct fix text for slice(0)', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'myList')
+      const { context, reports } = createMockRuleContext({ source: 'myList', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('myList', [createLiteral(0)]))
@@ -510,7 +470,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide correct fix text for single char variable with slice(0)', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'x')
+      const { context, reports } = createMockRuleContext({ source: 'x', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('x', [createLiteral(0)]))
@@ -521,7 +481,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('detecting slice(undefined) with undefined argument', () => {
     test('should report arr.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(undefined, 'undefined')]))
@@ -532,7 +492,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report items.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('items', [createLiteral(undefined, 'undefined')]))
@@ -541,7 +501,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix for slice(undefined)', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'arr')
+      const { context, reports } = createMockRuleContext({ source: 'arr', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(undefined, 'undefined')]))
@@ -551,7 +511,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report data.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('data', [createLiteral(undefined, 'undefined')]))
@@ -560,7 +520,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report list.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('list', [createLiteral(undefined, 'undefined')]))
@@ -569,7 +529,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report values.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('values', [createLiteral(undefined, 'undefined')]))
@@ -578,7 +538,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report result.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('result', [createLiteral(undefined, 'undefined')]))
@@ -587,7 +547,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report collection.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('collection', [createLiteral(undefined, 'undefined')]))
@@ -596,7 +556,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report nums.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('nums', [createLiteral(undefined, 'undefined')]))
@@ -605,7 +565,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report elements.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('elements', [createLiteral(undefined, 'undefined')]))
@@ -614,7 +574,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report buffer.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('buffer', [createLiteral(undefined, 'undefined')]))
@@ -623,7 +583,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report chunks.slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('chunks', [createLiteral(undefined, 'undefined')]))
@@ -632,7 +592,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix text for slice(undefined)', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'myData')
+      const { context, reports } = createMockRuleContext({ source: 'myData', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('myData', [createLiteral(undefined, 'undefined')]))
@@ -643,7 +603,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('not reporting valid slice usage', () => {
     test('should not report arr.slice(1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(1)]))
@@ -652,7 +612,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(1, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(1), createLiteral(5)]))
@@ -661,7 +621,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-1)]))
@@ -670,7 +630,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-5, -1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-5), createLiteral(-1)]))
@@ -679,7 +639,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(start)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('start')]))
@@ -688,7 +648,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(start, end)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -699,7 +659,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createLiteral(5)]))
@@ -708,7 +668,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, length)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createIdentifier('length')]))
@@ -717,7 +677,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(2)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(2)]))
@@ -726,7 +686,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(10)]))
@@ -735,7 +695,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(100)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(100)]))
@@ -744,7 +704,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-2)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-2)]))
@@ -753,7 +713,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-10)]))
@@ -762,7 +722,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-100)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-100)]))
@@ -771,7 +731,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, 0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createLiteral(0)]))
@@ -780,7 +740,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, 1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createLiteral(1)]))
@@ -789,7 +749,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, 10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createLiteral(10)]))
@@ -798,7 +758,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(3, 7)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(3), createLiteral(7)]))
@@ -807,7 +767,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(5, 10)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(5), createLiteral(10)]))
@@ -816,7 +776,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-3, -1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-3), createLiteral(-1)]))
@@ -825,7 +785,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(1, -1)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(1), createLiteral(-1)]))
@@ -834,7 +794,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, n)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createIdentifier('n')]))
@@ -843,7 +803,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(i, j)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('i'), createIdentifier('j')]))
@@ -852,7 +812,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(n)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('n')]))
@@ -861,7 +821,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(offset)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('offset')]))
@@ -870,7 +830,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(index)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('index')]))
@@ -879,7 +839,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(from, to)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -890,7 +850,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, arr.length)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -903,7 +863,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('not reporting non-slice calls', () => {
     test('should not report arr.map()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('map'))
@@ -912,7 +872,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.filter()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('filter'))
@@ -921,7 +881,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.reduce()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('reduce'))
@@ -930,7 +890,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.forEach()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('forEach'))
@@ -939,7 +899,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.push()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('push'))
@@ -948,7 +908,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report direct function calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createDirectCall())
@@ -957,7 +917,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.concat()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('concat'))
@@ -966,7 +926,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.join()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('join'))
@@ -975,7 +935,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.indexOf()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('indexOf'))
@@ -984,7 +944,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.includes()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('includes'))
@@ -993,7 +953,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.find()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('find'))
@@ -1002,7 +962,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.findIndex()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('findIndex'))
@@ -1011,7 +971,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.some()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('some'))
@@ -1020,7 +980,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.every()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('every'))
@@ -1029,7 +989,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.flat()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('flat'))
@@ -1038,7 +998,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.flatMap()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('flatMap'))
@@ -1047,7 +1007,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.splice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('splice'))
@@ -1056,7 +1016,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.pop()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('pop'))
@@ -1065,7 +1025,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.shift()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('shift'))
@@ -1074,7 +1034,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.reverse()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('reverse'))
@@ -1083,7 +1043,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.sort()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('sort'))
@@ -1092,7 +1052,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.keys()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('keys'))
@@ -1101,7 +1061,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.values()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('values'))
@@ -1110,7 +1070,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.entries()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('entries'))
@@ -1119,7 +1079,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.fill()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('fill'))
@@ -1128,7 +1088,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.copyWithin()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createNonSliceCall('copyWithin'))
@@ -1139,7 +1099,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('message quality', () => {
     test('should mention shallow copy for slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1148,7 +1108,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should mention entire array for slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0)]))
@@ -1157,7 +1117,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should mention entire array for slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(undefined, 'undefined')]))
@@ -1166,7 +1126,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should mention remove the call for slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0)]))
@@ -1175,7 +1135,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should mention spread syntax for slice()', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1184,7 +1144,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should contain unnecessary keyword in all messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1197,7 +1157,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should contain slice in all messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1210,7 +1170,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should produce non-empty messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1219,7 +1179,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should mention Remove the call for slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(undefined, 'undefined')]))
@@ -1228,7 +1188,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should differentiate slice() from slice(0) messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1238,7 +1198,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should differentiate slice(0) from slice(undefined) messages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0)]))
@@ -1250,21 +1210,21 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(() => visitor.CallExpression()).not.toThrow()
     })
 
     test('should handle non-object node gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(() => visitor.CallExpression('string')).not.toThrow()
@@ -1272,7 +1232,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1297,7 +1257,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node without range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1326,7 +1286,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1340,7 +1300,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node with non-MemberExpression callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1358,7 +1318,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node without property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1379,7 +1339,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle non-identifier property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1404,7 +1364,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle computed property access', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1430,7 +1390,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 10, 5))
@@ -1440,7 +1400,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1449,7 +1409,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node without arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1477,7 +1437,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle non-literal argument for slice(0) check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('zero')]))
@@ -1486,7 +1446,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle multiple calls correctly', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1498,21 +1458,21 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
     test('should handle number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(() => visitor.CallExpression(42)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
@@ -1520,7 +1480,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node with null callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1533,7 +1493,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node with undefined callee', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1546,7 +1506,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node with null arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1569,7 +1529,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1591,7 +1551,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle node with callee object missing name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1615,7 +1575,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle string literal 0 value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral('0')]))
@@ -1624,7 +1584,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle null literal value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(null, 'null')]))
@@ -1633,7 +1593,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle literal with undefined value but different raw', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1669,7 +1629,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle slice with three arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -1680,7 +1640,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle slice(0) with extra arguments', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createLiteral(5)]))
@@ -1689,7 +1649,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle slice(undefined) with extra argument', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -1700,7 +1660,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle numeric literal 0.0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0.0, '0.0')]))
@@ -1709,7 +1669,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle numeric literal -0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-0, '-0')]))
@@ -1720,7 +1680,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('fix behavior', () => {
     test('should not provide fix when range is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1750,7 +1710,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix when object has range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1760,7 +1720,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not provide fix when object cannot be extracted', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1787,7 +1747,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide correct fix range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 1, 0))
@@ -1797,7 +1757,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix replacing entire call expression with object', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'arr')
+      const { context, reports } = createMockRuleContext({ source: 'arr', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1807,7 +1767,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix for slice(0) with range', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'data')
+      const { context, reports } = createMockRuleContext({ source: 'data', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('data', [createLiteral(0)]))
@@ -1816,7 +1776,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix for slice(undefined) with range', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'items')
+      const { context, reports } = createMockRuleContext({ source: 'items', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('items', [createLiteral(undefined, 'undefined')]))
@@ -1825,7 +1785,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should have range start at column position', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '  arr.slice();')
+      const { context, reports } = createMockRuleContext({ source: '  arr.slice();', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 1, 2))
@@ -1834,7 +1794,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should provide fix that covers full call expression range', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'arr')
+      const { context, reports } = createMockRuleContext({ source: 'arr', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1845,7 +1805,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not provide fix when object has no range', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -1875,7 +1835,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('location reporting', () => {
     test('should report correct line for different positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 5, 0))
@@ -1884,7 +1844,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report correct column for different positions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 1, 20))
@@ -1893,7 +1853,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report location at line 1 column 0 by default', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1903,7 +1863,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report correct location for slice(0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0)], 7, 4))
@@ -1913,7 +1873,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report correct location for slice(undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(undefined, 'undefined')], 3, 8))
@@ -1923,7 +1883,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle high line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 500, 10))
@@ -1932,7 +1892,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle high column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [], 1, 80))
@@ -1943,7 +1903,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('report descriptor shape', () => {
     test('should include message in report', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1953,7 +1913,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should include loc in report when available', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1962,7 +1922,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should have start and end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1972,7 +1932,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should have line and column in start loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1982,7 +1942,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should have fix with range and text when available', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', 'arr')
+      const { context, reports } = createMockRuleContext({ source: 'arr', filePath: '/src/file.ts' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -1994,7 +1954,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should have exactly one report per unnecessary call', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -2003,7 +1963,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should produce separate reports for separate calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('a', []))
@@ -2016,7 +1976,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('integration-like scenarios', () => {
     test('should detect common unnecessary slice patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('array', []))
@@ -2027,7 +1987,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not flag necessary slicing patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('array', [createLiteral(1)]))
@@ -2039,7 +1999,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle mixed valid and invalid patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -2053,7 +2013,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle alternating patterns', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('a', []))
@@ -2066,7 +2026,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should process many calls in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2077,7 +2037,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should process many valid calls in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -2088,7 +2048,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should handle interleaved slice and non-slice calls', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', []))
@@ -2102,7 +2062,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should detect pattern with different variable names in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const names = ['arr', 'list', 'items', 'data', 'values', 'nums', 'rows', 'buffer']
@@ -2116,7 +2076,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('negative argument patterns', () => {
     test('should not report arr.slice(-1) with negative start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-1)]))
@@ -2125,7 +2085,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-2) with negative start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-2)]))
@@ -2134,7 +2094,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-10) with negative start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-10)]))
@@ -2143,7 +2103,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-1, -0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-1), createLiteral(-0)]))
@@ -2152,7 +2112,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(-5, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-5), createLiteral(5)]))
@@ -2163,7 +2123,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('two-argument patterns are never flagged', () => {
     test('should not report arr.slice(0, 0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createLiteral(0)]))
@@ -2172,7 +2132,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -2183,7 +2143,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(undefined, undefined)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -2197,7 +2157,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(undefined, 5)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(
@@ -2208,7 +2168,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(0, len)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0), createIdentifier('len')]))
@@ -2217,7 +2177,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report arr.slice(x, y)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createIdentifier('x'), createIdentifier('y')]))
@@ -2228,10 +2188,10 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('visitor consistency', () => {
     test('should produce same result for same input', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor1 = noUnnecessarySliceRule.create(ctx1)
 
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor2 = noUnnecessarySliceRule.create(ctx2)
 
       const node = createSliceCall('arr', [])
@@ -2243,10 +2203,10 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should produce same result for slice(0) across calls', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor1 = noUnnecessarySliceRule.create(ctx1)
 
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor2 = noUnnecessarySliceRule.create(ctx2)
 
       visitor1.CallExpression(createSliceCall('arr', [createLiteral(0)]))
@@ -2256,10 +2216,10 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should produce same result for slice(undefined) across calls', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor1 = noUnnecessarySliceRule.create(ctx1)
 
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor2 = noUnnecessarySliceRule.create(ctx2)
 
       visitor1.CallExpression(createSliceCall('arr', [createLiteral(undefined, 'undefined')]))
@@ -2269,10 +2229,10 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should be independent across different contexts', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
+      const { context: ctx1, reports: rep1 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor1 = noUnnecessarySliceRule.create(ctx1)
 
-      const { context: ctx2, reports: rep2 } = createMockContext()
+      const { context: ctx2, reports: rep2 } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor2 = noUnnecessarySliceRule.create(ctx2)
 
       visitor1.CallExpression(createSliceCall('arr', []))
@@ -2284,7 +2244,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('callee type variants', () => {
     test('should not report when callee is a CallExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -2306,7 +2266,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report when property is not slice', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -2332,7 +2292,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report when property name is Slice (capitalized)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -2358,7 +2318,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report when property name is slicing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -2384,7 +2344,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should not report when callee object is not an Identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       const node = {
@@ -2412,7 +2372,7 @@ describe('no-unnecessary-slice rule', () => {
 
   describe('slice(0) with float zero', () => {
     test('should report arr.slice(0.0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(0.0, '0.0')]))
@@ -2421,7 +2381,7 @@ describe('no-unnecessary-slice rule', () => {
     })
 
     test('should report arr.slice(-0)', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'arr.slice();' })
       const visitor = noUnnecessarySliceRule.create(context)
 
       visitor.CallExpression(createSliceCall('arr', [createLiteral(-0, '-0')]))

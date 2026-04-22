@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUnexpectedMultilineRule } from '../../../../src/rules/patterns/no-unexpected-multiline.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'a + b;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createBinaryExpression(
   operator: string,
@@ -215,22 +179,22 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('create', () => {
     test('should return visitor object with BinaryExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(visitor).toHaveProperty('BinaryExpression')
     })
 
     test('should return BinaryExpression as a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
 
     test('should return the same visitor shape for different contexts', () => {
-      const { context: ctx1 } = createMockContext({}, '/src/a.ts')
-      const { context: ctx2 } = createMockContext({}, '/src/b.ts')
+      const { context: ctx1 } = createMockRuleContext({ source: 'a + b;', filePath: '/src/a.ts' })
+      const { context: ctx2 } = createMockRuleContext({ source: 'a + b;', filePath: '/src/b.ts' })
       const visitor1 = noUnexpectedMultilineRule.create(ctx1)
       const visitor2 = noUnexpectedMultilineRule.create(ctx2)
 
@@ -238,7 +202,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not modify the context object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const beforeKeys = Object.keys(context)
       noUnexpectedMultilineRule.create(context)
       const afterKeys = Object.keys(context)
@@ -247,7 +211,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should return a new visitor on each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor1 = noUnexpectedMultilineRule.create(context)
       const visitor2 = noUnexpectedMultilineRule.create(context)
 
@@ -255,20 +219,20 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should return visitor that only has BinaryExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['BinaryExpression'])
     })
 
     test('should create visitor without throwing for empty source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', '')
+      const { context } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
 
       expect(() => noUnexpectedMultilineRule.create(context)).not.toThrow()
     })
 
     test('should create visitor without throwing for complex source', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'const x = `hello` + `world`;')
+      const { context } = createMockRuleContext({ source: 'const x = `hello` + `world`;', filePath: '/src/file.ts' })
 
       expect(() => noUnexpectedMultilineRule.create(context)).not.toThrow()
     })
@@ -279,7 +243,7 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('detection - addition with template literals', () => {
     test('should report addition with template literal on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -291,7 +255,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with template literal on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -303,7 +267,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with template literals on both sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -315,7 +279,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with template literal and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -326,7 +290,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with template literal and call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -337,7 +301,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with template literal and member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -348,7 +312,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with template literal as left and call as right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -359,7 +323,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with member expression on left and template on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -372,7 +336,7 @@ describe('no-unexpected-multiline rule', () => {
 
   describe('detection - subtraction with template literals', () => {
     test('should report subtraction with template literal on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -384,7 +348,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with template literal on right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -396,7 +360,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with template literals on both sides', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -407,7 +371,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with template literal and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -418,7 +382,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with template literal and call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -429,7 +393,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with template literal and member expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -440,7 +404,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with member expression and template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -451,7 +415,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report subtraction with template literal left and call right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -464,7 +428,7 @@ describe('no-unexpected-multiline rule', () => {
 
   describe('detection - addition and subtraction both trigger', () => {
     test('should report both + and - violations separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -478,7 +442,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report addition with nested template literal in left BinaryExpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const nested = createBinaryExpression('+', createTemplateLiteral(), createIdentifier('x'))
@@ -488,7 +452,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report when left is template literal with + operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -499,7 +463,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report when right is template literal with - operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -515,7 +479,7 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('valid cases - non-template operands with +', () => {
     test('should not report addition of two identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -526,7 +490,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition of identifier and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createIdentifier('a'), createLiteral(5)))
@@ -535,7 +499,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition of literal and identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(5), createIdentifier('a')))
@@ -544,7 +508,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition of two literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('+', createLiteral(1), createLiteral(2)))
@@ -553,7 +517,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition of two call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -564,7 +528,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition with call expression on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -575,7 +539,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition with member expression operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -586,7 +550,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report addition with member expression and call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -599,7 +563,7 @@ describe('no-unexpected-multiline rule', () => {
 
   describe('valid cases - non-template operands with -', () => {
     test('should not report subtraction of two identifiers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -610,7 +574,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction of identifier and literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('-', createIdentifier('a'), createLiteral(5)))
@@ -619,7 +583,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction of literal and identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('-', createLiteral(5), createIdentifier('a')))
@@ -628,7 +592,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction of two literals', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(createBinaryExpression('-', createLiteral(10), createLiteral(2)))
@@ -637,7 +601,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction of two call expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -648,7 +612,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction with call expression on left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -659,7 +623,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction with member expression operands', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -670,7 +634,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report subtraction with member expression and call expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -683,7 +647,7 @@ describe('no-unexpected-multiline rule', () => {
 
   describe('valid cases - other operators with template literals', () => {
     test('should not report multiplication', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -694,7 +658,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report division', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -705,7 +669,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report equality', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -716,7 +680,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report inequality', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -727,7 +691,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report less than', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -738,7 +702,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report greater than', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -749,7 +713,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report logical and', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -760,7 +724,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report logical or', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -771,7 +735,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report modulo with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -782,7 +746,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report exponentiation with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -793,7 +757,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report loose equality with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -804,7 +768,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report loose inequality with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -815,7 +779,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report less than or equal with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -826,7 +790,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report greater than or equal with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -837,7 +801,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report nullish coalescing with template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -848,7 +812,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report template literal on left with * operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -859,7 +823,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not report template literal on right with / operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -875,42 +839,42 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('edge cases - null/undefined/invalid nodes', () => {
     test('should handle null node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(() => visitor.BinaryExpression(null)).not.toThrow()
     })
 
     test('should handle undefined node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(() => visitor.BinaryExpression(undefined)).not.toThrow()
     })
 
     test('should handle string node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(() => visitor.BinaryExpression('string')).not.toThrow()
     })
 
     test('should handle number node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(() => visitor.BinaryExpression(123)).not.toThrow()
     })
 
     test('should handle boolean node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(() => visitor.BinaryExpression(true)).not.toThrow()
     })
 
     test('should handle empty object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       expect(() => visitor.BinaryExpression({})).not.toThrow()
@@ -920,7 +884,7 @@ describe('no-unexpected-multiline rule', () => {
 
   describe('edge cases - malformed nodes', () => {
     test('should handle node without operator', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -936,7 +900,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node without left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -952,7 +916,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node without right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -968,7 +932,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -984,7 +948,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with null left', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1001,7 +965,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with null right', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1018,7 +982,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with left as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1035,7 +999,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with right as empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1052,7 +1016,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with non-BinaryExpression type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1069,7 +1033,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with operator as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1086,7 +1050,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with loc having string values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1103,7 +1067,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with null loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1120,7 +1084,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with partial loc - missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1137,7 +1101,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle node with left that has extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const left = {
@@ -1152,7 +1116,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle template literal with no quasis', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const tpl = {
@@ -1168,7 +1132,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle template literal with expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const tpl = {
@@ -1192,7 +1156,7 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('location', () => {
     test('should report correct location at line 10 column 5', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1204,7 +1168,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report correct location at line 1 column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1216,7 +1180,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report correct location at line 100 column 50', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1228,7 +1192,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report correct end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1240,7 +1204,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location for subtraction violation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1252,7 +1216,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location for both sides template literal', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1264,7 +1228,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1281,7 +1245,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location when loc has only start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {
@@ -1299,7 +1263,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location at column 0', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1310,7 +1274,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location with large line number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1321,7 +1285,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location with large column number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1332,7 +1296,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location for addition at line 2', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1343,7 +1307,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report location for subtraction at multiple lines', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1355,7 +1319,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should always include loc in reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1366,7 +1330,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include both start and end in loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1383,7 +1347,7 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('message quality', () => {
     test('should include multiline in message for addition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1394,7 +1358,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include unexpected in message for addition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1405,7 +1369,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include expression in message for addition', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1416,7 +1380,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include multiline in message for subtraction', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1427,7 +1391,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include unexpected in message for subtraction', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1438,7 +1402,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include expression in message for subtraction', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1449,7 +1413,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should have consistent message for both operators', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1463,7 +1427,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should have non-empty message string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1474,7 +1438,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should have message as a string type', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1485,7 +1449,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should include period at end of message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1501,7 +1465,7 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('multiple reports', () => {
     test('should handle multiple violations in sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1515,7 +1479,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle consecutive addition violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1532,7 +1496,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle mixed valid and invalid expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1552,7 +1516,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report each violation independently', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       for (let i = 0; i < 5; i++) {
@@ -1565,7 +1529,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should preserve order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1580,7 +1544,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle alternating valid and invalid', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       // valid
@@ -1608,7 +1572,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle 10 violations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       for (let i = 0; i < 10; i++) {
@@ -1621,7 +1585,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle all addition then all subtraction', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       for (let i = 0; i < 3; i++) {
@@ -1639,7 +1603,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report each with correct location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1658,7 +1622,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should report zero violations for all valid expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1680,7 +1644,7 @@ describe('no-unexpected-multiline rule', () => {
   // ============================================================
   describe('context variations', () => {
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1725,7 +1689,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/src/components/App.tsx')
+      const { context, reports } = createMockRuleContext({ source: 'a + b;', filePath: '/src/components/App.tsx' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1736,10 +1700,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should work with deep nested file paths', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/features/auth/components/LoginForm.tsx',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'a + b;', filePath: '/src/features/auth/components/LoginForm.tsx' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1750,7 +1711,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/file.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/file.ts' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1761,11 +1722,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should work with complex source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/file.ts',
-        'const result = `hello ${name}` + obj.method();',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'const result = `hello ${name}` + obj.method();', filePath: '/src/file.ts' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1776,7 +1733,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should not call logger during normal operation', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1787,7 +1744,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should handle config with extra options', () => {
-      const { context, reports } = createMockContext({ strict: true, level: 2 })
+      const { context, reports } = createMockRuleContext({ options: [{ strict: true, level: 2 }], source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1831,7 +1788,7 @@ describe('no-unexpected-multiline rule', () => {
     })
 
     test('should work with JS file extension', () => {
-      const { context, reports } = createMockContext({}, '/src/utils/helpers.js')
+      const { context, reports } = createMockRuleContext({ source: 'a + b;', filePath: '/src/utils/helpers.js' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1871,7 +1828,7 @@ describe('no-unexpected-multiline rule', () => {
       ['in', 'in operator'],
       ['instanceof', 'instanceof operator'],
     ])('should not report for operator "%s" (%s) with template literal', (operator) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1908,7 +1865,7 @@ describe('no-unexpected-multiline rule', () => {
       ['in', 'in operator'],
       ['instanceof', 'instanceof operator'],
     ])('should not report for operator "%s" (%s) with template literal on left', (operator) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -1930,7 +1887,7 @@ describe('no-unexpected-multiline rule', () => {
     ])(
       'should report for operator "%s" with template literal on %s side',
       (operator, side, _expectedReport) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a + b;' })
         const visitor = noUnexpectedMultilineRule.create(context)
 
         const left =
@@ -1968,7 +1925,7 @@ describe('no-unexpected-multiline rule', () => {
     ] as const)(
       'should not report for operator "%s" with %s and %s',
       (operator, leftType, rightType) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a + b;' })
         const visitor = noUnexpectedMultilineRule.create(context)
 
         const makeNode = (type: string) => {
@@ -2016,7 +1973,7 @@ describe('no-unexpected-multiline rule', () => {
     ])(
       'should report=$shouldReport for $op with $leftType and $rightType',
       ({ op, leftType, rightType, shouldReport }) => {
-        const { context, reports } = createMockContext()
+        const { context, reports } = createMockRuleContext({ source: 'a + b;' })
         const visitor = noUnexpectedMultilineRule.create(context)
 
         const makeNode = (type: string) => {
@@ -2058,7 +2015,7 @@ describe('no-unexpected-multiline rule', () => {
       { line: 1000, column: 0 },
       { line: 1000, column: 500 },
     ])('should report correct location at line=$line, column=$column', ({ line, column }) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       visitor.BinaryExpression(
@@ -2086,7 +2043,7 @@ describe('no-unexpected-multiline rule', () => {
       ['ArrowFunctionExpression'],
       ['NewExpression'],
     ])('should not report for non-BinaryExpression type "%s"', (type) => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext({ source: 'a + b;' })
       const visitor = noUnexpectedMultilineRule.create(context)
 
       const node = {

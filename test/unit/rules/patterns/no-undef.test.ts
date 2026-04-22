@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { noUndefRule } from '../../../../src/rules/patterns/no-undef.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createVariableDeclarator(name: string, line = 1, column = 0): unknown {
   return {
@@ -242,7 +206,7 @@ describe('no-undef rule', () => {
     })
 
     test('should return visitor object with required methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(visitor).toHaveProperty('VariableDeclarator')
@@ -253,7 +217,7 @@ describe('no-undef rule', () => {
     })
 
     test('each visitor method should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(typeof visitor.VariableDeclarator).toBe('function')
@@ -264,7 +228,7 @@ describe('no-undef rule', () => {
     })
 
     test('create should return a new visitor each call', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = noUndefRule.create(context)
       const visitor2 = noUndefRule.create(context)
 
@@ -272,7 +236,7 @@ describe('no-undef rule', () => {
     })
 
     test('visitor should only have expected keys', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
       const keys = Object.keys(visitor)
 
@@ -321,7 +285,7 @@ describe('no-undef rule', () => {
     })
 
     test('visitor should be a plain object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(typeof visitor).toBe('object')
@@ -335,14 +299,14 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('VariableDeclarator tracking', () => {
     test('should track variable from VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('x'))).not.toThrow()
     })
 
     test('should handle multiple variable declarations', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -353,28 +317,28 @@ describe('no-undef rule', () => {
     })
 
     test('should track variable with underscores', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('my_var'))).not.toThrow()
     })
 
     test('should track variable with dollar signs', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('$var'))).not.toThrow()
     })
 
     test('should track variable with camelCase', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('myVariable'))).not.toThrow()
     })
 
     test('should handle VariableDeclarator without id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = { type: 'VariableDeclarator', init: null }
@@ -382,7 +346,7 @@ describe('no-undef rule', () => {
     })
 
     test('should track single-letter variable names', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('i'))).not.toThrow()
@@ -390,7 +354,7 @@ describe('no-undef rule', () => {
     })
 
     test('should track SCREAMING_SNAKE_CASE variables', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() =>
@@ -399,14 +363,14 @@ describe('no-undef rule', () => {
     })
 
     test('should track variable with dollar prefix', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('$_jquery'))).not.toThrow()
     })
 
     test('should track many variables without error', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -419,14 +383,14 @@ describe('no-undef rule', () => {
 
   describe('FunctionDeclaration tracking', () => {
     test('should track function name from FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(createFunctionDeclaration('myFunc'))).not.toThrow()
     })
 
     test('should handle multiple function declarations', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('func1'))
@@ -437,7 +401,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle function with underscores', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() =>
@@ -446,7 +410,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle FunctionDeclaration without id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -458,21 +422,21 @@ describe('no-undef rule', () => {
     })
 
     test('should track single-character function name', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(createFunctionDeclaration('f'))).not.toThrow()
     })
 
     test('should track function with numeric suffix', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(createFunctionDeclaration('handler2'))).not.toThrow()
     })
 
     test('should track dollar-sign function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(createFunctionDeclaration('$'))).not.toThrow()
@@ -481,14 +445,14 @@ describe('no-undef rule', () => {
 
   describe('ClassDeclaration tracking', () => {
     test('should track class name from ClassDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration('MyClass'))).not.toThrow()
     })
 
     test('should handle multiple class declarations', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Class1'))
@@ -499,14 +463,14 @@ describe('no-undef rule', () => {
     })
 
     test('should handle class with underscores', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration('My_Class'))).not.toThrow()
     })
 
     test('should handle ClassDeclaration without id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -517,7 +481,7 @@ describe('no-undef rule', () => {
     })
 
     test('should track PascalCase class names', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() =>
@@ -526,7 +490,7 @@ describe('no-undef rule', () => {
     })
 
     test('should track single-character class name', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration('A'))).not.toThrow()
@@ -535,14 +499,14 @@ describe('no-undef rule', () => {
 
   describe('ImportSpecifier tracking', () => {
     test('should track import local name', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ImportSpecifier(createImportSpecifier('importedVar'))).not.toThrow()
     })
 
     test('should handle multiple import specifiers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ImportSpecifier(createImportSpecifier('import1'))
@@ -553,14 +517,14 @@ describe('no-undef rule', () => {
     })
 
     test('should handle import with underscores', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ImportSpecifier(createImportSpecifier('my_import'))).not.toThrow()
     })
 
     test('should handle ImportSpecifier without local', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -571,7 +535,7 @@ describe('no-undef rule', () => {
     })
 
     test('should track aliased import', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -597,7 +561,7 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('no reports for valid patterns', () => {
     test('should not report for VariableDeclarator with identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -607,7 +571,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for FunctionDeclaration with identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('myFunc'))
@@ -617,7 +581,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for ClassDeclaration with identifier id', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('MyClass'))
@@ -627,7 +591,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for ImportSpecifier with local identifier', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ImportSpecifier(createImportSpecifier('importedVar'))
@@ -637,7 +601,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when no Identifier visits happen', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -648,7 +612,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for VariableDeclarator without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator({
@@ -661,7 +625,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for FunctionDeclaration without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.FunctionDeclaration({
@@ -675,7 +639,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for ClassDeclaration without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ClassDeclaration({
@@ -688,7 +652,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for ImportSpecifier without loc', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ImportSpecifier({
@@ -701,7 +665,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when declared variable is used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('foo'))
@@ -711,7 +675,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when declared function is used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('bar'))
@@ -721,7 +685,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when declared class is used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ClassDeclaration(createClassDeclaration('Baz'))
@@ -731,7 +695,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when imported name is used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ImportSpecifier(createImportSpecifier('utils'))
@@ -741,7 +705,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for mixed declarations then usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('v'))
@@ -757,7 +721,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for re-declaration of same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -768,7 +732,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for empty source', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -777,7 +741,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when Identifier is visited without declarations', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.Identifier(createIdentifier('anything'))
@@ -786,7 +750,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for variable declared via var kind', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('loopVar'))
@@ -796,7 +760,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for variable with init value', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator({
@@ -811,7 +775,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for deeply nested valid variable', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('outer'))
@@ -823,7 +787,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for variable with name "undefined"', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('undefined'))
@@ -833,7 +797,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when declaration happens after Identifier visit', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.Identifier(createIdentifier('hoisted'))
@@ -843,7 +807,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for unicode variable names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('π'))
@@ -853,7 +817,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when same name used from different declaration kinds', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('name'))
@@ -864,7 +828,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for numeric underscore names', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('num_1'))
@@ -874,7 +838,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for triple underscore prefix', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('___internal'))
@@ -884,7 +848,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report when all four declaration types used', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('v1'))
@@ -901,7 +865,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for many sequential declarations and usages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       for (let i = 0; i < 20; i++) {
@@ -915,7 +879,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for class with long name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const longName = 'VeryLongClassNameThatExceedsNormalLength'
@@ -926,7 +890,7 @@ describe('no-undef rule', () => {
     })
 
     test('should not report for empty options config', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -941,21 +905,21 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('edge cases', () => {
     test('should handle null in VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(null)).not.toThrow()
     })
 
     test('should handle undefined in VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(undefined)).not.toThrow()
     })
 
     test('should handle non-object in VariableDeclarator', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator('string')).not.toThrow()
@@ -963,63 +927,63 @@ describe('no-undef rule', () => {
     })
 
     test('should handle null in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined in FunctionDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle null in ClassDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(null)).not.toThrow()
     })
 
     test('should handle undefined in ClassDeclaration', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(undefined)).not.toThrow()
     })
 
     test('should handle null in ImportSpecifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ImportSpecifier(null)).not.toThrow()
     })
 
     test('should handle undefined in ImportSpecifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ImportSpecifier(undefined)).not.toThrow()
     })
 
     test('should handle null in Identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.Identifier(null)).not.toThrow()
     })
 
     test('should handle undefined in Identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.Identifier(undefined)).not.toThrow()
     })
 
     test('should handle node without loc', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1032,7 +996,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context } = createMockContext({})
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('x'))).not.toThrow()
@@ -1068,7 +1032,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle node with id that is not an Identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1081,7 +1045,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle FunctionDeclaration with id that is not Identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1095,7 +1059,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle ClassDeclaration with id that is not Identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1108,7 +1072,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle ImportSpecifier with local that is not Identifier', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1121,7 +1085,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle boolean in visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(true)).not.toThrow()
@@ -1129,21 +1093,21 @@ describe('no-undef rule', () => {
     })
 
     test('should handle numeric 0 in visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(0)).not.toThrow()
     })
 
     test('should handle empty string in visitor methods', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.Identifier('')).not.toThrow()
     })
 
     test('should handle node with empty name', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1156,7 +1120,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle deeply nested node structure', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1183,7 +1147,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle node with extra properties', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1199,7 +1163,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle very long variable name', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const longName = 'a'.repeat(1000)
@@ -1212,7 +1176,7 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('location tracking', () => {
     test('VariableDeclarator should preserve line/column info', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = createVariableDeclarator('locVar', 5, 10)
@@ -1220,7 +1184,7 @@ describe('no-undef rule', () => {
     })
 
     test('FunctionDeclaration should preserve line/column info', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = createFunctionDeclaration('locFunc', 10, 5)
@@ -1228,7 +1192,7 @@ describe('no-undef rule', () => {
     })
 
     test('ClassDeclaration should preserve line/column info', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = createClassDeclaration('LocClass', 15, 0)
@@ -1236,7 +1200,7 @@ describe('no-undef rule', () => {
     })
 
     test('ImportSpecifier should preserve line/column info', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = createImportSpecifier('locImport', 3, 8)
@@ -1244,7 +1208,7 @@ describe('no-undef rule', () => {
     })
 
     test('Identifier should preserve line/column info', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = createIdentifier('locId', 20, 15)
@@ -1252,14 +1216,14 @@ describe('no-undef rule', () => {
     })
 
     test('should handle line 0 column 0', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator('zero', 0, 0))).not.toThrow()
     })
 
     test('should handle large line numbers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() =>
@@ -1268,14 +1232,14 @@ describe('no-undef rule', () => {
     })
 
     test('should handle large column numbers', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration('Wide', 1, 5000))).not.toThrow()
     })
 
     test('should track variable at different locations correctly', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a', 1, 0))
@@ -1290,7 +1254,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle node with only start location', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1307,7 +1271,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle node with only end location', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1324,7 +1288,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle node without loc on id', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1338,7 +1302,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle Identifier node without loc', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = { type: 'Identifier', name: 'bare' }
@@ -1346,7 +1310,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle loc with negative values gracefully', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const node = {
@@ -1363,7 +1327,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle VariableDeclaration wrapper node', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const decl = createVariableDeclaration([
@@ -1386,7 +1350,7 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('context interactions', () => {
     test('report function should not be called for declared variables', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('declared'))
@@ -1396,32 +1360,32 @@ describe('no-undef rule', () => {
     })
 
     test('context getFilePath should be callable without error', () => {
-      const { context } = createMockContext({}, '/custom/path.ts')
+      const { context } = createMockRuleContext({ filePath: '/custom/path.ts' })
       expect(context.getFilePath()).toBe('/custom/path.ts')
     })
 
     test('context getSource should be callable without error', () => {
-      const { context } = createMockContext({}, '/src/file.ts', 'let x = 2;')
+      const { context } = createMockRuleContext({ source: 'let x = 2;', filePath: '/src/file.ts' })
       expect(context.getSource()).toBe('let x = 2;')
     })
 
     test('context getAST should return null', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(context.getAST()).toBeNull()
     })
 
     test('context getTokens should return empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(context.getTokens()).toEqual([])
     })
 
     test('context getComments should return empty array', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(context.getComments()).toEqual([])
     })
 
     test('context logger methods should be callable', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(() => context.logger.debug('test')).not.toThrow()
       expect(() => context.logger.info('test')).not.toThrow()
       expect(() => context.logger.warn('test')).not.toThrow()
@@ -1429,12 +1393,12 @@ describe('no-undef rule', () => {
     })
 
     test('context workspaceRoot should be accessible', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       expect(context.workspaceRoot).toBe('/src')
     })
 
     test('visitor should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/utils.ts' })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('util'))
@@ -1444,11 +1408,7 @@ describe('no-undef rule', () => {
     })
 
     test('visitor should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/app.ts',
-        'function hello() { return "world"; }',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'function hello() { return "world"; }', filePath: '/src/app.ts' })
       const visitor = noUndefRule.create(context)
 
       visitor.FunctionDeclaration(createFunctionDeclaration('hello'))
@@ -1463,7 +1423,7 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('mixed declarations', () => {
     test('should handle combination of different declaration types', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1476,7 +1436,7 @@ describe('no-undef rule', () => {
     })
 
     test('should track same name from different declaration types', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('name'))
@@ -1488,7 +1448,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle interleaved declarations and usages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -1502,7 +1462,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle many declarations then many usages', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       const names = ['alpha', 'beta', 'gamma', 'delta', 'epsilon']
@@ -1517,7 +1477,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle declaration in any order', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.ImportSpecifier(createImportSpecifier('imp'))
@@ -1534,8 +1494,8 @@ describe('no-undef rule', () => {
     })
 
     test('should handle multiple visitors from same rule', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const visitor1 = noUndefRule.create(ctx1)
       const visitor2 = noUndefRule.create(ctx2)
@@ -1551,8 +1511,8 @@ describe('no-undef rule', () => {
     })
 
     test('should handle two separate visitors independently', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const visitor1 = noUndefRule.create(ctx1)
       const visitor2 = noUndefRule.create(ctx2)
@@ -1568,7 +1528,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle variable then function then class with same name', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('item'))
@@ -1581,7 +1541,7 @@ describe('no-undef rule', () => {
 
     test('should handle rapid sequential create calls', () => {
       for (let i = 0; i < 10; i++) {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext()
         const visitor = noUndefRule.create(context)
         visitor.VariableDeclarator(createVariableDeclarator(`v${i}`))
       }
@@ -1590,7 +1550,7 @@ describe('no-undef rule', () => {
     })
 
     test('should handle all visitors with all-null inputs', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(null)
@@ -1608,7 +1568,7 @@ describe('no-undef rule', () => {
   // =========================================================================
   describe('context variations', () => {
     test('should work with empty source string', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1621,7 +1581,7 @@ describe('no-undef rule', () => {
       const source = `const a = 1;
 const b = 2;
 function c() { return a + b; }`
-      const { context, reports } = createMockContext({}, '/src/multi.ts', source)
+      const { context, reports } = createMockRuleContext({ source: source, filePath: '/src/multi.ts' })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('a'))
@@ -1636,7 +1596,7 @@ function c() { return a + b; }`
     })
 
     test('should work with config options containing globalsAllowList', () => {
-      const { context, reports } = createMockContext({ globalsAllowList: ['console', 'window'] })
+      const { context, reports } = createMockRuleContext({ options: [{ globalsAllowList: ['console', 'window'] }] })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('local'))
@@ -1646,7 +1606,7 @@ function c() { return a + b; }`
     })
 
     test('should work with config options containing checkShadowing', () => {
-      const { context, reports } = createMockContext({ checkShadowing: true })
+      const { context, reports } = createMockRuleContext({ options: [{ checkShadowing: true }] })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('shadow'))
@@ -1657,7 +1617,7 @@ function c() { return a + b; }`
 
     test('should work with long file path', () => {
       const longPath = '/very/deeply/nested/directory/structure/src/components/utils/helper.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ filePath: longPath })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('helper'))
@@ -1667,7 +1627,7 @@ function c() { return a + b; }`
     })
 
     test('should work with workspace root in context', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       expect(context.workspaceRoot).toBe('/src')
 
       const visitor = noUndefRule.create(context)
@@ -1678,7 +1638,7 @@ function c() { return a + b; }`
     })
 
     test('should work when report is never called', () => {
-      const { reports } = createMockContext()
+      const { reports } = createMockRuleContext()
       expect(reports).toHaveLength(0)
     })
 
@@ -1706,7 +1666,7 @@ function c() { return a + b; }`
     })
 
     test('should work with null AST', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       expect(context.getAST()).toBeNull()
 
       const visitor = noUndefRule.create(context)
@@ -1716,7 +1676,7 @@ function c() { return a + b; }`
     })
 
     test('should work with config having additional unknown properties', () => {
-      const { context, reports } = createMockContext({ unknownProp: 'value', another: 42 })
+      const { context, reports } = createMockRuleContext({ options: [{ unknownProp: 'value', another: 42 }] })
       const visitor = noUndefRule.create(context)
 
       visitor.VariableDeclarator(createVariableDeclarator('x'))
@@ -1746,7 +1706,7 @@ function c() { return a + b; }`
       ['$dollar'],
       ['mixed_Case_123'],
     ])('should track variable name "%s"', (name: string) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.VariableDeclarator(createVariableDeclarator(name))).not.toThrow()
@@ -1766,7 +1726,7 @@ function c() { return a + b; }`
       ['f'],
       ['_init'],
     ])('should track function name "%s"', (name: string) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.FunctionDeclaration(createFunctionDeclaration(name))).not.toThrow()
@@ -1783,7 +1743,7 @@ function c() { return a + b; }`
       ['A'],
       ['AbstractHandler'],
     ])('should track class name "%s"', (name: string) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration(name))).not.toThrow()
@@ -1800,7 +1760,7 @@ function c() { return a + b; }`
       ['_'],
       ['lodash'],
     ])('should track import name "%s"', (name: string) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ImportSpecifier(createImportSpecifier(name))).not.toThrow()
@@ -1811,7 +1771,7 @@ function c() { return a + b; }`
     test.each([[null], [undefined], [0], [''], [false], [true]])(
       'should not throw for VariableDeclarator with input %s',
       (input: unknown) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext()
         const visitor = noUndefRule.create(context)
 
         expect(() => visitor.VariableDeclarator(input)).not.toThrow()
@@ -1821,7 +1781,7 @@ function c() { return a + b; }`
     test.each([[null], [undefined], [0], [''], [false], [true]])(
       'should not throw for FunctionDeclaration with input %s',
       (input: unknown) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext()
         const visitor = noUndefRule.create(context)
 
         expect(() => visitor.FunctionDeclaration(input)).not.toThrow()
@@ -1831,7 +1791,7 @@ function c() { return a + b; }`
     test.each([[null], [undefined], [0], [''], [false], [true]])(
       'should not throw for ClassDeclaration with input %s',
       (input: unknown) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext()
         const visitor = noUndefRule.create(context)
 
         expect(() => visitor.ClassDeclaration(input)).not.toThrow()
@@ -1841,7 +1801,7 @@ function c() { return a + b; }`
     test.each([[null], [undefined], [0], [''], [false], [true]])(
       'should not throw for ImportSpecifier with input %s',
       (input: unknown) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext()
         const visitor = noUndefRule.create(context)
 
         expect(() => visitor.ImportSpecifier(input)).not.toThrow()
@@ -1851,7 +1811,7 @@ function c() { return a + b; }`
     test.each([[null], [undefined], [0], [''], [false], [true]])(
       'should not throw for Identifier with input %s',
       (input: unknown) => {
-        const { context } = createMockContext()
+        const { context } = createMockRuleContext()
         const visitor = noUndefRule.create(context)
 
         expect(() => visitor.Identifier(input)).not.toThrow()
@@ -1868,7 +1828,7 @@ function c() { return a + b; }`
       [100, 0],
       [100, 50],
     ])('should handle VariableDeclarator at line %d column %d', (line: number, col: number) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() =>
@@ -1881,7 +1841,7 @@ function c() { return a + b; }`
       [10, 5],
       [50, 30],
     ])('should handle FunctionDeclaration at line %d column %d', (line: number, col: number) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() =>
@@ -1894,7 +1854,7 @@ function c() { return a + b; }`
       [20, 10],
       [999, 0],
     ])('should handle ClassDeclaration at line %d column %d', (line: number, col: number) => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = noUndefRule.create(context)
 
       expect(() => visitor.ClassDeclaration(createClassDeclaration('Cls', line, col))).not.toThrow()

@@ -1,43 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { preferArrowCallbackRule } from '../../../../src/rules/patterns/prefer-arrow-callback.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
-
-interface ReportDescriptor {
-  message: string
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
-}
-
-function createMockContext(
-  options: Record<string, unknown> = {},
-  filePath = '/src/file.ts',
-  source = 'const x = 1;',
-): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-      })
-    },
-    getFilePath: () => filePath,
-    getAST: () => null,
-    getSource: () => source,
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [options] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-
-  return { context, reports }
-}
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createFunctionExpression(lineNumber = 1, column = 0): unknown {
   return {
@@ -203,35 +167,35 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('create', () => {
     test('should return visitor object with FunctionExpression method', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(visitor).toHaveProperty('FunctionExpression')
     })
 
     test('should return a non-null visitor', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(visitor).not.toBeNull()
     })
 
     test('visitor should be an object', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(typeof visitor).toBe('object')
     })
 
     test('FunctionExpression should be a function', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(typeof visitor.FunctionExpression).toBe('function')
     })
 
     test('should return a new visitor each time create is called', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor1 = preferArrowCallbackRule.create(context)
       const visitor2 = preferArrowCallbackRule.create(context)
 
@@ -239,28 +203,28 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('visitor should only have FunctionExpression key', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(Object.keys(visitor)).toEqual(['FunctionExpression'])
     })
 
     test('FunctionExpression should accept one argument', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(visitor.FunctionExpression.length).toBe(1)
     })
 
     test('create should not throw with valid context', () => {
-      const { context } = createMockContext()
+      const { context } = createMockRuleContext()
 
       expect(() => preferArrowCallbackRule.create(context)).not.toThrow()
     })
 
     test('multiple visitors should be independent', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
       const visitor1 = preferArrowCallbackRule.create(ctx1)
       const visitor2 = preferArrowCallbackRule.create(ctx2)
 
@@ -271,8 +235,8 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('visitor should work with different context instances', () => {
-      const { context: ctx1, reports: r1 } = createMockContext({}, '/src/a.ts', 'a')
-      const { context: ctx2, reports: r2 } = createMockContext({}, '/src/b.ts', 'b')
+      const { context: ctx1, reports: r1 } = createMockRuleContext({ source: 'a', filePath: '/src/a.ts' })
+      const { context: ctx2, reports: r2 } = createMockRuleContext({ source: 'b', filePath: '/src/b.ts' })
       const v1 = preferArrowCallbackRule.create(ctx1)
       const v2 = preferArrowCallbackRule.create(ctx2)
 
@@ -287,7 +251,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('detecting function expressions', () => {
     test('should report function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -296,7 +260,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report correct message for function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -305,7 +269,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report multiple function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -316,7 +280,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with single parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -331,7 +295,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with multiple parameters', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -350,7 +314,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report named function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -365,7 +329,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with return statement', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -383,7 +347,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with empty body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -398,7 +362,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with complex body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -420,7 +384,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with rest parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -435,7 +399,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with default parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -456,7 +420,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with destructured parameter', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -471,7 +435,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report generator function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -487,7 +451,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report async function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -503,7 +467,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report async generator function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -520,7 +484,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with this usage', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -543,7 +507,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report deeply nested function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -568,7 +532,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with try-catch body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -596,7 +560,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as .map() callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -619,7 +583,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as .filter() callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -645,7 +609,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as .reduce() callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -676,7 +640,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as setTimeout callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -694,7 +658,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as event handler', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -709,7 +673,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as Promise callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -727,7 +691,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as then callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -750,7 +714,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as catch callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -765,7 +729,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression used as forEach callback', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -784,7 +748,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with type annotation params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -805,7 +769,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report function expression with extra properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -825,7 +789,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('not reporting arrow functions', () => {
     test('should not report arrow function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createArrowFunctionExpression())
@@ -834,7 +798,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report arrow functions among function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -845,7 +809,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report arrow function with params', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -859,7 +823,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report arrow function with expression body', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -874,7 +838,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report async arrow function', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -889,7 +853,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should correctly count only FunctionExpression nodes in mixed sequence', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createArrowFunctionExpression())
@@ -901,7 +865,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report when all nodes are arrow functions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createArrowFunctionExpression(1, 0))
@@ -914,7 +878,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('non-function expressions', () => {
     test('should allow identifier expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createIdentifier())
@@ -923,7 +887,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle non-function node types', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -936,7 +900,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report Literal nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -949,7 +913,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report BinaryExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -963,7 +927,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report MemberExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -976,7 +940,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report ConditionalExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -990,7 +954,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report ArrayExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1002,7 +966,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report ObjectExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1014,7 +978,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report NewExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1027,7 +991,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report TemplateLiteral nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1040,7 +1004,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report UpdateExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1054,7 +1018,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report UnaryExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1068,7 +1032,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report AssignmentExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1082,7 +1046,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report LogicalExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1096,7 +1060,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report ThisExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({ type: 'ThisExpression' })
@@ -1105,7 +1069,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report FunctionDeclaration nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1119,7 +1083,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report ClassExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1132,7 +1096,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report AwaitExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1144,7 +1108,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report YieldExpression nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1156,7 +1120,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not report SpreadElement nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1170,7 +1134,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('edge cases', () => {
     test('should handle null node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(null)).not.toThrow()
@@ -1178,7 +1142,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle undefined node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(undefined)).not.toThrow()
@@ -1186,7 +1150,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle non-object node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression('string')).not.toThrow()
@@ -1195,7 +1159,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node without type property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       const node = {
@@ -1209,7 +1173,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node without loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       const node = {
@@ -1225,7 +1189,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle empty options', () => {
-      const { context, reports } = createMockContext({})
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1264,7 +1228,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle boolean node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(true)).not.toThrow()
@@ -1273,7 +1237,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle numeric node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(0)).not.toThrow()
@@ -1284,7 +1248,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle string node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression('')).not.toThrow()
@@ -1293,7 +1257,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle array node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression([])).not.toThrow()
@@ -1302,7 +1266,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with type as number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({ type: 42 })
@@ -1311,7 +1275,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with type as boolean', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({ type: true })
@@ -1320,7 +1284,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with type as null', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({ type: null })
@@ -1329,7 +1293,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with type as object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({ type: { name: 'FunctionExpression' } })
@@ -1338,7 +1302,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with empty object', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({})
@@ -1347,7 +1311,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with only loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1358,7 +1322,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should be case-sensitive for type check', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1371,7 +1335,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should be case-sensitive for FUNCTIONEXPRESSION', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1384,7 +1348,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should be case-sensitive for Functionexpression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1397,7 +1361,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle loc with missing start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1411,7 +1375,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle loc with missing end', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1425,7 +1389,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle loc with string line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1442,7 +1406,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle loc with null values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1456,7 +1420,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle loc with undefined values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1470,7 +1434,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle very large line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(99999, 0))
@@ -1480,7 +1444,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle very large column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 99999))
@@ -1490,7 +1454,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle zero line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(0, 0))
@@ -1501,7 +1465,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle negative line numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(-1, 0))
@@ -1511,7 +1475,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle negative column numbers', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, -5))
@@ -1521,7 +1485,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle Infinity as line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1535,7 +1499,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle same visitor called many times', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       for (let i = 0; i < 100; i++) {
@@ -1546,12 +1510,12 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should not accumulate state between visitors', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
       const v1 = preferArrowCallbackRule.create(ctx1)
       v1.FunctionExpression(createFunctionExpression())
       v1.FunctionExpression(createFunctionExpression())
 
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
       const v2 = preferArrowCallbackRule.create(ctx2)
       v2.FunctionExpression(createFunctionExpression())
 
@@ -1560,7 +1524,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle Symbol as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(Symbol('test'))).not.toThrow()
@@ -1568,7 +1532,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle Date as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(new Date())).not.toThrow()
@@ -1576,7 +1540,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle RegExp as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(/test/)).not.toThrow()
@@ -1584,7 +1548,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle Map as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(new Map())).not.toThrow()
@@ -1592,7 +1556,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle Set as node', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       expect(() => visitor.FunctionExpression(new Set())).not.toThrow()
@@ -1600,7 +1564,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle node with prototype properties', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       const proto = { type: 'FunctionExpression' }
@@ -1616,7 +1580,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('location reporting', () => {
     test('should report correct location for function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(10, 5))
@@ -1626,7 +1590,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report location with end position', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(5, 10))
@@ -1636,7 +1600,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report correct end line', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(3, 0))
@@ -1645,7 +1609,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report correct end column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -1654,7 +1618,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should report location for each function expression separately', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -1670,7 +1634,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle multiline function expression location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1691,7 +1655,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should provide default location when loc is missing', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1707,7 +1671,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should preserve exact start location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1726,7 +1690,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should preserve exact end location', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1745,7 +1709,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle location at file start', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -1755,7 +1719,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle location with large values', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression({
@@ -1778,7 +1742,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('message quality', () => {
     test('should mention arrow in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1787,7 +1751,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should mention function in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1796,7 +1760,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should mention callback in message', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1805,7 +1769,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should have consistent message format', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -1816,7 +1780,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('message should start with uppercase', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1825,7 +1789,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('message should not end with period', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1834,7 +1798,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('message should be a non-empty string', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1844,7 +1808,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('message should be the same for all function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -1869,7 +1833,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('message should contain actionable word', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1880,7 +1844,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('report descriptor shape', () => {
     test('report should have message property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1889,7 +1853,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('report should have loc property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1898,7 +1862,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('loc should have start property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1907,7 +1871,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('loc should have end property', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1916,7 +1880,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('start should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1926,7 +1890,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('end should have line and column', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1936,7 +1900,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('start line should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1945,7 +1909,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('start column should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1954,7 +1918,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('end line should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1963,7 +1927,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('end column should be a number', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1974,7 +1938,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('context variations', () => {
     test('should work with different file paths', () => {
-      const { context, reports } = createMockContext({}, '/project/src/utils.ts')
+      const { context, reports } = createMockRuleContext({ filePath: '/project/src/utils.ts' })
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1983,11 +1947,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockContext(
-        {},
-        '/src/test.ts',
-        'arr.map(function(x) { return x; })',
-      )
+      const { context, reports } = createMockRuleContext({ source: 'arr.map(function(x) { return x; })', filePath: '/src/test.ts' })
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -1996,7 +1956,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should work with empty source code', () => {
-      const { context, reports } = createMockContext({}, '/src/empty.ts', '')
+      const { context, reports } = createMockRuleContext({ source: '', filePath: '/src/empty.ts' })
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2005,7 +1965,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should work with config having options', () => {
-      const { context, reports } = createMockContext({ allowNamedFunctions: true })
+      const { context, reports } = createMockRuleContext({ options: [{ allowNamedFunctions: true }] })
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2014,10 +1974,10 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should work with config having multiple options', () => {
-      const { context, reports } = createMockContext({
+      const { context, reports } = createMockRuleContext({ options: [{
         allowNamedFunctions: true,
         excludePatterns: ['test'],
-      })
+      }] })
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2027,7 +1987,7 @@ describe('prefer-arrow-callback rule', () => {
 
     test('should work with long file path', () => {
       const longPath = '/very/long/path/to/some/deeply/nested/directory/structure/file.ts'
-      const { context, reports } = createMockContext({}, longPath)
+      const { context, reports } = createMockRuleContext({ filePath: longPath })
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2265,7 +2225,7 @@ describe('prefer-arrow-callback rule', () => {
 
   describe('mixed scenarios', () => {
     test('should handle alternating valid and invalid nodes', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -2278,7 +2238,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle function expression followed by edge cases', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression())
@@ -2290,7 +2250,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle edge cases followed by function expression', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(null)
@@ -2301,7 +2261,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should maintain correct order of reports', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       visitor.FunctionExpression(createFunctionExpression(1, 0))
@@ -2314,7 +2274,7 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle rapid fire function expressions', () => {
-      const { context, reports } = createMockContext()
+      const { context, reports } = createMockRuleContext()
       const visitor = preferArrowCallbackRule.create(context)
 
       for (let i = 0; i < 50; i++) {
@@ -2328,8 +2288,8 @@ describe('prefer-arrow-callback rule', () => {
     })
 
     test('should handle interleaved create calls', () => {
-      const { context: ctx1, reports: r1 } = createMockContext()
-      const { context: ctx2, reports: r2 } = createMockContext()
+      const { context: ctx1, reports: r1 } = createMockRuleContext()
+      const { context: ctx2, reports: r2 } = createMockRuleContext()
 
       const v1 = preferArrowCallbackRule.create(ctx1)
       const v2 = preferArrowCallbackRule.create(ctx2)
