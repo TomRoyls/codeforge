@@ -1,4 +1,4 @@
-import { Node, type SourceFile } from 'ts-morph'
+import { Node, type ModifierableNode, type SourceFile } from 'ts-morph'
 import { SyntaxKind } from 'ts-morph'
 import type { RuleViolation, VisitorContext, ASTVisitor } from '../ast/visitor.js'
 import type { RuleDefinition, RuleOptions, RuleMeta } from './types.js'
@@ -9,6 +9,15 @@ import type {
   Logger,
   PluginConfig,
 } from '../plugins/types.js'
+
+function getAccessibilityModifier(
+  node: ModifierableNode,
+): 'private' | 'protected' | 'public' | undefined {
+  if (node.hasModifier('private')) return 'private'
+  if (node.hasModifier('protected')) return 'protected'
+  if (node.hasModifier('public')) return 'public'
+  return undefined
+}
 
 // Module-level source text for trivia skipping in convertRawCompilerNode
 let _rangeSourceText = ''
@@ -1019,36 +1028,28 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       base.method = true
       base.kind = 'method'
       if (node.isStatic()) base.static = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
+      const acc = getAccessibilityModifier(node)
+      if (acc) base.accessibility = acc
     }
     if (Node.isConstructorDeclaration(node)) {
       base.kind = 'constructor'
       base.method = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
+      const acc = getAccessibilityModifier(node)
+      if (acc) base.accessibility = acc
     }
     if (Node.isGetAccessorDeclaration(node)) {
       base.kind = 'get'
       base.method = true
       if (node.isStatic()) base.static = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
+      const acc = getAccessibilityModifier(node)
+      if (acc) base.accessibility = acc
     }
     if (Node.isSetAccessorDeclaration(node)) {
       base.kind = 'set'
       base.method = true
       if (node.isStatic()) base.static = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
+      const acc = getAccessibilityModifier(node)
+      if (acc) base.accessibility = acc
     }
     if (kindName === 'RegularExpressionLiteral') {
       const regexText = node.getText()
@@ -1062,27 +1063,23 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       base.shorthand = true
     }
     if (Node.isPropertyAccessExpression(node)) {
-      if ((node as any).questionDotToken) base.optional = true
+      if (node.hasQuestionDotToken()) base.optional = true
     }
     if (Node.isElementAccessExpression(node)) {
-      if ((node as any).questionDotToken) base.optional = true
+      if (node.hasQuestionDotToken()) base.optional = true
     }
     if (Node.isCallExpression(node)) {
-      if ((node as any).questionDotToken) base.optional = true
+      if (node.hasQuestionDotToken()) base.optional = true
     }
     // Extract exportKind/importKind for type-only imports/exports
     if (Node.isExportDeclaration(node)) {
       try {
-        if (typeof (node as any).isTypeOnly === 'function') {
-          base.exportKind = (node as any).isTypeOnly() ? 'type' : 'value'
-        }
+        if (node.isTypeOnly()) base.exportKind = 'type'
       } catch {}
     }
     if (Node.isImportDeclaration(node)) {
       try {
-        if (typeof (node as any).isTypeOnly === 'function') {
-          base.importKind = (node as any).isTypeOnly() ? 'type' : 'value'
-        }
+        if (node.isTypeOnly()) base.importKind = 'type'
       } catch {}
     }
   }
@@ -1110,18 +1107,12 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   let paramPropOverride = false
   if (base.type === 'Parameter') {
     try {
-      if (Node.isParameterDeclaration(node) && (node as any).isParameterProperty?.()) {
+      if (Node.isParameterDeclaration(node) && node.isParameterProperty?.()) {
         isParamProp = true
-        if (typeof (node as any).getAccessibility === 'function') {
-          const acc = (node as any).getAccessibility()
-          paramPropAccessibility = acc || null
-        }
-        if (typeof (node as any).isReadonly === 'function') {
-          paramPropReadonly = (node as any).isReadonly()
-        }
-        if (typeof (node as any).hasOverrideKeyword === 'function') {
-          paramPropOverride = (node as any).hasOverrideKeyword()
-        }
+        const acc = getAccessibilityModifier(node)
+        paramPropAccessibility = acc ?? null
+        paramPropReadonly = node.isReadonly()
+        paramPropOverride = node.hasModifier('override')
       }
     } catch {
       /* not a parameter property */
@@ -1157,10 +1148,10 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       if (nameNode && typeof nameNode === 'object') {
         const saved = { range: base.range, loc: base.loc, start: base.start, end: base.end }
         for (const key of Object.keys(base)) {
-          delete (base as any)[key]
+          delete base[key]
         }
         Object.assign(base, nameNode)
-        if ((nameNode as any).range == null) {
+        if (nameNode.range == null) {
           base.range = saved.range
           base.loc = saved.loc
           base.start = saved.start
@@ -1172,10 +1163,10 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
 
   // Wrap parameter properties in TSParameterProperty node
   if (isParamProp) {
-    const inner = { ...(base as Record<string, unknown>) }
+    const inner = { ...base }
     const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
     for (const key of Object.keys(base)) {
-      delete (base as any)[key]
+      delete base[key]
     }
     base.type = 'TSParameterProperty'
     base.parameter = inner
@@ -1217,10 +1208,10 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     base.optional === true &&
     (base.type === 'MemberExpression' || base.type === 'CallExpression')
   ) {
-    const inner = { ...(base as Record<string, unknown>) }
+    const inner = { ...base }
     const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
     for (const key of Object.keys(base)) {
-      delete (base as any)[key]
+      delete base[key]
     }
     base.type = 'ChainExpression'
     base.expression = inner

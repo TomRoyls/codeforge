@@ -105,12 +105,20 @@ export function applyFixesToFile(
   let fixesApplied = 0
   let fixesSkipped = 0
 
+  // Cache line splits per file to avoid repeated string.split()
+  let cachedLines: null | string[] = null
+  const getLines = (): string[] => {
+    if (!cachedLines) cachedLines = getFileLines(sourceFile)
+    return cachedLines
+  }
+
   for (const { range, violation } of fixableViolations) {
     const rule = rulesWithFixes.get(violation.ruleId)
     if (!rule) continue
 
-    const startPos = getPosFromRange(sourceFile, range)
-    const endPos = getPosFromRangeEnd(sourceFile, range)
+    const lines = getLines()
+    const startPos = getPosFromLineCol(lines, range.start.line, range.start.column)
+    const endPos = getPosFromLineCol(lines, range.end.line, range.end.column)
 
     const hasConflict = rangesApplied.some(
       (r) =>
@@ -213,34 +221,18 @@ export function applyFixesToFiles(
   }
 }
 
-function getPosFromRange(
-  sourceFile: SourceFile,
-  range: { start: { column: number; line: number } },
-): number {
-  const fullText = sourceFile.getFullText()
-  const lines = fullText.split('\n')
-
+function getPosFromLineCol(lines: string[], line: number, column: number): number {
   let pos = 0
-  for (let i = 0; i < range.start.line - 1 && i < lines.length; i++) {
+  for (let i = 0; i < line - 1 && i < lines.length; i++) {
     pos += lines[i]!.length + 1
   }
 
-  return pos + range.start.column - 1
+  return pos + column - 1
 }
 
-function getPosFromRangeEnd(
-  sourceFile: SourceFile,
-  range: { end: { column: number; line: number } },
-): number {
+function getFileLines(sourceFile: SourceFile): string[] {
   const fullText = sourceFile.getFullText()
-  const lines = fullText.split('\n')
-
-  let pos = 0
-  for (let i = 0; i < range.end.line - 1 && i < lines.length; i++) {
-    pos += lines[i]!.length + 1
-  }
-
-  return pos + range.end.column - 1
+  return fullText.split('\n')
 }
 
 function applyTextChanges(sourceFile: SourceFile, changes: TextChange[]): void {

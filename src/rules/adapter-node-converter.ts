@@ -1,132 +1,451 @@
 import { Node } from 'ts-morph'
+
 import { KIND_NAME_ALIASES } from './adapter-constants.js'
 import { convertCompilerNode, convertOperatorToken } from './adapter-converter.js'
 
-export function getExportInfo(node: Node): { isExported: boolean; isDefault: boolean } {
+interface AccessibilitySource {
+  getAccessibility?: () => string | undefined
+  hasModifier?: (text: string) => boolean
+}
+
+function getAccessibilityModifier(node: Node): string | undefined {
+  const n = node as unknown as AccessibilitySource
+
+  if (typeof n.getAccessibility === 'function') {
+    const acc = n.getAccessibility()
+    if (acc) return acc
+    return undefined
+  }
+
+  if (typeof n.hasModifier === 'function') {
+    if (n.hasModifier('private')) return 'private'
+    if (n.hasModifier('protected')) return 'protected'
+    if (n.hasModifier('public')) return 'public'
+  }
+
+  return undefined
+}
+
+function applyFunctionFlags(base: Record<string, unknown>, node: Node): void {
+  if (Node.isFunctionDeclaration(node) || Node.isFunctionExpression(node)) {
+    if (node.isAsync()) base.async = true
+    if (node.isGenerator()) base.generator = true
+  } else if (Node.isArrowFunction(node) && node.isAsync()) base.async = true
+}
+
+function applyClassMemberFlags(base: Record<string, unknown>, node: Node): void {
+  if (Node.isPropertyDeclaration(node)) {
+    if (node.isStatic()) base.static = true
+    if (node.isReadonly()) base.readonly = true
+    return
+  }
+
+  if (Node.isMethodDeclaration(node)) {
+    base.method = true
+    base.kind = 'method'
+    if (node.isStatic()) base.static = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+    return
+  }
+
+  if (Node.isConstructorDeclaration(node)) {
+    base.kind = 'constructor'
+    base.method = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+    return
+  }
+
+  if (Node.isGetAccessorDeclaration(node)) {
+    base.kind = 'get'
+    base.method = true
+    if (node.isStatic()) base.static = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+    return
+  }
+
+  if (Node.isSetAccessorDeclaration(node)) {
+    base.kind = 'set'
+    base.method = true
+    if (node.isStatic()) base.static = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+  }
+}
+
+interface OptionalChainSource {
+  hasQuestionDotToken?: () => boolean
+  questionDotToken?: unknown
+}
+
+function applyOptionalChaining(base: Record<string, unknown>, node: Node): void {
+  if (
+    !Node.isPropertyAccessExpression(node) &&
+    !Node.isElementAccessExpression(node) &&
+    !Node.isCallExpression(node)
+  )
+    return
+
+  const n = node as unknown as OptionalChainSource
+  const isOptional =
+    typeof n.hasQuestionDotToken === 'function'
+      ? n.hasQuestionDotToken()
+      : Boolean(n.questionDotToken)
+
+  if (isOptional) base.optional = true
+}
+
+function applyRegexLiteral(base: Record<string, unknown>, kindName: string, node: Node): void {
+  if (kindName !== 'RegularExpressionLiteral') return
+  const regexText = node.getText()
+  base.raw = regexText
+  const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+  if (regexMatch) {
+    base.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
+  }
+}
+
+function applyTypeOnlyFlags(base: Record<string, unknown>, node: Node): void {
+  if (Node.isExportDeclaration(node)) {
+    try {
+      if (typeof node.isTypeOnly === 'function') {
+        base.exportKind = node.isTypeOnly() ? 'type' : 'value'
+      }
+    } catch {
+      /* guard against ts-morph version differences */
+    }
+
+    return
+  }
+
+  if (Node.isImportDeclaration(node)) {
+    try {
+      if (typeof node.isTypeOnly === 'function') {
+        base.importKind = node.isTypeOnly() ? 'type' : 'value'
+      }
+    } catch {
+      /* guard against ts-morph version differences */
+    }
+  }
+}
+
+interface ParamPropInfo {
+  accessibility: string | undefined
+  isParamProp: boolean
+  override: boolean
+  readonly: boolean
+}
+
+interface ParamPropNode {
+  getAccessibility?: () => string | undefined
+  hasOverrideKeyword?: () => boolean
+  isParameterProperty?: () => boolean
+  isReadonly?: () => boolean
+}
+
+function detectParamProp(node: Node): ParamPropInfo {
+  const result: ParamPropInfo = {
+    accessibility: undefined,
+    isParamProp: false,
+    override: false,
+    readonly: false,
+  }
+
+  try {
+    if (!Node.isParameterDeclaration(node)) return result
+    const n = node as unknown as ParamPropNode
+    if (typeof n.isParameterProperty !== 'function' || !n.isParameterProperty()) return result
+
+    result.isParamProp = true
+    if (typeof n.getAccessibility === 'function') {
+      const acc = n.getAccessibility()
+      if (acc) result.accessibility = acc
+    }
+
+    if (typeof n.isReadonly === 'function') result.readonly = n.isReadonly()
+    if (typeof n.hasOverrideKeyword === 'function') result.override = n.hasOverrideKeyword()
+  } catch {
+    /* not a parameter property */
+  }
+
+  return result
+}
+
+function applyParameterTransform(base: Record<string, unknown>, node: Node): void {
+  if (base.type !== 'Parameter') return
+
+  const propInfo = detectParamProp(node)
+  const hasRest = base.dotDotDotToken !== null && base.dotDotDotToken !== undefined
+  const hasInit = base.init !== null && base.init !== undefined
+
+  if (hasRest) {
+    base.type = 'RestElement'
+    base.argument = base.name
+    delete base.name
+    delete base.init
+    delete base.dotDotDotToken
+    delete base.questionToken
+    delete base.typeAnnotation
+    delete base.modifiers
+  } else if (hasInit) {
+    base.type = 'AssignmentPattern'
+    base.left = base.name
+    base.right = base.init
+    delete base.name
+    delete base.init
+    delete base.dotDotDotToken
+    delete base.questionToken
+    delete base.typeAnnotation
+    delete base.modifiers
+  } else {
+    flattenSimpleParameter(base)
+  }
+
+  if (propInfo.isParamProp) {
+    wrapInParamProperty(base, propInfo)
+  }
+}
+
+function flattenSimpleParameter(base: Record<string, unknown>): void {
+  const nameNode = base.name as Record<string, unknown> | undefined
+  if (!nameNode || typeof nameNode !== 'object') return
+
+  const saved = { end: base.end, loc: base.loc, range: base.range, start: base.start }
+  for (const key of Object.keys(base)) {
+    delete base[key]
+  }
+
+  Object.assign(base, nameNode)
+  if (nameNode.range === null || nameNode.range === undefined) {
+    base.end = saved.end
+    base.loc = saved.loc
+    base.range = saved.range
+    base.start = saved.start
+  }
+}
+
+function wrapInParamProperty(base: Record<string, unknown>, propInfo: ParamPropInfo): void {
+  const inner = { ...base }
+  const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
+  for (const key of Object.keys(base)) {
+    delete base[key]
+  }
+
+  base.accessibility = propInfo.accessibility ?? null
+  base.decorators = []
+  base.end = savedRange.end
+  base.loc = savedRange.loc
+  base.override = propInfo.override
+  base.parameter = inner
+  base.range = savedRange.range
+  base.readonly = propInfo.readonly
+  base.start = savedRange.start
+  base.static = false
+  base.type = 'TSParameterProperty'
+}
+
+function applyMethodSynthesis(base: Record<string, unknown>): void {
+  if (base.method !== true || base.type !== 'MethodDefinition' || base.value !== undefined) return
+
+  base.value = {
+    async: base.async === true,
+    body: base.body ?? { body: [], type: 'BlockStatement' },
+    generator: base.generator === true,
+    id: null,
+    loc: base.loc,
+    params: base.params ?? [],
+    parent: base,
+    range: base.range,
+    type: 'FunctionExpression',
+  }
+  delete base.body
+  delete base.params
+}
+
+function applyChainExpressionSynthesis(base: Record<string, unknown>): void {
+  if (base.optional !== true) return
+  if (base.type !== 'MemberExpression' && base.type !== 'CallExpression') return
+
+  const inner = { ...base }
+  const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
+  for (const key of Object.keys(base)) {
+    delete base[key]
+  }
+
+  base.end = savedRange.end
+  base.expression = inner
+  base.loc = savedRange.loc
+  base.range = savedRange.range
+  base.start = savedRange.start
+  base.type = 'ChainExpression'
+}
+
+function extractDefaultImport(clause: Record<string, unknown>): unknown {
+  if (!clause.name || typeof clause.name !== 'object') return undefined
+  const name = clause.name as Record<string, unknown>
+  return {
+    end: name.end,
+    local: { name: name.text, type: 'Identifier', value: name.text },
+    range: [name.pos, name.end],
+    start: name.pos,
+    type: 'ImportDefaultSpecifier',
+  }
+}
+
+function extractNamedBindingSpecifiers(bindings: Record<string, unknown>): unknown[] {
+  const specifiers: unknown[] = []
+
+  if (Array.isArray(bindings.elements)) {
+    for (const el of bindings.elements) {
+      const spec = buildImportSpecifier(el)
+      if (spec) specifiers.push(spec)
+    }
+  }
+
+  if (bindings.name && typeof bindings.name === 'object') {
+    const name = bindings.name as Record<string, unknown>
+    specifiers.push({
+      end: bindings.end ?? name.end,
+      local: { name: name.text, type: 'Identifier', value: name.text },
+      range: [bindings.pos ?? name.pos, bindings.end ?? name.end],
+      start: bindings.pos ?? name.pos,
+      type: 'ImportNamespaceSpecifier',
+    })
+  }
+
+  return specifiers
+}
+
+function buildImportSpecifier(el: unknown): Record<string, unknown> | undefined {
+  if (!el || typeof el !== 'object') return undefined
+  const e = el as Record<string, unknown>
+  const spec: Record<string, unknown> = {
+    end: e.end,
+    range: [e.pos, e.end],
+    start: e.pos,
+    type: 'ImportSpecifier',
+  }
+  if (e.name && typeof e.name === 'object') {
+    const nameObj = e.name as Record<string, unknown>
+    spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+  }
+
+  if (e.propertyName && typeof e.propertyName === 'object') {
+    const pn = e.propertyName as Record<string, unknown>
+    spec.imported = { name: pn.text, type: 'Identifier', value: pn.text }
+  } else if (e.name && typeof e.name === 'object') {
+    const nameObj = e.name as Record<string, unknown>
+    spec.imported = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+  }
+
+  spec.importKind = typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
+  return spec
+}
+
+function buildExportSpecifier(el: unknown): Record<string, unknown> | undefined {
+  if (!el || typeof el !== 'object') return undefined
+  const e = el as Record<string, unknown>
+  const spec: Record<string, unknown> = {
+    end: e.end,
+    range: [e.pos, e.end],
+    start: e.pos,
+    type: 'ExportSpecifier',
+  }
+  if (e.name && typeof e.name === 'object') {
+    const nameObj = e.name as Record<string, unknown>
+    spec.exported = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+    spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+  }
+
+  if (e.propertyName && typeof e.propertyName === 'object') {
+    const pn = e.propertyName as Record<string, unknown>
+    spec.exported = { name: pn.text, type: 'Identifier', value: pn.text }
+  }
+
+  spec.exportKind = typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
+  return spec
+}
+
+function scanModifiers(modifiers: Array<{ getKindName: () => string }>): {
+  isDefault: boolean
+  isExported: boolean
+} {
   let isExported = false
   let isDefault = false
+
+  for (const mod of modifiers) {
+    const modKind = mod.getKindName()
+    if (modKind === 'ExportKeyword') isExported = true
+    if (modKind === 'DefaultKeyword') isDefault = true
+  }
+
+  // eslint-disable-next-line perfectionist/sort-objects
+  return { isExported, isDefault }
+}
+
+// eslint-disable-next-line perfectionist/sort-object-types
+export function getExportInfo(node: Node): { isExported: boolean; isDefault: boolean } {
   try {
     const n = node as unknown as { getModifiers?: () => Array<{ getKindName: () => string }> }
-    if (typeof n.getModifiers === 'function') {
-      const modifiers = n.getModifiers()
-      if (modifiers) {
-        for (const mod of modifiers) {
-          const modKind = mod.getKindName()
-          if (modKind === 'ExportKeyword') isExported = true
-          if (modKind === 'DefaultKeyword') isDefault = true
-        }
-      }
+    if (typeof n.getModifiers !== 'function') {
+      // eslint-disable-next-line perfectionist/sort-objects
+      return { isExported: false, isDefault: false }
     }
+
+    const modifiers = n.getModifiers()
+    if (modifiers) return scanModifiers(modifiers)
   } catch {
     // Not all node types support getModifiers
   }
-  return { isExported, isDefault }
+
+  // eslint-disable-next-line perfectionist/sort-objects
+  return { isExported: false, isDefault: false }
 }
 
 export function extractImportSpecifiers(node: Node): unknown[] {
   const specifiers: unknown[] = []
+
   try {
-    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (!compilerNode) return specifiers
+
     const clause = compilerNode.importClause as Record<string, unknown> | undefined
     if (!clause) return specifiers
 
-    // Default import: import Foo from '...'
-    if (clause.name && typeof clause.name === 'object') {
-      const name = clause.name as Record<string, unknown>
-      specifiers.push({
-        type: 'ImportDefaultSpecifier',
-        local: { type: 'Identifier', name: name.text, value: name.text },
-        range: [name.pos, name.end],
-        start: name.pos,
-        end: name.end,
-      })
-    }
+    const defaultSpec = extractDefaultImport(clause)
+    if (defaultSpec) specifiers.push(defaultSpec)
 
-    // Named/namespace bindings
     if (clause.namedBindings && typeof clause.namedBindings === 'object') {
       const bindings = clause.namedBindings as Record<string, unknown>
-
-      // import { A, B } from '...'
-      if (Array.isArray(bindings.elements)) {
-        for (const el of bindings.elements) {
-          if (!el || typeof el !== 'object') continue
-          const e = el as Record<string, unknown>
-          const spec: Record<string, unknown> = {
-            type: 'ImportSpecifier',
-            range: [e.pos, e.end],
-            start: e.pos,
-            end: e.end,
-          }
-          if (e.name && typeof e.name === 'object') {
-            const nameObj = e.name as Record<string, unknown>
-            spec.local = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
-          }
-          if (e.propertyName && typeof e.propertyName === 'object') {
-            const pn = e.propertyName as Record<string, unknown>
-            spec.imported = { type: 'Identifier', name: pn.text, value: pn.text }
-          } else if (e.name && typeof e.name === 'object') {
-            const nameObj = e.name as Record<string, unknown>
-            spec.imported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
-          }
-          spec.importKind =
-            typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
-          specifiers.push(spec)
-        }
-      }
-
-      // import * as Foo from '...'
-      if (bindings.name && typeof bindings.name === 'object') {
-        const name = bindings.name as Record<string, unknown>
-        specifiers.push({
-          type: 'ImportNamespaceSpecifier',
-          local: { type: 'Identifier', name: name.text, value: name.text },
-          range: [bindings.pos ?? name.pos, bindings.end ?? name.end],
-          start: bindings.pos ?? name.pos,
-          end: bindings.end ?? name.end,
-        })
-      }
+      specifiers.push(...extractNamedBindingSpecifiers(bindings))
     }
   } catch {
     // Compiler node not available
   }
+
   return specifiers
 }
 
 export function extractExportSpecifiers(node: Node): unknown[] {
   const specifiers: unknown[] = []
+
   try {
-    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (!compilerNode) return specifiers
 
     const exportClause = compilerNode.exportClause as Record<string, unknown> | undefined
-    if (exportClause && Array.isArray(exportClause.elements)) {
-      for (const el of exportClause.elements) {
-        if (!el || typeof el !== 'object') continue
-        const e = el as Record<string, unknown>
-        const spec: Record<string, unknown> = {
-          type: 'ExportSpecifier',
-          range: [e.pos, e.end],
-          start: e.pos,
-          end: e.end,
-        }
-        if (e.name && typeof e.name === 'object') {
-          const nameObj = e.name as Record<string, unknown>
-          spec.local = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
-          spec.exported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
-        }
-        if (e.propertyName && typeof e.propertyName === 'object') {
-          const pn = e.propertyName as Record<string, unknown>
-          spec.exported = { type: 'Identifier', name: pn.text, value: pn.text }
-        }
-        spec.exportKind =
-          typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
-        specifiers.push(spec)
-      }
+    if (!exportClause || !Array.isArray(exportClause.elements)) return specifiers
+
+    for (const el of exportClause.elements) {
+      const spec = buildExportSpecifier(el)
+      if (spec) specifiers.push(spec)
     }
   } catch {
     // Compiler node not available
   }
+
   return specifiers
 }
 
@@ -137,266 +456,60 @@ export function nodeToGeneric(node: Node): Record<string, unknown> {
   const startPos = sourceFile.getLineAndColumnAtPos(start)
   const endPos = sourceFile.getLineAndColumnAtPos(end)
 
-  // Base properties
   const kindName = node.getKindName()
   const estreeType = KIND_NAME_ALIASES[kindName] ?? kindName
   const base: Record<string, unknown> = {
-    type: estreeType,
-    range: [start, end] as [number, number],
-    loc: {
-      start: { line: startPos.line, column: startPos.column },
-      end: { line: endPos.line, column: endPos.column },
-    },
-    start,
     end,
+    loc: {
+      end: { column: endPos.column, line: endPos.line },
+      start: { column: startPos.column, line: startPos.line },
+    },
+    range: [start, end] as [number, number],
+    start,
     text: node.getText(),
+    type: estreeType,
   }
 
   if (estreeType === 'MemberExpression') {
     base.computed = kindName === 'ElementAccessExpression'
   }
+
   if (typeof node.getKind === 'function') {
-    if (Node.isFunctionDeclaration(node)) {
-      if (node.isAsync()) base.async = true
-      if (node.isGenerator()) base.generator = true
-    }
-    if (Node.isFunctionExpression(node)) {
-      if (node.isAsync()) base.async = true
-      if (node.isGenerator()) base.generator = true
-    }
-    if (Node.isArrowFunction(node)) {
-      if (node.isAsync()) base.async = true
-    }
-    if (Node.isPropertyDeclaration(node)) {
-      if (node.isStatic()) base.static = true
-      if (node.isReadonly()) base.readonly = true
-    }
-    if (Node.isMethodDeclaration(node)) {
-      base.method = true
-      base.kind = 'method'
-      if (node.isStatic()) base.static = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
-    }
-    if (Node.isConstructorDeclaration(node)) {
-      base.kind = 'constructor'
-      base.method = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
-    }
-    if (Node.isGetAccessorDeclaration(node)) {
-      base.kind = 'get'
-      base.method = true
-      if (node.isStatic()) base.static = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
-    }
-    if (Node.isSetAccessorDeclaration(node)) {
-      base.kind = 'set'
-      base.method = true
-      if (node.isStatic()) base.static = true
-      if ((node as any).getAccessibility) {
-        const acc = (node as any).getAccessibility()
-        if (acc) base.accessibility = acc
-      }
-    }
-    if (kindName === 'RegularExpressionLiteral') {
-      const regexText = node.getText()
-      base.raw = regexText
-      const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
-      if (regexMatch) {
-        base.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
-      }
-    }
+    applyFunctionFlags(base, node)
+    applyClassMemberFlags(base, node)
+    applyRegexLiteral(base, kindName, node)
+
     if (Node.isShorthandPropertyAssignment(node)) {
       base.shorthand = true
     }
-    if (Node.isPropertyAccessExpression(node)) {
-      if ((node as any).questionDotToken) base.optional = true
-    }
-    if (Node.isElementAccessExpression(node)) {
-      if ((node as any).questionDotToken) base.optional = true
-    }
-    if (Node.isCallExpression(node)) {
-      if ((node as any).questionDotToken) base.optional = true
-    }
-    // Extract exportKind/importKind for type-only imports/exports
-    if (Node.isExportDeclaration(node)) {
-      try {
-        if (typeof (node as any).isTypeOnly === 'function') {
-          base.exportKind = (node as any).isTypeOnly() ? 'type' : 'value'
-        }
-      } catch {}
-    }
-    if (Node.isImportDeclaration(node)) {
-      try {
-        if (typeof (node as any).isTypeOnly === 'function') {
-          base.importKind = (node as any).isTypeOnly() ? 'type' : 'value'
-        }
-      } catch {}
-    }
+
+    applyOptionalChaining(base, node)
+    applyTypeOnlyFlags(base, node)
   }
 
   // Enhancement properties from compiler node traversal
   const enhanced = convertCompilerNode(node, 0)
   if (enhanced) {
-    // Merge enhanced into base, but base properties win
     for (const [key, val] of Object.entries(enhanced)) {
       if (!(key in base)) {
-        // Convert operator tokens
-        if (key === 'operatorToken' || key === 'operator') {
-          base[key] = convertOperatorToken(val)
-        } else {
-          base[key] = val
-        }
+        base[key] = key === 'operatorToken' || key === 'operator' ? convertOperatorToken(val) : val
       }
     }
   }
 
-  // Detect parameter properties for TSParameterProperty synthesis
-  let isParamProp = false
-  let paramPropAccessibility: string | null = null
-  let paramPropReadonly = false
-  let paramPropOverride = false
-  if (base.type === 'Parameter') {
-    try {
-      if (Node.isParameterDeclaration(node) && (node as any).isParameterProperty?.()) {
-        isParamProp = true
-        if (typeof (node as any).getAccessibility === 'function') {
-          const acc = (node as any).getAccessibility()
-          paramPropAccessibility = acc || null
-        }
-        if (typeof (node as any).isReadonly === 'function') {
-          paramPropReadonly = (node as any).isReadonly()
-        }
-        if (typeof (node as any).hasOverrideKeyword === 'function') {
-          paramPropOverride = (node as any).hasOverrideKeyword()
-        }
-      }
-    } catch {
-      /* not a parameter property */
-    }
-  }
-
-  // Synthesize RestElement / AssignmentPattern for function parameters
-  if (base.type === 'Parameter') {
-    const hasRest = base.dotDotDotToken != null
-    const hasInit = base.init != null
-    if (hasRest) {
-      base.type = 'RestElement'
-      base.argument = base.name
-      delete base.name
-      delete base.init
-      delete base.dotDotDotToken
-      delete base.questionToken
-      delete base.typeAnnotation
-      delete base.modifiers
-    } else if (hasInit) {
-      base.type = 'AssignmentPattern'
-      base.left = base.name
-      base.right = base.init
-      delete base.name
-      delete base.init
-      delete base.dotDotDotToken
-      delete base.questionToken
-      delete base.typeAnnotation
-      delete base.modifiers
-    } else {
-      // Simple parameter — flatten to the name node (Identifier / ObjectPattern / ArrayPattern)
-      const nameNode = base.name as Record<string, unknown> | undefined
-      if (nameNode && typeof nameNode === 'object') {
-        const saved = { range: base.range, loc: base.loc, start: base.start, end: base.end }
-        for (const key of Object.keys(base)) {
-          delete (base as any)[key]
-        }
-        Object.assign(base, nameNode)
-        if ((nameNode as any).range == null) {
-          base.range = saved.range
-          base.loc = saved.loc
-          base.start = saved.start
-          base.end = saved.end
-        }
-      }
-    }
-  }
-
-  // Wrap parameter properties in TSParameterProperty node
-  if (isParamProp) {
-    const inner = { ...(base as Record<string, unknown>) }
-    const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
-    for (const key of Object.keys(base)) {
-      delete (base as any)[key]
-    }
-    base.type = 'TSParameterProperty'
-    base.parameter = inner
-    base.accessibility = paramPropAccessibility
-    base.readonly = paramPropReadonly
-    base.override = paramPropOverride
-    base.static = false
-    base.decorators = []
-    base.range = savedRange.range
-    base.loc = savedRange.loc
-    base.start = savedRange.start
-    base.end = savedRange.end
-  }
-
-  // Synthesize .value FunctionExpression for method-like nodes
-  if (base.method === true && base.type === 'MethodDefinition' && !base.value) {
-    const funcBody = base.body
-    const funcParams = base.params
-    const isAsync = base.async === true
-    const isGenerator = base.generator === true
-    base.value = {
-      type: 'FunctionExpression',
-      id: null,
-      params: funcParams ?? [],
-      body: funcBody ?? { type: 'BlockStatement', body: [] },
-      async: isAsync,
-      generator: isGenerator,
-      range: base.range,
-      loc: base.loc,
-      parent: base,
-    }
-    // ESTree: body/params live on .value only
-    delete base.body
-    delete base.params
-  }
-
-  // Synthesize ChainExpression wrapper for optional chaining (?.)
-  if (
-    base.optional === true &&
-    (base.type === 'MemberExpression' || base.type === 'CallExpression')
-  ) {
-    const inner = { ...(base as Record<string, unknown>) }
-    const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
-    for (const key of Object.keys(base)) {
-      delete (base as any)[key]
-    }
-    base.type = 'ChainExpression'
-    base.expression = inner
-    base.range = savedRange.range
-    base.loc = savedRange.loc
-    base.start = savedRange.start
-    base.end = savedRange.end
-  }
+  applyParameterTransform(base, node)
+  applyMethodSynthesis(base)
+  applyChainExpressionSynthesis(base)
 
   return base
 }
 
 export function setParentRefs(
   root: Record<string, unknown>,
-  parent: Record<string, unknown> | null = null,
+  parent: null | Record<string, unknown> = null,
 ): void {
-  // Iterative traversal using an explicit stack to avoid
-  // "Maximum call stack size exceeded" on deeply nested AST nodes.
   const visited = new WeakSet<Record<string, unknown>>()
-  const stack: Array<{ node: Record<string, unknown>; parent: Record<string, unknown> | null }> = [
+  const stack: Array<{ node: Record<string, unknown>; parent: null | Record<string, unknown> }> = [
     { node: root, parent },
   ]
 
@@ -413,23 +526,35 @@ export function setParentRefs(
 
     for (const val of Object.values(current)) {
       if (val && typeof val === 'object') {
-        if (Array.isArray(val)) {
-          for (const item of val) {
-            if (
-              item &&
-              typeof item === 'object' &&
-              !Array.isArray(item) &&
-              (item as Record<string, unknown>).type
-            ) {
-              stack.push({ node: item as Record<string, unknown>, parent: current })
-            }
-          }
-        } else if ((val as Record<string, unknown>).type) {
-          stack.push({ node: val as Record<string, unknown>, parent: current })
-        }
+        pushChildrenToStack(val, current, stack)
       }
     }
   }
+}
+
+function pushChildrenToStack(
+  val: unknown,
+  parent: Record<string, unknown>,
+  stack: Array<{ node: Record<string, unknown>; parent: null | Record<string, unknown> }>,
+): void {
+  if (Array.isArray(val)) {
+    for (const item of val) {
+      if (isAstNode(item)) {
+        stack.push({ node: item, parent })
+      }
+    }
+  } else if (isAstNode(val)) {
+    stack.push({ node: val, parent })
+  }
+}
+
+function isAstNode(val: unknown): val is Record<string, unknown> {
+  return (
+    val !== null &&
+    typeof val === 'object' &&
+    !Array.isArray(val) &&
+    (val as Record<string, unknown>).type !== undefined
+  )
 }
 
 // Module-level cache for nodeToGeneric results, shared across all rules.

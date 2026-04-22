@@ -276,84 +276,44 @@ export default class Analyze extends Command {
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Analyze)
 
-    const config = await loadCommandConfig(flags, this.configCache)
-    const files = config.files ?? []
-    let ignore = config.ignore ?? []
-
-    if (flags['ignore-path']) {
-      const ignoreFilePatterns = await this.readIgnoreFile(flags['ignore-path'])
-      ignore = [...ignore, ...ignoreFilePatterns]
-    }
-
     const normalized = normalizeFlags(flags)
-    const {
-      cacheResults,
-      ciMode,
-      concurrency,
-      dryRun,
-      failOnWarnings,
-      format,
-      maxWarnings,
-      output,
-      quiet,
-      shouldFix,
-      stagedMode,
-      verbose,
-    } = normalized
-
-    this.configureLogging(verbose, quiet)
-
-    const startTime = performance.now()
+    this.configureLogging(normalized.verbose, normalized.quiet)
 
     const targetPath = path.resolve(args.path as string)
-
     if (!existsSync(targetPath)) {
       this.error(`Path not found: ${targetPath}`, { exit: 1 })
     }
 
-    const spinner = quiet ? null : ora('Discovering files...').start()
+    const config = await loadCommandConfig(flags, this.configCache)
+    const ignore = await this.resolveIgnorePatterns(config.ignore ?? [], flags['ignore-path'])
 
-    const targetStat = statSync(targetPath)
-    const discoveredFiles: DiscoveredFile[] = targetStat.isFile()
-      ? [
-          {
-            absolutePath: targetPath,
-            path: path.relative(process.cwd(), targetPath),
-          },
-        ]
-      : await this.discoverFiles({
-          cwd: targetPath,
-          files,
-          ignore,
-          spinner,
-          stagedMode,
-        })
-
-    const filteredFiles = filterFilesByExtension(discoveredFiles, flags.ext)
+    const filteredFiles = await this.collectFiles({
+      cwd: targetPath,
+      ext: flags.ext,
+      files: config.files ?? [],
+      ignore,
+      quiet: normalized.quiet,
+      stagedMode: normalized.stagedMode,
+    })
 
     if (filteredFiles.length === 0) {
-      spinner?.warn('No files found to analyze')
       this.exit(0)
     }
 
-    spinner?.succeed(`Found ${filteredFiles.length} files to analyze`)
-
-    const requestedRules = flags.rules
-    const registry = setupRuleRegistry(requestedRules)
-
-    const resultCache = cacheResults ? new ResultCache() : null
-    const activeRuleIds = registry.getEnabledRules().map((r) => r.definition.meta.name)
-    const configHash = resultCache ? resultCache.hashConfig(activeRuleIds) : ''
-
+    const registry = setupRuleRegistry(flags.rules)
     const parser = new Parser()
     await parser.initialize()
 
     const parseCache = new Map<string, import('../core/parser.js').ParseResult>()
+    const resultCache = normalized.cacheResults ? new ResultCache() : null
+    const activeRuleIds = registry.getEnabledRules().map((r) => r.definition.meta.name)
+    const configHash = resultCache ? resultCache.hashConfig(activeRuleIds) : ''
 
-    const analysisSpinner = quiet ? null : ora('Analyzing files...').start()
+    const startTime = performance.now()
+    const analysisSpinner = normalized.quiet ? null : ora('Analyzing files...').start()
 
     const { allViolations, fileReports } = await this.analyzeFiles({
-      concurrency,
+      concurrency: normalized.concurrency,
       configHash,
       discoveredFiles: filteredFiles,
       parseCache,
@@ -361,7 +321,7 @@ export default class Analyze extends Command {
       registry,
       resultCache,
       spinner: analysisSpinner,
-      verbose,
+      verbose: normalized.verbose,
     })
 
     analysisSpinner?.succeed('Analysis complete')
@@ -370,69 +330,39 @@ export default class Analyze extends Command {
     const filteredViolations = this.filterBySeverity(allViolations, severityLevel)
     const filteredFileReports = this.filterFileReports(fileReports, severityLevel)
 
-    let fixesApplied = 0
-    let fixesSkipped = 0
-
-    if (shouldFix && filteredViolations.length > 0) {
-      const fixSpinner = quiet
-        ? null
-        : ora(dryRun ? 'Previewing fixes...' : 'Applying fixes...').start()
-
-      const rulesWithFixes = this.getRulesWithFixes()
-
-      const fixResult = await applyFixesToFiles({
+    if (normalized.shouldFix) {
+      await this.runFixes({
         allViolations: filteredViolations,
-        applyFixesFn: (opts) =>
-          this.applyFixes({
-            allViolations: opts.allViolations,
-            concurrency: opts.concurrency,
-            discoveredFiles: opts.discoveredFiles,
-            dryRun: opts.dryRun,
-            parseCache: opts.parseCache,
-            parser: opts.parser,
-            rulesWithFixes: opts.rulesWithFixes,
-            verbose: opts.verbose,
-          }),
-        concurrency,
+        concurrency: normalized.concurrency,
         discoveredFiles: filteredFiles,
-        dryRun,
+        dryRun: normalized.dryRun,
         parseCache,
         parser,
-        quiet,
-        rulesWithFixes,
-        verbose,
+        quiet: normalized.quiet,
+        verbose: normalized.verbose,
       })
-
-      fixesApplied = fixResult.fixesApplied
-      fixesSkipped = fixResult.fixesSkipped
-
-      fixSpinner?.succeed(
-        dryRun
-          ? `Would apply ${fixesApplied} fixes, skip ${fixesSkipped} (dry run)`
-          : `Applied ${fixesApplied} fixes, skipped ${fixesSkipped}`,
-      )
     }
 
     parser.dispose()
 
     const duration = performance.now() - startTime
-
     const summary = this.generateSummary(filteredViolations, filteredFiles.length, duration)
 
     const reporter = new Reporter({
-      color: ciMode ? false : flags.color,
-      format: format as OutputFormat,
-      outputPath: output,
-      quiet: ciMode || flags.quiet,
-      verbose: ciMode ? false : flags.verbose,
+      color: normalized.ciMode ? false : flags.color,
+      format: normalized.format as OutputFormat,
+      outputPath: normalized.output,
+      quiet: normalized.ciMode || flags.quiet,
+      verbose: normalized.ciMode ? false : flags.verbose,
     })
 
-    await reporter.writeReport({
-      files: filteredFileReports,
+    await reporter.writeReport({ files: filteredFileReports, summary })
+
+    const exitCode = this.determineExitCode(
       summary,
-    })
-
-    const exitCode = this.determineExitCode(summary, failOnWarnings, maxWarnings)
+      normalized.failOnWarnings,
+      normalized.maxWarnings,
+    )
     this.exit(exitCode)
   }
 
@@ -620,6 +550,33 @@ export default class Analyze extends Command {
     return { fixesApplied, fixesSkipped }
   }
 
+  private async collectFiles(options: {
+    cwd: string
+    ext: string
+    files: string[]
+    ignore: string[]
+    quiet: boolean
+    stagedMode: boolean
+  }): Promise<DiscoveredFile[]> {
+    const { cwd, ext, files, ignore, quiet, stagedMode } = options
+    const spinner = quiet ? null : ora('Discovering files...').start()
+
+    const targetStat = statSync(cwd)
+    const discoveredFiles: DiscoveredFile[] = targetStat.isFile()
+      ? [{ absolutePath: cwd, path: path.relative(process.cwd(), cwd) }]
+      : await this.discoverFiles({ cwd, files, ignore, spinner, stagedMode })
+
+    const filtered = filterFilesByExtension(discoveredFiles, ext)
+
+    if (filtered.length === 0) {
+      spinner?.warn('No files found to analyze')
+    } else {
+      spinner?.succeed(`Found ${filtered.length} files to analyze`)
+    }
+
+    return filtered
+  }
+
   private configureLogging(verbose: boolean, quiet: boolean): void {
     if (verbose) {
       logger.setLevel(LogLevel.DEBUG)
@@ -769,5 +726,73 @@ export default class Analyze extends Command {
     } catch {
       return []
     }
+  }
+
+  private async resolveIgnorePatterns(
+    baseIgnore: string[],
+    ignorePath: string | undefined,
+  ): Promise<string[]> {
+    if (!ignorePath) return baseIgnore
+    const patterns = await this.readIgnoreFile(ignorePath)
+    return [...baseIgnore, ...patterns]
+  }
+
+  private async runFixes(options: {
+    allViolations: RuleViolation[]
+    concurrency: number
+    discoveredFiles: DiscoveredFile[]
+    dryRun: boolean
+    parseCache: Map<string, import('../core/parser.js').ParseResult>
+    parser: Parser
+    quiet: boolean
+    verbose: boolean
+  }): Promise<FixResult> {
+    const {
+      allViolations,
+      concurrency,
+      discoveredFiles,
+      dryRun,
+      parseCache,
+      parser,
+      quiet,
+      verbose,
+    } = options
+    if (allViolations.length === 0) return { fixesApplied: 0, fixesSkipped: 0 }
+
+    const fixSpinner = quiet
+      ? null
+      : ora(dryRun ? 'Previewing fixes...' : 'Applying fixes...').start()
+    const rulesWithFixes = this.getRulesWithFixes()
+
+    const fixResult = await applyFixesToFiles({
+      allViolations,
+      applyFixesFn: (opts) =>
+        this.applyFixes({
+          allViolations: opts.allViolations,
+          concurrency: opts.concurrency,
+          discoveredFiles: opts.discoveredFiles,
+          dryRun: opts.dryRun,
+          parseCache: opts.parseCache,
+          parser: opts.parser,
+          rulesWithFixes: opts.rulesWithFixes,
+          verbose: opts.verbose,
+        }),
+      concurrency,
+      discoveredFiles,
+      dryRun,
+      parseCache,
+      parser,
+      quiet,
+      rulesWithFixes,
+      verbose,
+    })
+
+    fixSpinner?.succeed(
+      dryRun
+        ? `Would apply ${fixResult.fixesApplied} fixes, skip ${fixResult.fixesSkipped} (dry run)`
+        : `Applied ${fixResult.fixesApplied} fixes, skipped ${fixResult.fixesSkipped}`,
+    )
+
+    return fixResult
   }
 }
