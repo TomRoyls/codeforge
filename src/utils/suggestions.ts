@@ -17,7 +17,7 @@ export const RULE_SUGGESTIONS = {
     'Replace alert(), confirm(), and prompt() with custom UI components or toast notifications.',
   noBitwise:
     'Avoid bitwise operators unless explicitly needed for bit manipulation. They often indicate typos.',
-  noCurly: 'Consistently use curly braces for all control flow statements to prevent bugs.',
+  curly: 'Consistently use curly braces for all control flow statements to prevent bugs.',
   noDupeArgs: 'Remove duplicate parameter names from function declarations.',
   noDupeKeys: 'Remove duplicate keys in object literals to avoid unexpected behavior.',
   noDuplicateCase: 'Remove duplicate case labels in switch statements.',
@@ -163,7 +163,7 @@ export const RULE_SUGGESTIONS = {
   noDuplicateImports: 'Merge duplicate import statements for the same module.',
   noEmptyPattern: 'Provide meaningful destructuring patterns instead of empty ones.',
   noEmptyStaticBlock: 'Add code to empty static blocks or remove them.',
-  noFinishedTodos: 'Remove or update finished TODO comments.',
+  noUnfinishedTodos: 'Remove or update unfinished TODO comments.',
   noMisusedPromises: 'Use void return for functions that should not return promises.',
   noNonoctalDecimalEscape: 'Use \\0 for null escape instead of \\8 or \\9 which are deprecated.',
   noShadowRestrictedNames:
@@ -172,7 +172,6 @@ export const RULE_SUGGESTIONS = {
   noThenable: 'Avoid returning thenable objects (then method) from async functions.',
   noThrowSync: 'Avoid throwing errors in async functions. Use rejected promises instead.',
   noTypeOnlyReturn: 'Avoid type-only return values. Use proper runtime values.',
-  noUnfinishedTodos: 'Complete or remove unfinished TODO comments.',
   noUnnecessaryEscapeInRegexp: 'Remove unnecessary escape characters in regex patterns.',
   noUnnecessaryQualifier: 'Remove unnecessary type qualifiers when they can be inferred.',
   noUnnecessarySlice: 'Use the full array/string instead of slicing from 0 or to the end.',

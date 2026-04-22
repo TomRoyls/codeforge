@@ -11,6 +11,24 @@ const STAGED_FILES_CACHE_TTL = 2000 // 2 seconds (staged files change frequently
 
 const gitCache = new Map<string, GitCacheEntry<unknown>>()
 
+export function clearGitCache(): void {
+  gitCache.clear()
+}
+
+export interface GitCacheStats {
+  size: number
+  keys: string[]
+  ttlMs: number
+}
+
+export function getGitCacheStats(): GitCacheStats {
+  return {
+    size: gitCache.size,
+    keys: Array.from(gitCache.keys()),
+    ttlMs: GIT_CACHE_TTL,
+  }
+}
+
 function getGitCached<T>(key: string, ttl: number): T | null {
   const entry = gitCache.get(key) as GitCacheEntry<T> | undefined
   if (!entry) return null
@@ -73,6 +91,59 @@ export function getStagedFiles(cwd: string): string[] {
   } catch {
     setGitCached(cacheKey, [])
     return []
+  }
+}
+
+export function getChangedFiles(baseRef: string, cwd: string): string[] {
+  const resolvedPath = path.resolve(cwd)
+  const cacheKey = `getChangedFiles:${baseRef}:${resolvedPath}`
+
+  const cached = getGitCached<string[]>(cacheKey, STAGED_FILES_CACHE_TTL)
+  if (cached !== null) return cached
+
+  try {
+    const output = execSync(`git diff --name-only ${baseRef} HEAD`, {
+      cwd: resolvedPath,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    })
+
+    const result = output
+      .trim()
+      .split('\n')
+      .filter((line) => line.length > 0)
+
+    setGitCached(cacheKey, result)
+    return result
+  } catch {
+    setGitCached(cacheKey, [])
+    return []
+  }
+}
+
+export function getDefaultBranch(cwd: string): string {
+  const resolvedPath = path.resolve(cwd)
+  const cacheKey = `getDefaultBranch:${resolvedPath}`
+
+  const cached = getGitCached<string>(cacheKey, GIT_CACHE_TTL)
+  if (cached !== null) return cached
+
+  try {
+    const output = execSync(
+      'git remote show origin 2>/dev/null | grep "HEAD branch" | sed "s/.*: //" || echo main',
+      {
+        cwd: resolvedPath,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      },
+    ).trim()
+
+    const result = output || 'main'
+    setGitCached(cacheKey, result)
+    return result
+  } catch {
+    setGitCached(cacheKey, 'main')
+    return 'main'
   }
 }
 

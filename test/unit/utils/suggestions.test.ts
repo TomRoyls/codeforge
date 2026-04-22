@@ -18,7 +18,7 @@ const EXPECTED_KEYS = [
   'noVar',
   'noAlert',
   'noBitwise',
-  'noCurly',
+  'curly',
   'noDupeArgs',
   'noDupeKeys',
   'noDuplicateCase',
@@ -143,7 +143,6 @@ const EXPECTED_KEYS = [
   'noDuplicateImports',
   'noEmptyPattern',
   'noEmptyStaticBlock',
-  'noFinishedTodos',
   'noMisusedPromises',
   'noNonoctalDecimalEscape',
   'noShadowRestrictedNames',
@@ -183,7 +182,7 @@ describe('suggestions', () => {
 
     it('should have exactly 167 keys', () => {
       const keys = Object.keys(RULE_SUGGESTIONS)
-      expect(keys).toHaveLength(167)
+      expect(keys).toHaveLength(166)
     })
 
     it('should have all expected keys', () => {

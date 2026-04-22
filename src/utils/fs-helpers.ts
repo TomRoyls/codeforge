@@ -10,6 +10,24 @@ interface CacheEntry<T> {
 const CACHE_TTL = 60000
 const cache = new Map<string, CacheEntry<unknown>>()
 
+export function clearCache(): void {
+  cache.clear()
+}
+
+export interface CacheStats {
+  size: number
+  keys: string[]
+  ttlMs: number
+}
+
+export function getCacheStats(): CacheStats {
+  return {
+    size: cache.size,
+    keys: Array.from(cache.keys()),
+    ttlMs: CACHE_TTL,
+  }
+}
+
 function getCached<T>(key: string): T | null {
   const entry = cache.get(key) as CacheEntry<T> | undefined
   if (!entry) return null
