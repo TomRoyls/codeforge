@@ -54,6 +54,7 @@ vi.mock('node:fs', () => ({
 
 vi.mock('node:path', () => ({
   default: { resolve: mockResolve },
+  resolve: mockResolve,
 }))
 
 vi.mock('ora', () => ({
