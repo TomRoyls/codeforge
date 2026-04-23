@@ -2,10 +2,16 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 
 import { extractLocation } from '../../ast/location-utils.js'
 
-function serializeCondition(node: unknown): string {
+function serializeCondition(node: unknown, visited: Set<unknown> = new Set()): string {
   if (!node || typeof node !== 'object') {
     return String(node)
   }
+
+  if (visited.has(node)) {
+    return '[circular]'
+  }
+
+  visited.add(node)
 
   const n = node as Record<string, unknown>
 
@@ -13,7 +19,7 @@ function serializeCondition(node: unknown): string {
     return 'null'
   }
 
-  const {type} = n
+  const { type } = n
 
   if (type === 'Identifier') {
     return `Identifier(${n.name})`
@@ -29,42 +35,42 @@ function serializeCondition(node: unknown): string {
   }
 
   if (type === 'BinaryExpression' || type === 'LogicalExpression') {
-    const left = serializeCondition(n.left)
-    const right = serializeCondition(n.right)
+    const left = serializeCondition(n.left, visited)
+    const right = serializeCondition(n.right, visited)
     return `${type}(${n.operator},${left},${right})`
   }
 
   if (type === 'UnaryExpression') {
-    const argument = serializeCondition(n.argument)
+    const argument = serializeCondition(n.argument, visited)
     return `UnaryExpression(${n.operator},${argument})`
   }
 
   if (type === 'MemberExpression') {
-    const object = serializeCondition(n.object)
-    const property = serializeCondition(n.property)
+    const object = serializeCondition(n.object, visited)
+    const property = serializeCondition(n.property, visited)
     const computed = n.computed ? 'true' : 'false'
     return `MemberExpression(${object},${property},${computed})`
   }
 
   if (type === 'CallExpression') {
-    const callee = serializeCondition(n.callee)
+    const callee = serializeCondition(n.callee, visited)
     const args = Array.isArray(n.arguments)
-      ? n.arguments.map((arg: unknown) => serializeCondition(arg)).join(',')
+      ? n.arguments.map((arg: unknown) => serializeCondition(arg, visited)).join(',')
       : ''
     return `CallExpression(${callee},[${args}])`
   }
 
   if (type === 'ConditionalExpression') {
-    const test = serializeCondition(n.test)
-    const consequent = serializeCondition(n.consequent)
-    const alternate = serializeCondition(n.alternate)
+    const test = serializeCondition(n.test, visited)
+    const consequent = serializeCondition(n.consequent, visited)
+    const alternate = serializeCondition(n.alternate, visited)
     return `ConditionalExpression(${test},${consequent},${alternate})`
   }
 
   const parts: string[] = []
   for (const key of Object.keys(n)) {
-    if (key !== 'loc' && key !== 'range' && key !== 'start' && key !== 'end') {
-      parts.push(`${key}:${serializeCondition(n[key])}`)
+    if (key !== 'loc' && key !== 'range' && key !== 'start' && key !== 'end' && key !== 'parent') {
+      parts.push(`${key}:${serializeCondition(n[key], visited)}`)
     }
   }
 
@@ -85,7 +91,7 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
       return
     }
 
-    const {test} = n
+    const { test } = n
     if (test) {
       conditions.push({
         condition: serializeCondition(test),
@@ -93,7 +99,7 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
       })
     }
 
-    const {alternate} = n
+    const { alternate } = n
     if (alternate && typeof alternate === 'object') {
       const alt = alternate as Record<string, unknown>
       if (alt.type === 'IfStatement') {

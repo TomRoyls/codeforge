@@ -1373,7 +1373,11 @@ function mapCategory(category: string | undefined): RuleMeta['category'] {
 function setParentRefs(
   node: Record<string, unknown>,
   parent: null | Record<string, unknown> = null,
+  visited: Set<Record<string, unknown>> = new Set(),
 ): void {
+  if (visited.has(node)) return
+  visited.add(node)
+
   if (parent !== null) {
     node.parent = parent
   }
@@ -1388,11 +1392,11 @@ function setParentRefs(
             !Array.isArray(item) &&
             (item as Record<string, unknown>).type
           ) {
-            setParentRefs(item as Record<string, unknown>, node)
+            setParentRefs(item as Record<string, unknown>, node, visited)
           }
         }
       } else if ((val as Record<string, unknown>).type) {
-        setParentRefs(val as Record<string, unknown>, node)
+        setParentRefs(val as Record<string, unknown>, node, visited)
       }
     }
   }

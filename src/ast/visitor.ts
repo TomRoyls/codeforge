@@ -192,7 +192,11 @@ export function traverseAST(
     sourceFile,
   })
 
+  const MAX_TRAVERSAL_DEPTH = 200
+
   function visit(node: Node, depth: number): void {
+    if (depth > MAX_TRAVERSAL_DEPTH) return
+
     const nodeContext = createChildContext(node, depth)
 
     visitor.visitNode?.(node, nodeContext)
@@ -256,7 +260,11 @@ export function traverseASTMultiple(
     sourceFile,
   })
 
+  const MAX_TRAVERSAL_DEPTH = 200
+
   function visit(node: Node, depth: number): void {
+    if (depth > MAX_TRAVERSAL_DEPTH) return
+
     const nodeContext = createChildContext(node, depth)
 
     for (const visitor of visitors) {
@@ -319,6 +327,4 @@ export function traverseASTMultiple(
   visit(sourceFile, 0)
 }
 
-
-
-export {Node} from 'ts-morph'
+export { Node } from 'ts-morph'

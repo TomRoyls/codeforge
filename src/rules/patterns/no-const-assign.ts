@@ -61,7 +61,7 @@ export const noConstAssignRule: RuleDefinition = {
         }
 
         const declarations = n.declarations as undefined | unknown[]
-        if (!declarations) {
+        if (!declarations || !Array.isArray(declarations)) {
           return
         }
 

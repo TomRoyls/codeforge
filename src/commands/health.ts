@@ -184,13 +184,18 @@ export default class Health extends Command {
     for (const result of parseResults) {
       if (!result) continue
 
-      const violations = registry.runRules(result.parseResult.sourceFile)
-      allViolations.push(
-        ...violations.map((v) => ({
-          ...v,
-          filePath: result.filePath,
-        })),
-      )
+      try {
+        const violations = registry.runRules(result.parseResult.sourceFile)
+        allViolations.push(
+          ...violations.map((v) => ({
+            ...v,
+            filePath: result.filePath,
+          })),
+        )
+      } catch {
+        // Skip files that cause rule execution errors (e.g., circular references)
+        continue
+      }
 
       const functions = result.parseResult.sourceFile.getFunctions()
       totalFunctions += functions.length
