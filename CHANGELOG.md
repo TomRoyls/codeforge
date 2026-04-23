@@ -39,11 +39,7 @@
 - **refactor**: Migrated 7 reporter files from `console.log` to `process.stdout.write` for proper non-Command stdout handling
 - **test**: Added 63 comprehensive tests for `no-unsafe-regex` rule
 - **test**: Updated reporter tests to spy on `process.stdout.write`
-- **feat**: Added `no-unsafe-regex` security rule detecting ReDoS vulnerabilities (nested quantifiers, complex alternation, dynamic RegExp injection)
-- **refactor**: Migrated 7 reporter files from `console.log` to `process.stdout.write` for proper non-Command stdout handling
-- **test**: Added 63 comprehensive tests for `no-unsafe-regex` rule
-- **test**: Updated reporter tests to spy on `process.stdout.write`
-- **refactor**: Removed 18 dead exported functions across 9 source files (net reduction: ~1,188 lines) (net reduction: ~1,188 lines)
+- **refactor**: Removed 18 dead exported functions across 9 source files (net reduction: ~1,188 lines)
 - **feat**: Consolidated duplicate `extractLocation` into single canonical (160+ rule files updated)
 - **feat**: Added `ChalkColorFunction` shared type for `src/types/chalk.ts`
 - **feat**: Added `codeforge ignore` command for managing ignore patterns (add/list/remove)
