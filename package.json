@@ -74,6 +74,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
+    "lint:strict": "eslint src/ --max-warnings=0",
+    "check-all": "npm run typecheck && npm run lint && npm test",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "postpack": "shx rm -f oclif.manifest.json",

@@ -451,6 +451,42 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
 
   // Iterate compiler node children using raw compiler node
   // (ts-morph getter methods like getExpression() fail on detached nodes)
+
+  const convertCaseClauses = (val: unknown): undefined | unknown[] => {
+    if (!val || typeof val !== 'object') return undefined
+    const cb = val as Record<string, unknown>
+    if (!Array.isArray(cb.clauses)) return undefined
+    const converted: unknown[] = []
+    for (const clause of cb.clauses) {
+      if (
+        clause &&
+        typeof clause === 'object' &&
+        typeof (clause as Record<string, unknown>).kind === 'number'
+      ) {
+        converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
+      }
+    }
+
+    return converted
+  }
+
+  const convertCompilerArrayItem = (item: unknown): unknown => {
+    if (
+      item &&
+      typeof item === 'object' &&
+      typeof (item as Record<string, unknown>).kind === 'number'
+    ) {
+      const itemKindName = KIND_MAP[(item as Record<string, unknown>).kind as number] ?? ''
+      if (itemKindName === 'OmittedExpression') {
+        return null
+      }
+
+      return convertRawCompilerNode(item as Record<string, unknown>, depth + 1)
+    }
+
+    return item
+  }
+
   try {
     const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (compilerNode && typeof compilerNode === 'object') {
@@ -461,20 +497,10 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
         const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
 
         // Special: caseBlock -> extract clauses array as ESTree cases
-        if (key === 'caseBlock' && val && typeof val === 'object') {
-          const cb = val as Record<string, unknown>
-          if (Array.isArray(cb.clauses)) {
-            const converted: unknown[] = []
-            for (const clause of cb.clauses) {
-              if (
-                clause &&
-                typeof clause === 'object' &&
-                typeof (clause as Record<string, unknown>).kind === 'number'
-              ) {
-                converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
-              }
-            }
+        if (key === 'caseBlock') {
+          const converted = convertCaseClauses(val)
 
+          if (converted !== undefined) {
             result[estreeName] = converted
           }
 
@@ -510,25 +536,7 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
         ) {
           result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
         } else if (Array.isArray(val)) {
-          const converted: unknown[] = []
-          for (const item of val) {
-            if (
-              item &&
-              typeof item === 'object' &&
-              typeof (item as Record<string, unknown>).kind === 'number'
-            ) {
-              const itemKindName = KIND_MAP[(item as Record<string, unknown>).kind as number] ?? ''
-              if (itemKindName === 'OmittedExpression') {
-                converted.push(null)
-              } else {
-                converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
-              }
-            } else {
-              converted.push(item)
-            }
-          }
-
-          result[estreeName] = converted
+          result[estreeName] = val.map((item) => convertCompilerArrayItem(item))
         }
       }
     }

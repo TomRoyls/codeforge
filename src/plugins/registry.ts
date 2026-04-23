@@ -37,16 +37,7 @@ export class PluginRegistry {
           if (entry.name.startsWith('@')) {
             const scopePath = join(nodeModulesPath, entry.name)
             // eslint-disable-next-line no-await-in-loop
-            const scopedEntries = await readdir(scopePath, { withFileTypes: true })
-
-            for (const scopedEntry of scopedEntries) {
-              if (scopedEntry.isDirectory() && scopedEntry.name.startsWith(PLUGIN_PREFIX)) {
-                const pluginName = `${entry.name}/${scopedEntry.name}`
-                if (!this.has(pluginName)) {
-                  discovered.push(pluginName)
-                }
-              }
-            }
+            await this.collectScopedPlugins(entry.name, scopePath, discovered)
           } else if (entry.name.startsWith(PLUGIN_PREFIX) && !this.has(entry.name)) {
             discovered.push(entry.name)
           }
@@ -159,6 +150,22 @@ export class PluginRegistry {
     }
 
     this.plugins.delete(name)
+  }
+
+  private async collectScopedPlugins(
+    scopeName: string,
+    scopePath: string,
+    discovered: string[],
+  ): Promise<void> {
+    const scopedEntries = await readdir(scopePath, { withFileTypes: true })
+    for (const scopedEntry of scopedEntries) {
+      if (scopedEntry.isDirectory() && scopedEntry.name.startsWith(PLUGIN_PREFIX)) {
+        const pluginName = `${scopeName}/${scopedEntry.name}`
+        if (!this.has(pluginName)) {
+          discovered.push(pluginName)
+        }
+      }
+    }
   }
 
   private extractPluginFromModule(module: ImportedModule, pluginName: string): Plugin {
