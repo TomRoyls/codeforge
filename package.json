@@ -72,8 +72,8 @@
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "postpack": "shx rm -f oclif.manifest.json",
