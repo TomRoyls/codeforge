@@ -63,6 +63,69 @@ function extractExports(ast: unknown, filePath: string): ExportInfo[] {
   return exports
 }
 
+function makeExport(
+  filePath: string,
+  name: string,
+  type: ExportInfo['type'],
+  isTypeOnly: boolean,
+  location: SourceLocation,
+): ExportInfo {
+  return { filePath, isTypeOnly, location, name, type }
+}
+
+function extractVariableDeclExports(
+  declaration: Record<string, unknown>,
+  filePath: string,
+  isTypeOnly: boolean,
+  location: SourceLocation,
+): ExportInfo[] {
+  const results: ExportInfo[] = []
+  const { declarations } = declaration
+  if (Array.isArray(declarations)) {
+    for (const decl of declarations) {
+      if (!decl || typeof decl !== 'object') continue
+      const declNode = decl as Record<string, unknown>
+      const id = declNode.id as Record<string, unknown> | undefined
+      if (id?.type === 'Identifier' && typeof id.name === 'string') {
+        results.push(makeExport(filePath, id.name, 'named', isTypeOnly, location))
+      }
+    }
+  }
+
+  return results
+}
+
+function extractExportSpecifiers(
+  n: Record<string, unknown>,
+  filePath: string,
+  location: SourceLocation,
+): ExportInfo[] {
+  const results: ExportInfo[] = []
+  const { specifiers } = n
+  if (Array.isArray(specifiers)) {
+    for (const spec of specifiers) {
+      if (!spec || typeof spec !== 'object') continue
+      const specNode = spec as Record<string, unknown>
+      if (specNode.type === 'ExportSpecifier') {
+        const exported = specNode.exported as Record<string, unknown> | undefined
+        if (exported?.name && typeof exported.name === 'string') {
+          results.push(
+            makeExport(
+              filePath,
+              exported.name,
+              'named',
+              specNode.exportKind === 'type' || n.exportKind === 'type',
+              location,
+            ),
+          )
+        }
+      }
+    }
+  }
+
+  return results
+}
+
 function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   const exports: ExportInfo[] = []
 
@@ -76,151 +139,38 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   switch (n.type) {
     case 'ClassDeclaration': {
       const classId = n.id as Record<string, unknown> | undefined
-      if (classId?.name && typeof classId.name === 'string') {
-        const hasExport = hasExportModifier(n)
-        if (hasExport) {
-          exports.push({
-            filePath,
-            isTypeOnly: false,
-            location,
-            name: classId.name,
-            type: 'named',
-          })
-        }
+      if (classId?.name && typeof classId.name === 'string' && hasExportModifier(n)) {
+        exports.push(makeExport(filePath, classId.name, 'named', false, location))
       }
 
       break
     }
 
     case 'ExportAllDeclaration': {
-      exports.push({
-        filePath,
-        isTypeOnly: n.exportKind === 'type',
-        location,
-        name: '*',
-        type: 'namespace',
-      })
+      exports.push(makeExport(filePath, '*', 'namespace', n.exportKind === 'type', location))
       break
     }
 
     case 'ExportDefaultDeclaration': {
-      exports.push({
-        filePath,
-        isTypeOnly: false,
-        location,
-        name: 'default',
-        type: 'default',
-      })
+      exports.push(makeExport(filePath, 'default', 'default', false, location))
       break
     }
 
     case 'ExportNamedDeclaration': {
       const declaration = n.declaration as Record<string, unknown> | undefined
       if (declaration) {
-        switch (declaration.type) {
-        case 'ClassDeclaration': {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              filePath,
-              isTypeOnly: n.exportKind === 'type',
-              location,
-              name: id.name,
-              type: 'named',
-            })
-          }
-        
-        break;
-        }
-
-        case 'FunctionDeclaration': {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              filePath,
-              isTypeOnly: n.exportKind === 'type',
-              location,
-              name: id.name,
-              type: 'named',
-            })
-          }
-        
-        break;
-        }
-
-        case 'TSInterfaceDeclaration': {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              filePath,
-              isTypeOnly: true,
-              location,
-              name: id.name,
-              type: 'named',
-            })
-          }
-        
-        break;
-        }
-
-        case 'TSTypeAliasDeclaration': {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              filePath,
-              isTypeOnly: true,
-              location,
-              name: id.name,
-              type: 'named',
-            })
-          }
-        
-        break;
-        }
-
-        case 'VariableDeclaration': {
-          const {declarations} = declaration
-          if (Array.isArray(declarations)) {
-            for (const decl of declarations) {
-              if (!decl || typeof decl !== 'object') continue
-              const declNode = decl as Record<string, unknown>
-              const id = declNode.id as Record<string, unknown> | undefined
-              if (id?.type === 'Identifier' && typeof id.name === 'string') {
-                exports.push({
-                  filePath,
-                  isTypeOnly: n.exportKind === 'type',
-                  location,
-                  name: id.name,
-                  type: 'named',
-                })
-              }
-            }
-          }
-        
-        break;
-        }
-        // No default
+        const declType = declaration.type as string | undefined
+        const isTypeOnly = n.exportKind === 'type'
+        const name = getDeclName(declaration)
+        if (name) {
+          const typeIsTypeOnly =
+            declType === 'TSInterfaceDeclaration' || declType === 'TSTypeAliasDeclaration'
+          exports.push(makeExport(filePath, name, 'named', typeIsTypeOnly || isTypeOnly, location))
+        } else if (declType === 'VariableDeclaration') {
+          exports.push(...extractVariableDeclExports(declaration, filePath, isTypeOnly, location))
         }
       } else {
-        const {specifiers} = n
-        if (Array.isArray(specifiers)) {
-          for (const spec of specifiers) {
-            if (!spec || typeof spec !== 'object') continue
-            const specNode = spec as Record<string, unknown>
-            if (specNode.type === 'ExportSpecifier') {
-              const exported = specNode.exported as Record<string, unknown> | undefined
-              if (exported?.name && typeof exported.name === 'string') {
-                exports.push({
-                  filePath,
-                  isTypeOnly: specNode.exportKind === 'type' || n.exportKind === 'type',
-                  location,
-                  name: exported.name,
-                  type: 'named',
-                })
-              }
-            }
-          }
-        }
+        exports.push(...extractExportSpecifiers(n, filePath, location))
       }
 
       break
@@ -228,42 +178,16 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
 
     case 'FunctionDeclaration': {
       const funcId = n.id as Record<string, unknown> | undefined
-      if (funcId?.name && typeof funcId.name === 'string') {
-        const hasExport = hasExportModifier(n)
-        if (hasExport) {
-          exports.push({
-            filePath,
-            isTypeOnly: false,
-            location,
-            name: funcId.name,
-            type: 'named',
-          })
-        }
+      if (funcId?.name && typeof funcId.name === 'string' && hasExportModifier(n)) {
+        exports.push(makeExport(filePath, funcId.name, 'named', false, location))
       }
 
       break
     }
 
     case 'VariableDeclaration': {
-      const varHasExport = hasExportModifier(n)
-      if (varHasExport) {
-        const {declarations} = n
-        if (Array.isArray(declarations)) {
-          for (const decl of declarations) {
-            if (!decl || typeof decl !== 'object') continue
-            const declNode = decl as Record<string, unknown>
-            const id = declNode.id as Record<string, unknown> | undefined
-            if (id?.type === 'Identifier' && typeof id.name === 'string') {
-              exports.push({
-                filePath,
-                isTypeOnly: false,
-                location,
-                name: id.name,
-                type: 'named',
-              })
-            }
-          }
-        }
+      if (hasExportModifier(n)) {
+        exports.push(...extractVariableDeclExports(n, filePath, false, location))
       }
 
       break
@@ -273,10 +197,15 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   return exports
 }
 
+function getDeclName(declaration: Record<string, unknown>): null | string {
+  const id = declaration.id as Record<string, unknown> | undefined
+  return id?.name && typeof id.name === 'string' ? id.name : null
+}
+
 function hasExportModifier(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
-  const {modifiers} = n
+  const { modifiers } = n
   if (!Array.isArray(modifiers)) return false
 
   return modifiers.some((mod) => {
@@ -358,7 +287,7 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
       const sourceNode = n.source as Record<string, unknown> | undefined
       const source = sourceNode?.value
       if (typeof source === 'string') {
-        const {specifiers} = n
+        const { specifiers } = n
         if (Array.isArray(specifiers)) {
           for (const spec of specifiers) {
             if (!spec || typeof spec !== 'object') continue
