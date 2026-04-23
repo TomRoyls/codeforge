@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+- **refactor**: Reduced all remaining ESLint complexity warnings to zero (4 → 0)
+  - Extracted 5 helpers from `convertRawCompilerNode` in `adapter-converter.ts` (107→≤50): `applyRawLiteralValues`, `synthesizeTemplateExpression`, `synthesizeNoSubstitutionTemplate`, `assignRawProperty`, `applyRawPostFixups`
+  - Extracted 12+ helpers from 3 functions in `adapter.ts` (107,72,70→≤50): same raw helpers plus `applyNodeModifiers`, `transformParameterNode`, `wrapParameterProperty`, `synthesizeMethodValue`, `synthesizeChainExpression`, `assignCompilerProperty`, `applyPostConvertFixups`
+  - ESLint now reports 0 errors and 0 warnings across all of `src/`
+- **refactor**: Migrated `throw new Error()` to `CLIError`/`SystemError` in `fs-helpers.ts`, `file-writer.ts`, `reporter.ts`, `reporters/index.ts`
+- **fix**: Added named `resolve` export to `node:path` mock in `report-analysis-helpers.test.ts` (201 tests fixed)
+- **fix**: Resolved stack overflow in health command and rule execution — fixed `setParentRefs` circular refs, `serializeCondition` recursion, visitor depth guard, `no-const-assign` TypeError
+- **fix**: Prevented infinite recursion in 6 rules with circular AST node references (`no-async-without-await`, `no-return-or-await`, `require-await`, `prefer-at-context`, `no-duplicate-else-if`, `prefer-function-type`)
 - **refactor**: Eliminated all ESLint errors across entire `src/` directory (5,192 → 0 errors, 294 files)
   - Auto-fixed 5,135 sort/spacing issues via `--fix` (perfectionist, padding, shorthands)
   - Manually fixed 53 errors in `src/rules/`: import/export duplicates, charCodeAt→codePointAt, useless escapes, eqeqeq, function scoping, fallthrough, import dedup
