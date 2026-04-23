@@ -58,14 +58,14 @@ export function validateAnalysisResult(data: AnalysisResult): boolean {
 
 export async function readAnalysisFile(inputPath: string): Promise<AnalysisResult> {
   if (!existsSync(inputPath)) {
-    throw new Error(`Input file not found: ${inputPath}`)
+    throw CLIError.invalidInput(`Input file not found: ${inputPath}`)
   }
 
   let content: string
   try {
     content = await readFile(inputPath, 'utf8')
   } catch (readError) {
-    throw new Error(
+    throw CLIError.invalidInput(
       `Failed to read analysis results from ${inputPath}: ${readError instanceof Error ? readError.message : String(readError)}`,
     )
   }
@@ -74,7 +74,7 @@ export async function readAnalysisFile(inputPath: string): Promise<AnalysisResul
     const data = JSON.parse(content) as AnalysisResult
 
     if (!validateAnalysisResult(data)) {
-      throw new Error('Invalid analysis file format: missing required fields')
+      throw CLIError.invalidInput('Invalid analysis file format: missing required fields')
     }
 
     return data

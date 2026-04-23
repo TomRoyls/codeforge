@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import path from 'node:path'
+import { resolve } from 'node:path'
 import ora from 'ora'
 import pLimit from 'p-limit'
 
@@ -9,6 +9,7 @@ import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { setupRuleRegistryLazy } from '../utils/command-helpers.js'
 import { DEFAULT_FILE_PATTERNS } from '../utils/constants.js'
+import { CLIError } from '../utils/errors.js'
 
 export interface RunAnalysisPipelineOptions {
   log?: (msg: string) => void
@@ -20,10 +21,10 @@ export async function runAnalysisPipeline(
   concurrency: number,
   options?: RunAnalysisPipelineOptions,
 ): Promise<AnalysisResult> {
-  const absolutePath = path.resolve(targetPath)
+  const absolutePath = resolve(targetPath)
 
   if (!existsSync(absolutePath)) {
-    throw new Error(`Path not found: ${absolutePath}`)
+    throw CLIError.invalidInput(`Path not found: ${absolutePath}`)
   }
 
   options?.log?.(`Analyzing: ${absolutePath}`)
