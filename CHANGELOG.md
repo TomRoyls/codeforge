@@ -9,6 +9,11 @@
   - Removed `src/rules/`, `src/core/`, `src/utils/`, `src/ast/`, `src/plugins/`, `src/cache/` from ESLint ignore list
   - Added per-directory ESLint config overrides with relaxed structural limits
 - **fix**: Fixed pre-existing TypeScript errors in `plugins/manager.ts` (variable used before assigned) and `utils/lru-cache.ts` (wrong tuple destructuring)
+- **refactor**: Eliminated all 7 max-depth warnings by extracting nested blocks into helper functions
+- **refactor**: Reduced `extractExportsFromNode` complexity 59→≤50 by extracting `makeExport`, `getDeclName`, `extractVariableDeclExports`, `extractExportSpecifiers` helpers
+- **feat**: Added `lint:strict` (fails on warnings) and `check-all` (typecheck + lint + test) npm scripts
+- **fix**: Added `src/` target to `lint` and `lint:fix` npm scripts
+- **chore**: Updated dependencies to latest compatible versions
 
 - **refactor**: Reduced cyclomatic complexity in `analyze` command (23→≤20) by extracting helper methods
 - **refactor**: Decomposed `nodeToGeneric` (complexity 70→≤20) into focused helper functions
