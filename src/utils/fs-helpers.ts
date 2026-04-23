@@ -2,6 +2,8 @@ import { Stats } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 
+import { CLIError, SystemError } from './errors.js'
+
 interface CacheEntry<T> {
   timestamp: number
   value: T
@@ -80,10 +82,10 @@ export async function readFileStrict(filePath: string): Promise<string> {
     return content
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new Error(`File not found: ${resolvedPath}`)
+      throw CLIError.fileNotFound(resolvedPath)
     }
 
-    throw new Error(`Failed to read file ${resolvedPath}: ${(error as Error).message}`)
+    throw SystemError.ioError(`read file ${resolvedPath}`, error as Error)
   }
 }
 
@@ -117,7 +119,7 @@ export async function writeFileSafe(filePath: string, content: string): Promise<
     await fs.mkdir(dirPath, { recursive: true })
     await fs.writeFile(resolvedPath, content, 'utf8')
   } catch (error) {
-    throw new Error(`Failed to write file ${resolvedPath}: ${(error as Error).message}`)
+    throw SystemError.ioError(`write file ${resolvedPath}`, error as Error)
   }
 }
 
@@ -164,7 +166,7 @@ export async function ensureDirectory(dirPath: string): Promise<void> {
   try {
     await fs.mkdir(resolvedPath, { recursive: true })
   } catch (error) {
-    throw new Error(`Failed to ensure directory ${resolvedPath}: ${(error as Error).message}`)
+    throw SystemError.ioError(`ensure directory ${resolvedPath}`, error as Error)
   }
 }
 
@@ -179,7 +181,7 @@ export async function deleteFile(filePath: string): Promise<boolean> {
       return false
     }
 
-    throw new Error(`Failed to delete file ${resolvedPath}: ${(error as Error).message}`)
+    throw SystemError.ioError(`delete file ${resolvedPath}`, error as Error)
   }
 }
 
@@ -202,7 +204,7 @@ export async function listFiles(dir: string, pattern?: string): Promise<string[]
 
     return files
   } catch (error) {
-    throw new Error(`Failed to list files in directory ${resolvedDir}: ${(error as Error).message}`)
+    throw SystemError.ioError(`list files in directory ${resolvedDir}`, error as Error)
   }
 }
 
@@ -229,10 +231,10 @@ export async function getFileInfo(filePath: string): Promise<FileInfo> {
     return result
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new Error(`File not found: ${resolvedPath}`)
+      throw CLIError.fileNotFound(resolvedPath)
     }
 
-    throw new Error(`Failed to get file info for ${resolvedPath}: ${(error as Error).message}`)
+    throw SystemError.ioError(`get file info for ${resolvedPath}`, error as Error)
   }
 }
 

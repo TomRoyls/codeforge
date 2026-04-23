@@ -561,59 +561,49 @@ describe('file-writer', () => {
 
     // --- Error handling tests ---
 
-    test('throws Error with file path when writeFileSync fails', () => {
+    test('throws SystemError with file path when writeFileSync fails', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw new Error('disk full')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": disk full`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('throws Error with file path when writeFileSync throws non-Error', () => {
+    test('throws SystemError with file path when writeFileSync throws non-Error', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw 'string error'
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": string error`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('throws Error with file path when writeFileSync throws a number', () => {
+    test('throws SystemError with file path when writeFileSync throws a number', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw 42
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": 42`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('throws Error when mkdirSync fails', () => {
+    test('throws SystemError when mkdirSync fails', () => {
       const nestedPath = path.join(tempDir, 'fail', 'test.txt')
       vi.spyOn(fs, 'mkdirSync').mockImplementation(() => {
         throw new Error('permission denied')
       })
 
-      expect(() => writeToFile(nestedPath, 'content')).toThrow(
-        `Failed to write file "${nestedPath}": permission denied`,
-      )
+      expect(() => writeToFile(nestedPath, 'content')).toThrow(`write file "${nestedPath}"`)
     })
 
-    test('throws Error when mkdirSync throws non-Error', () => {
+    test('throws SystemError when mkdirSync throws non-Error', () => {
       const nestedPath = path.join(tempDir, 'fail', 'test.txt')
       vi.spyOn(fs, 'mkdirSync').mockImplementation(() => {
         throw 'mkdir failed'
       })
 
-      expect(() => writeToFile(nestedPath, 'content')).toThrow(
-        `Failed to write file "${nestedPath}": mkdir failed`,
-      )
+      expect(() => writeToFile(nestedPath, 'content')).toThrow(`write file "${nestedPath}"`)
     })
 
     test('includes correct file path in error message', () => {
@@ -630,7 +620,7 @@ describe('file-writer', () => {
       }
     })
 
-    test('preserves original error message for Error instances', () => {
+    test('preserves original error message in cause for Error instances', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw new Error('ENOSPC: no space left on device')
@@ -639,7 +629,9 @@ describe('file-writer', () => {
       try {
         writeToFile(testFile, 'content')
       } catch (error) {
-        expect((error as Error).message).toContain('ENOSPC: no space left on device')
+        expect((error as { cause?: { message: string } }).cause?.message).toContain(
+          'ENOSPC: no space left on device',
+        )
       }
     })
 
@@ -649,7 +641,12 @@ describe('file-writer', () => {
         throw new Error('EACCES: permission denied')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(/EACCES/)
+      try {
+        writeToFile(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EACCES/)
+      }
     })
 
     test('handles EISDIR error from writeFileSync', () => {
@@ -658,7 +655,12 @@ describe('file-writer', () => {
         throw new Error('EISDIR: illegal operation on a directory')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(/EISDIR/)
+      try {
+        writeToFile(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EISDIR/)
+      }
     })
 
     test('handles EMFILE error from writeFileSync', () => {
@@ -667,7 +669,12 @@ describe('file-writer', () => {
         throw new Error('EMFILE: too many open files')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(/EMFILE/)
+      try {
+        writeToFile(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EMFILE/)
+      }
     })
 
     test('handles ENOSPC error from writeFileSync', () => {
@@ -676,7 +683,12 @@ describe('file-writer', () => {
         throw new Error('ENOSPC: no space left on device')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(/ENOSPC/)
+      try {
+        writeToFile(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/ENOSPC/)
+      }
     })
 
     test('wraps error in Error instance when thrown value is a string', () => {
@@ -922,7 +934,12 @@ describe('file-writer', () => {
         throw new Error('ENOENT: no such file or directory')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(/ENOENT/)
+      try {
+        writeToFile(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/ENOENT/)
+      }
     })
 
     test('handles EPERM error from writeFileSync', () => {
@@ -931,54 +948,51 @@ describe('file-writer', () => {
         throw new Error('EPERM: operation not permitted')
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(/EPERM/)
+      try {
+        writeToFile(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EPERM/)
+      }
     })
 
-    test('throws Error when writeFileSync throws null', () => {
+    test('throws SystemError when writeFileSync throws null', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw null
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": null`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('throws Error when writeFileSync throws undefined', () => {
+    test('throws SystemError when writeFileSync throws undefined', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw undefined
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": undefined`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('throws Error when writeFileSync throws boolean', () => {
+    test('throws SystemError when writeFileSync throws boolean', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw true
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": true`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('throws Error when writeFileSync throws an object', () => {
+    test('throws SystemError when writeFileSync throws an object', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw { code: 'CUSTOM', msg: 'custom error' }
       })
 
-      expect(() => writeToFile(testFile, 'content')).toThrow(
-        `Failed to write file "${testFile}": [object Object]`,
-      )
+      expect(() => writeToFile(testFile, 'content')).toThrow(`write file "${testFile}"`)
     })
 
-    test('error message follows "Failed to write file" pattern', () => {
+    test('error message follows I/O error pattern', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
         throw new Error('some error')
@@ -989,7 +1003,7 @@ describe('file-writer', () => {
         expect.unreachable('Should have thrown')
       } catch (error) {
         expect(error).toBeInstanceOf(Error)
-        expect((error as Error).message).toMatch(/^Failed to write file "/)
+        expect((error as Error).message).toMatch(/write file/)
       }
     })
 
@@ -1471,7 +1485,7 @@ describe('file-writer', () => {
 
     // --- Error handling tests ---
 
-    test('throws Error with file path when writeFileSync fails atomically', () => {
+    test('throws SystemError with file path when writeFileSync fails atomically', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
@@ -1479,11 +1493,11 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": disk full`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error with file path when writeFileSync throws non-Error atomically', () => {
+    test('throws SystemError with file path when writeFileSync throws non-Error atomically', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
@@ -1491,11 +1505,11 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": string error`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error when writeFileSync throws a number atomically', () => {
+    test('throws SystemError when writeFileSync throws a number atomically', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
@@ -1503,11 +1517,11 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": 42`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error when renameSync fails', () => {
+    test('throws SystemError when renameSync fails', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'renameSync').mockImplementation(() => {
@@ -1515,11 +1529,11 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": rename failed`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error when renameSync throws non-Error', () => {
+    test('throws SystemError when renameSync throws non-Error', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'renameSync').mockImplementation(() => {
@@ -1527,29 +1541,29 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": rename error string`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error when mkdirSync fails atomically', () => {
+    test('throws SystemError when mkdirSync fails atomically', () => {
       const nestedPath = path.join(tempDir, 'fail', 'test.txt')
       vi.spyOn(fs, 'mkdirSync').mockImplementation(() => {
         throw new Error('permission denied')
       })
 
       expect(() => writeToFileAtomic(nestedPath, 'content')).toThrow(
-        `Failed to write file atomically "${nestedPath}": permission denied`,
+        `write file atomically "${nestedPath}"`,
       )
     })
 
-    test('throws Error when mkdirSync throws non-Error atomically', () => {
+    test('throws SystemError when mkdirSync throws non-Error atomically', () => {
       const nestedPath = path.join(tempDir, 'fail', 'test.txt')
       vi.spyOn(fs, 'mkdirSync').mockImplementation(() => {
         throw 'mkdir failed'
       })
 
       expect(() => writeToFileAtomic(nestedPath, 'content')).toThrow(
-        `Failed to write file atomically "${nestedPath}": mkdir failed`,
+        `write file atomically "${nestedPath}"`,
       )
     })
 
@@ -1568,7 +1582,7 @@ describe('file-writer', () => {
       }
     })
 
-    test('preserves original error message for Error instances in atomic write', () => {
+    test('preserves original error message in cause for Error instances in atomic write', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
@@ -1578,7 +1592,9 @@ describe('file-writer', () => {
       try {
         writeToFileAtomic(testFile, 'content')
       } catch (error) {
-        expect((error as Error).message).toContain('ENOSPC: no space left on device')
+        expect((error as { cause?: { message: string } }).cause?.message).toContain(
+          'ENOSPC: no space left on device',
+        )
       }
     })
 
@@ -1589,7 +1605,12 @@ describe('file-writer', () => {
         throw new Error('EACCES: permission denied')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/EACCES/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EACCES/)
+      }
     })
 
     test('handles EISDIR error from writeFileSync atomically', () => {
@@ -1599,7 +1620,12 @@ describe('file-writer', () => {
         throw new Error('EISDIR: illegal operation on a directory')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/EISDIR/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EISDIR/)
+      }
     })
 
     test('handles EMFILE error from writeFileSync atomically', () => {
@@ -1609,7 +1635,12 @@ describe('file-writer', () => {
         throw new Error('EMFILE: too many open files')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/EMFILE/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EMFILE/)
+      }
     })
 
     test('handles ENOSPC error from writeFileSync atomically', () => {
@@ -1619,7 +1650,12 @@ describe('file-writer', () => {
         throw new Error('ENOSPC: no space left on device')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/ENOSPC/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/ENOSPC/)
+      }
     })
 
     test('handles EXDEV error from renameSync atomically', () => {
@@ -1629,7 +1665,12 @@ describe('file-writer', () => {
         throw new Error('EXDEV: cross-device link not permitted')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/EXDEV/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EXDEV/)
+      }
     })
 
     test('wraps error in Error instance when thrown value is a string atomically', () => {
@@ -1749,8 +1790,13 @@ describe('file-writer', () => {
         throw new Error('unlink also failed')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/write failed/)
-      expect(() => writeToFileAtomic(testFile, 'content')).not.toThrow(/unlink also failed/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/write failed/)
+        expect((error as Error).message).not.toContain('unlink also failed')
+      }
     })
 
     test('cleanup runs even when main operation fails', () => {
@@ -2003,7 +2049,12 @@ describe('file-writer', () => {
         throw new Error('ENOENT: no such file or directory')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/ENOENT/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/ENOENT/)
+      }
     })
 
     test('handles EPERM error from writeFileSync atomically', () => {
@@ -2016,10 +2067,15 @@ describe('file-writer', () => {
         throw new Error('EPERM: operation not permitted')
       })
 
-      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(/EPERM/)
+      try {
+        writeToFileAtomic(testFile, 'content')
+        expect.unreachable('Should have thrown')
+      } catch (error) {
+        expect((error as { cause?: { message: string } }).cause?.message).toMatch(/EPERM/)
+      }
     })
 
-    test('throws Error when writeFileSync throws null atomically', () => {
+    test('throws SystemError when writeFileSync throws null atomically', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockImplementation((p: string) => {
         if (p.toString().endsWith('.tmp')) return false
@@ -2030,11 +2086,11 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": null`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error when writeFileSync throws undefined atomically', () => {
+    test('throws SystemError when writeFileSync throws undefined atomically', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockImplementation((p: string) => {
         if (p.toString().endsWith('.tmp')) return false
@@ -2045,11 +2101,11 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": undefined`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('throws Error when writeFileSync throws an object atomically', () => {
+    test('throws SystemError when writeFileSync throws an object atomically', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockImplementation((p: string) => {
         if (p.toString().endsWith('.tmp')) return false
@@ -2060,11 +2116,56 @@ describe('file-writer', () => {
       })
 
       expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
-        `Failed to write file atomically "${testFile}": [object Object]`,
+        `write file atomically "${testFile}"`,
       )
     })
 
-    test('error message follows "Failed to write file atomically" pattern', () => {
+    test('throws SystemError when writeFileSync throws null atomically (edge)', () => {
+      const testFile = path.join(tempDir, 'test.txt')
+      vi.spyOn(fs, 'existsSync').mockImplementation((p: string) => {
+        if (p.toString().endsWith('.tmp')) return false
+        return true
+      })
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
+        throw null
+      })
+
+      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
+        `write file atomically "${testFile}"`,
+      )
+    })
+
+    test('throws SystemError when writeFileSync throws undefined atomically', () => {
+      const testFile = path.join(tempDir, 'test.txt')
+      vi.spyOn(fs, 'existsSync').mockImplementation((p: string) => {
+        if (p.toString().endsWith('.tmp')) return false
+        return true
+      })
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
+        throw undefined
+      })
+
+      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
+        `write file atomically "${testFile}"`,
+      )
+    })
+
+    test('throws SystemError when writeFileSync throws an object atomically (2)', () => {
+      const testFile = path.join(tempDir, 'test.txt')
+      vi.spyOn(fs, 'existsSync').mockImplementation((p: string) => {
+        if (p.toString().endsWith('.tmp')) return false
+        return true
+      })
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
+        throw { code: 'CUSTOM', msg: 'custom error' }
+      })
+
+      expect(() => writeToFileAtomic(testFile, 'content')).toThrow(
+        `write file atomically "${testFile}"`,
+      )
+    })
+
+    test('error message follows I/O error pattern for atomic write', () => {
       const testFile = path.join(tempDir, 'test.txt')
       vi.spyOn(fs, 'existsSync').mockReturnValue(true)
       vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {
@@ -2076,7 +2177,7 @@ describe('file-writer', () => {
         expect.unreachable('Should have thrown')
       } catch (error) {
         expect(error).toBeInstanceOf(Error)
-        expect((error as Error).message).toMatch(/^Failed to write file atomically "/)
+        expect((error as Error).message).toMatch(/write file atomically/)
       }
     })
 

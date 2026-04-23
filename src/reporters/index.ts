@@ -1,5 +1,6 @@
 import type { Reporter, ReporterFactory, ReporterOptions, ReporterRegistryEntry } from './types.js'
 
+import { CLIError } from '../utils/errors.js'
 import { ConsoleReporter } from './console-reporter.js'
 import { CSVReporter } from './csv-reporter.js'
 import { GitLabReporter } from './gitlab-reporter.js'
@@ -80,7 +81,7 @@ export function getReporter(name: string, options: ReporterOptions = {}): Report
 
   if (!entry) {
     const available = [...reporterRegistry.keys()].join(', ')
-    throw new Error(`Unknown reporter: "${name}". Available reporters: ${available}`)
+    throw CLIError.invalidInput(`Unknown reporter: "${name}". Available reporters: ${available}`)
   }
 
   return entry.factory(options)

@@ -544,28 +544,11 @@ function convertOperatorToken(token: unknown): string {
   return String(token)
 }
 
-function convertRawCompilerNode(
+function applyRawLiteralValues(
+  result: Record<string, unknown>,
+  kindName: string,
   raw: Record<string, unknown>,
-  depth: number,
-): null | Record<string, unknown> {
-  if (depth >= MAX_DEPTH) return null
-  if (!raw || typeof raw !== 'object') return null
-
-  const kind: number = raw.kind as number
-  const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
-  const kindMap = KIND_SPECIFIC_MAP[kindName]
-
-  const result: Record<string, unknown> = {}
-  if (typeof raw.pos === 'number' && typeof raw.end === 'number') {
-    const startPos = skipTrivia(raw.pos as number)
-    result.range = [startPos, raw.end] as [number, number]
-    result.start = startPos
-    result.end = raw.end
-  }
-
-  result.type = KIND_NAME_ALIASES[kindName] ?? kindName
-
-  // Add literal values
+): void {
   if (kindName === 'StringLiteral' && raw.text !== undefined) {
     result.value = raw.text
     result.raw = `"${raw.text}"`
@@ -578,7 +561,7 @@ function convertRawCompilerNode(
   } else if (kindName === 'Identifier' && raw.escapedText !== undefined) {
     result.name = raw.escapedText
     result.value = raw.escapedText
-  } else
+  } else {
     switch (kindName) {
       case 'FalseKeyword': {
         result.value = false
@@ -612,165 +595,170 @@ function convertRawCompilerNode(
         }
       }
     }
+  }
+}
 
-  // Iterate children
-  for (const [key, val] of Object.entries(raw)) {
-    if (key.startsWith('_')) continue
-    if (SKIP_KEYS.has(key)) continue
-
-    const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
-
-    // Special: caseBlock → extract clauses array as ESTree cases
-    if (key === 'caseBlock' && val && typeof val === 'object') {
-      const cb = val as Record<string, unknown>
-      if (Array.isArray(cb.clauses)) {
-        const converted: unknown[] = []
-        for (const clause of cb.clauses) {
-          if (
-            clause &&
-            typeof clause === 'object' &&
-            typeof (clause as Record<string, unknown>).kind === 'number'
-          ) {
-            converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
-          }
-        }
-
-        result[estreeName] = converted
-      }
-
-      continue
-    }
-
-    // Special: TemplateExpression → synthesize quasis[] and expressions[]
-    if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
-      if (!result.quasis && !result.expressions) {
-        const quasis: unknown[] = []
-        const expressions: unknown[] = []
-
-        // head → first TemplateElement (tail=false)
-        const head = raw.head as Record<string, unknown> | undefined
-        if (head && typeof head.kind === 'number') {
-          quasis.push({
-            range:
-              typeof head.pos === 'number' && typeof head.end === 'number'
-                ? [head.pos as number, head.end as number]
-                : undefined,
-            tail: false,
-            type: 'TemplateElement',
-            value: {
-              cooked: (head.text ?? head.rawText) as string,
-              raw: (head.rawText ?? head.text) as string,
-            },
-          })
-        }
-
-        // templateSpans → alternating expression + TemplateElement
-        const spans = raw.templateSpans as Array<Record<string, unknown>> | undefined
-        if (Array.isArray(spans)) {
-          for (let i = 0; i < spans.length; i++) {
-            const span = spans[i]! as Record<string, unknown>
-            const spanExpr = span.expression as Record<string, unknown> | undefined
-            if (spanExpr && typeof spanExpr.kind === 'number') {
-              expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
-            }
-
-            const lit = span.literal as Record<string, unknown> | undefined
-            if (lit && typeof lit.kind === 'number') {
-              const isTail = i === spans.length - 1
-              quasis.push({
-                range:
-                  typeof lit.pos === 'number' && typeof lit.end === 'number'
-                    ? [lit.pos as number, lit.end as number]
-                    : undefined,
-                tail: isTail,
-                type: 'TemplateElement',
-                value: {
-                  cooked: (lit.text ?? lit.rawText) as string,
-                  raw: (lit.rawText ?? lit.text) as string,
-                },
-              })
-            }
-          }
-        }
-
-        result.quasis = quasis
-        result.expressions = expressions
-      }
-
-      continue
-    }
-
-    // Special: NoSubstitutionTemplateLiteral → single quasi with tail=true
-    if (kindName === 'NoSubstitutionTemplateLiteral' && key === 'text') {
-      if (!result.quasis) {
-        const rawText = (raw.rawText ?? raw.text) as string
-        const cookedText = (raw.text ?? raw.rawText) as string
-        result.quasis = [
-          {
-            tail: true,
-            type: 'TemplateElement',
-            value: { cooked: cookedText, raw: rawText },
-          },
-        ]
-        result.expressions = []
-      }
-
-      continue
-    }
-
-    if (val === null || val === undefined) {
-      result[estreeName] = val
-    } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
-      result[estreeName] = val
-    } else if (
-      key === 'operatorToken' &&
-      val !== null &&
-      typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).kind === 'number'
+function convertRawCaseClauses(val: unknown, depth: number): undefined | unknown[] {
+  if (!val || typeof val !== 'object') return undefined
+  const cb = val as Record<string, unknown>
+  if (!Array.isArray(cb.clauses)) return undefined
+  const converted: unknown[] = []
+  for (const clause of cb.clauses) {
+    if (
+      clause &&
+      typeof clause === 'object' &&
+      typeof (clause as Record<string, unknown>).kind === 'number'
     ) {
-      const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
-      result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
-    } else if (
-      key === 'variableDeclaration' &&
-      val !== null &&
-      typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).kind === 'number'
-    ) {
-      const varDecl = val as Record<string, unknown>
-      result[estreeName] =
-        varDecl.name && typeof varDecl.name === 'object'
-          ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
-          : null
-    } else if (
-      typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).kind === 'number'
-    ) {
-      result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
-    } else if (Array.isArray(val)) {
-      const converted: unknown[] = []
-      for (const item of val) {
-        if (
-          item &&
-          typeof item === 'object' &&
-          typeof (item as Record<string, unknown>).kind === 'number'
-        ) {
-          // OmittedExpression (sparse array hole) → null
-          const itemKind = (item as Record<string, unknown>).kind as number
-          const itemKindName = KIND_MAP[itemKind] ?? ''
-          if (itemKindName === 'OmittedExpression') {
-            converted.push(null)
-          } else {
-            converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
-          }
-        } else {
-          converted.push(item)
-        }
-      }
-
-      result[estreeName] = converted
+      converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
     }
   }
 
+  return converted
+}
+
+function synthesizeTemplateExpression(
+  result: Record<string, unknown>,
+  raw: Record<string, unknown>,
+  depth: number,
+): void {
+  if (result.quasis || result.expressions) return
+
+  const quasis: unknown[] = []
+  const expressions: unknown[] = []
+
+  // head → first TemplateElement (tail=false)
+  const head = raw.head as Record<string, unknown> | undefined
+  if (head && typeof head.kind === 'number') {
+    quasis.push({
+      range:
+        typeof head.pos === 'number' && typeof head.end === 'number'
+          ? [head.pos as number, head.end as number]
+          : undefined,
+      tail: false,
+      type: 'TemplateElement',
+      value: {
+        cooked: (head.text ?? head.rawText) as string,
+        raw: (head.rawText ?? head.text) as string,
+      },
+    })
+  }
+
+  // templateSpans → alternating expression + TemplateElement
+  const spans = raw.templateSpans as Array<Record<string, unknown>> | undefined
+  if (Array.isArray(spans)) {
+    for (let i = 0; i < spans.length; i++) {
+      const span = spans[i]! as Record<string, unknown>
+      const spanExpr = span.expression as Record<string, unknown> | undefined
+      if (spanExpr && typeof spanExpr.kind === 'number') {
+        expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
+      }
+
+      const lit = span.literal as Record<string, unknown> | undefined
+      if (lit && typeof lit.kind === 'number') {
+        const isTail = i === spans.length - 1
+        quasis.push({
+          range:
+            typeof lit.pos === 'number' && typeof lit.end === 'number'
+              ? [lit.pos as number, lit.end as number]
+              : undefined,
+          tail: isTail,
+          type: 'TemplateElement',
+          value: {
+            cooked: (lit.text ?? lit.rawText) as string,
+            raw: (lit.rawText ?? lit.text) as string,
+          },
+        })
+      }
+    }
+  }
+
+  result.quasis = quasis
+  result.expressions = expressions
+}
+
+function synthesizeNoSubstitutionTemplate(
+  result: Record<string, unknown>,
+  raw: Record<string, unknown>,
+): void {
+  if (result.quasis) return
+
+  const rawText = (raw.rawText ?? raw.text) as string
+  const cookedText = (raw.text ?? raw.rawText) as string
+  result.quasis = [
+    {
+      tail: true,
+      type: 'TemplateElement',
+      value: { cooked: cookedText, raw: rawText },
+    },
+  ]
+  result.expressions = []
+}
+
+function assignRawProperty(
+  result: Record<string, unknown>,
+  key: string,
+  val: unknown,
+  estreeName: string,
+  depth: number,
+): void {
+  if (val === null || val === undefined) {
+    result[estreeName] = val
+  } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+    result[estreeName] = val
+  } else if (
+    key === 'operatorToken' &&
+    val !== null &&
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
+    result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
+  } else if (
+    key === 'variableDeclaration' &&
+    val !== null &&
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    const varDecl = val as Record<string, unknown>
+    result[estreeName] =
+      varDecl.name && typeof varDecl.name === 'object'
+        ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+        : null
+  } else if (
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
+  } else if (Array.isArray(val)) {
+    const converted: unknown[] = []
+    for (const item of val) {
+      if (
+        item &&
+        typeof item === 'object' &&
+        typeof (item as Record<string, unknown>).kind === 'number'
+      ) {
+        // OmittedExpression (sparse array hole) → null
+        const itemKind = (item as Record<string, unknown>).kind as number
+        const itemKindName = KIND_MAP[itemKind] ?? ''
+        if (itemKindName === 'OmittedExpression') {
+          converted.push(null)
+        } else {
+          converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+        }
+      } else {
+        converted.push(item)
+      }
+    }
+
+    result[estreeName] = converted
+  }
+}
+
+function applyRawPostFixups(
+  result: Record<string, unknown>,
+  kindName: string,
+  raw: Record<string, unknown>,
+): void {
   // BinaryExpression with assignment operator → AssignmentExpression
   if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
     result.type = 'AssignmentExpression'
@@ -823,41 +811,71 @@ function convertRawCompilerNode(
       }
     }
   }
+}
+
+function convertRawCompilerNode(
+  raw: Record<string, unknown>,
+  depth: number,
+): null | Record<string, unknown> {
+  if (depth >= MAX_DEPTH) return null
+  if (!raw || typeof raw !== 'object') return null
+
+  const kind: number = raw.kind as number
+  const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
+  const kindMap = KIND_SPECIFIC_MAP[kindName]
+
+  const result: Record<string, unknown> = {}
+  if (typeof raw.pos === 'number' && typeof raw.end === 'number') {
+    const startPos = skipTrivia(raw.pos as number)
+    result.range = [startPos, raw.end] as [number, number]
+    result.start = startPos
+    result.end = raw.end
+  }
+
+  result.type = KIND_NAME_ALIASES[kindName] ?? kindName
+
+  applyRawLiteralValues(result, kindName, raw)
+
+  for (const [key, val] of Object.entries(raw)) {
+    if (key.startsWith('_')) continue
+    if (SKIP_KEYS.has(key)) continue
+
+    const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
+
+    if (key === 'caseBlock') {
+      const converted = convertRawCaseClauses(val, depth)
+      if (converted !== undefined) {
+        result[estreeName] = converted
+      }
+
+      continue
+    }
+
+    if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
+      synthesizeTemplateExpression(result, raw, depth)
+
+      continue
+    }
+
+    if (kindName === 'NoSubstitutionTemplateLiteral' && key === 'text') {
+      synthesizeNoSubstitutionTemplate(result, raw)
+
+      continue
+    }
+
+    assignRawProperty(result, key, val, estreeName, depth)
+  }
+
+  applyRawPostFixups(result, kindName, raw)
 
   return result
 }
 
-function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
-  if (depth >= MAX_DEPTH) return null
-  if (!node || typeof node !== 'object') return null
-
-  let kindName: string
-  try {
-    kindName = node.getKindName()
-  } catch {
-    return null
-  }
-
-  const kindMap = KIND_SPECIFIC_MAP[kindName]
-
-  const result: Record<string, unknown> = {
-    type: KIND_NAME_ALIASES[kindName] ?? kindName,
-  }
-
-  const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
-  if (
-    compilerNode &&
-    typeof compilerNode === 'object' &&
-    typeof compilerNode.pos === 'number' &&
-    typeof compilerNode.end === 'number'
-  ) {
-    const startPos = skipTrivia(compilerNode.pos as number)
-    result.range = [startPos, compilerNode.end] as [number, number]
-    result.start = startPos
-    result.end = compilerNode.end
-  }
-
-  // Add literal value
+function applyCompilerLiteralValue(
+  result: Record<string, unknown>,
+  kindName: string,
+  node: Node,
+): void {
   switch (kindName) {
     case 'BigIntLiteral':
     // falls through
@@ -910,100 +928,85 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
     }
     // No default
   }
+}
 
-  // Iterate compiler node children using raw compiler node
-  // (ts-morph getter methods like getExpression() fail on detached nodes)
-
-  const convertCaseClauses = (val: unknown): undefined | unknown[] => {
-    if (!val || typeof val !== 'object') return undefined
-    const cb = val as Record<string, unknown>
-    if (!Array.isArray(cb.clauses)) return undefined
-    const converted: unknown[] = []
-    for (const clause of cb.clauses) {
-      if (
-        clause &&
-        typeof clause === 'object' &&
-        typeof (clause as Record<string, unknown>).kind === 'number'
-      ) {
-        converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
-      }
-    }
-
-    return converted
-  }
-
-  const convertCompilerArrayItem = (item: unknown): unknown => {
+function convertCompilerCaseClauses(val: unknown, depth: number): undefined | unknown[] {
+  if (!val || typeof val !== 'object') return undefined
+  const cb = val as Record<string, unknown>
+  if (!Array.isArray(cb.clauses)) return undefined
+  const converted: unknown[] = []
+  for (const clause of cb.clauses) {
     if (
-      item &&
-      typeof item === 'object' &&
-      typeof (item as Record<string, unknown>).kind === 'number'
+      clause &&
+      typeof clause === 'object' &&
+      typeof (clause as Record<string, unknown>).kind === 'number'
     ) {
-      const itemKindName = KIND_MAP[(item as Record<string, unknown>).kind as number] ?? ''
-      if (itemKindName === 'OmittedExpression') {
-        return null
-      }
-
-      return convertRawCompilerNode(item as Record<string, unknown>, depth + 1)
+      converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
     }
-
-    return item
   }
 
-  try {
-    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
-    if (compilerNode && typeof compilerNode === 'object') {
-      for (const [key, val] of Object.entries(compilerNode)) {
-        if (key.startsWith('_')) continue
-        if (SKIP_KEYS.has(key)) continue
+  return converted
+}
 
-        const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
-
-        // Special: caseBlock -> extract clauses array as ESTree cases
-        if (key === 'caseBlock') {
-          const converted = convertCaseClauses(val)
-
-          if (converted !== undefined) {
-            result[estreeName] = converted
-          }
-
-          continue
-        }
-
-        if (val === null || val === undefined) {
-          result[estreeName] = val
-        } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
-          result[estreeName] = val
-        } else if (
-          key === 'operatorToken' &&
-          val !== null &&
-          typeof val === 'object' &&
-          typeof (val as Record<string, unknown>).kind === 'number'
-        ) {
-          const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
-          result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
-        } else if (
-          key === 'variableDeclaration' &&
-          val !== null &&
-          typeof val === 'object' &&
-          typeof (val as Record<string, unknown>).kind === 'number'
-        ) {
-          const varDecl = val as Record<string, unknown>
-          result[estreeName] =
-            varDecl.name && typeof varDecl.name === 'object'
-              ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
-              : null
-        } else if (
-          typeof val === 'object' &&
-          typeof (val as Record<string, unknown>).kind === 'number'
-        ) {
-          result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
-        } else if (Array.isArray(val)) {
-          result[estreeName] = val.map((item) => convertCompilerArrayItem(item))
-        }
-      }
+function convertCompilerArrayItem(item: unknown, depth: number): unknown {
+  if (
+    item &&
+    typeof item === 'object' &&
+    typeof (item as Record<string, unknown>).kind === 'number'
+  ) {
+    const itemKindName = KIND_MAP[(item as Record<string, unknown>).kind as number] ?? ''
+    if (itemKindName === 'OmittedExpression') {
+      return null
     }
-  } catch {}
 
+    return convertRawCompilerNode(item as Record<string, unknown>, depth + 1)
+  }
+
+  return item
+}
+
+function assignCompilerProperty(
+  result: Record<string, unknown>,
+  key: string,
+  val: unknown,
+  estreeName: string,
+  depth: number,
+): void {
+  if (val === null || val === undefined) {
+    result[estreeName] = val
+  } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+    result[estreeName] = val
+  } else if (
+    key === 'operatorToken' &&
+    val !== null &&
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
+    result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
+  } else if (
+    key === 'variableDeclaration' &&
+    val !== null &&
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    const varDecl = val as Record<string, unknown>
+    result[estreeName] =
+      varDecl.name && typeof varDecl.name === 'object'
+        ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+        : null
+  } else if (typeof val === 'object' && typeof (val as Record<string, unknown>).kind === 'number') {
+    result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
+  } else if (Array.isArray(val)) {
+    result[estreeName] = val.map((item) => convertCompilerArrayItem(item, depth))
+  }
+}
+
+function applyPostConvertFixups(
+  result: Record<string, unknown>,
+  kindName: string,
+  compilerNode: Record<string, unknown> | undefined,
+): void {
   if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
     result.type = 'AssignmentExpression'
   }
@@ -1050,8 +1053,250 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
       }
     }
   }
+}
+
+function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
+  if (depth >= MAX_DEPTH) return null
+  if (!node || typeof node !== 'object') return null
+
+  let kindName: string
+  try {
+    kindName = node.getKindName()
+  } catch {
+    return null
+  }
+
+  const kindMap = KIND_SPECIFIC_MAP[kindName]
+
+  const result: Record<string, unknown> = {
+    type: KIND_NAME_ALIASES[kindName] ?? kindName,
+  }
+
+  const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
+  if (
+    compilerNode &&
+    typeof compilerNode === 'object' &&
+    typeof compilerNode.pos === 'number' &&
+    typeof compilerNode.end === 'number'
+  ) {
+    const startPos = skipTrivia(compilerNode.pos as number)
+    result.range = [startPos, compilerNode.end] as [number, number]
+    result.start = startPos
+    result.end = compilerNode.end
+  }
+
+  applyCompilerLiteralValue(result, kindName, node)
+
+  try {
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
+    if (compilerNode && typeof compilerNode === 'object') {
+      for (const [key, val] of Object.entries(compilerNode)) {
+        if (key.startsWith('_')) continue
+        if (SKIP_KEYS.has(key)) continue
+
+        const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
+
+        // Special: caseBlock -> extract clauses array as ESTree cases
+        if (key === 'caseBlock') {
+          const converted = convertCompilerCaseClauses(val, depth)
+          if (converted !== undefined) {
+            result[estreeName] = converted
+          }
+
+          continue
+        }
+
+        assignCompilerProperty(result, key, val, estreeName, depth)
+      }
+    }
+  } catch {}
+
+  applyPostConvertFixups(result, kindName, compilerNode)
 
   return result
+}
+
+function applyNodeModifiers(base: Record<string, unknown>, node: Node, kindName: string): void {
+  if (typeof node.getKind !== 'function') return
+
+  if (Node.isFunctionDeclaration(node)) {
+    if (node.isAsync()) base.async = true
+    if (node.isGenerator()) base.generator = true
+  }
+
+  if (Node.isFunctionExpression(node)) {
+    if (node.isAsync()) base.async = true
+    if (node.isGenerator()) base.generator = true
+  }
+
+  if (Node.isArrowFunction(node) && node.isAsync()) base.async = true
+  if (Node.isPropertyDeclaration(node)) {
+    if (node.isStatic()) base.static = true
+    if (node.isReadonly()) base.readonly = true
+  }
+
+  if (Node.isMethodDeclaration(node)) {
+    base.method = true
+    base.kind = 'method'
+    if (node.isStatic()) base.static = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+  }
+
+  if (Node.isConstructorDeclaration(node)) {
+    base.kind = 'constructor'
+    base.method = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+  }
+
+  if (Node.isGetAccessorDeclaration(node)) {
+    base.kind = 'get'
+    base.method = true
+    if (node.isStatic()) base.static = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+  }
+
+  if (Node.isSetAccessorDeclaration(node)) {
+    base.kind = 'set'
+    base.method = true
+    if (node.isStatic()) base.static = true
+    const acc = getAccessibilityModifier(node)
+    if (acc) base.accessibility = acc
+  }
+
+  if (kindName === 'RegularExpressionLiteral') {
+    const regexText = node.getText()
+    base.raw = regexText
+    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+    if (regexMatch) {
+      base.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
+    }
+  }
+
+  if (Node.isShorthandPropertyAssignment(node)) {
+    base.shorthand = true
+  }
+
+  if (Node.isPropertyAccessExpression(node) && node.hasQuestionDotToken()) base.optional = true
+  if (Node.isElementAccessExpression(node) && node.hasQuestionDotToken()) base.optional = true
+  if (Node.isCallExpression(node) && node.hasQuestionDotToken()) base.optional = true
+  // Extract exportKind/importKind for type-only imports/exports
+  if (Node.isExportDeclaration(node)) {
+    try {
+      if (node.isTypeOnly()) base.exportKind = 'type'
+    } catch {}
+  }
+
+  if (Node.isImportDeclaration(node)) {
+    try {
+      if (node.isTypeOnly()) base.importKind = 'type'
+    } catch {}
+  }
+}
+
+function transformParameterNode(base: Record<string, unknown>): void {
+  const hasRest = base.dotDotDotToken !== null
+  const hasInit = base.init !== null
+  if (hasRest) {
+    base.type = 'RestElement'
+    base.argument = base.name
+    delete base.name
+    delete base.init
+    delete base.dotDotDotToken
+    delete base.questionToken
+    delete base.typeAnnotation
+    delete base.modifiers
+  } else if (hasInit) {
+    base.type = 'AssignmentPattern'
+    base.left = base.name
+    base.right = base.init
+    delete base.name
+    delete base.init
+    delete base.dotDotDotToken
+    delete base.questionToken
+    delete base.typeAnnotation
+    delete base.modifiers
+  } else {
+    // Simple parameter — flatten to the name node (Identifier / ObjectPattern / ArrayPattern)
+    const nameNode = base.name as Record<string, unknown> | undefined
+    if (nameNode && typeof nameNode === 'object') {
+      const saved = { end: base.end, loc: base.loc, range: base.range, start: base.start }
+      for (const key of Object.keys(base)) {
+        delete base[key]
+      }
+
+      Object.assign(base, nameNode)
+      if (nameNode.range === null) {
+        base.range = saved.range
+        base.loc = saved.loc
+        base.start = saved.start
+        base.end = saved.end
+      }
+    }
+  }
+}
+
+function wrapParameterProperty(
+  base: Record<string, unknown>,
+  paramPropAccessibility: null | string,
+  paramPropReadonly: boolean,
+  paramPropOverride: boolean,
+): void {
+  const inner = { ...base }
+  const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
+  for (const key of Object.keys(base)) {
+    delete base[key]
+  }
+
+  base.type = 'TSParameterProperty'
+  base.parameter = inner
+  base.accessibility = paramPropAccessibility
+  base.readonly = paramPropReadonly
+  base.override = paramPropOverride
+  base.static = false
+  base.decorators = []
+  base.range = savedRange.range
+  base.loc = savedRange.loc
+  base.start = savedRange.start
+  base.end = savedRange.end
+}
+
+function synthesizeMethodValue(base: Record<string, unknown>): void {
+  const funcBody = base.body
+  const funcParams = base.params
+  const isAsync = base.async === true
+  const isGenerator = base.generator === true
+  base.value = {
+    async: isAsync,
+    body: funcBody ?? { body: [], type: 'BlockStatement' },
+    generator: isGenerator,
+    id: null,
+    loc: base.loc,
+    params: funcParams ?? [],
+    parent: base,
+    range: base.range,
+    type: 'FunctionExpression',
+  }
+  // ESTree: body/params live on .value only
+  delete base.body
+  delete base.params
+}
+
+function synthesizeChainExpression(base: Record<string, unknown>): void {
+  const inner = { ...base }
+  const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
+  for (const key of Object.keys(base)) {
+    delete base[key]
+  }
+
+  base.type = 'ChainExpression'
+  base.expression = inner
+  base.range = savedRange.range
+  base.loc = savedRange.loc
+  base.start = savedRange.start
+  base.end = savedRange.end
 }
 
 function nodeToGeneric(node: Node): Record<string, unknown> {
@@ -1080,83 +1325,7 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     base.computed = kindName === 'ElementAccessExpression'
   }
 
-  if (typeof node.getKind === 'function') {
-    if (Node.isFunctionDeclaration(node)) {
-      if (node.isAsync()) base.async = true
-      if (node.isGenerator()) base.generator = true
-    }
-
-    if (Node.isFunctionExpression(node)) {
-      if (node.isAsync()) base.async = true
-      if (node.isGenerator()) base.generator = true
-    }
-
-    if (Node.isArrowFunction(node) && node.isAsync()) base.async = true
-    if (Node.isPropertyDeclaration(node)) {
-      if (node.isStatic()) base.static = true
-      if (node.isReadonly()) base.readonly = true
-    }
-
-    if (Node.isMethodDeclaration(node)) {
-      base.method = true
-      base.kind = 'method'
-      if (node.isStatic()) base.static = true
-      const acc = getAccessibilityModifier(node)
-      if (acc) base.accessibility = acc
-    }
-
-    if (Node.isConstructorDeclaration(node)) {
-      base.kind = 'constructor'
-      base.method = true
-      const acc = getAccessibilityModifier(node)
-      if (acc) base.accessibility = acc
-    }
-
-    if (Node.isGetAccessorDeclaration(node)) {
-      base.kind = 'get'
-      base.method = true
-      if (node.isStatic()) base.static = true
-      const acc = getAccessibilityModifier(node)
-      if (acc) base.accessibility = acc
-    }
-
-    if (Node.isSetAccessorDeclaration(node)) {
-      base.kind = 'set'
-      base.method = true
-      if (node.isStatic()) base.static = true
-      const acc = getAccessibilityModifier(node)
-      if (acc) base.accessibility = acc
-    }
-
-    if (kindName === 'RegularExpressionLiteral') {
-      const regexText = node.getText()
-      base.raw = regexText
-      const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
-      if (regexMatch) {
-        base.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
-      }
-    }
-
-    if (Node.isShorthandPropertyAssignment(node)) {
-      base.shorthand = true
-    }
-
-    if (Node.isPropertyAccessExpression(node) && node.hasQuestionDotToken()) base.optional = true
-    if (Node.isElementAccessExpression(node) && node.hasQuestionDotToken()) base.optional = true
-    if (Node.isCallExpression(node) && node.hasQuestionDotToken()) base.optional = true
-    // Extract exportKind/importKind for type-only imports/exports
-    if (Node.isExportDeclaration(node)) {
-      try {
-        if (node.isTypeOnly()) base.exportKind = 'type'
-      } catch {}
-    }
-
-    if (Node.isImportDeclaration(node)) {
-      try {
-        if (node.isTypeOnly()) base.importKind = 'type'
-      } catch {}
-    }
-  }
+  applyNodeModifiers(base, node, kindName)
 
   // Enhancement properties from compiler node traversal
   const enhanced = convertCompilerNode(node, 0)
@@ -1191,88 +1360,17 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
 
   // Synthesize RestElement / AssignmentPattern for function parameters
   if (base.type === 'Parameter') {
-    const hasRest = base.dotDotDotToken !== null
-    const hasInit = base.init !== null
-    if (hasRest) {
-      base.type = 'RestElement'
-      base.argument = base.name
-      delete base.name
-      delete base.init
-      delete base.dotDotDotToken
-      delete base.questionToken
-      delete base.typeAnnotation
-      delete base.modifiers
-    } else if (hasInit) {
-      base.type = 'AssignmentPattern'
-      base.left = base.name
-      base.right = base.init
-      delete base.name
-      delete base.init
-      delete base.dotDotDotToken
-      delete base.questionToken
-      delete base.typeAnnotation
-      delete base.modifiers
-    } else {
-      // Simple parameter — flatten to the name node (Identifier / ObjectPattern / ArrayPattern)
-      const nameNode = base.name as Record<string, unknown> | undefined
-      if (nameNode && typeof nameNode === 'object') {
-        const saved = { end: base.end, loc: base.loc, range: base.range, start: base.start }
-        for (const key of Object.keys(base)) {
-          delete base[key]
-        }
-
-        Object.assign(base, nameNode)
-        if (nameNode.range === null) {
-          base.range = saved.range
-          base.loc = saved.loc
-          base.start = saved.start
-          base.end = saved.end
-        }
-      }
-    }
+    transformParameterNode(base)
   }
 
   // Wrap parameter properties in TSParameterProperty node
   if (isParamProp) {
-    const inner = { ...base }
-    const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
-    for (const key of Object.keys(base)) {
-      delete base[key]
-    }
-
-    base.type = 'TSParameterProperty'
-    base.parameter = inner
-    base.accessibility = paramPropAccessibility
-    base.readonly = paramPropReadonly
-    base.override = paramPropOverride
-    base.static = false
-    base.decorators = []
-    base.range = savedRange.range
-    base.loc = savedRange.loc
-    base.start = savedRange.start
-    base.end = savedRange.end
+    wrapParameterProperty(base, paramPropAccessibility, paramPropReadonly, paramPropOverride)
   }
 
   // Synthesize .value FunctionExpression for method-like nodes
   if (base.method === true && base.type === 'MethodDefinition' && !base.value) {
-    const funcBody = base.body
-    const funcParams = base.params
-    const isAsync = base.async === true
-    const isGenerator = base.generator === true
-    base.value = {
-      async: isAsync,
-      body: funcBody ?? { body: [], type: 'BlockStatement' },
-      generator: isGenerator,
-      id: null,
-      loc: base.loc,
-      params: funcParams ?? [],
-      parent: base,
-      range: base.range,
-      type: 'FunctionExpression',
-    }
-    // ESTree: body/params live on .value only
-    delete base.body
-    delete base.params
+    synthesizeMethodValue(base)
   }
 
   // Synthesize ChainExpression wrapper for optional chaining (?.)
@@ -1280,18 +1378,7 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     base.optional === true &&
     (base.type === 'MemberExpression' || base.type === 'CallExpression')
   ) {
-    const inner = { ...base }
-    const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
-    for (const key of Object.keys(base)) {
-      delete base[key]
-    }
-
-    base.type = 'ChainExpression'
-    base.expression = inner
-    base.range = savedRange.range
-    base.loc = savedRange.loc
-    base.start = savedRange.start
-    base.end = savedRange.end
+    synthesizeChainExpression(base)
   }
 
   return base

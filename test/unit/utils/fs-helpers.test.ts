@@ -371,14 +371,14 @@ describe('fs-helpers', () => {
       await expect(readFileStrict('')).rejects.toThrow()
     })
 
-    test('error message includes "Failed to read file" for non-ENOENT errors', async () => {
+    test('error message includes "read file" for non-ENOENT errors', async () => {
       const dirPath = path.join(tempDir, 'a-dir')
       await fs.mkdir(dirPath)
       try {
         await readFileStrict(dirPath)
         expect.fail('Should have thrown')
       } catch (error) {
-        expect((error as Error).message).toContain('Failed to read file')
+        expect((error as Error).message).toContain('read file')
       }
     })
 
@@ -577,7 +577,7 @@ describe('fs-helpers', () => {
         await writeFileSafe(path.join(readOnlyDir, 'sub', 'file.txt'), 'content')
         expect.fail('Should have thrown')
       } catch (error) {
-        expect((error as Error).message).toContain('Failed to write file')
+        expect((error as Error).message).toContain('write file')
       } finally {
         await fs.chmod(readOnlyDir, 0o755)
       }
@@ -903,7 +903,7 @@ describe('fs-helpers', () => {
       try {
         await ensureDirectory(path.join(readOnlyDir, 'nested', 'dir'))
       } catch (error) {
-        expect((error as Error).message).toContain('Failed to ensure directory')
+        expect((error as Error).message).toContain('ensure directory')
       } finally {
         await fs.chmod(readOnlyDir, 0o755)
       }
@@ -1017,7 +1017,7 @@ describe('fs-helpers', () => {
       try {
         await deleteFile(restrictedFile)
       } catch (error) {
-        expect((error as Error).message).toContain('Failed to delete file')
+        expect((error as Error).message).toContain('delete file')
       } finally {
         await fs.chmod(readOnlyDir, 0o755)
       }
@@ -1168,7 +1168,7 @@ describe('fs-helpers', () => {
       try {
         await listFiles(readOnlyDir)
       } catch (error) {
-        expect((error as Error).message).toContain('Failed to list files')
+        expect((error as Error).message).toContain('list files')
       } finally {
         await fs.chmod(readOnlyDir, 0o755)
       }
@@ -1311,7 +1311,7 @@ describe('fs-helpers', () => {
         await listFiles(readOnlyDir)
         expect.fail('Should have thrown')
       } catch (error) {
-        expect((error as Error).message).toContain('Failed to list files')
+        expect((error as Error).message).toContain('list files')
       } finally {
         await fs.chmod(readOnlyDir, 0o755)
       }

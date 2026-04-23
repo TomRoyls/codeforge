@@ -2,6 +2,8 @@ import * as crypto from 'node:crypto'
 import * as fs from 'node:fs'
 import { dirname } from 'node:path'
 
+import { SystemError } from './errors.js'
+
 export function writeToFile(outputPath: string, content: string): void {
   try {
     const dir = dirname(outputPath)
@@ -11,8 +13,9 @@ export function writeToFile(outputPath: string, content: string): void {
 
     fs.writeFileSync(outputPath, content, 'utf8')
   } catch (error) {
-    throw new Error(
-      `Failed to write file "${outputPath}": ${error instanceof Error ? error.message : String(error)}`,
+    throw SystemError.ioError(
+      `write file "${outputPath}"`,
+      error instanceof Error ? error : new Error(String(error)),
     )
   }
 }
@@ -28,8 +31,9 @@ export function writeToFileAtomic(outputPath: string, content: string): void {
     fs.writeFileSync(tempPath, content, 'utf8')
     fs.renameSync(tempPath, outputPath)
   } catch (error) {
-    throw new Error(
-      `Failed to write file atomically "${outputPath}": ${error instanceof Error ? error.message : String(error)}`,
+    throw SystemError.ioError(
+      `write file atomically "${outputPath}"`,
+      error instanceof Error ? error : new Error(String(error)),
     )
   } finally {
     if (fs.existsSync(tempPath)) {

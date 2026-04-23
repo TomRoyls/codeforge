@@ -3,6 +3,8 @@ import { dirname, resolve } from 'node:path'
 
 import type { RuleViolation } from '../ast/visitor.js'
 
+import { CLIError } from '../utils/errors.js'
+
 export type OutputFormat = 'console' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif'
 
 export interface ReporterOptions {
@@ -79,7 +81,7 @@ export class Reporter {
       }
 
       default: {
-        throw new Error(
+        throw CLIError.invalidInput(
           `Unsupported output format: "${this.options.format}". ` +
             `Valid formats are: console, json, html, junit, sarif, markdown, gitlab. ` +
             `Please check your configuration and try again.`,

@@ -630,7 +630,7 @@ describe('readAnalysisFile', () => {
     }
   })
 
-  test('file not found throws plain Error not CLIError', async () => {
+  test('file not found throws CLIError', async () => {
     vi.mocked(existsSync).mockReturnValue(false)
 
     try {
@@ -638,7 +638,7 @@ describe('readAnalysisFile', () => {
       expect.unreachable('Should have thrown')
     } catch (error) {
       expect(error).toBeInstanceOf(Error)
-      expect(error).not.toBeInstanceOf(CLIError)
+      expect(error).toBeInstanceOf(CLIError)
     }
   })
 
@@ -1437,14 +1437,14 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
 // ============================================================================
 
 describe('readAnalysisFile — exhaustive error and edge cases', () => {
-  test('file not found throws Error (not CLIError)', async () => {
+  test('file not found throws CLIError', async () => {
     vi.mocked(existsSync).mockReturnValue(false)
     try {
       await readAnalysisFile('/no-file.json')
       expect.unreachable('Should have thrown')
     } catch (error) {
       expect(error).toBeInstanceOf(Error)
-      expect(error).not.toBeInstanceOf(CLIError)
+      expect(error).toBeInstanceOf(CLIError)
     }
   })
 

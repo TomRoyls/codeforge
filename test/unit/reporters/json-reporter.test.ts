@@ -1631,7 +1631,7 @@ describe('JSONReporter', () => {
           totalTime: 0,
         },
       })
-      expect(() => reporter.report(results)).toThrow('Failed to write file "./bad.json": disk full')
+      expect(() => reporter.report(results)).toThrow('write file "./bad.json"')
     })
 
     test('should throw wrapped error with string message when non-Error thrown', () => {
@@ -1651,9 +1651,7 @@ describe('JSONReporter', () => {
           totalTime: 0,
         },
       })
-      expect(() => reporter.report(results)).toThrow(
-        'Failed to write file "./bad2.json": unexpected string error',
-      )
+      expect(() => reporter.report(results)).toThrow('write file "./bad2.json"')
     })
   })
 

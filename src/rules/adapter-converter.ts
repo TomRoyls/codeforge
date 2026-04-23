@@ -103,7 +103,48 @@ export function convertRawCompilerNode(
 
   result.type = KIND_NAME_ALIASES[kindName] ?? kindName
 
-  // Add literal values
+  applyRawLiteralValues(result, kindName, raw)
+
+  for (const [key, val] of Object.entries(raw)) {
+    if (key.startsWith('_')) continue
+    if (SKIP_KEYS.has(key)) continue
+
+    const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
+
+    if (key === 'caseBlock') {
+      const converted = convertCaseClauses(val, depth)
+      if (converted !== undefined) {
+        result[estreeName] = converted
+      }
+
+      continue
+    }
+
+    if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
+      synthesizeTemplateExpression(result, raw, depth)
+
+      continue
+    }
+
+    if (kindName === 'NoSubstitutionTemplateLiteral' && key === 'text') {
+      synthesizeNoSubstitutionTemplate(result, raw)
+
+      continue
+    }
+
+    assignRawProperty(result, key, val, estreeName, depth)
+  }
+
+  applyRawPostFixups(result, kindName, raw)
+
+  return result
+}
+
+function applyRawLiteralValues(
+  result: Record<string, unknown>,
+  kindName: string,
+  raw: Record<string, unknown>,
+): void {
   if (kindName === 'StringLiteral' && raw.text !== undefined) {
     result.value = raw.text
     result.raw = `"${raw.text}"`
@@ -116,7 +157,7 @@ export function convertRawCompilerNode(
   } else if (kindName === 'Identifier' && raw.escapedText !== undefined) {
     result.name = raw.escapedText
     result.value = raw.escapedText
-  } else
+  } else {
     switch (kindName) {
       case 'FalseKeyword': {
         result.value = false
@@ -150,165 +191,149 @@ export function convertRawCompilerNode(
         }
       }
     }
+  }
+}
 
-  // Iterate children
-  for (const [key, val] of Object.entries(raw)) {
-    if (key.startsWith('_')) continue
-    if (SKIP_KEYS.has(key)) continue
+function synthesizeTemplateExpression(
+  result: Record<string, unknown>,
+  raw: Record<string, unknown>,
+  depth: number,
+): void {
+  if (result.quasis || result.expressions) return
 
-    const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
+  const quasis: unknown[] = []
+  const expressions: unknown[] = []
 
-    // Special: caseBlock → extract clauses array as ESTree cases
-    if (key === 'caseBlock' && val && typeof val === 'object') {
-      const cb = val as Record<string, unknown>
-      if (Array.isArray(cb.clauses)) {
-        const converted: unknown[] = []
-        for (const clause of cb.clauses) {
-          if (
-            clause &&
-            typeof clause === 'object' &&
-            typeof (clause as Record<string, unknown>).kind === 'number'
-          ) {
-            converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
-          }
-        }
+  // head → first TemplateElement (tail=false)
+  const head = raw.head as Record<string, unknown> | undefined
+  if (head && typeof head.kind === 'number') {
+    quasis.push({
+      range:
+        typeof head.pos === 'number' && typeof head.end === 'number'
+          ? [head.pos as number, head.end as number]
+          : undefined,
+      tail: false,
+      type: 'TemplateElement',
+      value: {
+        cooked: (head.text ?? head.rawText) as string,
+        raw: (head.rawText ?? head.text) as string,
+      },
+    })
+  }
 
-        result[estreeName] = converted
+  // templateSpans → alternating expression + TemplateElement
+  const spans = raw.templateSpans as Array<Record<string, unknown>> | undefined
+  if (Array.isArray(spans)) {
+    for (let i = 0; i < spans.length; i++) {
+      const span = spans[i]! as Record<string, unknown>
+      const spanExpr = span.expression as Record<string, unknown> | undefined
+      if (spanExpr && typeof spanExpr.kind === 'number') {
+        expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
       }
 
-      continue
-    }
-
-    // Special: TemplateExpression → synthesize quasis[] and expressions[]
-    if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
-      if (!result.quasis && !result.expressions) {
-        const quasis: unknown[] = []
-        const expressions: unknown[] = []
-
-        // head → first TemplateElement (tail=false)
-        const head = raw.head as Record<string, unknown> | undefined
-        if (head && typeof head.kind === 'number') {
-          quasis.push({
-            range:
-              typeof head.pos === 'number' && typeof head.end === 'number'
-                ? [head.pos as number, head.end as number]
-                : undefined,
-            tail: false,
-            type: 'TemplateElement',
-            value: {
-              cooked: (head.text ?? head.rawText) as string,
-              raw: (head.rawText ?? head.text) as string,
-            },
-          })
-        }
-
-        // templateSpans → alternating expression + TemplateElement
-        const spans = raw.templateSpans as Array<Record<string, unknown>> | undefined
-        if (Array.isArray(spans)) {
-          for (let i = 0; i < spans.length; i++) {
-            const span = spans[i]! as Record<string, unknown>
-            const spanExpr = span.expression as Record<string, unknown> | undefined
-            if (spanExpr && typeof spanExpr.kind === 'number') {
-              expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
-            }
-
-            const lit = span.literal as Record<string, unknown> | undefined
-            if (lit && typeof lit.kind === 'number') {
-              const isTail = i === spans.length - 1
-              quasis.push({
-                range:
-                  typeof lit.pos === 'number' && typeof lit.end === 'number'
-                    ? [lit.pos as number, lit.end as number]
-                    : undefined,
-                tail: isTail,
-                type: 'TemplateElement',
-                value: {
-                  cooked: (lit.text ?? lit.rawText) as string,
-                  raw: (lit.rawText ?? lit.text) as string,
-                },
-              })
-            }
-          }
-        }
-
-        result.quasis = quasis
-        result.expressions = expressions
-      }
-
-      continue
-    }
-
-    // Special: NoSubstitutionTemplateLiteral → single quasi with tail=true
-    if (kindName === 'NoSubstitutionTemplateLiteral' && key === 'text') {
-      if (!result.quasis) {
-        const rawText = (raw.rawText ?? raw.text) as string
-        const cookedText = (raw.text ?? raw.rawText) as string
-        result.quasis = [
-          {
-            tail: true,
-            type: 'TemplateElement',
-            value: { cooked: cookedText, raw: rawText },
+      const lit = span.literal as Record<string, unknown> | undefined
+      if (lit && typeof lit.kind === 'number') {
+        const isTail = i === spans.length - 1
+        quasis.push({
+          range:
+            typeof lit.pos === 'number' && typeof lit.end === 'number'
+              ? [lit.pos as number, lit.end as number]
+              : undefined,
+          tail: isTail,
+          type: 'TemplateElement',
+          value: {
+            cooked: (lit.text ?? lit.rawText) as string,
+            raw: (lit.rawText ?? lit.text) as string,
           },
-        ]
-        result.expressions = []
+        })
       }
-
-      continue
-    }
-
-    if (val === null || val === undefined) {
-      result[estreeName] = val
-    } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
-      result[estreeName] = val
-    } else if (
-      key === 'operatorToken' &&
-      val !== null &&
-      typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).kind === 'number'
-    ) {
-      const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
-      result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
-    } else if (
-      key === 'variableDeclaration' &&
-      val !== null &&
-      typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).kind === 'number'
-    ) {
-      const varDecl = val as Record<string, unknown>
-      result[estreeName] =
-        varDecl.name && typeof varDecl.name === 'object'
-          ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
-          : null
-    } else if (
-      typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).kind === 'number'
-    ) {
-      result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
-    } else if (Array.isArray(val)) {
-      const converted: unknown[] = []
-      for (const item of val) {
-        if (
-          item &&
-          typeof item === 'object' &&
-          typeof (item as Record<string, unknown>).kind === 'number'
-        ) {
-          // OmittedExpression (sparse array hole) → null
-          const itemKind = (item as Record<string, unknown>).kind as number
-          const itemKindName = KIND_MAP[itemKind] ?? ''
-          if (itemKindName === 'OmittedExpression') {
-            converted.push(null)
-          } else {
-            converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
-          }
-        } else {
-          converted.push(item)
-        }
-      }
-
-      result[estreeName] = converted
     }
   }
 
+  result.quasis = quasis
+  result.expressions = expressions
+}
+
+function synthesizeNoSubstitutionTemplate(
+  result: Record<string, unknown>,
+  raw: Record<string, unknown>,
+): void {
+  if (result.quasis) return
+
+  const rawText = (raw.rawText ?? raw.text) as string
+  const cookedText = (raw.text ?? raw.rawText) as string
+  result.quasis = [
+    {
+      tail: true,
+      type: 'TemplateElement',
+      value: { cooked: cookedText, raw: rawText },
+    },
+  ]
+  result.expressions = []
+}
+
+function assignRawProperty(
+  result: Record<string, unknown>,
+  key: string,
+  val: unknown,
+  estreeName: string,
+  depth: number,
+): void {
+  if (val === null || val === undefined) {
+    result[estreeName] = val
+  } else if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+    result[estreeName] = val
+  } else if (
+    key === 'operatorToken' &&
+    val !== null &&
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    const tokenKindName = KIND_MAP[(val as Record<string, unknown>).kind as number] ?? ''
+    result[estreeName] = OPERATOR_TOKEN_MAP[tokenKindName] ?? tokenKindName
+  } else if (
+    key === 'variableDeclaration' &&
+    val !== null &&
+    typeof val === 'object' &&
+    typeof (val as Record<string, unknown>).kind === 'number'
+  ) {
+    const varDecl = val as Record<string, unknown>
+    result[estreeName] =
+      varDecl.name && typeof varDecl.name === 'object'
+        ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+        : null
+  } else if (typeof val === 'object' && typeof (val as Record<string, unknown>).kind === 'number') {
+    result[estreeName] = convertRawCompilerNode(val as Record<string, unknown>, depth + 1)
+  } else if (Array.isArray(val)) {
+    const converted: unknown[] = []
+    for (const item of val) {
+      if (
+        item &&
+        typeof item === 'object' &&
+        typeof (item as Record<string, unknown>).kind === 'number'
+      ) {
+        // OmittedExpression (sparse array hole) → null
+        const itemKind = (item as Record<string, unknown>).kind as number
+        const itemKindName = KIND_MAP[itemKind] ?? ''
+        if (itemKindName === 'OmittedExpression') {
+          converted.push(null)
+        } else {
+          converted.push(convertRawCompilerNode(item as Record<string, unknown>, depth + 1))
+        }
+      } else {
+        converted.push(item)
+      }
+    }
+
+    result[estreeName] = converted
+  }
+}
+
+function applyRawPostFixups(
+  result: Record<string, unknown>,
+  kindName: string,
+  raw: Record<string, unknown>,
+): void {
   // BinaryExpression with assignment operator → AssignmentExpression
   if (result.type === 'BinaryExpression' && ASSIGNMENT_OPERATORS.has(result.operator as string)) {
     result.type = 'AssignmentExpression'
@@ -361,8 +386,6 @@ export function convertRawCompilerNode(
       }
     }
   }
-
-  return result
 }
 
 function applyLiteralValue(result: Record<string, unknown>, kindName: string, node: Node): void {
